@@ -4,8 +4,8 @@ const server = express()
 
 server.use("/", express.static("./dist/frontend"))
 
-server.use("/version", (req: Request,res: Response) => {
-	res.send("1.2")
+server.use("/version", (req: Request, res: Response) => {
+	res.send("1.21")
 })
 
 server.get("/", (_req: Request, res: Response) => {
