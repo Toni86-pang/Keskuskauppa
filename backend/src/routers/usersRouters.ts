@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { getAllUsers } from "../dao"
+import { getAllUsers } from "./Dao"
 
 const users = express.Router()
 
