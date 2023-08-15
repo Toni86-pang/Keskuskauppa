@@ -28,7 +28,7 @@ ARG PG_PORT
 ARG PG_USERNAME
 ARG PG_PASSWORD
 ARG PG_DATABASE
-ARG PG_SSL=false
+ARG PG_SSL
 
 ENV PORT=${PORT}
 ENV PG_HOST=${PG_HOST}
@@ -41,7 +41,6 @@ ENV PG_SSL=${PG_SSL}
 COPY --from=builder ./backend/package*.json ./
 COPY --from=builder ./backend/dist ./dist
 COPY --from=builder ./frontend/dist ./dist/client
-RUN ls ./dist
 RUN npm ci --omit=dev
 
 EXPOSE ${PORT}
