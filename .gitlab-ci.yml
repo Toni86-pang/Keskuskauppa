@@ -17,8 +17,8 @@ build:
       --build-arg PG_DATABASE="$PG_DATABASE"
       --build-arg PG_SSL=true 
       -t "$ACR_REPOSITORY"/keskuskauppa-app:latest .;
-    - docker login "$ACR_REPOSITORY";
-      --username "$ACR_USERNAME";
-      --password "$ACR_PASSWORD"
+    - docker login "$ACR_REPOSITORY"
+      --username "$ACR_USERNAME"
+      --password "$ACR_PASSWORD";
     - docker push "$ACR_REPOSITORY"/keskuskauppa-app:latest;
 
