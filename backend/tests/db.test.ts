@@ -15,8 +15,8 @@ const initializeMockPool = (mockResponse: any) => {
 describe("Testing GET /Category", () => {
     const mockResponse = {
         rows: [
-            { category_ID: 101, category_name: 'Test Item 1'},
-            { category_ID: 102, category_name: 'Test Item 2'},
+            { category_ID: 101, category_name: 'Test Item 1' },
+            { category_ID: 102, category_name: 'Test Item 2' },
         ]
     }
 
