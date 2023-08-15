@@ -28,6 +28,15 @@
 - Insomnia/Postman
 - PgAdmin
 - GitLab CI/CD pipeline
+
+
+- otetaan ja muokataan aikasemman readmen pohjaa tähän meidän readmeen lisäksi. 
+- lisätään jokainen junior devi projektiin
+- jokaiselle deville kuva jos haluavat sekä pari linkkiä (cv,linkedin, gitlab? ) 
+- muutetaan projektin kuvausta myyvämmäksi sekä lähestyttävämmäksi
+- lisätään kuvan kaappauksia tietokannasta sekä prototyyppi mallista verkkosivusta.
+- vertaukset tori.fi sekä verkkokaupasta tai muista verkkosivuista
+
 - Figma
 - Trello
 - Draw.io
