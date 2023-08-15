@@ -1,8 +1,10 @@
 import express, { Request, Response } from "express"
+import productRoutes from "./Routes/Routes"
 
 const server = express()
 
 server.use("/", express.static("./dist/frontend"))
+server.use(produ)
 
 server.use("/version", (req: Request, res: Response) => {
 	res.send("1.24")
