@@ -5,7 +5,7 @@ const server = express()
 server.use("/", express.static("./dist/frontend"))
 
 server.use("/version", (req: Request, res: Response) => {
-	res.send("1.213")
+	res.send("1.22")
 })
 
 server.get("/", (_req: Request, res: Response) => {
