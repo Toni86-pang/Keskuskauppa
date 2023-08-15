@@ -29,7 +29,6 @@
 - PgAdmin
 - GitLab CI/CD pipeline
 
-
 - otetaan ja muokataan aikasemman readmen pohjaa tähän meidän readmeen lisäksi. 
 - lisätään jokainen junior devi projektiin
 - jokaiselle deville kuva jos haluavat sekä pari linkkiä (cv,linkedin, gitlab? ) 
