@@ -1,4 +1,4 @@
-import { executeQuery } from "../database"
+import { executeQuery } from "../routers/database"
 
 export const addUser = async (username: string, name :string, email: string, phone: string, address: string, city: string, password: string)=> {
     const query = 'INSERT INTO "users" (username, name, email, phone, address, city, password) VALUES ($1, $2, $3, $4, $5, $6, $7);'
