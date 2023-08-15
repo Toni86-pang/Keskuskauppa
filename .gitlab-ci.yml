@@ -10,18 +10,17 @@ build:
   services:
     - docker:dind
   script:
-    -  docker build 
+    - docker build 
+      --build-arg SECRET="$SECRET" 
       --build-arg PORT="$APP_PORT" 
       --build-arg PG_HOST="$PG_HOST" 
       --build-arg PG_PORT="$PG_PORT" 
       --build-arg PG_USERNAME="$PG_USERNAME" 
       --build-arg PG_PASSWORD="$PG_PASSWORD" 
-      --build-arg PG_DATABASE="$PG_DATABASE"
+      --build-arg PG_DATABASE="$PG_DATABASE" 
       --build-arg PG_SSL=true 
-      --build-arg SECRET="$SECRET"
-      -t "$ACR_REPOSITORY"/keskuskauppa-app .
-    - docker login "$ACR_REPOSITORY"
-      --username "$ACR_USERNAME"
+      -t "$ACR_REPOSITORY/keskuskauppa-app" .
+    - docker login "$ACR_REPOSITORY" 
+      --username "$ACR_USERNAME" 
       --password "$ACR_PASSWORD"
-    - docker push "$ACR_REPOSITORY"/keskuskauppa-app:latest
-
+    - docker push "$ACR_REPOSITORY/keskuskauppa-app:latest"
