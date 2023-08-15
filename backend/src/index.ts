@@ -1,19 +1,13 @@
+import server from "./server"
 import express, { Request, Response } from "express"
 import productRoutes from "./Routes/Routes"
 
-const server = express()
 
+const { PORT } = process.env
 server.use("/", express.static("./dist/frontend"))
 server.use(produ)
 
-server.use("/version", (req: Request, res: Response) => {
-	res.send("1.24")
-})
 
-server.get("/", (_req: Request, res: Response) => {
-	res.send("Hello keskuskauppa!")
-})
-
-server.listen(3000, () => {
-	console.log("Listening to port 3000")
+server.listen(PORT, () => {
+	console.log("Listening to port", PORT)
 })
