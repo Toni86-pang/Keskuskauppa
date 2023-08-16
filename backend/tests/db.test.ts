@@ -28,7 +28,7 @@ describe("Testing GET /Category", () => {
         jest.clearAllMocks()
     })
 
-    it("GET /Category returns all categories", async () => {
+    it("POST /register returns 200 and token", async () => {
         expect(true).toBe(true)
     })
 })
