@@ -1,0 +1,22 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install": "(cd backend && npm install)",
+    "postinstall": "(cd frontend && npm install)",
+    "build": "concurrently \"(cd backend && tsc)\" \"(cd frontend && npm run build)\"",
+    "dev": "concurrently \"(cd backend && npm run dev)\" \"(cd frontend && npm run dev)\"",
+    "start": "node ./backend/dist/index.js",
+    "test": "echo \"Error: no test specified\"",
+    "docker:build": "docker build -t keskuskauppa-app:latest .",
+    "docker:start": "docker run -p 3000:3000 --env-file .env keskuskauppa-app:latest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
