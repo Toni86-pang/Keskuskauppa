@@ -1,4 +1,4 @@
-import { executeQuery } from "./database"
+import { executeQuery } from "../database"
 
 export interface Product {
     user_ID: number

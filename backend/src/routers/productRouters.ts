@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { createProduct , Product } from "./Dao"
+import { createProduct , Product } from "../daos/productsDao"
 
 
 const product = express.Router()

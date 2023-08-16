@@ -10,7 +10,7 @@ import {
 	createReviewsTable,
 	createMessageLogTable
 }
-	from "./routers/database"
+	from "./database"
 
 
 const server = express()
