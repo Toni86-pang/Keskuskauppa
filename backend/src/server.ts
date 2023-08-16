@@ -10,10 +10,12 @@ import express, { Request, Response } from "express"
 // }
 // 	from "./database"
 import users from "./routers/usersRouters"
+import product from './routers/productRouters'
 
 const server = express()
 server.use(express.json())
 server.use("/api/users", users)
+server.use("/api/product", product)
 server.use("/", express.static("./dist/frontend"))
 server.use("/version", (req: Request, res: Response) => {
 	res.send("1.26344")

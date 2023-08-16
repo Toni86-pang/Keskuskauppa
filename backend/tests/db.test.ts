@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals'
-import { pool } from '../src/routers/database'
+import { pool } from '../src/database'
 
 // Mock the pool methods.
 const initializeMockPool = (mockResponse: any) => {
