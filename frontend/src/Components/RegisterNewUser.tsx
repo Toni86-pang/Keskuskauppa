@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { Alert, Box, Button, Container, TextField, Typography } from '@mui/material'
+import { Button, Container, TextField } from '@mui/material'
 
 
 
@@ -31,6 +31,7 @@ function RegisterNewUser() {
     const [newUser, setNewUser] = useState<User>(initialState)
     const [confirmPassword, setConfirmPassword] = useState<string>('')
     const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true)
+
     const { name, email, username, phone, address, city } = newUser
 
     const navigate = useNavigate()
@@ -48,10 +49,7 @@ function RegisterNewUser() {
 
             if (response.status === 200) {
                 navigate('/')
-                { <Alert severity="success">This is a success alert — check it out!</Alert> }
-                setNewUser(initialState)
-                setConfirmPassword("")
-
+                alert("User register success")
             } else if (response.status === 401) {
                 setNewUser(initialState)
                 alert('Username already exists.')
@@ -154,14 +152,14 @@ function RegisterNewUser() {
             <Container>
                 <Button
                     sx={{
-                        mt: 1,
+                        m: 1,
                         bgcolor: "#6096ba",
                         ":hover": { bgcolor: "darkblue" }
                     }}
                     variant="contained"
                     onClick={registerUser}>Register</Button>
                 <Button sx={{
-                    mt: 1,
+                    m: 1,
                     bgcolor: "#6096ba",
                     ':hover': { bgcolor: '#d32f2f' },
                 }}
