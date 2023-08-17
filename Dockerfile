@@ -10,6 +10,9 @@ COPY ./frontend/src ./src
 RUN npm ci
 RUN npm run build
 
+WORKDIR /
+COPY ./docs ./docs
+
 WORKDIR /backend
 
 COPY ./backend/src ./
@@ -29,8 +32,7 @@ ARG PG_USERNAME
 ARG PG_PASSWORD
 ARG PG_DATABASE
 ARG SECRET
-ARG PG_SSL
-ARG SECRET
+ARG PG_SSL=false
 
 ENV SECRET=${SECRET}
 ENV PORT=${PORT}
@@ -45,6 +47,9 @@ ENV SECRET=${SECRET}
 COPY --from=builder ./backend/package*.json ./
 COPY --from=builder ./backend/dist ./dist
 COPY --from=builder ./frontend/dist ./dist/client
+COPY --from=builder ./docs ./dist/docs
+
+RUN ls ./dist
 RUN npm ci --omit=dev
 
 EXPOSE ${PORT}

@@ -11,9 +11,12 @@ import express, { Request, Response } from "express"
 // 	from "./database"
 import users from "./routers/usersRouters"
 import product from './routers/productRouters'
+import { unknownEndpoint } from "./middlewares"
 
 const server = express()
 server.use(express.json())
+
+//Setup routers
 server.use("/api/users", users)
 server.use("/api/product", product)
 server.use("/", express.static("./dist/frontend"))
@@ -24,6 +27,9 @@ server.use("/version", (req: Request, res: Response) => {
 server.get('*', (_req, res) => {
 	res.sendFile('index.html', { root: './dist/client' })
 })
+
+// Unknown endpoint handler
+server.use(unknownEndpoint)
 
 // createUsersTable()
 // createGategoryTable()
