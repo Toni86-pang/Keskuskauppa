@@ -21,8 +21,8 @@ server.use("/version", (req: Request, res: Response) => {
 	res.send("1.26344")
 })
 
-server.get("/", (_req: Request, res: Response) => {
-	res.send("Hello keskuskauppa!")
+server.get('*', (_req, res) => {
+	res.sendFile('index.html', { root: './dist/client' })
 })
 
 // createUsersTable()
