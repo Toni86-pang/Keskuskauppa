@@ -1,6 +1,8 @@
 import { ChangeEvent, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { Box, Button, Container, TextField, Typography } from '@mui/material'
+import { Alert, Box, Button, Container, TextField, Typography } from '@mui/material'
+
 
 
 export interface User {
@@ -27,11 +29,11 @@ const initialState: User = {
 function RegisterNewUser() {
 
     const [newUser, setNewUser] = useState<User>(initialState)
-    const [userData, setUserData] = useState<User | null>(null)
-    const [vPassword, setPassword] = useState<string>('')
     const [confirmPassword, setConfirmPassword] = useState<string>('')
     const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true)
-    const { name, email, username, password, phone, address, city } = newUser
+    const { name, email, username, phone, address, city } = newUser
+
+    const navigate = useNavigate()
 
     const registerUser = async () => {
 
@@ -45,9 +47,11 @@ function RegisterNewUser() {
             })
 
             if (response.status === 200) {
-                alert('User registered successfully.')
-                setUserData(newUser)
+                navigate('/')
+                { <Alert severity="success">This is a success alert — check it out!</Alert> }
                 setNewUser(initialState)
+                setConfirmPassword("")
+
             } else if (response.status === 401) {
                 setNewUser(initialState)
                 alert('Username already exists.')
@@ -68,16 +72,15 @@ function RegisterNewUser() {
         }))
     }
 
-    const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const newPassword = event.target.value
-        setPassword(newPassword)
-        setPasswordsMatch(newPassword === confirmPassword)
-    }
-
     const handleConfirmPasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
         const newConfirmPassword = event.target.value
         setConfirmPassword(newConfirmPassword)
-        setPasswordsMatch(vPassword === newConfirmPassword)
+        setPasswordsMatch(newUser.password === newConfirmPassword)
+    }
+    const handleCancel = () => {
+        setNewUser(initialState)
+        setConfirmPassword("")
+        setPasswordsMatch(true)
     }
     return (
         <Container sx={{ m: 1 }}>
@@ -135,10 +138,8 @@ function RegisterNewUser() {
                     type="password"
                     placeholder="Enter a password"
                     name="password"
-                    value={vPassword}
-                    onChange={handlePasswordChange}
-                    error={!passwordsMatch}
-                    helperText={!passwordsMatch ? "Passwords do not match" : ''}
+                    value={newUser.password}
+                    onChange={handleInputChange}
                 />
                 <TextField
                     type="password"
@@ -152,24 +153,23 @@ function RegisterNewUser() {
             </Container>
             <Container>
                 <Button
-                    sx={{ mt: 1, bgcolor: "#6096ba" }}
+                    sx={{
+                        mt: 1,
+                        bgcolor: "#6096ba",
+                        ":hover": { bgcolor: "darkblue" }
+                    }}
                     variant="contained"
                     onClick={registerUser}>Register</Button>
+                <Button sx={{
+                    mt: 1,
+                    bgcolor: "#6096ba",
+                    ':hover': { bgcolor: '#d32f2f' },
+                }}
+                    variant="contained"
+                    onClick={handleCancel}>
+                    Cancel
+                </Button>
             </Container>
-            <Typography>
-                <Box>
-                    {userData && (
-                        <Box>
-                            <Typography>Name: {userData.name}</Typography>
-                            <Typography>Email: {userData.email}</Typography>
-                            <Typography>Username: {userData.username}</Typography>
-                            <Typography>Password: {userData.password}</Typography>
-                            <Typography></Typography>
-                        </Box>
-                    )}
-                </Box>
-            </Typography>
-
 
         </Container >
     )
