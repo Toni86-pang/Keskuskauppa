@@ -13,6 +13,13 @@ export const getAllUsers = async () => {
     return result
 }
 
+export const getUserByUsername = async (username: string) => {
+    const query = "SELECT * FROM users WHERE username = $1"
+    const params = [username]
+    const result = await executeQuery(query, params)
+    return result.rows[0]
+}
+
 export const deleteUser = async (user_id: number) => {
     const query = 'DELETE FROM users WHERE user_id = $1'
     const params = [user_id]
