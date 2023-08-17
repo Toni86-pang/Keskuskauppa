@@ -4,6 +4,7 @@ import argon2, { hash } from "argon2"
 import jwt from "jsonwebtoken"
 
 const secret = process.env.SECRET ?? ""
+const options = { expiresIn: "15min" }
 
 const users = express.Router()
 
@@ -22,7 +23,7 @@ users.post("/register", async (req: Request, res: Response) => {
 	}
 
 	//Create token
-	const token = jwt.sign(username, secret)
+	const token = jwt.sign(username, secret, options)
 
 	//Hash password and add user in database
 	const hashedPassword = await argon2.hash(password)
@@ -48,6 +49,7 @@ users.delete("/delete/:user_id", async (req: Request, res: Response) => {
 })
 
 users.post('/login', async (req: Request, res: Response) => {
+	// middleware
 	if (!req.body) {
 		return res.status(400).send({ error: "Missing request body." })
 	}
@@ -63,7 +65,7 @@ users.post('/login', async (req: Request, res: Response) => {
 		if (!result || result.username !== username) {
 			return res.status(404).send({ error: "Username not found." })
 		}
-	
+		console.log(result.password)
 		const isPasswordCorrect = await argon2.verify(result.password, password)
 		if (!isPasswordCorrect) {
 			return res.status(401).send({ error: "Incorrect password." })
