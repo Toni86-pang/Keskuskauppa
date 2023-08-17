@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { createProduct, getAllProducts, getProductById ,updateProductData, deleteProduct , Product } from "../daos/productsDao"
+import { createProduct, getAllProducts, getProductById, updateProductData, deleteProduct, Product } from "../daos/productsDao"
 
 
 const product = express.Router()
@@ -12,44 +12,43 @@ interface CustomRequest extends Request {
 /*  			 Products endpoints 				  */
 product.post("/", async (req, res) => {
 	try {
-	  const newProduct: Product = req.body
-	  await createProduct(newProduct)
-	  res.status(201).json({ message: 'Product created successfully' })
+		const newProduct: Product = req.body
+		await createProduct(newProduct)
+		res.status(201).json({ message: 'Product created successfully' })
 	} catch (error) {
-	  res.status(500).json({ message: 'Error creating product' })
+		res.status(500).json({ message: 'Error creating product' })
 	}
-  })
+})
 
-
-product.get("/", async (_req, res)=> {
+product.get("/", async (_req, res) => {
 	try {
 		const product: Product[] = await getAllProducts()
 		res.status(200).json(product)
-	}	catch(error){
-		res.status(500).json({message: "you shouldn't even be here?"})
-	} 
+	} catch (error) {
+		res.status(500).json({ message: "you shouldn't even be here?" })
+	}
 }
 
 
 )
 
-product.get("/:id", async (req , res )=>{
+product.get("/:id", async (req, res) => {
 	try {
-		const ProductID: number = parseInt(req.params.id, 10 )
+		const ProductID: number = parseInt(req.params.id, 10)
 		const productDetails: Product | null = await getProductById(ProductID)
-	if ( productDetails === null){
-		res.status(404).json({message: " product not found"})
-	} else{
-		res.status(200).json(productDetails)
+		if (productDetails === null) {
+			res.status(404).json({ message: " product not found" })
+		} else {
+			res.status(200).json(productDetails)
+		}
+	} catch (error) {
+		res.status(500).json({ message: "why are you still here?" })
 	}
- 	}catch (error){
-		res.status(500).json({message: "why are you still here?"})
-	}
- })
+})
 
 
-  product.delete("/delete/:id", async (req: Request, res: Response) => {
-	const product_id = Number(req.params.product_id)
+product.delete("/delete/:id", async (req: Request, res: Response) => {
+	const product_id = Number(req.params.id)
 
 	try {
 		const result = await deleteProduct(product_id)
@@ -66,12 +65,10 @@ product.get("/:id", async (req , res )=>{
 })
 
 
-
-  product.put('/:id', async (req: CustomRequest, res: Response) => {
-	const product_Id = parseInt(req.params.id , 10)
-	const updatedProductData = req.body
+product.put('/:id', async (req: CustomRequest, res: Response) => {
+	const product_Id = parseInt(req.params.id, 10);
+	const updatedProductData = req.body;
 	try {
-		// Validate input data
 		const updateProduct: Product | null = await updateProductData(
 			product_Id,
 			updatedProductData.title,
@@ -80,18 +77,17 @@ product.get("/:id", async (req , res )=>{
 			updatedProductData.location,
 			updatedProductData.description,
 			updatedProductData.price
-		  )
-		if(updateProduct) {
-		res.status(200).json({message: "product update is complete", updateProduct})
-		}	else {
-			res.status(400).json ({message:"product not found"})
+		);
+		if (updateProduct) {
+			res.status(200).json({ message: "product update is complete", updateProduct });
+		} else {
+			res.status(404).json({ message: "product not found" });
 		}
 	} catch (error) {
-		console.error('Error updating product:', error)
-		res.status(500).send('Internal Server Error')
+		console.error('Error updating product:', error);
+		res.status(500).send('Internal Server Error');
 	}
- })
-
+});
 
 
 export default product

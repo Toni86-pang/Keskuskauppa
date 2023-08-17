@@ -43,33 +43,33 @@ export const getProductById = async (product_ID: number): Promise<Product | null
 		const query = " SELECT * FROM products WHERE product_ID = $1"
 		const result = await executeQuery(query, [product_ID])
 
-	if(result.rows.length === 0) {
-		return null
+		if (result.rows.length === 0) {
+			return null
+		}
+		const productDetails: Product = result.rows[0]
+		return productDetails
+	} catch (error) {
+		throw error
 	}
-	const productDetails: Product = result.rows[0]
-	return productDetails
-} catch(error) {
-	throw error
-}
 
 }
 
 export const getAllProducts = async (): Promise<Product[]> => {
 	try {
-	const query = "SELECT * FROM products"
-	const result = await executeQuery(query)
+		const query = "SELECT * FROM products"
+		const result = await executeQuery(query)
 
-	return result.rows
-} catch (error){
-	throw error
-}
+		return result.rows
+	} catch (error) {
+		throw error
+	}
 }
 
 export const deleteProduct = async (product_ID: number) => {
-    const query = 'DELETE FROM products WHERE product_ID = $1'
-    const params = [product_ID]
-    const result = await executeQuery(query, params)
-    return result
+	const query = 'DELETE FROM products WHERE product_ID = $1'
+	const params = [product_ID]
+	const result = await executeQuery(query, params)
+	return result
 }
 
 export const updateProductData = async (
@@ -80,20 +80,20 @@ export const updateProductData = async (
 	location: string,
 	description: string,
 	price: number
-  ): Promise<Product | null> => {
+): Promise<Product | null> => {
 	try {
-	  const params = [title, categoryID, subcategoryID, location, description, price, productID];
-	  const query =
-		"UPDATE Products SET title = $1, category_ID = $2, subcategory_ID = $3, location = $4, description = $5, price = $6 WHERE product_ID = $7 RETURNING * ";
-  
-	  const result = await executeQuery(query, params);
-  
-	  if (result.rows.length === 0) {
-		return null;
-	  }
-	  return result.rows[0] as Product;
+		const params = [title, categoryID, subcategoryID, location, description, price, productID];
+		const query =
+			"UPDATE Products SET title = $1, category_ID = $2, subcategory_ID = $3, location = $4, description = $5, price = $6 WHERE product_ID = $7 RETURNING * ";
+
+		const result = await executeQuery(query, params);
+
+		if (result.rows.length === 0) {
+			return null;
+		}
+		return result.rows[0] as Product;
 	} catch (error) {
-	  throw error;
+		throw error;
 	}
-  };
-  
+};
+
