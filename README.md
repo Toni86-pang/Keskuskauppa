@@ -50,34 +50,34 @@ Here's how to get the program running.
 2. Build a docker image with command `npm run docker:build`
 3. Run the docker image with command `npm run docker:start`. This uses local settings for the application in `.env` file. `.env` file **must be** in backend directory only and does not come with the repository. Here are the basic details of what the file should include:
 
-PORT= The port you are using on localhost
-PG_HOST= The IP address of your database
-PG_PORT= Local database port
-PG_USERNAME= Admin username
-PG_PASSWORD= Admin password
-PG_DATABASE= The name of your database
-SECRET= A secret word defined by you
+PORT= The port you are using on localhost  
+PG_HOST= The IP address of your database  
+PG_PORT= Local database port  
+PG_USERNAME= Admin username  
+PG_PASSWORD= Admin password  
+PG_DATABASE= The name of your database  
+SECRET= A secret word defined by you  
 
 4. Next, run command `npm run dev`. This runs both frontend and backend in development mode and watches for any changes in files in ./src directories.
 
 ## Dev team
 
-Maaret Lyytinen
-@: maaret.lyytinen@gmail.com
-gitlab: https://gitlab.com/maarly
-LinkedIn: https://www.linkedin.com/in/maaretlyytinen/
+**Maaret Lyytinen**  
+@: maaret.lyytinen@gmail.com  
+gitlab: https://gitlab.com/maarly  
+LinkedIn: https://www.linkedin.com/in/maaretlyytinen/  
 
-Toni Vainionpää
-Linkki1:
-Linkki2:
-Linkki3:
+**Toni Vainionpää**  
+Linkki1:  
+Linkki2:  
+Linkki3:  
 
-Joonas Huhdanmäki
-Linkki1:
-Linkki2:
-Linkki3:
+**Joonas Huhdanmäki**  
+Linkki1:  
+Linkki2:  
+Linkki3:  
 
-Paula Häyrynen
-Linkki1:
-Linkki2:
-Linkki3:
+**Paula Häyrynen**  
+Linkki1:  
+Linkki2:  
+Linkki3:  
