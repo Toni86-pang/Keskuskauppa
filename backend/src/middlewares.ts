@@ -31,6 +31,19 @@ export const authentication = (req: CustomRequest, res: Response, next: NextFunc
     }
 }
 
+export const checkReqBody = (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.body)
+
+    if(req.body.constructor === Object && Object.keys(req.body).length === 0) {
+        return res.status(400).send({ error: "Missing request body." })
+    }
+    
+    console.log("Ok")
+
+    
+    next()
+}
+
 export const logger = (req: Request, _res: Response, next: NextFunction): void => {
     const date = new Date()
     const padNumbers = (value: string | number): string => String(value).padStart(2, "0")

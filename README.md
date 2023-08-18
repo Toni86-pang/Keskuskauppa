@@ -68,9 +68,9 @@ gitlab: https://gitlab.com/maarly
 LinkedIn: https://www.linkedin.com/in/maaretlyytinen/  
 
 **Toni Vainionpää**  
-Linkki1:  
-Linkki2:  
-Linkki3:  
+@: neworen(at)gmail.com  
+gitlab: https://gitlab.com/Toni86-pang
+LinkedIn:  https://www.linkedin.com/in/toni-vainionpaa/
 
 **Joonas Huhdanmäki**  
 Linkki1:  

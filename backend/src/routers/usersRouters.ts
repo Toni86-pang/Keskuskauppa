@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express"
-import { getAllUsers, addUser, deleteUser } from "../daos/usersDao"
+import { getAllUsers, addUser, deleteUser, getUserByUsername } from "../daos/usersDao"
+import { checkReqBody } from "../middlewares"
 import argon2 from "argon2"
 import jwt from "jsonwebtoken"
 
@@ -45,5 +46,47 @@ users.delete("/delete/:user_id", async (req: Request, res: Response) => {
 		return res.status(500).send("Avada kedavra!")
 	}
 })
+
+users.post('/login', checkReqBody, async (req: Request, res: Response) => {
+		
+	const { username, password } = req.body
+	if (!username || !password) {
+		return res.status(400).send({ error: "Missing username or password." })
+	}
+	
+	try {
+		const result = await getUserByUsername(username)
+	
+		if (!result || result.username !== username) {
+			return res.status(404).send({ error: "Username not found." })
+		}
+		console.log(result.password)
+		const isPasswordCorrect = await argon2.verify(result.password, password)
+		if (!isPasswordCorrect) {
+			return res.status(401).send({ error: "Incorrect password." })
+		}
+	
+		const token = jwt.sign({ username }, secret)
+		return res.status(200).send({ token })
+
+	} catch (error) {
+		console.error("Error:", error);
+		return res.status(500).send({ error: "Internal server error." })
+	}	
+})
+/*
+users.put("/logout", async (req: Request, res: Response) => {
+  const authHeader = req.headers["authorization"]
+  if (authHeader === undefined) return res.status(401).send("You are not logged in")
+
+  jwt.sign(authHeader, '', { expiresIn: 1 }, (logout, err) => {
+    if (logout) {
+      res.send("Succeed! Logged out")
+    } else {
+      res.send("Something gone wrong")
+    }
+  })
+})
+*/
 
 export default users
