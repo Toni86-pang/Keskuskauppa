@@ -4,7 +4,9 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import App from './App.tsx'
 import Register from './Components/RegisterNewUser.tsx'
 // import "./index.css"
-import ErrorPage from './ErrorPage'
+import ErrorPage from './Pages/ErrorPage.tsx'
+import { Login } from '@mui/icons-material'
+import Products from './Components/Products.tsx'
 
 
 const router = createBrowserRouter([
@@ -17,6 +19,14 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />
+      },
+      {
+        path: "/login",
+        element: <Login />
+      },
+      {
+        path: "/product",
+        element: <Products />
       }
     ]
   }
