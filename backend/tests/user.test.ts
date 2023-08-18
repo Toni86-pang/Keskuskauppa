@@ -31,7 +31,7 @@ describe('testing POST /users/login', () => {
       const response = await request(server).post("/api/users/login")
       .send({})
       expect(response.status).toBe(400)
-      expect(response.body).toStrictEqual({error: "Missing username or password."})
+      expect(response.body).toStrictEqual({error: "Missing request body."})
     })
 
   it("test login with wrong variables", async () => {

@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express"
 import { getAllUsers, addUser, deleteUser, getUserByUsername } from "../daos/usersDao"
-import argon2, { hash } from "argon2"
+import { checkReqBody } from "../middlewares"
+import argon2 from "argon2"
 import jwt from "jsonwebtoken"
 
 const secret = process.env.SECRET ?? ""
@@ -48,12 +49,8 @@ users.delete("/delete/:user_id", async (req: Request, res: Response) => {
 	}
 })
 
-users.post('/login', async (req: Request, res: Response) => {
-	// middleware
-	if (!req.body) {
-		return res.status(400).send({ error: "Missing request body." })
-	}
-	
+users.post('/login', checkReqBody, async (req: Request, res: Response) => {
+		
 	const { username, password } = req.body
 	if (!username || !password) {
 		return res.status(400).send({ error: "Missing username or password." })
