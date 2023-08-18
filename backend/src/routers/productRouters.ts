@@ -66,8 +66,8 @@ product.delete("/delete/:id", async (req: Request, res: Response) => {
 
 
 product.put('/:id', async (req: CustomRequest, res: Response) => {
-	const product_Id = parseInt(req.params.id, 10);
-	const updatedProductData = req.body;
+	const product_Id = parseInt(req.params.id, 10)
+	const updatedProductData = req.body
 	try {
 		const updateProduct: Product | null = await updateProductData(
 			product_Id,
@@ -77,17 +77,17 @@ product.put('/:id', async (req: CustomRequest, res: Response) => {
 			updatedProductData.location,
 			updatedProductData.description,
 			updatedProductData.price
-		);
+		)
 		if (updateProduct) {
-			res.status(200).json({ message: "product update is complete", updateProduct });
+			res.status(200).json({ message: "product update is complete", updateProduct })
 		} else {
-			res.status(404).json({ message: "product not found" });
+			res.status(404).json({ message: "product not found" })
 		}
 	} catch (error) {
-		console.error('Error updating product:', error);
-		res.status(500).send('Internal Server Error');
+		console.error('Error updating product:', error)
+		res.status(500).send('Internal Server Error')
 	}
-});
+})
 
 
 export default product
