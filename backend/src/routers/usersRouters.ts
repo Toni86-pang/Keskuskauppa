@@ -5,8 +5,6 @@ import argon2 from "argon2"
 import jwt from "jsonwebtoken"
 
 const secret = process.env.SECRET ?? ""
-const options = { expiresIn: "15min" }
-
 const users = express.Router()
 
 users.get("/", async (_req: Request, res: Response) => {
@@ -24,7 +22,7 @@ users.post("/register", async (req: Request, res: Response) => {
 	}
 
 	//Create token
-	const token = jwt.sign(username, secret, options)
+	const token = jwt.sign(username, secret)
 
 	//Hash password and add user in database
 	const hashedPassword = await argon2.hash(password)
