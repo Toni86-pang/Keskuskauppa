@@ -38,15 +38,12 @@ function RegisterNewUser() {
 
     const registerUser = async () => {
 
-
-
         try {
             const response = await axios.post('/api/users/register', newUser, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
             })
-
             if (response.status === 200) {
                 navigate('/')
                 alert("User register success")
@@ -61,7 +58,6 @@ function RegisterNewUser() {
             console.error(error)
             alert('Something went wrong!')
         }
-
     }
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target
@@ -69,7 +65,6 @@ function RegisterNewUser() {
             ...newUser, [name]: value
         }))
     }
-
     const handleConfirmPasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
         const newConfirmPassword = event.target.value
         setConfirmPassword(newConfirmPassword)
