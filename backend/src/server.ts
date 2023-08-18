@@ -13,7 +13,7 @@ import users from "./routers/usersRouters"
 import product from './routers/productRouters'
 import { unknownEndpoint } from "./middlewares"
 
-const server = express()
+export const server = express()
 server.use(express.json())
 
 //Setup routers
