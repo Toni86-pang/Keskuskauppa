@@ -20,12 +20,13 @@ users.post("/register", async (req: Request, res: Response) => {
 	if (!username || !name || !email || !phone || !password) {
 		return res.status(400).send("Missing username or password.")
 	}
-	const userExists = await findUserByUSername(username)
+	//////////////////Joonas lisäsi perjantaina////////////////
+	const userExists = await findUserByUSername(username, email)
 
 	if (userExists.rows.length === 1) {
 		return res.status(401).send('Username already exists')
 	}
-
+	////////////////////////////////////////////////////////////////
 	//Create token
 	const token = jwt.sign(username, secret)
 
