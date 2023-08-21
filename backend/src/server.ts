@@ -21,7 +21,7 @@ server.use("/api/users", users)
 server.use("/api/product", product)
 server.use("/", express.static("./dist/frontend"))
 server.use("/version", (req: Request, res: Response) => {
-	res.send("1.31")
+	res.send("1.32")
 })
 
 server.get('*', (_req, res) => {
