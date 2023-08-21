@@ -1,6 +1,6 @@
 import request from 'supertest'
 import express from 'express'
-import productRouters from '../src/routers/productRouters' 
+import productRouters from '../src/routers/productRouters'
 
 const app = express()
 app.use(express.json())
@@ -8,31 +8,31 @@ app.use('/api/product', productRouters)
 
 // Mock data
 const mockProduct = {
-    product_ID: 1,
-    user_ID: 1,
-    title: 'Mock Product',
-    category_ID: 1,
-    subcategory_ID: 1,
-    location: 'Mock Location',
-    description: 'Mock Description',
-    price: 100,
-  }
-  
-  // Mock functions
-  const mockCreateProduct = jest.fn(() => Promise.resolve())
-  const mockGetAllProducts = jest.fn(() => Promise.resolve([mockProduct]))
-  const mockGetProductById = jest.fn(() => Promise.resolve(mockProduct))
-  const mockDeleteProduct = jest.fn(() => Promise.resolve())
-  const mockUpdateProductData = jest.fn(() => Promise.resolve(mockProduct))
-  
-  // Mock the product DAOs
-  jest.mock('../src/daos/productsDao', () => ({
-    createProduct: mockCreateProduct,
-    getAllProducts: mockGetAllProducts,
-    getProductById: mockGetProductById,
-    deleteProduct: mockDeleteProduct,
-    updateProductData: mockUpdateProductData,
-  }))
+  product_ID: 1,
+  user_ID: 1,
+  title: 'Mock Product',
+  category_ID: 1,
+  subcategory_ID: 1,
+  location: 'Mock Location',
+  description: 'Mock Description',
+  price: 100,
+}
+
+// Mock functions
+const mockCreateProduct = jest.fn(() => Promise.resolve())
+const mockGetAllProducts = jest.fn(() => Promise.resolve([mockProduct]))
+const mockGetProductById = jest.fn(() => Promise.resolve(mockProduct))
+const mockDeleteProduct = jest.fn(() => Promise.resolve())
+const mockUpdateProductData = jest.fn(() => Promise.resolve(mockProduct))
+
+// Mock the product DAOs
+jest.mock('../src/daos/productsDao', () => ({
+  createProduct: mockCreateProduct,
+  getAllProducts: mockGetAllProducts,
+  getProductById: mockGetProductById,
+  deleteProduct: mockDeleteProduct,
+  updateProductData: mockUpdateProductData,
+}))
 
 describe('Product Endpoints', () => {
   it('should create a new product', async () => {
@@ -57,7 +57,7 @@ describe('Product Endpoints', () => {
     const response = await request(app).get('/api/product')
 
     expect(response.status).toBe(200)
-    
+
   })
 
   it('should get a specific product by ID', async () => {
@@ -87,6 +87,6 @@ describe('Product Endpoints', () => {
       .put(`/api/product/${productID}`)
       .send(updatedProduct)
 
-    expect(response.status).toBe(200) 
+    expect(response.status).toBe(200)
   })
 })
