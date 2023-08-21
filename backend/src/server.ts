@@ -21,11 +21,11 @@ server.use("/api/users", users)
 server.use("/api/product", product)
 server.use("/", express.static("./dist/frontend"))
 server.use("/version", (req: Request, res: Response) => {
-	res.send("1.3")
+	res.send("1.31")
 })
 
 server.get('*', (_req, res) => {
-	res.sendFile('index.html', { root: './dist/client' })
+	res.sendFile('index.html', { root: './dist/frontend' })
 })
 
 // Unknown endpoint handler
