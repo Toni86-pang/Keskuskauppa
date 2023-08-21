@@ -78,6 +78,6 @@ github: https://github.com/jopinihu
 linkedin: www.linkedin.com/in/joonas-huhdanmäki
 
 **Paula Häyrynen**  
-Linkki1:  
-Linkki2:  
-Linkki3:  
+@: paula.hayrynen@hotmail.fi  
+gitlab: https://gitlab.com/Paukku1  
+linkedin: https://www.linkedin.com/in/paula-häyrynen  
