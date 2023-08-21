@@ -3,6 +3,12 @@ import jwt from "jsonwebtoken"
 
 interface CustomRequest extends Request {
     username?: string
+    name?: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    password: string
     id: number
     isAdmin?: boolean
 }
@@ -34,13 +40,13 @@ export const authentication = (req: CustomRequest, res: Response, next: NextFunc
 export const checkReqBody = (req: Request, res: Response, next: NextFunction) => {
     console.log(req.body)
 
-    if(req.body.constructor === Object && Object.keys(req.body).length === 0) {
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
         return res.status(400).send({ error: "Missing request body." })
     }
-    
+
     console.log("Ok")
 
-    
+
     next()
 }
 
@@ -57,9 +63,9 @@ export const logger = (req: Request, _res: Response, next: NextFunction): void =
 }
 
 export const isUserAdmin = (req: CustomRequest, res: Response, next: NextFunction) => {
-        if (!req.isAdmin) {
-            return res.status(403).json({ error: "Forbidden" })
-        }
+    if (!req.isAdmin) {
+        return res.status(403).json({ error: "Forbidden" })
+    }
     next()
 }
 
@@ -67,4 +73,26 @@ export const unknownEndpoint = (req: Request, res: Response): void => {
     const host = req.headers.host ?? ""
     const url = new URL(req.url, `http://${host}`)
     res.status(404).json({ error: `Endpoint ${url.pathname} does not exist` })
+}
+
+export const validateUserData = (req: CustomRequest, res: Response, next: NextFunction) => {
+    const expectedTypes: Record<string, string> = {
+        username: 'string',
+        name: 'string',
+        email: 'string',
+        phone: 'string',
+        address: 'string',
+        city: 'string',
+        password: 'string',
+        id: 'number',
+        isAdmin: 'boolean'
+    }
+
+    for (const key in expectedTypes) {
+        if (req.body[key] && typeof req.body[key] !== expectedTypes[key]) {
+            return res.status(400).json({ error: 'Virheelliset käyttäjätiedot' })
+        }
+    }
+
+    next()
 }

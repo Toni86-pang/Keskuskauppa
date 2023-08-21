@@ -4,6 +4,8 @@ import { checkReqBody } from "../middlewares"
 import argon2 from "argon2"
 import jwt from "jsonwebtoken"
 
+
+
 const secret = process.env.SECRET ?? ""
 const users = express.Router()
 
@@ -18,7 +20,7 @@ users.post("/register", async (req: Request, res: Response) => {
 
 	//Check if username or password are missing
 	if (!username || !name || !email || !phone || !password) {
-		return res.status(400).send("Missing username or password.")
+		return res.status(400).send("Parameters are missing.")
 	}
 	//////////////////Joonas lisäsi perjantaina////////////////
 	const userExists = await findUserByUSername(username)
