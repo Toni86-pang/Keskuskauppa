@@ -21,7 +21,7 @@ users.post("/register", async (req: Request, res: Response) => {
 		return res.status(400).send("Missing username or password.")
 	}
 	//////////////////Joonas lisäsi perjantaina////////////////
-	const userExists = await findUserByUSername(username, email)
+	const userExists = await findUserByUSername(username)
 
 	if (userExists.rows.length === 1) {
 		return res.status(401).send('Username already exists')
