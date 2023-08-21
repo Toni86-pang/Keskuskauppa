@@ -26,3 +26,10 @@ export const deleteUser = async (user_id: number) => {
     const result = await executeQuery(query, params)
     return result
 }
+//////////////////Joonas lisäsi perjantaina////////////////
+export const findUserByUSername = async (username: string) => {
+    const query = 'SELECT * FROM users WHERE username = $1'
+    const params = [username]
+    return executeQuery(query, params)
+}
+///////////////////////////////////////////////////////////
