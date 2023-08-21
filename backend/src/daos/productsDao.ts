@@ -82,18 +82,17 @@ export const updateProductData = async (
 	price: number
 ): Promise<Product | null> => {
 	try {
-		const params = [title, categoryID, subcategoryID, location, description, price, productID];
+		const params = [title, categoryID, subcategoryID, location, description, price, productID]
 		const query =
-			"UPDATE Products SET title = $1, category_ID = $2, subcategory_ID = $3, location = $4, description = $5, price = $6 WHERE product_ID = $7 RETURNING * ";
+			"UPDATE Products SET title = $1, category_ID = $2, subcategory_ID = $3, location = $4, description = $5, price = $6 WHERE product_ID = $7 RETURNING * "
 
-		const result = await executeQuery(query, params);
+		const result = await executeQuery(query, params)
 
 		if (result.rows.length === 0) {
-			return null;
+			return null
 		}
-		return result.rows[0] as Product;
+		return result.rows[0] as Product
 	} catch (error) {
-		throw error;
+		throw error
 	}
-};
-
+}

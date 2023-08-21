@@ -73,9 +73,9 @@ gitlab: https://gitlab.com/Toni86-pang
 LinkedIn:  https://www.linkedin.com/in/toni-vainionpaa/
 
 **Joonas Huhdanmäki**  
-Linkki1:  
-Linkki2:  
-Linkki3:  
+@jhuhdanmaki@gmail.com
+github: https://github.com/jopinihu
+linkedin: www.linkedin.com/in/joonas-huhdanmäki
 
 **Paula Häyrynen**  
 Linkki1:  
