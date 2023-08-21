@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import App from './App.tsx'
 import Register from './Components/RegisterNewUser.tsx'
+import Login from './Components/Login.tsx'
 // import "./index.css"
 import ErrorPage from './Pages/ErrorPage.tsx'
-import { Login } from '@mui/icons-material'
+// import { Login } from '@mui/icons-material'
 import Products from './Components/Products.tsx'
 
 

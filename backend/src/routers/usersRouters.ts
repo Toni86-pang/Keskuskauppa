@@ -48,7 +48,6 @@ users.delete("/delete/:user_id", async (req: Request, res: Response) => {
 })
 
 users.post('/login', checkReqBody, async (req: Request, res: Response) => {
-		
 	const { username, password } = req.body
 	if (!username || !password) {
 		return res.status(400).send({ error: "Missing username or password." })
@@ -58,7 +57,7 @@ users.post('/login', checkReqBody, async (req: Request, res: Response) => {
 		const result = await getUserByUsername(username)
 	
 		if (!result || result.username !== username) {
-			return res.status(404).send({ error: "Username not found." })
+			return res.status(401).send({ error: "Username not found." })
 		}
 		console.log(result.password)
 		const isPasswordCorrect = await argon2.verify(result.password, password)
