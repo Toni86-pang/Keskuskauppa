@@ -46,7 +46,7 @@ ENV SECRET=${SECRET}
 
 COPY --from=builder ./backend/package*.json ./
 COPY --from=builder ./backend/dist ./dist
-COPY --from=builder ./frontend/dist ./dist/client
+COPY --from=builder ./frontend/dist ./dist/frontend
 COPY --from=builder ./docs ./dist/docs
 
 RUN ls ./dist
