@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { getAllUsers, addUser, deleteUser, getUserByUsername, findUserByUSername } from "../daos/usersDao"
+import { getAllUsers, addUser, deleteUser, getUserByUsername, findUserByUSername, findUserByEmail } from "../daos/usersDao"
 import { checkReqBody } from "../middlewares"
 import argon2 from "argon2"
 import jwt from "jsonwebtoken"
@@ -20,15 +20,23 @@ users.post("/register", async (req: Request, res: Response) => {
 
 	//Check if username or password are missing
 	if (!username || !name || !email || !phone || !password) {
-		return res.status(400).send("Parameters are missing.")
+		return res.status(400).send('Required information is missing.')
 	}
-	//////////////////Joonas lisäsi perjantaina////////////////
+
+	//Check username is not already in use
 	const userExists = await findUserByUSername(username)
 
 	if (userExists.rows.length === 1) {
-		return res.status(401).send('Username already exists')
+		return res.status(401).send('An account with this username already exists.')
 	}
-	////////////////////////////////////////////////////////////////
+
+	//Check email is not already in use
+	const emailExists = await findUserByEmail(email)
+
+	if (emailExists.rows.length === 1) {
+		return res.status(401).send('An account with this email already exists.')
+	}
+
 	//Create token
 	const token = jwt.sign(username, secret)
 
