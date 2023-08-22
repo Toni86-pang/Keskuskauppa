@@ -38,7 +38,7 @@ function Products() {
     return (
         <Container>
             <Typography variant="h3" gutterBottom>
-                Kaikki tuotteet!
+                Kaikki tuotteet
             </Typography>
             <List>
                 {products.map((product) => (
