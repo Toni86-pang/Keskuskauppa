@@ -10,7 +10,7 @@ import express, { Request, Response } from "express"
 // }
 // 	from "./database"
 import users from "./routers/usersRouters"
-import product from './routers/productRouters'
+import product from "./routers/productRouters"
 import { unknownEndpoint } from "./middlewares"
 
 export const server = express()
@@ -24,8 +24,8 @@ server.use("/version", (req: Request, res: Response) => {
 	res.send("1.4")
 })
 
-server.get('*', (_req, res) => {
-	res.sendFile('index.html', { root: './dist/frontend' })
+server.get("*", (_req, res) => {
+	res.sendFile("index.html", { root: "./dist/frontend" })
 })
 
 // Unknown endpoint handler
