@@ -4,7 +4,7 @@ import { checkReqBody } from "../middlewares"
 import argon2 from "argon2"
 import jwt from "jsonwebtoken"
 
-
+//Maaret täällä rettelöi
 
 const secret = process.env.SECRET ?? ""
 const users = express.Router()
@@ -20,21 +20,21 @@ users.post("/register", async (req: Request, res: Response) => {
 
 	//Check if username or password are missing
 	if (!username || !name || !email || !phone || !password) {
-		return res.status(400).send('Required information is missing.')
+		return res.status(400).send("Required information is missing.")
 	}
 
 	//Check username is not already in use
 	const userExists = await findUserByUSername(username)
 
 	if (userExists.rows.length === 1) {
-		return res.status(401).send('An account with this username already exists.')
+		return res.status(401).send("An account with this username already exists.")
 	}
 
 	//Check email is not already in use
 	const emailExists = await findUserByEmail(email)
 
 	if (emailExists.rows.length === 1) {
-		return res.status(401).send('An account with this email already exists.')
+		return res.status(401).send("An account with this email already exists.")
 	}
 
 	//Create token
@@ -63,7 +63,7 @@ users.delete("/delete/:user_id", async (req: Request, res: Response) => {
 	}
 })
 
-users.post('/login', checkReqBody, async (req: Request, res: Response) => {
+users.post("/login", checkReqBody, async (req: Request, res: Response) => {
 
 	const { username, password } = req.body
 	if (!username || !password) {

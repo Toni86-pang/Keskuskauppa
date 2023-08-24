@@ -1,10 +1,10 @@
 
 function Search() {
-    return (
-        <div>
+	return (
+		<div>
 
-        </div>
-    )
+		</div>
+	)
 }
 
 export default Search
