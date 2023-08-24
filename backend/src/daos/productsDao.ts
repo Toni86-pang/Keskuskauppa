@@ -33,7 +33,7 @@ export async function createProduct(product: Product): Promise<void> {
 	try {
 		await executeQuery(query, values)
 	} catch (error) {
-		console.error('Error creating product:', error)
+		console.error("Error creating product:", error)
 		throw error
 	}
 }
@@ -66,7 +66,7 @@ export const getAllProducts = async (): Promise<Product[]> => {
 }
 
 export const deleteProduct = async (product_ID: number) => {
-	const query = 'DELETE FROM products WHERE product_ID = $1'
+	const query = "DELETE FROM products WHERE product_ID = $1"
 	const params = [product_ID]
 	const result = await executeQuery(query, params)
 	return result
