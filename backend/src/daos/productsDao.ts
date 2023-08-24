@@ -5,6 +5,7 @@ export interface Product {
 	user_ID: number
 	title: string
 	category_ID: number
+	category_name: string
 	subcategory_ID: number
 	location: string
 	description: string
@@ -96,3 +97,13 @@ export const updateProductData = async (
 		throw error
 	}
 }
+
+//GET all categories
+	export const getAllCategories = async (): Promise<Product[]> => {
+			const query = "SELECT * FROM Category"
+			const result = await executeQuery(query)
+
+			return result.rows
+	}
+
+	
