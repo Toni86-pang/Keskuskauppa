@@ -5,12 +5,13 @@ import express, { Request, Response } from "express"
 // 	createSubcategoryTable,
 // 	createProductsTable,
 // 	createSalesTable,
-// 	createReviewsTable,
+// 	createReviewsTable, 
 // 	createMessageLogTable
 // }
 // 	from "./database"
 import users from "./routers/usersRouters"
 import product from "./routers/productRouters"
+import category from "./routers/categoryRouters"
 import { unknownEndpoint } from "./middlewares"
 
 export const server = express()
@@ -19,6 +20,7 @@ server.use(express.json())
 //Setup routers
 server.use("/api/users", users)
 server.use("/api/product", product)
+server.use("/api/category", category)
 server.use("/", express.static("./dist/frontend"))
 server.use("/version", (req: Request, res: Response) => {
 	res.send("1.4")
