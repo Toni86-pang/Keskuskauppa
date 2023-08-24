@@ -38,7 +38,7 @@ const Img = styled("img")({
 
 export default function Product() {
   const [product, setProduct] = useState<Product | null>(null);
-  // const [loggedIn, setLoggedIn] = useState(true)
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const id = useLoaderData() as string;
 
@@ -60,7 +60,7 @@ export default function Product() {
         p: 2,
         margin: "auto",
         marginTop: 2,
-        maxWidth: 500,
+        maxWidth: 600,
         flexGrow: 1,
         backgroundColor: (theme) =>
           theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -92,8 +92,14 @@ export default function Product() {
               </Typography>
             </Grid>
             <Grid item>
-              <button>Ostoskoriin</button>
-              <button>Viesti</button>
+              {loggedIn ? (
+                <div>
+                  <button>Ostoskoriin</button>
+                  <button>Viesti</button>
+                </div>
+              ) : (
+                <button>Kirjaudu sisään ostaaksesi</button>
+              )}
             </Grid>
           </Grid>
         </Grid>
