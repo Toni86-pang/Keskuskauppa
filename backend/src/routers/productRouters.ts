@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { createProduct, getAllProducts, getProductById, updateProductData, deleteProduct, Product, getAllCategories } from "../daos/productsDao"
+import { createProduct, getAllProducts, getProductById, updateProductData, deleteProduct, Product} from "../daos/productsDao"
 
 
 const product = express.Router()
@@ -14,9 +14,9 @@ product.post("/", async (req, res) => {
 	try {
 		const newProduct: Product = req.body
 		await createProduct(newProduct)
-		res.status(201).json({ message: 'Product created successfully' })
+		res.status(201).json({ message: "Product created successfully" })
 	} catch (error) {
-		res.status(500).json({ message: 'Error creating product' })
+		res.status(500).json({ message: "Error creating product" })
 	}
 })
 
@@ -65,7 +65,7 @@ product.delete("/delete/:id", async (req: Request, res: Response) => {
 })
 
 
-product.put('/:id', async (req: CustomRequest, res: Response) => {
+product.put("/:id", async (req: CustomRequest, res: Response) => {
 	const product_Id = parseInt(req.params.id, 10)
 	const updatedProductData = req.body
 	try {
@@ -84,8 +84,8 @@ product.put('/:id', async (req: CustomRequest, res: Response) => {
 			res.status(404).json({ message: "product not found" })
 		}
 	} catch (error) {
-		console.error('Error updating product:', error)
-		res.status(500).send('Internal Server Error')
+		console.error("Error updating product:", error)
+		res.status(500).send("Internal Server Error")
 	}
 })
 
