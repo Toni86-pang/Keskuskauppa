@@ -67,7 +67,7 @@ const itemData = [
 
 export default function Product() {
 	const [product, setProduct] = useState<Product | null>(null)
-	const [loggedIn, setLoggedIn] = useState(true)
+	// const [loggedIn, setLoggedIn] = useState(true)
 	const [selectedImage, setSelectedImage] = useState<string | null>(
 		itemData[0].img
 	)
@@ -176,7 +176,7 @@ export default function Product() {
 								</Typography>
 							</Grid>
 							<Grid item>
-								{loggedIn ? (
+								{/* {loggedIn ? (
 									<div>
 										<Button variant="outlined">
 											Ostoskoriin
@@ -193,7 +193,7 @@ export default function Product() {
 									>
 										Kirjaudu sisään ostaaksesi
 									</Button>
-								)}
+								)} */}
 							</Grid>
 						</Grid>
 					</Grid>
