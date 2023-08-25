@@ -8,7 +8,7 @@ import Login from "./Components/Login.tsx"
 import ErrorPage from "./Pages/ErrorPage.tsx"
 // import { Login } from '@mui/icons-material'
 import Products from "./Components/Products.tsx"
-
+import Product, { loader as productLoader } from "./Components/Product.tsx"
 
 const router = createBrowserRouter([
 	{
@@ -16,25 +16,29 @@ const router = createBrowserRouter([
 		element: <App />,
 		errorElement: <ErrorPage />,
 		children: [
-
 			{
 				path: "/register",
-				element: <Register />
+				element: <Register />,
 			},
 			{
 				path: "/login",
-				element: <Login />
+				element: <Login />,
 			},
 			{
 				path: "/product",
-				element: <Products />
-			}
-		]
-	}
+				element: <Products />,
+			},
+			{
+				path: "/product/:id",
+				element: <Product />,
+				loader: productLoader,
+			},
+		],
+	},
 ])
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
 	<React.StrictMode>
 		<RouterProvider router={router} />
-	</React.StrictMode>,
+	</React.StrictMode>
 )
