@@ -23,7 +23,7 @@ server.use("/api/product", product)
 server.use("/api/category", category)
 server.use("/", express.static("./dist/frontend"))
 server.use("/version", (req: Request, res: Response) => {
-	res.send("1.4")
+	res.send("1.5")
 })
 
 server.get("*", (_req, res) => {
