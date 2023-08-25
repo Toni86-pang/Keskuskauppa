@@ -13,10 +13,10 @@ function Products() {
 	const [products, setProducts] = useState<Product[]>([])
 
 	interface Product {
-		product_ID: number
+		product_id: number
 		title: string
-		category_ID: number
-		subcategory_ID: number
+		category_id: number
+		subcategory_id: number
 		location: string
 		description: string
 		price: number
@@ -25,6 +25,7 @@ function Products() {
 	const fetchProducts = async () => {
 		try {
 			const response = await axios.get("/api/product")
+			console.log(response.data)
 			setProducts(response.data)
 		} catch (error) {
 			console.error("error fetching products", error)
@@ -42,10 +43,10 @@ function Products() {
 			</Typography>
 			<List>
 				{products.map((product) => (
-					<ListItem key={product.product_ID}>
+					<ListItem key={product.product_id}>
 						<ListItemText
 							primary={product.title}
-							secondary={`Category: ${product.category_ID}, Subcategory: ${product.subcategory_ID}, Price: ${product.price}`}
+							secondary={`Category: ${product.category_id}, Subcategory: ${product.subcategory_id}, Price: ${product.price}`}
 						/>
 					</ListItem>
 				))}
