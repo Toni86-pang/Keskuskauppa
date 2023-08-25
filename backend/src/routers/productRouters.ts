@@ -65,7 +65,7 @@ product.delete("/delete/:id", async (req: Request, res: Response) => {
 })
 
 
-product.put("/:id", async (req: CustomRequest, res: Response) => {
+product.put("/update/:id", async (req: CustomRequest, res: Response) => {
 	const product_Id = parseInt(req.params.id, 10)
 	const updatedProductData = req.body
 	try {
