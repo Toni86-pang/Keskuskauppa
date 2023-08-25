@@ -7,6 +7,7 @@ export interface Product {
 	category_ID: number
 	category_name: string
 	subcategory_ID: number
+	subcategory_name: string
 	location: string
 	description: string
 	price: number
@@ -78,7 +79,7 @@ export const updateProductData = async (
 ): Promise<Product | null> => {
 	const params = [title, categoryID, subcategoryID, location, description, price, productID]
 	const query =
-			"UPDATE Products SET title = $1, category_ID = $2, subcategory_ID = $3, location = $4, description = $5, price = $6 WHERE product_ID = $7 RETURNING * "
+		"UPDATE Products SET title = $1, category_ID = $2, subcategory_ID = $3, location = $4, description = $5, price = $6 WHERE product_ID = $7 RETURNING * "
 
 	const result = await executeQuery(query, params)
 
@@ -97,4 +98,10 @@ export const getAllCategories = async (): Promise<Product[]> => {
 	return result.rows
 }
 
-	
+//GET all subcategories
+export const getAllSubcategories = async (): Promise<Product[]> => {
+	const query = "SELECT * FROM Subcategory"
+	const result = await executeQuery(query)
+
+	return result.rows
+}
