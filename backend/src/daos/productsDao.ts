@@ -51,14 +51,12 @@ export const getProductById = async (product_ID: number): Promise<Product | null
 	} catch (error) {
 		throw error
 	}
-
 }
 
 export const getAllProducts = async (): Promise<Product[]> => {
 	try {
 		const query = "SELECT * FROM products"
 		const result = await executeQuery(query)
-
 		return result.rows
 	} catch (error) {
 		throw error

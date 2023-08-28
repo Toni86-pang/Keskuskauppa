@@ -28,8 +28,6 @@ product.get("/", async (_req, res) => {
 		res.status(500).json({ message: "you shouldn't even be here?" })
 	}
 }
-
-
 )
 
 product.get("/:id", async (req, res) => {
@@ -88,6 +86,5 @@ product.put('/:id', async (req: CustomRequest, res: Response) => {
 		res.status(500).send('Internal Server Error')
 	}
 })
-
 
 export default product
