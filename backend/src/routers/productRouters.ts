@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { createProduct, getAllProducts, getProductById, updateProductData, deleteProduct, Product} from "../daos/productsDao"
+import { createProduct, getAllProducts, getProductById, updateProductData, deleteProduct, Product } from "../daos/productsDao"
 
 
 const product = express.Router()
@@ -27,10 +27,7 @@ product.get("/", async (_req, res) => {
 	} catch (error) {
 		res.status(500).json({ message: "you shouldn't even be here?" })
 	}
-}
-
-
-)
+})
 
 product.get("/:id", async (req, res) => {
 	try {

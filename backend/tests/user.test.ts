@@ -53,7 +53,7 @@ describe("testing POST /users/login", () => {
 	it("test login with username that does not exist", async () => {
 		const response = await request(server).post("/api/users/login")
 			.send({username: "TestUser", password: "password"})
-		expect(response.status).toBe(404)
+		expect(response.status).toBe(401)
 		expect(response.body).toStrictEqual({error: "Username not found."})
 	})
 

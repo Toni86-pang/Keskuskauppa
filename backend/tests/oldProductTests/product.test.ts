@@ -1,6 +1,6 @@
 import request from "supertest"
 import express from "express"
-import productRouters from "../src/routers/productRouters"
+import productRouters from "../../src/routers/productRouters"
 
 const app = express()
 app.use(express.json())
