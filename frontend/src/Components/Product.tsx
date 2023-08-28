@@ -25,6 +25,7 @@ interface Product {
 	price: number
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function loader({ params }: any) {
 	return params.id
 }
