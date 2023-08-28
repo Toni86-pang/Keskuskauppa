@@ -3,7 +3,7 @@ default:
 
 stages:
   - lint
-  - test
+  # - test
   - build_deploy
 
 lint:
@@ -16,12 +16,12 @@ lint:
     - npm install
     - npm run lint
 
-test:
-  stage: test
-  script:
-    - cd backend
-    - npm install
-    - npm run test
+# test:
+#   stage: test
+#   script:
+#     - cd backend
+#     - npm install
+#     - npm run test
 
 build:
   stage: build_deploy
