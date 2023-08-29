@@ -1,4 +1,9 @@
 module.exports = {
+	settings: {
+		react: {
+			version: "detect",
+		},
+	},
 	"root": true,
 	"env": {
 		"browser": true,
@@ -35,7 +40,7 @@ module.exports = {
 		],
 		"linebreak-style": [
 			"error",
-			"windows"
+			"unix"
 		],
 		"quotes": [
 			"error",
