@@ -7,7 +7,7 @@ import {
 	List,
 	ListItem,
 	ListItemText,
-	Button
+	Button,
 } from "@mui/material"
 
 
@@ -15,10 +15,10 @@ function Products() {
 	const [products, setProducts] = useState<Product[]>([])
 
 	interface Product {
-		product_ID: number
+		product_id: number
 		title: string
-		category_ID: number
-		subcategory_ID: number
+		category_id: number
+		subcategory_id: number
 		location: string
 		description: string
 		price: number
@@ -27,6 +27,7 @@ function Products() {
 	const fetchProducts = async () => {
 		try {
 			const response = await axios.get("/api/product")
+			console.log(response.data)
 			setProducts(response.data)
 		} catch (error) {
 			console.error("error fetching products", error)
@@ -43,21 +44,22 @@ function Products() {
 				Kaikki tuotteet
 			</Typography>
 			<List>
-			{products.map((product) => (
-  <ListItem key={product.product_ID}>
-    <ListItemText
-      primary={product.title}
-      secondary={`Category: ${product.category_ID}, Subcategory: ${product.subcategory_ID}, Price: ${product.price}`}
-    />
-    <Button
-      component={Link}
-      to={`/product/${product.product_ID}`}
-      variant="outlined"
-    >
-      View Details
-    </Button>
-  </ListItem>
-))}
+				{products.map((product) => (
+					<ListItem key={product.product_id}>
+						<ListItemText
+							primary={product.title}
+							secondary={`Category: ${product.category_id}, Subcategory: ${product.subcategory_id}, Price: ${product.price}`}
+						/>
+						<Button
+							component={Link}
+							to={`/product/${product.product_id}`}
+							variant="outlined"
+						>
+							View Details
+						</Button>
+
+					</ListItem>
+				))}
 			</List>
 		</Container>
 	)

@@ -64,5 +64,4 @@ function UpdateProduct(props: ModifyProductProps) {
 		</Dialog>
 	)
 }
-
 export default UpdateProduct

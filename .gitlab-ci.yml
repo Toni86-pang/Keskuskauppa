@@ -2,7 +2,26 @@ default:
   image: node
 
 stages:
+  - lint
+  # - test
   - build_deploy
+
+lint:
+  stage: lint
+  script:
+    - cd backend
+    - npm install
+    - npm run lint
+    - cd ../frontend
+    - npm install
+    - npm run lint
+
+# test:
+#   stage: test
+#   script:
+#     - cd backend
+#     - npm install
+#     - npm run test
 
 build:
   stage: build_deploy
