@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express"
 import { createProduct, getAllProducts, getProductById, getProductsByCategory, getProductsBySubcategory, updateProductData, deleteProduct, Product  } from "../daos/productsDao"
-
+import { validateCategoryId } from "../middlewares"
 
 const product = express.Router()
 
@@ -86,7 +86,7 @@ product.put("/:id", async (req: CustomRequest, res: Response) => {
 	}
 })
 //Serve products by category
-product.get("/category/:id", async (req, res) => {
+product.get("/category/:id",validateCategoryId, async (req, res) => {
 	const categoryId = parseInt(req.params.id)
 	try {
 		const products: Product[] = await getProductsByCategory(categoryId)
@@ -96,7 +96,7 @@ product.get("/category/:id", async (req, res) => {
 	}
 })
 // Serve products by subcategory
-product.get("/subcategory/:id", async (req, res) => {
+product.get("/subcategory/:id", validateCategoryId, async (req, res) => {
 	const subcategoryId = parseInt(req.params.id)
 	try {
 		const products: Product[] = await getProductsBySubcategory(subcategoryId)

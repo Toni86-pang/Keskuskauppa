@@ -1,16 +1,17 @@
 import { Request, Response, NextFunction } from "express"
+import { request } from "http"
 import jwt from "jsonwebtoken"
 
 interface CustomRequest extends Request {
-    username?: string
-    name?: string
-    email?: string
-    phone?: string
-    address?: string
-    city?: string
-    password: string
-    id: number
-    isAdmin?: boolean
+	username?: string
+	name?: string
+	email?: string
+	phone?: string
+	address?: string
+	city?: string
+	password: string
+	id: number
+	isAdmin?: boolean
 }
 
 const secret = process.env.SECRET ?? ""
@@ -92,6 +93,20 @@ export const validateUserData = (req: CustomRequest, res: Response, next: NextFu
 		if (req.body[key] && typeof req.body[key] !== expectedTypes[key]) {
 			return res.status(400).json({ error: "Virheelliset käyttäjätiedot" })
 		}
+	}
+
+	next()
+}
+
+//Validate category
+export const validateCategoryId = (req: Request, res: Response, next: NextFunction) => {
+	const category_Id = req.params.id
+
+	if(!(Number(category_Id))){
+		return res.status(400).json({ message: "Invalid category ID format"})
+	}
+	if(!Number.isInteger(Number(category_Id))){
+		return res.status(400).json({ message: "Category ID must be an integer"})
 	}
 
 	next()
