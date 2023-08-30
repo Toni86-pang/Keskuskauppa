@@ -29,6 +29,7 @@ function ProductNew() {
 	const [categoryId, setCategoryId] = useState<number>(0)
 	const [newSubcategory, setNewSubcategory] = useState<string>("Alakategoria")
 	const [subcategoryId, setSubcategoryId] = useState<number>(0)
+	// const [chosenCategory, setChosenCategory] = useState<string>("")
 
 	const categories: Category[] = [{ name: "Elektroniikka", id: 0 }, {name: "Vaatteet", id: 1}, {name: "Huonekalut", id: 2}]
 	const subcategories: Category[] = [{ name: "Läppärit", id: 0 }, {name: "T-paidat", id: 1}, {name: "Sohvat", id: 2}]
