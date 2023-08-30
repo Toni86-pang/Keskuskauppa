@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useLoaderData } from "react-router-dom"
+import { useLoaderData, useNavigate } from "react-router-dom" 
 import axios from "axios"
 import {
 	Paper,
@@ -17,7 +17,7 @@ import Link from "@mui/material/Link"
 import DeleteButton from "./DeleteButton"
 
 interface Product {
-	product_ID: number
+	product_id: number
 	title: string
 	category_ID: number
 	subcategory_ID: number
@@ -72,7 +72,7 @@ export default function Product() {
 	const [selectedImage, setSelectedImage] = useState<string | null>(
 		itemData[0].img
 	)
-
+	const navigate = useNavigate()
 	const id = parseInt(useLoaderData() as string, 10)
 
 	useEffect(() => {
@@ -89,12 +89,16 @@ export default function Product() {
 
 	const handleDelete = async () => {
 		try {
-			await axios.delete(`/api/product/delete/${product?.product_ID}`)
+			await axios.delete(`/api/product/delete/${product?.product_id}`)
 		// Perform any other necessary actions here after deletion
 		} catch (error) {
 			console.error("error deleting product", error)
 		}
+finally{
+	navigate("/product")
+}
 	}
+	console.log("producst",product)
 	return (
 		<div>
 			<div>
@@ -204,12 +208,7 @@ export default function Product() {
 										Kirjaudu sisään ostaaksesi
 									</Button>
 								)} */}
-								{product && (
-									<>
-										<DeleteButton id={product.product_ID} onDelete={handleDelete} />
-										
-									</>
-								)}
+								{product && <DeleteButton id={product.product_id} onDelete={handleDelete} />}
 							</Grid>
 						</Grid>
 					</Grid>

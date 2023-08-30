@@ -3,18 +3,18 @@ import axios from "axios"
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material"
 
 interface DeleteButtonprops {
-	product_ID: number
+	id: number
 	onDelete: () => void
 }
 
 
-export default function DeleteButton({ product_ID, onDelete }: DeleteButtonprops) {
-	console.log("DeleteButton id:", product_ID)
+export default function DeleteButton({ id, onDelete }: DeleteButtonprops) {
+	console.log("DeleteButton id:", id)
 	const [dialogOpen, setDialogOpen] = useState(false)
 
 	const handleDelete =async () => {
 		try {
-			await axios.delete(`/api/product/delete/${product_ID}`)
+			await axios.delete(`/api/product/delete/${id}`)
 			onDelete()
 		} catch (error){
 			console.error("error deleteting product", error)
