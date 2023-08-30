@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
+import { Link } from "react-router-dom"
 import {
 	Container,
 	Typography,
 	List,
 	ListItem,
-	ListItemText
+	ListItemText,
+	Button,
 } from "@mui/material"
 
 
@@ -48,6 +50,14 @@ function Products() {
 							primary={product.title}
 							secondary={`Category: ${product.category_id}, Subcategory: ${product.subcategory_id}, Price: ${product.price}`}
 						/>
+						<Button
+							component={Link}
+							to={`/product/${product.product_id}`}
+							variant="outlined"
+						>
+							View Details
+						</Button>
+
 					</ListItem>
 				))}
 			</List>
