@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useLoaderData } from "react-router-dom"
+import { useLoaderData, useNavigate } from "react-router-dom" 
 import axios from "axios"
 import {
 	Paper,
@@ -14,9 +14,10 @@ import StarBorderPurple500SharpIcon from "@mui/icons-material/StarBorderPurple50
 import StarPurple500SharpIcon from "@mui/icons-material/StarPurple500Sharp"
 import Breadcrumbs from "@mui/material/Breadcrumbs"
 import Link from "@mui/material/Link"
+import DeleteButton from "./DeleteButton"
 
 interface Product {
-	product_ID: number
+	product_id: number
 	title: string
 	category_ID: number
 	subcategory_ID: number
@@ -25,6 +26,7 @@ interface Product {
 	price: number
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, react-refresh/only-export-components
 export function loader({ params }: any) {
 	return params.id
 }
@@ -70,8 +72,8 @@ export default function Product() {
 	const [selectedImage, setSelectedImage] = useState<string | null>(
 		itemData[0].img
 	)
-
-	const id = useLoaderData() as string
+	const navigate = useNavigate()
+	const id = parseInt(useLoaderData() as string, 10)
 
 	useEffect(() => {
 		const fetchProduct = async () => {
@@ -85,6 +87,18 @@ export default function Product() {
 		fetchProduct()
 	}, [id])
 
+	const handleDelete = async () => {
+		try {
+			await axios.delete(`/api/product/delete/${product?.product_id}`)
+		// Perform any other necessary actions here after deletion
+		} catch (error) {
+			console.error("error deleting product", error)
+		}
+		finally{
+			navigate("/product")
+		}
+	}
+	console.log("producst",product)
 	return (
 		<div>
 			<div>
@@ -144,9 +158,9 @@ export default function Product() {
 							/>
 						)}
 					</Grid>
-					<Grid item xs={12} sm container>
-						<Grid item xs container direction="column" spacing={2}>
-							<Grid item xs sx={{ marginTop: 15 }}>
+					<Grid item xl={5} sm container>
+						<Grid item xs container direction="column" spacing={4}>
+							<Grid item xs sx={{ margin: 4 }}>
 								<Typography variant="body2" gutterBottom>
 									{product?.price} €
 								</Typography>
@@ -174,6 +188,7 @@ export default function Product() {
 									{product?.location}
 								</Typography>
 							</Grid>
+							
 							<Grid item>
 								{/* {loggedIn ? (
 									<div>
@@ -193,15 +208,16 @@ export default function Product() {
 										Kirjaudu sisään ostaaksesi
 									</Button>
 								)} */}
+								{product && <DeleteButton id={product.product_id} onDelete={handleDelete} />}
 							</Grid>
 						</Grid>
 					</Grid>
 				</Grid>
-				<Grid container spacing={5}>
-					<Grid item marginTop={-4.5}>
+				<Grid>
+					<Grid item marginTop={-4}>
 						<ImageList
-							sx={{ width: 300, height: 20 }}
-							cols={15}
+							sx={{ width: 385, height: 100 }}
+							cols={10}
 							rowHeight={25}
 						>
 							{itemData.map((item) => (
@@ -223,7 +239,7 @@ export default function Product() {
 						<Typography variant="body2" gutterBottom>
 							Lisätiedot:
 						</Typography>
-						<Box sx={{ border: 1 }}>{product?.description}</Box>
+						<Box sx={{ border: 0.1 , width: 265, height: 100  }}>{product?.description}</Box>
 					</Grid>
 				</Grid>
 			</Paper>

@@ -39,10 +39,10 @@ export async function createProduct(product: Product): Promise<void> {
 	}
 }
 
-export const getProductById = async (product_ID: number): Promise<Product | null> => {
+export const getProductById = async (product_id: number): Promise<Product | null> => {
 
-	const query = " SELECT * FROM products WHERE product_ID = $1"
-	const result = await executeQuery(query, [product_ID])
+	const query = " SELECT * FROM products WHERE product_id = $1"
+	const result = await executeQuery(query, [product_id])
 
 	if (result.rows.length === 0) {
 		return null
@@ -60,15 +60,15 @@ export const getAllProducts = async (): Promise<Product[]> => {
 
 }
 
-export const deleteProduct = async (product_ID: number) => {
-	const query = "DELETE FROM products WHERE product_ID = $1"
-	const params = [product_ID]
+export const deleteProduct = async (product_id: number) => {
+	const query = "DELETE FROM products WHERE product_id = $1"
+	const params = [product_id]
 	const result = await executeQuery(query, params)
 	return result
 }
 
 export const updateProductData = async (
-	productID: number,
+	product_id: number,
 	title: string,
 	categoryID: number,
 	subcategoryID: number,
@@ -76,9 +76,9 @@ export const updateProductData = async (
 	description: string,
 	price: number
 ): Promise<Product | null> => {
-	const params = [title, categoryID, subcategoryID, location, description, price, productID]
+	const params = [title, categoryID, subcategoryID, location, description, price, product_id]
 	const query =
-		"UPDATE Products SET title = $1, category_ID = $2, subcategory_ID = $3, location = $4, description = $5, price = $6 WHERE product_ID = $7 RETURNING * "
+		"UPDATE Products SET title = $1, category_ID = $2, subcategory_ID = $3, location = $4, description = $5, price = $6 WHERE product_id = $7 RETURNING * "
 
 	const result = await executeQuery(query, params)
 
