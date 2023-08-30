@@ -47,6 +47,8 @@ product.get("/:id", async (req, res) => {
 product.delete("/delete/:id", async (req: Request, res: Response) => {
 	const product_id = Number(req.params.id)
 
+	console.log("product_id", product_id)
+
 	try {
 		const result = await deleteProduct(product_id)
 
@@ -62,7 +64,7 @@ product.delete("/delete/:id", async (req: Request, res: Response) => {
 })
 
 
-product.put("/:id", async (req: CustomRequest, res: Response) => {
+product.put("/update/:id", async (req: CustomRequest, res: Response) => {
 	const product_Id = parseInt(req.params.id, 10)
 	const updatedProductData = req.body
 	try {
@@ -85,6 +87,5 @@ product.put("/:id", async (req: CustomRequest, res: Response) => {
 		res.status(500).send("Internal Server Error")
 	}
 })
-
 
 export default product
