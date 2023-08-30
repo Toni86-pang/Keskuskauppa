@@ -2,11 +2,11 @@ import { executeQuery } from "../database"
 
 export interface Product {
 	product_id: number
-	user_ID: number
+	user_id: number
 	title: string
-	category_ID: number
+	category_id: number
 	category_name: string
-	subcategory_ID: number
+	subcategory_id: number
 	subcategory_name: string
 	location: string
 	description: string
@@ -17,15 +17,15 @@ export interface Product {
 export async function createProduct(product: Product): Promise<void> {
 	const query = `
 	  INSERT INTO Products
-		(user_ID, title, category_ID, subcategory_ID, location, description, price, product_image)
+		(user_id, title, category_id, subcategory_id, location, description, price, product_image)
 	  VALUES
 		($1, $2, $3, $4, $5, $6, $7, $8)
 	`
 	const values = [
-		product.user_ID,
+		product.user_id,
 		product.title,
-		product.category_ID,
-		product.subcategory_ID,
+		product.category_id,
+		product.subcategory_id,
 		product.location,
 		product.description,
 		product.price,
