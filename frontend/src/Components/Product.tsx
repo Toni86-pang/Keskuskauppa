@@ -94,9 +94,9 @@ export default function Product() {
 		} catch (error) {
 			console.error("error deleting product", error)
 		}
-finally{
-	navigate("/product")
-}
+		finally{
+			navigate("/product")
+		}
 	}
 	console.log("producst",product)
 	return (
