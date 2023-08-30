@@ -1,18 +1,20 @@
 import { executeQuery } from "../database"
 
 export interface Product {
-	user_id?: number
+	product_id: number
+	user_id: number
 	title: string
 	category_id: number
+	category_name: string
 	subcategory_id: number
-	location?: string
+	subcategory_name: string
+	location: string
 	description: string
 	price: number
-	product_image?: Buffer
+	product_image: Buffer
 }
 
 export async function createProduct(product: Product): Promise<void> {
-	console.log("pv: ", product)
 	const query = `
 	  INSERT INTO Products
 		(user_id, title, category_id, subcategory_id, location, description, price, product_image)
@@ -29,7 +31,6 @@ export async function createProduct(product: Product): Promise<void> {
 		product.price,
 		product.product_image,
 	]
-	console.log("value: ", values)
 
 	try {
 		await executeQuery(query, values)
