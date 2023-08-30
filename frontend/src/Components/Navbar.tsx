@@ -106,7 +106,8 @@ const Navbar = () => {
 						<MenuItem onClick={handleClose}><Button href='/'>Etusivu</Button></MenuItem>
 						<MenuItem onClick={handleClose}><Button href='/product'>Astiat</Button></MenuItem>
 						<MenuItem onClick={handleClose}><Button href='/product'>Eläimet</Button></MenuItem>
-						<MenuItem onClick={handleClose}><Button href='/product'>Astiat</Button></MenuItem>
+						<MenuItem onClick={handleClose}><Button href='/product/:id'>Astiat</Button></MenuItem>
+						<MenuItem onClick={handleClose}><Button href='/product/new'>Uusi tuote</Button></MenuItem>
 
 
 

@@ -13,6 +13,7 @@ interface CustomRequest extends Request {
 product.post("/", async (req, res) => {
 	try {
 		const newProduct: Product = req.body
+		console.log("new p: ", newProduct)
 		await createProduct(newProduct)
 		res.status(201).json({ message: "Product created successfully" })
 	} catch (error) {

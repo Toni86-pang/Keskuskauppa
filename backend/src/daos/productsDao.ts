@@ -1,36 +1,35 @@
 import { executeQuery } from "../database"
 
 export interface Product {
-	product_ID: number
-	user_ID: number
+	user_id?: number
 	title: string
-	category_ID: number
-	category_name: string
-	subcategory_ID: number
-	subcategory_name: string
-	location: string
+	category_id: number
+	subcategory_id: number
+	location?: string
 	description: string
 	price: number
-	product_image: Buffer
+	product_image?: Buffer
 }
 
 export async function createProduct(product: Product): Promise<void> {
+	console.log("pv: ", product)
 	const query = `
 	  INSERT INTO Products
-		(user_ID, title, category_ID, subcategory_ID, location, description, price, product_image)
+		(user_id, title, category_id, subcategory_id, location, description, price, product_image)
 	  VALUES
 		($1, $2, $3, $4, $5, $6, $7, $8)
 	`
 	const values = [
-		product.user_ID,
+		product.user_id,
 		product.title,
-		product.category_ID,
-		product.subcategory_ID,
+		product.category_id,
+		product.subcategory_id,
 		product.location,
 		product.description,
 		product.price,
 		product.product_image,
 	]
+	console.log("value: ", values)
 
 	try {
 		await executeQuery(query, values)

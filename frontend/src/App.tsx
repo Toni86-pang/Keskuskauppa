@@ -7,7 +7,7 @@ function App() {
 	// const [count, setCount] = useState(0)
 
 	return (
-		<Container sx={{ bgcolor: "#e7ecef", height: "100vh" }}>
+		<Container sx={{ bgcolor: "#e7ecef", minHeight: "100%" }}>
 			<Navbar />
 			<Outlet />
 		</Container>
