@@ -31,8 +31,8 @@ product.get("/", async (_req, res) => {
 
 product.get("/:id", async (req, res) => {
 	try {
-		const ProductID: number = parseInt(req.params.id, 10)
-		const productDetails: Product | null = await getProductById(ProductID)
+		const product_id: number = parseInt(req.params.id, 10)
+		const productDetails: Product | null = await getProductById(product_id)
 		if (productDetails === null) {
 			res.status(404).json({ message: " product not found" })
 		} else {
@@ -71,9 +71,10 @@ product.put("/update/:id", async (req: CustomRequest, res: Response) => {
 		const updateProduct: Product | null = await updateProductData(
 			product_Id,
 			updatedProductData.title,
-			updatedProductData.category_ID,
-			updatedProductData.subcategory_ID,
-			updatedProductData.location,
+			updatedProductData.category_id,
+			updatedProductData.subcategory_id,
+			updatedProductData.city,
+			updatedProductData.postal_code,
 			updatedProductData.description,
 			updatedProductData.price
 		)

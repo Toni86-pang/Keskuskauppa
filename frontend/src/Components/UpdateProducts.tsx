@@ -5,8 +5,8 @@ import Button from "@mui/material/Button"
 
 interface ModifiedProductData {
     title: string;
-    categoryID: number;
-    subcategoryID: number;
+    category_id: number;
+    subcategory_id: number;
     location: string;
     description: string;
     price: number;
@@ -21,8 +21,8 @@ interface ModifyProductProps {
 function UpdateProduct(props: ModifyProductProps) {
 	const [modifiedData, setModifiedData] = useState({
 		title: "",
-		categoryID: 0,
-		subcategoryID: 0,
+		category_id: 0,
+		subcategory_id: 0,
 		location: "",
 		description: "",
 		price: 0
@@ -53,11 +53,11 @@ function UpdateProduct(props: ModifyProductProps) {
 				<TextField
 					name="categoryID"
 					label="Category ID"
-					value={modifiedData.categoryID}
+					value={modifiedData.category_id}
 					onChange={handleInputChange}
 					type="number"
 				/>
-				{/* Add other input fields for other properties */}
+
 				<Button onClick={handleModify}>Modify</Button>
 				<Button onClick={props.onClose}>Cancel</Button>
 			</div>
