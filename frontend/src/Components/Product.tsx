@@ -19,8 +19,8 @@ import DeleteButton from "./DeleteButton"
 interface Product {
 	product_id: number
 	title: string
-	category_ID: number
-	subcategory_ID: number
+	category_id: number
+	subcategory_id: number
 	location: string
 	description: string
 	price: number

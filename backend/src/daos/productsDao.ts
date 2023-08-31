@@ -8,7 +8,8 @@ export interface Product {
 	category_name: string
 	subcategory_id: number
 	subcategory_name: string
-	location: string
+	city: string
+	postal_code: string
 	description: string
 	price: number
 	product_image: Buffer
@@ -26,7 +27,8 @@ export async function createProduct(product: Product): Promise<void> {
 		product.title,
 		product.category_id,
 		product.subcategory_id,
-		product.location,
+		product.city,
+		product.postal_code,
 		product.description,
 		product.price,
 		product.product_image,
@@ -41,7 +43,6 @@ export async function createProduct(product: Product): Promise<void> {
 }
 
 export const getProductById = async (product_id: number): Promise<Product | null> => {
-
 	const query = " SELECT * FROM products WHERE product_id = $1"
 	const result = await executeQuery(query, [product_id])
 
@@ -53,7 +54,6 @@ export const getProductById = async (product_id: number): Promise<Product | null
 }
 
 export const getAllProducts = async (): Promise<Product[]> => {
-
 	const query = "SELECT * FROM products"
 	const result = await executeQuery(query)
 
@@ -71,23 +71,21 @@ export const deleteProduct = async (product_id: number) => {
 export const updateProductData = async (
 	product_id: number,
 	title: string,
-	categoryID: number,
-	subcategoryID: number,
-	location: string,
+	category_id: number,
+	subcategory_id: number,
+	city: string,
+	postal_code: string,
 	description: string,
 	price: number
 ): Promise<Product | null> => {
-	const params = [title, categoryID, subcategoryID, location, description, price, product_id]
+	const params = [title, category_id, subcategory_id, city,postal_code, description, price, product_id]
 	const query =
-		"UPDATE Products SET title = $1, category_ID = $2, subcategory_ID = $3, location = $4, description = $5, price = $6 WHERE product_id = $7 RETURNING * "
-
+		"UPDATE Products SET title = $1, category_id = $2, subcategory_id = $3, location = $4, description = $5, price = $6 WHERE product_id = $7 RETURNING * "
 	const result = await executeQuery(query, params)
-
 	if (result.rows.length === 0) {
 		return null
 	}
 	return result.rows[0] as Product
-
 }
 
 //GET all categories
