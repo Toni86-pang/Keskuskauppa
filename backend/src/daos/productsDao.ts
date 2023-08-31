@@ -103,3 +103,45 @@ export const getAllSubcategories = async (): Promise<Product[]> => {
 
 	return result.rows
 }
+// GET products by category
+export const getProductsByCategory = async (category_ID: number): Promise<Product[]> => {
+	const query = `
+	SELECT
+    products.product_id,
+    products.title,
+    category.category_id,
+    category.category_name,
+    subcategory.subcategory_id,
+    subcategory.subcategory_name
+
+	FROM products
+
+	JOIN subcategory ON products.subcategory_id = subcategory.subcategory_id
+	JOIN category ON subcategory.category_id = category.category_id
+	
+	WHERE category.category_id = $1;`
+
+	const result = await executeQuery(query, [category_ID])
+
+	return result.rows
+}
+// GET products by subcategory
+export const getProductsBySubcategory = async (subcategory_ID: number): Promise<Product[]> => {
+	const query = `
+	SELECT
+	products.product_id,
+	products.title,
+	subcategory.subcategory_id,
+	subcategory.subcategory_name,
+	subcategory.category_id
+
+	FROM products
+
+	JOIN subcategory ON products.subcategory_id = subcategory.subcategory_id
+
+	WHERE subcategory.subcategory_id = $1;`
+	
+	const result = await executeQuery(query, [subcategory_ID])
+
+	return result.rows
+}

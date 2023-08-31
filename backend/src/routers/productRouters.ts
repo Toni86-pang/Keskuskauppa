@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express"
-import { createProduct, getAllProducts, getProductById, updateProductData, deleteProduct, Product } from "../daos/productsDao"
-
+import { createProduct, getAllProducts, getProductById, getProductsByCategory, getProductsBySubcategory, updateProductData, deleteProduct, Product  } from "../daos/productsDao"
+import { validateCategoryId } from "../middlewares"
 
 const product = express.Router()
 
@@ -13,6 +13,7 @@ interface CustomRequest extends Request {
 product.post("/", async (req, res) => {
 	try {
 		const newProduct: Product = req.body
+		console.log("new p: ", newProduct)
 		await createProduct(newProduct)
 		res.status(201).json({ message: "Product created successfully" })
 	} catch (error) {
@@ -88,5 +89,25 @@ product.put("/update/:id", async (req: CustomRequest, res: Response) => {
 		res.status(500).send("Internal Server Error")
 	}
 })
+//Serve products by category
+product.get("/category/:id",validateCategoryId, async (req, res) => {
+	const categoryId = parseInt(req.params.id)
+	try {
+		const products: Product[] = await getProductsByCategory(categoryId)
+		res.status(200).json(products)
+	} catch (error) {
+		res.status(500).json({ message: "Product information couldn't be displayed" })
+	}
+})
+// Serve products by subcategory
+product.get("/subcategory/:id", validateCategoryId, async (req, res) => {
+	const subcategoryId = parseInt(req.params.id)
+	try {
+		const products: Product[] = await getProductsBySubcategory(subcategoryId)
+		res.status(200).json(products)
+	} catch (error) {
+		res.status(500).json({ message: "The product information of the subcategory couldn't be displayed" })
+	}
 
+})
 export default product
