@@ -58,12 +58,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const Navbar = () => {
 
-
-
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-
 	const open = Boolean(anchorEl)
-
 
 	const handleClick = (event: MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget)
@@ -72,8 +68,6 @@ const Navbar = () => {
 	const handleClose = () => {
 		setAnchorEl(null)
 	}
-
-
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
@@ -91,7 +85,6 @@ const Navbar = () => {
 						}}
 					>
 						<MenuIcon />
-
 					</IconButton>
 
 					<Menu
@@ -111,8 +104,6 @@ const Navbar = () => {
 
 
 					</Menu>
-
-
 					<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         Keskuskauppa
 					</Typography>
@@ -132,10 +123,7 @@ const Navbar = () => {
 						color="inherit">Login</Button>
 				</Toolbar>
 			</AppBar>
-
-
 		</Box>
 	)
 }
-
 export default Navbar
