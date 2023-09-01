@@ -4,14 +4,15 @@ import axios from "axios"
 import { Button, Container, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material"
 
 export interface Product {
-    product_id?: number
-    user_id?: number
-    title?: string
-    category_id?: number
-    subcategory_id?: number
-    location?: string
-    description?: string
-    price?: number
+    product_id: number
+    user_id: number
+    title: string
+    category_id: number
+    subcategory_id: number
+	postal_code: number
+    city: string
+    description: string
+    price: number
 }
 
 interface Category {
@@ -36,7 +37,6 @@ function ProductNew() {
 	const [subcategoryId, setSubcategoryId] = useState<number>(0)
 	const [categories, setCategories] = useState<Category[]>([])
 	const [subcategories, setSubcategories] = useState<Subcategory[]>([])
-	// const [subOptions, setSubOptions] = useState<Subcategory[]>([])
 
 	const navigate = useNavigate()
 
@@ -65,12 +65,11 @@ function ProductNew() {
 	}
 
 	const createNewProduct = async () => {
-		const compiledProduct = {user_id: 2, title: newTitle, category_id: categoryId, subcategory_id: subcategoryId, postal_code: 90570, city: "Oulu", description: newDescription, price: newPrice}
-		console.log(compiledProduct)
-		
+		const product = {user_id: 2, title: newTitle, category_id: categoryId, subcategory_id: subcategoryId, postal_code: 90570, city: "Oulu", description: newDescription, price: newPrice}
+		console.log(product)
 
 		try {
-			const response = await axios.post("/api/product/", compiledProduct, {
+			const response = await axios.post("/api/product/", product, {
 				headers: {
 					"Content-Type": "application/json",
 				},
@@ -80,9 +79,10 @@ function ProductNew() {
 				alert("Product creation success")
 				navigate("/")
 			}
-		} catch (error) {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} catch (error: Error | any) {
 			console.error(error)
-			alert("Something went wrong!")
+			alert(error.response.data)
 		}
 		navigate("/product")
 	}
@@ -121,7 +121,6 @@ function ProductNew() {
 		setCategoryId(categoryId)
 		console.log(categoryId)
 		fetchSubcategories(categoryId)
-		// handleSubOptions()
 	}
 	
 	const handleSubcategoryChange = (event: SelectChangeEvent) => {
@@ -131,16 +130,6 @@ function ProductNew() {
 		setSubcategoryId(subcategoryId)
 	}
 
-	// const handleSubOptions = () => {
-	// 	subcategories.map(sub => {
-	// 		if(sub.category_id === categoryId) {
-	// 			setSubOptions(() => ({
-	// 				...subOptions, sub
-	// 			}))
-	// 			console.log(subOptions)
-	// 		}})
-	// }
-
 	const handleCancel = () => {
 		navigate("/")
 	}
@@ -149,7 +138,7 @@ function ProductNew() {
 		<Container sx={{ m: 1 }}>
 			<h3>Uusi tuote</h3>
 			<FormControl>
-				<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="title">Otsikko</InputLabel>
+				<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="title">Otsikko*</InputLabel>
 				<TextField
 					type="text"
 					name="title"
@@ -166,7 +155,7 @@ function ProductNew() {
 				/>
 				
 				<FormControl>
-					<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="price">Hinta</InputLabel>
+					<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="price">Hinta*</InputLabel>
 					<TextField
 						type="text"
 						name="price"
@@ -175,7 +164,7 @@ function ProductNew() {
 					/>
 				</FormControl>
 				<FormControl sx={{ mt: 2 }}>
-					<InputLabel id="category_id">Kategoria</InputLabel>
+					<InputLabel id="Katergoria">Kategoria*</InputLabel>
 					<Select
 						labelId="category_id"
 						id="category_id"
@@ -191,7 +180,7 @@ function ProductNew() {
 
 				{newCategory ? (
 					<FormControl sx={{ mt: 2 }}>
-						<InputLabel id="subcategory_id">Alakategoria</InputLabel>
+						<InputLabel id="Alakategoria">Alakategoria*</InputLabel>
 						<Select
 							labelId="subcategory_id"
 							id="subcategory_id"
