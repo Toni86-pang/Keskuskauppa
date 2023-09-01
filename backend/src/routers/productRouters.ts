@@ -109,4 +109,5 @@ product.get("/subcategory/:id", validateCategoryId, async (req, res) => {
 	}
 
 })
+
 export default product
