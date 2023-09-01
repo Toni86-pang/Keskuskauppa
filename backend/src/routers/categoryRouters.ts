@@ -1,5 +1,5 @@
 import express from "express"
-import { Product, getAllCategories, getAllSubcategories } from "../daos/productsDao"
+import { Product, getAllCategories, getAllSubcategories, getIndividualSubcategory } from "../daos/productsDao"
 
 const category = express.Router()
 
@@ -22,5 +22,17 @@ category.get("/subcategory", async (_req, res) => {
 		res.status(500).json({ message: "Subcategory information couldn't be displayed" })
 	}
 })
+
+//Get subcategories associated to a certain category
+category.get("/subcategory/:category_id", async (req, res) => {
+	const category_id = parseInt(req.params.category_id)
+	try {
+		const subcategories: Product[] = await await getIndividualSubcategory(category_id)
+		res.status(200).json(subcategories)
+	} catch (error) {
+		res.status(500).json({ message: "Subcategory information couldn't be displayed" })
+	}
+})
+
 
 export default category

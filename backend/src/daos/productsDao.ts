@@ -105,6 +105,16 @@ export const getAllSubcategories = async (): Promise<Product[]> => {
 
 	return result.rows
 }
+
+//GET individual subcategory
+export const getIndividualSubcategory = async (category_id: number): Promise<Product[]> => {
+	const query = "SELECT * FROM subcategory WHERE category_id = $1"
+	const params = [category_id]
+	const result = await executeQuery(query, params)
+	return result.rows
+
+}
+
 // GET products by category
 export const getProductsByCategory = async (category_ID: number): Promise<Product[]> => {
 	const query = `
