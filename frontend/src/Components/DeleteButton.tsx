@@ -7,7 +7,6 @@ interface DeleteButtonprops {
 	onDelete: () => void
 }
 
-
 export default function DeleteButton({ id, onDelete }: DeleteButtonprops) {
 	console.log("DeleteButton id:", id)
 	const [dialogOpen, setDialogOpen] = useState(false)
