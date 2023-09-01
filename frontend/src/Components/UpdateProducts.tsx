@@ -2,8 +2,8 @@ import { useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/material/Alert";
+// import Snackbar from "@mui/material/Snackbar";
+// import MuiAlert from "@mui/material/Alert";
 import axios from "axios";
 
 interface UpdateProductModalProps {
@@ -19,15 +19,15 @@ interface UpdateProductModalProps {
   price: number
 };
 
-function Feedback({ status }: { status: string | null }) {
-  return (
-    <Snackbar open={status !== null} autoHideDuration={6000}>
-      <MuiAlert elevation={6} variant="filled" severity={status === "Update successful" ? "success" : "error"}>
-        {status}
-      </MuiAlert>
-    </Snackbar>
-  );
-}
+// function Feedback({ status }: { status: string | null }) {
+//   return (
+//     <Snackbar open={status !== null} autoHideDuration={6000}>
+//       <MuiAlert elevation={6} variant="filled" severity={status === "Update successful" ? "success" : "error"}>
+//         {status}
+//       </MuiAlert>
+//     </Snackbar>
+//   );
+// }
 
 function UpdateProductModal({
   isOpen,
@@ -48,7 +48,7 @@ function UpdateProductModal({
   const [updatedPostalCode, setUpdatedPostalCode] = useState(postal_code)
   const [updatedDescription, setUpdatedDescription] = useState(description)
   const [updatedPrice, setUpdatedPrice] = useState(price)
-  const [updateStatus, setUpdateStatus] = useState<string | null>(null)
+  // const [updateStatus, setUpdateStatus] = useState<string | null>(null)
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUpdatedTitle(event.target.value)
@@ -165,7 +165,7 @@ function UpdateProductModal({
         </Button>
         </div>
       </div>
-      <Feedback status={updateStatus} />
+      {/* <Feedback status={updateStatus} /> */}
     </Dialog>
   );
 }
