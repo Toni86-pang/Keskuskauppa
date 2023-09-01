@@ -103,3 +103,17 @@ export const validateUserData = (req: CustomRequest, res: Response, next: NextFu
 
 	next()
 }
+
+//Validate category
+export const validateCategoryId = (req: Request, res: Response, next: NextFunction) => {
+	const category_Id = req.params.id
+
+	if(!(Number(category_Id))){
+		return res.status(400).json({ message: "Invalid category ID format"})
+	}
+	if(!Number.isInteger(Number(category_Id))){
+		return res.status(400).json({ message: "Category ID must be an integer"})
+	}
+
+	next()
+}

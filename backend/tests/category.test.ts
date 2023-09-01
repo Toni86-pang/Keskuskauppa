@@ -1,6 +1,8 @@
 import request from "supertest"
 import server from "../src/server"
 
+
+//category tests
 describe("testing api/category", () => {
 	it("returns status code 200", async () => {
 		const response = await request(server)

@@ -28,9 +28,16 @@ export const executeQuery = async (query: string, parameters?: Array<any>) => {
 }
 
 export const createUsersTable = async () => {
+	const checkQuery = "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'users')"
+	const checkResult = await executeQuery(checkQuery)
+	if (checkResult?.rows[0]?.exists) {
+		console.log("Users table already exists")
+		return
+	}
+
 	const query = `
 	CREATE TABLE IF NOT EXISTS Users (
-		user_ID serial PRIMARY KEY,
+		user_id serial PRIMARY KEY,
 		username varchar(32),
 		name varchar(200),
 		email varchar(50),
@@ -46,73 +53,129 @@ export const createUsersTable = async () => {
 	console.log("Users table initialized")
 }
 
-export const createGategoryTable = async () => {
+export const createCategoryTable = async () => {
+	const tableName = "Category" // Replace with the actual table name
+	const checkQuery = "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = $1)"
+	const checkResult = await executeQuery(checkQuery, [tableName])
+  
+	if (checkResult?.rows[0]?.exists) {
+		console.log(`${tableName} table already exists`)
+		return
+	}
+  
 	const query = `
-	CREATE TABLE IF NOT EXISTS Category (
-		category_ID serial PRIMARY KEY,
+	  CREATE TABLE IF NOT EXISTS ${tableName} (
+		category_id serial PRIMARY KEY,
 		category_name varchar(50)
 	  );`
+	
 	await executeQuery(query)
-	console.log("Category table initialized")
+	console.log(`${tableName} table initialized`)
 }
 
 export const createSubcategoryTable = async () => {
+	const tableName = "Subcategory" // Replace with the actual table name
+	const checkQuery = "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = $1)"
+	const checkResult = await executeQuery(checkQuery, [tableName])
+  
+	if (checkResult?.rows[0]?.exists) {
+		console.log(`${tableName} table already exists`)
+		return
+	}
+
 	const query = `CREATE TABLE IF NOT EXISTS Subcategory (
-		subcategory_ID serial PRIMARY KEY,
+		subcategory_id serial PRIMARY KEY,
 		subcategory_name varchar(50),
-		category_ID int REFERENCES Category(category_ID)
+		category_id int REFERENCES Category(category_id)
 	  );`
+
 	await executeQuery(query)
-	console.log("Subcategory table initialized")
+	console.log(`${tableName} table initialized`)
 }
 
 export const createProductsTable = async () => {
+	const tableName = "Products" // Replace with the actual table name
+	const checkQuery = "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = $1)"
+	const checkResult = await executeQuery(checkQuery, [tableName])
+  
+	if (checkResult?.rows[0]?.exists) {
+		console.log(`${tableName} table already exists`)
+		return
+	}
 	const query = `CREATE TABLE IF NOT EXISTS Products (
-		product_ID serial PRIMARY KEY,
-		user_ID int REFERENCES Users(user_ID),
+		product_id serial PRIMARY KEY,
+		user_id int REFERENCES Users(user_id),
 		title varchar(50),
-		category_ID int REFERENCES Category(category_ID),
-		subcategory_ID int REFERENCES Subcategory(subcategory_ID),
+		category_id int REFERENCES Category(category_id),
+		subcategory_id int REFERENCES Subcategory(subcategory_id),
 		location varchar(60),
 		description varchar(200),
 		price integer,
 		product_image bytea
 	  );`
+	
 	await executeQuery(query)
-	console.log("Products table initialized")
+	console.log(`${tableName} table initialized`)
 }
 
 export const createSalesTable = async () => {
+	const tableName = "Sales" // Replace with the actual table name
+	const checkQuery = "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = $1)"
+	const checkResult = await executeQuery(checkQuery, [tableName])
+  
+	if (checkResult?.rows[0]?.exists) {
+		console.log(`${tableName} table already exists`)
+		return
+	}
 	const query = `CREATE TABLE IF NOT EXISTS Sales (
-		sales_ID serial PRIMARY KEY,
-		product_ID int REFERENCES Products(product_ID),
-		user_ID int REFERENCES Users(user_ID),
+		sales_id serial PRIMARY KEY,
+		product_id int REFERENCES Products(product_id),
+		user_id int REFERENCES Users(user_id),
 		status boolean
 	  );`
+	
 	await executeQuery(query)
-	console.log("Sales table initialized")
+	console.log(`${tableName} table initialized`)
 }
 
 export const createReviewsTable = async () => {
+	const tableName = "Reviews" // Replace with the actual table name
+	const checkQuery = "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = $1)"
+	const checkResult = await executeQuery(checkQuery, [tableName])
+  
+	if (checkResult?.rows[0]?.exists) {
+		console.log(`${tableName} table already exists`)
+		return
+	}
 	const query = `CREATE TABLE IF NOT EXISTS Reviews (
-		review_ID serial PRIMARY KEY,
-		product_ID int REFERENCES Products(product_ID),
-		sales_ID int REFERENCES Sales(sales_ID),
+		review_id serial PRIMARY KEY,
+		product_id int REFERENCES Products(product_id),
+		sales_id int REFERENCES Sales(sales_id),
 		rating int,
 		comment varchar(200)
 	  );`
+	
 	await executeQuery(query)
-	console.log("Reviews table initialized")
+	console.log(`${tableName} table initialized`)
 }
 
 export const createMessageLogTable = async () => {
+	const tableName = "Message_log" // Replace with the actual table name
+	const checkQuery = "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = $1)"
+	const checkResult = await executeQuery(checkQuery, [tableName])
+  
+	if (checkResult?.rows[0]?.exists) {
+		console.log(`${tableName} table already exists`)
+		return
+	}
 	const query = `CREATE TABLE IF NOT EXISTS Message_log (
-		message_ID serial PRIMARY KEY,
-		sender_user_ID int REFERENCES Users(user_ID),
-		receiver_user_ID int REFERENCES Users(user_ID),
+		message_id serial PRIMARY KEY,
+		sender_user_id int REFERENCES Users(user_id),
+		receiver_user_id int REFERENCES Users(user_id),
 		message text[],
 		send_date timestamp
 	  );`
+
 	await executeQuery(query)
-	console.log("Message log table initialized")
+	console.log(`${tableName} table initialized`)
 }

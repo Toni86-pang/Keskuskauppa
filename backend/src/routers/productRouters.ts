@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express"
-import { createProduct, getAllProducts, getProductById, updateProductData, deleteProduct, Product, getProductsByUserId } from "../daos/productsDao"
-
+import { createProduct, getAllProducts, getProductById, getProductsByCategory, getProductsBySubcategory, updateProductData, deleteProduct, getProductsByUserId, Product  } from "../daos/productsDao"
+import { validateCategoryId } from "../middlewares"
 
 const product = express.Router()
 
@@ -13,6 +13,7 @@ interface CustomRequest extends Request {
 product.post("/", async (req, res) => {
 	try {
 		const newProduct: Product = req.body
+		console.log("new p: ", newProduct)
 		await createProduct(newProduct)
 		res.status(201).json({ message: "Product created successfully" })
 	} catch (error) {
@@ -31,8 +32,8 @@ product.get("/", async (_req, res) => {
 
 product.get("/:id", async (req, res) => {
 	try {
-		const ProductID: number = parseInt(req.params.id, 10)
-		const productDetails: Product | null = await getProductById(ProductID)
+		const product_id: number = parseInt(req.params.id, 10)
+		const productDetails: Product | null = await getProductById(product_id)
 		if (productDetails === null) {
 			res.status(404).json({ message: " product not found" })
 		} else {
@@ -56,6 +57,8 @@ product.get("/user/:id", async (req, res) => {
 product.delete("/delete/:id", async (req: Request, res: Response) => {
 	const product_id = Number(req.params.id)
 
+	console.log("product_id", product_id)
+
 	try {
 		const result = await deleteProduct(product_id)
 
@@ -71,16 +74,17 @@ product.delete("/delete/:id", async (req: Request, res: Response) => {
 })
 
 
-product.put("/:id", async (req: CustomRequest, res: Response) => {
+product.put("/update/:id", async (req: CustomRequest, res: Response) => {
 	const product_Id = parseInt(req.params.id, 10)
 	const updatedProductData = req.body
 	try {
 		const updateProduct: Product | null = await updateProductData(
 			product_Id,
 			updatedProductData.title,
-			updatedProductData.category_ID,
-			updatedProductData.subcategory_ID,
-			updatedProductData.location,
+			updatedProductData.category_id,
+			updatedProductData.subcategory_id,
+			updatedProductData.city,
+			updatedProductData.postal_code,
 			updatedProductData.description,
 			updatedProductData.price
 		)
@@ -94,6 +98,25 @@ product.put("/:id", async (req: CustomRequest, res: Response) => {
 		res.status(500).send("Internal Server Error")
 	}
 })
+//Serve products by category
+product.get("/category/:id",validateCategoryId, async (req, res) => {
+	const categoryId = parseInt(req.params.id)
+	try {
+		const products: Product[] = await getProductsByCategory(categoryId)
+		res.status(200).json(products)
+	} catch (error) {
+		res.status(500).json({ message: "Product information couldn't be displayed" })
+	}
+})
+// Serve products by subcategory
+product.get("/subcategory/:id", validateCategoryId, async (req, res) => {
+	const subcategoryId = parseInt(req.params.id)
+	try {
+		const products: Product[] = await getProductsBySubcategory(subcategoryId)
+		res.status(200).json(products)
+	} catch (error) {
+		res.status(500).json({ message: "The product information of the subcategory couldn't be displayed" })
+	}
 
-
+})
 export default product
