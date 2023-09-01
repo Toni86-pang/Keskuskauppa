@@ -1,37 +1,37 @@
 import { executeQuery } from "../database"
 
 export interface Product {
-	product_id: number
+	product_id?: number
 	user_id: number
 	title: string
 	category_id: number
-	category_name: string
+	category_name?: string
 	subcategory_id: number
-	subcategory_name: string
+	subcategory_name?: string
 	city: string
 	postal_code: string
 	description: string
 	price: number
-	product_image: Buffer
+	product_image?: Buffer
 }
 
 export async function createProduct(product: Product): Promise<void> {
 	const query = `
 	  INSERT INTO Products
-		(user_id, title, category_id, subcategory_id, location, description, price, product_image)
+		(user_id, title, category_id, subcategory_id, description, price, product_image, postal_code, city)
 	  VALUES
-		($1, $2, $3, $4, $5, $6, $7, $8)
+		($1, $2, $3, $4, $5, $6, $7, $8, $9)
 	`
 	const values = [
 		product.user_id,
 		product.title,
 		product.category_id,
 		product.subcategory_id,
-		product.city,
-		product.postal_code,
 		product.description,
 		product.price,
 		product.product_image,
+		product.postal_code,
+		product.city,
 	]
 
 	try {
@@ -103,6 +103,16 @@ export const getAllSubcategories = async (): Promise<Product[]> => {
 
 	return result.rows
 }
+
+//GET individual subcategory
+export const getIndividualSubcategory = async (category_id: number): Promise<Product[]> => {
+	const query = "SELECT * FROM subcategory WHERE category_id = $1"
+	const params = [category_id]
+	const result = await executeQuery(query, params)
+	return result.rows
+
+}
+
 // GET products by category
 export const getProductsByCategory = async (category_ID: number): Promise<Product[]> => {
 	const query = `
