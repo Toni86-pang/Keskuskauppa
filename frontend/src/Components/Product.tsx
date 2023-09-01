@@ -70,7 +70,7 @@ const itemData = [
 ///////////
 
 export default function Product() {
-	const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
+	const [isUpdateModalOpen, setUpdateModalOpen] = useState(false)
 	const [product, setProduct] = useState<Product | null>(null)
 	// const [loggedIn, setLoggedIn] = useState(true)
 	const [selectedImage, setSelectedImage] = useState<string | null>(
@@ -200,7 +200,7 @@ export default function Product() {
 									variant="body2"
 									color="text.secondary"
 								>
-							{product?.postal_code}
+									{product?.postal_code}
 								</Typography>
 
 							</Grid>
