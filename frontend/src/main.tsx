@@ -9,6 +9,7 @@ import ErrorPage from "./Pages/ErrorPage.tsx"
 // import { Login } from '@mui/icons-material'
 import Products from "./Components/Products.tsx"
 import Product, { loader as productLoader } from "./Components/Product.tsx"
+import Profile from "./Components/Profile.tsx"
 
 const router = createBrowserRouter([
 	{
@@ -32,6 +33,11 @@ const router = createBrowserRouter([
 				path: "/product/:id",
 				element: <Product />,
 				loader: productLoader,
+			},
+			{
+				path: "/profile",
+				element: <Profile />,
+				// loader: userLoader,
 			},
 		],
 	},

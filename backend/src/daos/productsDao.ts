@@ -90,6 +90,14 @@ export const updateProductData = async (
 
 }
 
+export const getProductsByUserId = async (user_ID: number) => {
+	const query = "SELECT * FROM products WHERE user_id = $1"
+	const params = [user_ID]
+	const result = await executeQuery(query, params)
+
+	return result.rows
+}
+
 //GET all categories
 export const getAllCategories = async (): Promise<Product[]> => {
 	const query = "SELECT * FROM Category"
