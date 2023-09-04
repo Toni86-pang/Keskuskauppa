@@ -10,9 +10,9 @@ import StarPurpleSharpIcon from "@mui/icons-material/StarPurple500Sharp"
 const DEBUGTOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pc3UiLCJpZCI6NDcsImlhdCI6MTY5MzI5NjU2OX0.bF2pn9OekMrhRyA9SFf1-698iVRuBPmNBf2d7DUBEvQ"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function loader({ params }: any) {
-	return params.id
-}
+// export function loader({ params }: any) {
+// 	return params.id
+// }
 
 interface User {
 	userId: number
@@ -33,14 +33,14 @@ interface Product {
 	location: string
 	description: string
 	price: number
-	product_image?: any
+	// product_image?: any
 }
 
 
 function Profile() {
 
 	const [user, setUser] = useState<User | null>(null)
-	const [token, setToken] = useState(DEBUGTOKEN)
+	const [token] = useState(DEBUGTOKEN)
 	const [ownProducts, setOwnProducts] = useState<Product[] | null>(null)
 	// const id = useLoaderData() as string
 	const id = 47
@@ -93,7 +93,7 @@ function Profile() {
 						sx={{ display: "flex", alignItems: "center" }}
 						color="text.primary"
 					>
-						{user?.name}
+						Profiili
 					</Typography>
 				</Breadcrumbs>
 			</div>
@@ -108,8 +108,8 @@ function Profile() {
 					<div><img src="https://images.unsplash.com/photo-1551963831-b3b1ca40c98e" style={{
 						margin: "auto",
 						display: "block",
-						maxWidth: "270px",
-						maxHeight: "270px",
+						maxWidth: "220px",
+						maxHeight: "220px",
 					}} /></div>
 
 				</Grid>
