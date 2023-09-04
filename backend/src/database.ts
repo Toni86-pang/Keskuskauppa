@@ -108,10 +108,11 @@ export const createProductsTable = async () => {
 		title varchar(50),
 		category_id int REFERENCES Category(category_id),
 		subcategory_id int REFERENCES Subcategory(subcategory_id),
-		location varchar(60),
 		description varchar(200),
 		price integer,
 		product_image bytea
+		postal_code integer,
+		city varchar(60),
 	  );`
 	
 	await executeQuery(query)

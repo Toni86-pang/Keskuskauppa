@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useLoaderData, useNavigate } from "react-router-dom" 
+import { useLoaderData, useNavigate } from "react-router-dom"
 import axios from "axios"
 import {
 	Paper,
@@ -9,19 +9,22 @@ import {
 	Box,
 	ImageList,
 	ImageListItem,
+	Button,
 } from "@mui/material"
 import StarBorderPurple500SharpIcon from "@mui/icons-material/StarBorderPurple500Sharp"
 import StarPurple500SharpIcon from "@mui/icons-material/StarPurple500Sharp"
 import Breadcrumbs from "@mui/material/Breadcrumbs"
 import Link from "@mui/material/Link"
 import DeleteButton from "./DeleteButton"
+import UpdateProductModal from "./UpdateProducts"
 
 interface Product {
 	product_id: number
 	title: string
 	category_id: number
 	subcategory_id: number
-	location: string
+	city: string
+	postal_code: string
 	description: string
 	price: number
 }
@@ -67,6 +70,7 @@ const itemData = [
 ///////////
 
 export default function Product() {
+	const [isUpdateModalOpen, setUpdateModalOpen] = useState(false)
 	const [product, setProduct] = useState<Product | null>(null)
 	// const [loggedIn, setLoggedIn] = useState(true)
 	const [selectedImage, setSelectedImage] = useState<string | null>(
@@ -87,18 +91,23 @@ export default function Product() {
 		fetchProduct()
 	}, [id])
 
+
+
 	const handleDelete = async () => {
 		try {
 			await axios.delete(`/api/product/delete/${product?.product_id}`)
-		// Perform any other necessary actions here after deletion
+			// Perform any other necessary actions here after deletion
 		} catch (error) {
 			console.error("error deleting product", error)
 		}
-		finally{
+		finally {
 			navigate("/product")
 		}
 	}
-	console.log("producst",product)
+	console.log("producst", product)
+
+
+
 	return (
 		<div>
 			<div>
@@ -185,10 +194,17 @@ export default function Product() {
 									variant="body2"
 									color="text.secondary"
 								>
-									{product?.location}
+									{product?.city}
 								</Typography>
+								<Typography
+									variant="body2"
+									color="text.secondary"
+								>
+									{product?.postal_code}
+								</Typography>
+
 							</Grid>
-							
+
 							<Grid item>
 								{/* {loggedIn ? (
 									<div>
@@ -206,8 +222,25 @@ export default function Product() {
 										size="small"
 									>
 										Kirjaudu sisään ostaaksesi
-									</Button>
+										</Button>
 								)} */}
+								<div>
+									<Button variant="outlined" onClick={() => setUpdateModalOpen(true)}>
+										Päivitä tuote
+									</Button>
+									<UpdateProductModal
+										isOpen={isUpdateModalOpen}
+										onClose={() => setUpdateModalOpen(false)}
+										productId={product?.product_id || 0} 
+										title={product?.title || ""}
+										category_id={product?.category_id || 0} // Replace with the actual category ID
+										subcategory_id={product?.subcategory_id || 0} // Replace with the actual subcategory ID
+										city={product?.city.split(",")[0] || ""} // Replace with actual location parsing logic
+										postal_code={product?.postal_code.split(",")[1] || ""} // Replace with actual location parsing logic
+										description={product?.description || ""}
+										price={product?.price || 0} // Replace with the actual price
+									/>
+								</div>
 								{product && <DeleteButton id={product.product_id} onDelete={handleDelete} />}
 							</Grid>
 						</Grid>
@@ -239,7 +272,7 @@ export default function Product() {
 						<Typography variant="body2" gutterBottom>
 							Lisätiedot:
 						</Typography>
-						<Box sx={{ border: 0.1 , width: 265, height: 100  }}>{product?.description}</Box>
+						<Box sx={{ border: 0.1, width: 265, height: 100 }}>{product?.description}</Box>
 					</Grid>
 				</Grid>
 			</Paper>

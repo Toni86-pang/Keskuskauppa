@@ -1,37 +1,37 @@
 import { executeQuery } from "../database"
 
 export interface Product {
-	product_id: number
+	product_id?: number
 	user_id: number
 	title: string
 	category_id: number
-	category_name: string
+	category_name?: string
 	subcategory_id: number
-	subcategory_name: string
+	subcategory_name?: string
 	city: string
 	postal_code: string
 	description: string
 	price: number
-	product_image: Buffer
+	product_image?: Buffer
 }
 
 export async function createProduct(product: Product): Promise<void> {
 	const query = `
 	  INSERT INTO Products
-		(user_id, title, category_id, subcategory_id, location, description, price, product_image)
+		(user_id, title, category_id, subcategory_id, description, price, product_image, postal_code, city)
 	  VALUES
-		($1, $2, $3, $4, $5, $6, $7, $8)
+		($1, $2, $3, $4, $5, $6, $7, $8, $9)
 	`
 	const values = [
 		product.user_id,
 		product.title,
 		product.category_id,
 		product.subcategory_id,
-		product.city,
-		product.postal_code,
 		product.description,
 		product.price,
 		product.product_image,
+		product.postal_code,
+		product.city,
 	]
 
 	try {
@@ -80,7 +80,7 @@ export const updateProductData = async (
 ): Promise<Product | null> => {
 	const params = [title, category_id, subcategory_id, city,postal_code, description, price, product_id]
 	const query =
-		"UPDATE Products SET title = $1, category_id = $2, subcategory_id = $3, location = $4, description = $5, price = $6 WHERE product_id = $7 RETURNING * "
+	"UPDATE Products SET title = $1, category_id = $2, subcategory_id = $3, city = $4, postal_code = $5, description = $6, price = $7 WHERE product_id = $8 RETURNING *"
 	const result = await executeQuery(query, params)
 	if (result.rows.length === 0) {
 		return null
@@ -111,6 +111,16 @@ export const getAllSubcategories = async (): Promise<Product[]> => {
 
 	return result.rows
 }
+
+//GET individual subcategory
+export const getIndividualSubcategory = async (category_id: number): Promise<Product[]> => {
+	const query = "SELECT * FROM subcategory WHERE category_id = $1"
+	const params = [category_id]
+	const result = await executeQuery(query, params)
+	return result.rows
+
+}
+
 // GET products by category
 export const getProductsByCategory = async (category_ID: number): Promise<Product[]> => {
 	const query = `
