@@ -9,10 +9,6 @@ import StarPurpleSharpIcon from "@mui/icons-material/StarPurple500Sharp"
 // const DEBUG = true
 const DEBUGTOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pc3UiLCJpZCI6NDcsImlhdCI6MTY5MzI5NjU2OX0.bF2pn9OekMrhRyA9SFf1-698iVRuBPmNBf2d7DUBEvQ"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// export function loader({ params }: any) {
-// 	return params.id
-// }
 
 interface User {
 	userId: number
