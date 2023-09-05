@@ -1,7 +1,8 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import { ChangeEvent, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
-import { Button, Container, TextField } from "@mui/material"
+import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
 
 export interface User {
     username: string,
@@ -15,6 +16,7 @@ const initialState: User = {
 
 function Login() {
 	const [userValues, setUserValues] = useState<User>(initialState)
+	const [open, setOpen] = useState<boolean>(false)
 	const { username, password } = userValues
 	const navigate = useNavigate()
 
@@ -40,6 +42,7 @@ function Login() {
 			console.error(error)
 			alert("Something went wrong!")
 		}
+		handleClose()
 	}
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -49,36 +52,44 @@ function Login() {
 		}))
 	}
 
+	const handleClickOpen = () => {
+		setOpen(true)
+	  }
+	
+	  const handleClose = () => {
+		setOpen(false)
+	  }
+
 	return (
 		<Container sx={{ m: 1 }}>
-			<Container>
-				<TextField
-					type="text"
-					placeholder="Enter a username"
-					name="username"
-					value={username}
-					onChange={handleInputChange}
-				/> <br/>
-				<TextField
-					type="password"
-					placeholder="Enter a password"
-					name="password"
-					value={password}
-					onChange={handleInputChange}
-				/>
-			</Container>
-			<Container>
-				<Button
-					sx={{
-						m: 1,
-						bgcolor: "#6096ba",
-						":hover": { bgcolor: "darkblue" }
-					}}
-					variant="contained"
-					onClick={loginUser}>Login</Button>
-                
-			</Container>
-
+			 <Button sx={{color: "white"}}onClick={handleClickOpen}>
+        		Kirjaudu sisään
+			</Button>
+			<Dialog open={open} onClose={handleClose}>
+				<DialogTitle>Kirjaudu sisään</DialogTitle>
+				<DialogContent>
+					<TextField
+						sx={{ m: 1 }}
+						type="text"
+						placeholder="Käyttäjänimi"
+						name="username"
+						value={username}
+						onChange={handleInputChange}
+					/>
+					<TextField
+						sx={{ m: 1 }}
+						type="password"
+						placeholder="Salasana"
+						name="password"
+						value={password}
+						onChange={handleInputChange}
+					/>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={loginUser}>Kirjaudu</Button>
+					<Button onClick={handleClose}>Peruuta</Button>
+				</DialogActions>
+			</Dialog>
 		</Container >
 	)
 }
