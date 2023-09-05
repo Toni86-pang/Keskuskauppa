@@ -1,17 +1,24 @@
 import { Request, Response, NextFunction } from "express"
 import jwt from "jsonwebtoken"
 
+// interface CustomRequest extends Request {
+//     username?: string
+//     name?: string
+//     email?: string
+//     phone?: string
+//     address?: string
+//     city?: string
+//     password: string
+//     id: number
+//     isAdmin?: boolean
+// }
+
 interface CustomRequest extends Request {
-	username?: string
-	name?: string
-	email?: string
-	phone?: string
-	address?: string
-	city?: string
-	password: string
-	id: number
-	isAdmin?: boolean
+    username?: string
+    id?: number
+    isAdmin?: boolean
 }
+
 
 const secret = process.env.SECRET ?? ""
 

@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { createProduct, getAllProducts, getProductById, getProductsByCategory, getProductsBySubcategory, updateProductData, deleteProduct, Product  } from "../daos/productsDao"
+import { createProduct, getAllProducts, getProductById, getProductsByCategory, getProductsBySubcategory, updateProductData, deleteProduct, getProductsByUserId, Product  } from "../daos/productsDao"
 import { validateCategoryId } from "../middlewares"
 
 const product = express.Router()
@@ -46,6 +46,15 @@ product.get("/:id", async (req, res) => {
 	}
 })
 
+product.get("/user/:id", async (req, res) => {
+	const userId = Number(req.params.id)
+	try {
+		const product: Product[] = await getProductsByUserId(userId)
+		res.status(200).json(product)
+	} catch (error) {
+		res.status(500).json({ message: "So much fail" })
+	}
+})
 
 product.delete("/delete/:id", async (req: Request, res: Response) => {
 	const product_id = Number(req.params.id)

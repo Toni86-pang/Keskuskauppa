@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express"
-import { getAllUsers, addUser, deleteUser, getUserByUsername, findUserByUSername, findUserByEmail } from "../daos/usersDao"
-import { checkReqBody } from "../middlewares"
+import { getAllUsers, addUser, deleteUser, getUserByUsername, findUserByUSername, findUserByEmail, getUserByUserId } from "../daos/usersDao"
+import { authentication, checkReqBody } from "../middlewares"
 import argon2 from "argon2"
 import jwt from "jsonwebtoken"
 
@@ -12,6 +12,23 @@ const users = express.Router()
 users.get("/", async (_req: Request, res: Response) => {
 	const result = await getAllUsers()
 	return res.status(200).send(result.rows)
+})
+
+// profiilisivu vaati get user by userId.  --Nisu
+
+interface CustomRequest extends Request {
+    username?: string
+    id?: number
+    isAdmin?: boolean
+}
+
+users.get("/user", authentication, async (req: CustomRequest, res: Response) => {
+	if(!req.id) {
+		return res.status(404).send("No such user")
+	}
+	const user_id = req.id
+	const result = await getUserByUserId(user_id)
+	return res.status(200).send(result)
 })
 
 // `POST /users` REGISTER a new user
@@ -81,8 +98,8 @@ users.post("/login", checkReqBody, async (req: Request, res: Response) => {
 		if (!isPasswordCorrect) {
 			return res.status(401).send({ error: "Incorrect password." })
 		}
-
-		const token = jwt.sign({ username }, secret)
+		const userId = result.user_id
+		const token = jwt.sign({ username, id:userId }, secret)
 		return res.status(200).send({ token })
 
 	} catch (error) {
