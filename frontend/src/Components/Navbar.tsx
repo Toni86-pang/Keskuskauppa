@@ -15,6 +15,7 @@ import {
 }
 	from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
+import Login from "./Login"
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -118,9 +119,8 @@ const Navbar = () => {
 					</Search>
 					<Button
 						href='/register'
-						color="inherit">Register</Button> <Button
-						href='/login'
-						color="inherit">Login</Button>
+						color="inherit">Rekisteröidy</Button> 
+					<div><Login/></div>
 				</Toolbar>
 			</AppBar>
 		</Box>
