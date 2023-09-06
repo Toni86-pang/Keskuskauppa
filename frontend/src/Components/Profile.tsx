@@ -51,31 +51,23 @@ function Profile() {
 
 	const deleteProfile = async () => {
 		try {
-			const response = await axios.delete("/api/users/delete", {
+			await axios.delete("/api/users/delete", {
 				headers: {
 					"Authorization": `Bearer ${token}`
 				}
 			})
-			console.log(response)
 			navigate("/")
 		} catch (error) {
-			console.error("error fetching user	", error)
+			console.error("error deleting user	", error)
 		}	
 	}
 
-	const cancelDelete = () => {
-		console.log("Eipä poistetakaan")	
-	}
-
 	const verifyDialogProps = {
-		titleText: "Profiilin poisto",
 		messageText: "Haluatko varmasti poistaa profiilisi?",
-		acceptButtonText: "Jumankauta juu!",
-		declineButtonText: "Noee tokkiisa!",
+		acceptButtonText: "Poista",
 		isOpen: verifyOpen,
 		setOpen: setVerifyOpen,
-		onAccept: deleteProfile,
-		onDecline: cancelDelete
+		onAccept: deleteProfile
 	}
 
 	useEffect(() => {
