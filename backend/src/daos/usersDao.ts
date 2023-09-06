@@ -44,3 +44,22 @@ export const findUserByEmail = async (email: string) => {
 	const params = [email]
 	return executeQuery(query, params)
 }
+
+export const updateProfile = async (
+	user_id: number,
+	email: string,
+	phone: string,
+	address: string,
+	city: string,
+	postal_code: string
+) => {
+	const params = [email, phone, address, city, postal_code, user_id]
+	const query =
+	"UPDATE users SET email = $1, phone = $2, address = $3, city = $4, postal_code = $5 WHERE user_id = $6 RETURNING user_id, username, name, email, phone, address, city, postal_code"
+	const result = await executeQuery(query, params)
+	if (result.rows.length === 0) {
+		return null
+	}
+	console.log(result.rows[0])
+	return result.rows[0]
+}
