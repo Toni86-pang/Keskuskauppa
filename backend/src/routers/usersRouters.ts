@@ -63,8 +63,8 @@ users.post("/register", async (req: Request, res: Response) => {
 	return res.status(200).send(token)
 })
 
-users.delete("/delete/:user_id", async (req: Request, res: Response) => {
-	const user_id = Number(req.params.user_id)
+users.delete("/delete", authentication,  async (req: CustomRequest, res: Response) => {
+	const user_id = Number(req.id)
 
 	try {
 		const result = await deleteUser(user_id)

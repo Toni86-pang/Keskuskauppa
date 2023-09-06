@@ -2,6 +2,7 @@ import { ChangeEvent, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { Button, Container, TextField } from "@mui/material"
+import VerifyDialog from "./VerifyDialog"
 
 
 
@@ -31,6 +32,7 @@ function RegisterNewUser() {
 	const [newUser, setNewUser] = useState<User>(initialState)
 	const [confirmPassword, setConfirmPassword] = useState<string>("")
 	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true)
+	const [verifyOpen, setVerifyOpen] = useState(false)
 
 	const { name, email, username, phone, address, city } = newUser
 
@@ -59,6 +61,18 @@ function RegisterNewUser() {
 			alert("Something went wrong!")
 		}
 	}
+
+	const verifyDialogProps = {
+		messageText: "Rekisteröidäänkö näillä tiedoilla?",
+		isOpen: verifyOpen,
+		setOpen: setVerifyOpen,
+		onAccept: registerUser
+	}
+
+	const handleVerification = () => {
+		setVerifyOpen(true)
+	}
+
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target
 		setNewUser(() => ({
@@ -152,7 +166,7 @@ function RegisterNewUser() {
 						":hover": { bgcolor: "darkblue" }
 					}}
 					variant="contained"
-					onClick={registerUser}>Register</Button>
+					onClick={handleVerification}>Register</Button>
 				<Button sx={{
 					m: 1,
 					bgcolor: "#6096ba",
@@ -162,6 +176,7 @@ function RegisterNewUser() {
 				onClick={handleCancel}>
 					Cancel
 				</Button>
+				<VerifyDialog {...verifyDialogProps} />
 			</Container>
 
 		</Container >

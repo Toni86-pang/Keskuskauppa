@@ -4,11 +4,13 @@ import axios from "axios"
 import { Grid, Breadcrumbs, Link, Typography, Button, } from "@mui/material"
 import StarBorderPurpleSharpIcon from "@mui/icons-material/StarBorderPurple500Sharp"
 import StarPurpleSharpIcon from "@mui/icons-material/StarPurple500Sharp"
+import VerifyDialog from "./VerifyDialog"
+import { useNavigate } from "react-router-dom"
 
 
-// const DEBUG = true
-const DEBUGTOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pc3UiLCJpZCI6NDcsImlhdCI6MTY5MzI5NjU2OX0.bF2pn9OekMrhRyA9SFf1-698iVRuBPmNBf2d7DUBEvQ"
-
+//const DEBUG = true
+// const DEBUGTOKEN1 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pc3UiLCJpZCI6NDcsImlhdCI6MTY5MzI5NjU2OX0.bF2pn9OekMrhRyA9SFf1-698iVRuBPmNBf2d7DUBEvQ"
+const DEBUGTOKEN2 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pc3VsaSIsImlkIjo1MiwiaWF0IjoxNjkzOTIyNTM2fQ.Pk0FWPfnqvLbpFlfx-QI-S3J2lsRFaahJpFFnEIysoQ" // nisuli
 
 interface User {
 	userId: number
@@ -32,16 +34,49 @@ interface Product {
 	// product_image?: any
 }
 
-
 function Profile() {
 
 	const [user, setUser] = useState<User | null>(null)
-	const [token] = useState(DEBUGTOKEN)
+	const [token] = useState(DEBUGTOKEN2)
 	const [ownProducts, setOwnProducts] = useState<Product[] | null>(null)
+	const [verifyOpen, setVerifyOpen] = useState(false)
+	const navigate = useNavigate()
+
 	// const id = useLoaderData() as string
-	const id = 47
+	const id = 51
 
+	const handleVerification = () => {
+		setVerifyOpen(true)
+	}
 
+	const deleteProfile = async () => {
+		try {
+			const response = await axios.delete("/api/users/delete", {
+				headers: {
+					"Authorization": `Bearer ${token}`
+				}
+			})
+			console.log(response)
+			navigate("/")
+		} catch (error) {
+			console.error("error fetching user	", error)
+		}	
+	}
+
+	const cancelDelete = () => {
+		console.log("Eipä poistetakaan")	
+	}
+
+	const verifyDialogProps = {
+		titleText: "Profiilin poisto",
+		messageText: "Haluatko varmasti poistaa profiilisi?",
+		acceptButtonText: "Jumankauta juu!",
+		declineButtonText: "Noee tokkiisa!",
+		isOpen: verifyOpen,
+		setOpen: setVerifyOpen,
+		onAccept: deleteProfile,
+		onDecline: cancelDelete
+	}
 
 	useEffect(() => {
 		const fetchUser = async () => {
@@ -71,7 +106,6 @@ function Profile() {
 		}
 		fetchOwnProducts()
 	})
-
 
 	return (
 		<div className="profile">
@@ -118,7 +152,7 @@ function Profile() {
 						<div className="userEmail">Sähköposti: {user?.email}</div>
 						<div className="userPhone">Puhelinnumero: {user?.phone}</div>
 						<div>Tuotteita myynnissä: {ownProducts?.length}</div>
-						<div>Oma tähtiarvio: 
+						<div>Oma tähtiarvio:
 							<StarPurpleSharpIcon />
 							<StarPurpleSharpIcon />
 							<StarPurpleSharpIcon />
@@ -131,8 +165,10 @@ function Profile() {
 					<Grid container direction="column" spacing={2}>
 						<Grid item><Button variant="contained">Muokkaa</Button></Grid>
 						<Grid item><Button variant="contained">Vaihda salasana</Button></Grid>
-						<Grid item><Button variant="contained">Poista profiili</Button></Grid>
-						
+						<Grid item>
+							<Button variant="contained" onClick={handleVerification} >Poista profiili</Button>							
+							<VerifyDialog {...verifyDialogProps} />
+						</Grid>
 					</Grid>
 				</Grid>
 			</Grid>
