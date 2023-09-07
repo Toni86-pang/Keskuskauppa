@@ -6,11 +6,10 @@ import StarBorderPurpleSharpIcon from "@mui/icons-material/StarBorderPurple500Sh
 import StarPurpleSharpIcon from "@mui/icons-material/StarPurple500Sharp"
 import VerifyDialog from "./VerifyDialog"
 import { useNavigate } from "react-router-dom"
-
+import UpdateProfile from "./UpdateProfile"
 
 //const DEBUG = true
-// const DEBUGTOKEN1 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pc3UiLCJpZCI6NDcsImlhdCI6MTY5MzI5NjU2OX0.bF2pn9OekMrhRyA9SFf1-698iVRuBPmNBf2d7DUBEvQ"
-const DEBUGTOKEN2 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pc3VsaSIsImlkIjo1MiwiaWF0IjoxNjkzOTIyNTM2fQ.Pk0FWPfnqvLbpFlfx-QI-S3J2lsRFaahJpFFnEIysoQ" // nisuli
+const DEBUGTOKEN2 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pcyIsImlkIjo2MSwiaWF0IjoxNjk0MDg1NzczfQ.ihny-nTyCnl0hHNYjQDFjR2BXx8TOwGJCLdCA1imYOQ"
 
 interface User {
 	userId: number
@@ -20,6 +19,7 @@ interface User {
 	phone: string
 	address: string
 	city: string
+	postal_code: string
 }
 
 interface Product {
@@ -37,13 +37,14 @@ interface Product {
 function Profile() {
 
 	const [user, setUser] = useState<User | null>(null)
+	const [updateVisible, setUpdateVisible] = useState(false)
 	const [token] = useState(DEBUGTOKEN2)
 	const [ownProducts, setOwnProducts] = useState<Product[] | null>(null)
 	const [verifyOpen, setVerifyOpen] = useState(false)
 	const navigate = useNavigate()
 
 	// const id = useLoaderData() as string
-	const id = 51
+	const id = 61
 
 	const handleVerification = () => {
 		setVerifyOpen(true)
@@ -59,7 +60,7 @@ function Profile() {
 			navigate("/")
 		} catch (error) {
 			console.error("error deleting user	", error)
-		}	
+		}
 	}
 
 	const verifyDialogProps = {
@@ -155,10 +156,22 @@ function Profile() {
 				</Grid>
 				<Grid item xs={3}>
 					<Grid container direction="column" spacing={2}>
-						<Grid item><Button variant="contained">Muokkaa</Button></Grid>
+						<Grid item>
+							<Button variant="contained" onClick={() => setUpdateVisible(true)}>Muokkaa</Button>
+							
+							{user && <UpdateProfile // make sure user is fetched before using component 
+								isOpen={updateVisible}
+								close={(updatedUser: User) => {
+									// update profile page with new info when modal is closed
+									setUser(updatedUser)
+									setUpdateVisible(false)
+								}}
+								user = {user}
+							/>}
+						</Grid>
 						<Grid item><Button variant="contained">Vaihda salasana</Button></Grid>
 						<Grid item>
-							<Button variant="contained" onClick={handleVerification} >Poista profiili</Button>							
+							<Button variant="contained" onClick={handleVerification} >Poista profiili</Button>
 							<VerifyDialog {...verifyDialogProps} />
 						</Grid>
 					</Grid>
