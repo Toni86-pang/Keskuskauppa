@@ -28,6 +28,11 @@ export const getUserByUserId = async (user_id: number) => {
 }
 
 export const deleteUser = async (user_id: number) => {
+	// first delete all user's products before deleting user
+	const delProductsQuery = "DELETE FROM products WHERE user_id = $1"
+	const delProductsParams = [user_id]
+	await executeQuery(delProductsQuery, delProductsParams)
+	// then delete user
 	const query = "DELETE FROM users WHERE user_id = $1"
 	const params = [user_id]
 	const result = await executeQuery(query, params)
