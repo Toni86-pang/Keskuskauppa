@@ -41,7 +41,7 @@ users.get("/user", authentication, async (req: CustomRequest, res: Response) => 
 
 // `POST /users` REGISTER a new user
 users.post("/register", async (req: Request, res: Response) => {
-	const { username, name, email, phone, address, city, password } = req.body
+	const { username, name, email, phone, address, city, postal_code, password } = req.body
 
 	//Check if username or password are missing
 	if (!username || !name || !email || !phone || !password) {
@@ -67,7 +67,7 @@ users.post("/register", async (req: Request, res: Response) => {
 
 	//Hash password and add user in database
 	const hashedPassword = await argon2.hash(password)
-	await addUser(username, name, email, phone, address, city, hashedPassword)
+	await addUser(username, name, email, phone, address, city, postal_code, hashedPassword)
 	return res.status(200).send(token)
 })
 
