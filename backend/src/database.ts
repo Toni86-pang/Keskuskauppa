@@ -44,6 +44,7 @@ export const createUsersTable = async () => {
 		phone varchar(50),
 		address varchar(50),
 		city varchar(50),
+		postal_code varchar(10),
 		password varchar(200),
 		user_image bytea,
 		is_admin boolean,
