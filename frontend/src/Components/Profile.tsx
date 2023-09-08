@@ -2,11 +2,12 @@ import { useState, useEffect } from "react"
 // import { useLoaderData } from "react-router-dom"
 import axios from "axios"
 import { Grid, Breadcrumbs, Link, Typography, Button, } from "@mui/material"
-import StarBorderPurpleSharpIcon from "@mui/icons-material/StarBorderPurple500Sharp"
-import StarPurpleSharpIcon from "@mui/icons-material/StarPurple500Sharp"
+import Divider from "@mui/material/Divider"
 import VerifyDialog from "./VerifyDialog"
 import { useNavigate } from "react-router-dom"
 import UpdateProfile from "./UpdateProfile"
+import ProductCard from "./ProductCard"
+import Rating from "@mui/material/Rating"
 
 //const DEBUG = true
 const DEBUGTOKEN2 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pc3N1bGkiLCJpZCI6NjIsImlhdCI6MTY5NDE1NDM0NH0.DFPZ-EXLcJEyKu_6PkJK_QA5DFT9TB9aOlgW9vax750"
@@ -28,7 +29,8 @@ interface Product {
 	title: string
 	category_id: number
 	subcategory_id: number
-	location: string
+	city: string
+	postal_code: string
 	description: string
 	price: number
 	// product_image?: any
@@ -44,7 +46,7 @@ function Profile() {
 	const navigate = useNavigate()
 
 	// const id = useLoaderData() as string
-	const id = 62
+	const userId = 62
 
 	const handleVerification = () => {
 		setVerifyOpen(true)
@@ -85,12 +87,12 @@ function Profile() {
 			}
 		}
 		fetchUser()
-	}, [id, token])
+	}, [userId, token])
 
 	useEffect(() => {
 		const fetchOwnProducts = async () => {
 			try {
-				const response = await axios("/api/product/user/" + id)
+				const response = await axios("/api/product/user/" + userId)
 				setOwnProducts(response.data)
 
 			} catch (error) {
@@ -146,11 +148,8 @@ function Profile() {
 						<div className="userPhone">Puhelinnumero: {user?.phone}</div>
 						<div>Tuotteita myynnissä: {ownProducts?.length}</div>
 						<div>Oma tähtiarvio:
-							<StarPurpleSharpIcon />
-							<StarPurpleSharpIcon />
-							<StarPurpleSharpIcon />
-							<StarBorderPurpleSharpIcon />
-							<StarBorderPurpleSharpIcon /></div>
+							<Rating name="read-only" value={3.33} precision={0.1} readOnly />
+						</div>
 					</div>
 
 				</Grid>
@@ -158,7 +157,7 @@ function Profile() {
 					<Grid container direction="column" spacing={2}>
 						<Grid item>
 							<Button variant="contained" onClick={() => setUpdateVisible(true)}>Muokkaa</Button>
-							
+
 							{user && <UpdateProfile // make sure user is fetched before using component 
 								isOpen={updateVisible}
 								close={(updatedUser: User) => {
@@ -166,8 +165,8 @@ function Profile() {
 									setUser(updatedUser)
 									setUpdateVisible(false)
 								}}
-								user = {user}
-								token = {token}
+								user={user}
+								token={token}
 							/>}
 						</Grid>
 						<Grid item><Button variant="contained">Vaihda salasana</Button></Grid>
@@ -179,13 +178,14 @@ function Profile() {
 				</Grid>
 			</Grid>
 
+
 			<div className="ownProducts">
-				<div>Omat tuotteet:</div>
-				<ul>
-					{ownProducts && ownProducts?.map((product: Product) => {
-						return <li key={"product:" + product.product_id}>{product.title}</li>
-					})}
-				</ul>
+				<div style={{ marginBottom: "10px" }}>Omat ilmoitukset:</div>
+
+				<Divider variant="middle" style={{ marginBottom: "10px" }} />
+				{ownProducts && ownProducts?.map((product: Product) => {
+					return <ProductCard product={product} key={"own product: " + product.product_id} />
+				})}
 			</div>
 
 		</div>
