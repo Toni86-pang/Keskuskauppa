@@ -15,6 +15,7 @@ export interface User {
 	phone?: string
 	address?: string
 	city?: string
+	postal_code?: string
 }
 
 const initialState: User = {
@@ -24,7 +25,8 @@ const initialState: User = {
 	email: "",
 	phone: "",
 	address: "",
-	city: ""
+	city: "",
+	postal_code: ""
 }
 
 function RegisterNewUser() {
@@ -34,7 +36,7 @@ function RegisterNewUser() {
 	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true)
 	const [verifyOpen, setVerifyOpen] = useState(false)
 
-	const { name, email, username, phone, address, city } = newUser
+	const { name, email, username, phone, address, city, postal_code } = newUser
 
 	const navigate = useNavigate()
 
@@ -140,6 +142,13 @@ function RegisterNewUser() {
 					onChange={handleInputChange}
 				/>
 
+				<TextField
+					type="text"
+					placeholder="Postinumero"
+					name="postal_code"
+					value={postal_code}
+					onChange={handleInputChange}
+				/>
 
 				<TextField
 					type="password"
