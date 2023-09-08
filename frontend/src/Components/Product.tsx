@@ -17,6 +17,7 @@ import Breadcrumbs from "@mui/material/Breadcrumbs"
 import Link from "@mui/material/Link"
 import DeleteButton from "./DeleteButton"
 import UpdateProductModal from "./UpdateProducts"
+import Notification from "./Notification"
 
 interface Product {
 	product_id: number
@@ -67,18 +68,18 @@ const itemData = [
 	},
 ]
 
-///////////
-
 export default function Product() {
 	const [isUpdateModalOpen, setUpdateModalOpen] = useState(false)
 	const [product, setProduct] = useState<Product | null>(null)
+	const [showNotification, setShowNotification] = useState(false)
+	const [notificationMessage, setNotificationMessage] = useState("")
+	const [notificationType, setNotificationType] = useState("success")
 	// const [loggedIn, setLoggedIn] = useState(true)
 	const [selectedImage, setSelectedImage] = useState<string | null>(
 		itemData[0].img
 	)
 	const navigate = useNavigate()
 	const id = parseInt(useLoaderData() as string, 10)
-
 	useEffect(() => {
 		const fetchProduct = async () => {
 			try {
@@ -91,22 +92,33 @@ export default function Product() {
 		fetchProduct()
 	}, [id])
 
-
-
 	const handleDelete = async () => {
 		try {
 			await axios.delete(`/api/product/delete/${product?.product_id}`)
 			// Perform any other necessary actions here after deletion
+	
+			// Set success message and type
+			setNotificationType("success")
+			setNotificationMessage("Product deleted successfully!")
 		} catch (error) {
-			console.error("error deleting product", error)
-		}
-		finally {
+			console.error("Error deleting product", error)
+	
+			// Set error message and type
+			setNotificationType("error")
+			setNotificationMessage("Error deleting product.")
+		} finally {
+		// Show the notification
+			setShowNotification(true)
+	
+			// Redirect to the product page (or any other desired route)
 			navigate("/product")
 		}
 	}
-	console.log("producst", product)
-
-
+	
+	const handleNotificationClose = () => {
+		// Close the notification
+		setShowNotification(false)
+	}
 
 	return (
 		<div>
@@ -202,9 +214,7 @@ export default function Product() {
 								>
 									{product?.postal_code}
 								</Typography>
-
 							</Grid>
-
 							<Grid item>
 								{/* {loggedIn ? (
 									<div>
@@ -241,8 +251,17 @@ export default function Product() {
 										price={product?.price || 0} // Replace with the actual price
 									/>
 								</div>
-								{product && <DeleteButton id={product.product_id} onDelete={handleDelete} />}
-							</Grid>
+								{showNotification && (
+          <Notification
+            message={notificationMessage}
+            type={notificationType}
+            onClose={handleNotificationClose}
+          />
+        )}
+      </div>
+      {product && (
+        <DeleteButton id={product.product_id} onDelete={handleDelete} />
+      )}</Grid>
 						</Grid>
 					</Grid>
 				</Grid>

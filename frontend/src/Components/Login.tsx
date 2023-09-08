@@ -3,7 +3,7 @@ import { ChangeEvent, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
-
+import NotificationComponent, {addNotification} from "./Notification"
 export interface User {
     username: string,
     password: string
@@ -20,31 +20,35 @@ function Login() {
 	const { username, password } = userValues
 	const navigate = useNavigate()
 
-	const loginUser = async () => {
-		try {
-			const response = await axios.post("/api/users/login", userValues, {
-				headers: {
-					"Content-Type": "application/json",
-				},
-			})
+	const showSuccessNotification = () => {
+		NotificationComponent.addNotification({
+		  message: "Login successful",
+		  type: "success",
+		})
+	  }
 
-			if (response.status === 200) {
+	  const loginUser = async () => {
+		try {
+		  const response = await axios.post("/api/users/login", userValues, {
+				headers: {
+			  "Content-Type": "application/json",
+				},
+		  })
+	
+		  if (response.status === 200) {
 				navigate("/")
-				alert("You are logged in")
-			} else if (response.status === 400) {
+				showSuccessNotification() // Show the success notification
+		  } else if (response.status === 400 || response.status === 401) {
 				alert("Username or password is incorrect")
-			} else if (response.status === 401) {
-				alert("Username or password is incorrect")
-			} else {
+		  } else {
 				throw new Error("Something went wrong!")
-			}
+		  }
 		} catch (error) {
-			console.error(error)
-			alert("Something went wrong!")
+		  console.error(error)
+		  alert("Something went wrong!")
 		}
 		handleClose()
-	}
-
+	  }
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target
 		setUserValues(() => ({
@@ -90,6 +94,7 @@ function Login() {
 					<Button onClick={handleClose}>Peruuta</Button>
 				</DialogActions>
 			</Dialog>
+			<NotificationComponent  />
 		</Container >
 	)
 }
