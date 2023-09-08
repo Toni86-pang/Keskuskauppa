@@ -6,7 +6,7 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogTitle from "@mui/material/DialogTitle"
 import axios from "axios"
 
-const DEBUGTOKEN2 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pc3UiLCJpZCI6NTgsImlhdCI6MTY5NDA3NjA3OH0.Dmnsy545zaR2DsVs1psPQKtUet-rd-Usr136m5zYIdg"
+
 
 interface User {
 	userId: number
@@ -24,6 +24,7 @@ interface Props {
 	isOpen: boolean
 	close: (updatedUser: User) => void
 	user: User
+	token: string
 }
 
 const styles = {
@@ -41,13 +42,13 @@ const styles = {
 }
 
 
-function UpdateProfile({ isOpen, close, user }: Props) {
+function UpdateProfile({ isOpen, close, user, token }: Props) {
 
 	const [newAddress, setNewAddress] = useState(user.address)
+	// const [token, setToken] = useState(DEBUGTOKEN2)
 	const [newPhone, setNewPhone] = useState(user.phone)
 	const [newCity, setNewCity] = useState(user.city)
 	const [newPostalCode, setNewPostalCode] = useState(user.postal_code)
-	const [token] = useState(DEBUGTOKEN2)
 
 
 	const handleAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
