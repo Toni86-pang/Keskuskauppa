@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom"
 import UpdateProfile from "./UpdateProfile"
 
 //const DEBUG = true
-const DEBUGTOKEN2 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pcyIsImlkIjo2MSwiaWF0IjoxNjk0MDg1NzczfQ.ihny-nTyCnl0hHNYjQDFjR2BXx8TOwGJCLdCA1imYOQ"
+const DEBUGTOKEN2 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pc3N1bGkiLCJpZCI6NjIsImlhdCI6MTY5NDE1NDM0NH0.DFPZ-EXLcJEyKu_6PkJK_QA5DFT9TB9aOlgW9vax750"
 
 interface User {
 	userId: number
@@ -44,7 +44,7 @@ function Profile() {
 	const navigate = useNavigate()
 
 	// const id = useLoaderData() as string
-	const id = 61
+	const id = 62
 
 	const handleVerification = () => {
 		setVerifyOpen(true)
@@ -167,6 +167,7 @@ function Profile() {
 									setUpdateVisible(false)
 								}}
 								user = {user}
+								token = {token}
 							/>}
 						</Grid>
 						<Grid item><Button variant="contained">Vaihda salasana</Button></Grid>
