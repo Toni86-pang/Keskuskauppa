@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useLoaderData, useNavigate } from "react-router-dom"
+import { useLoaderData } from "react-router-dom"
 import axios from "axios"
 import {
 	Paper,
@@ -15,9 +15,8 @@ import StarBorderPurple500SharpIcon from "@mui/icons-material/StarBorderPurple50
 import StarPurple500SharpIcon from "@mui/icons-material/StarPurple500Sharp"
 import Breadcrumbs from "@mui/material/Breadcrumbs"
 import Link from "@mui/material/Link"
-import DeleteButton from "./DeleteButton"
+// import DeleteButton from "./DeleteButton"  , useNavigate
 import UpdateProductModal from "./UpdateProducts"
-import Notification from "./Notification"
 
 interface Product {
 	product_id: number
@@ -71,13 +70,12 @@ const itemData = [
 export default function Product() {
 	const [isUpdateModalOpen, setUpdateModalOpen] = useState(false)
 	const [product, setProduct] = useState<Product | null>(null)
-	const [updateStatus, setUpdateStatus] = useState(false)
-	const [notificationMessage, setNotificationMessage] = useState("")
-	const [notificationType, setNotificationType] = useState<"success" | "error">("success")	// const [loggedIn, setLoggedIn] = useState(true)
+	// const [notificationMessage, setNotificationMessage] = useState("")
+	// const [notificationType, setNotificationType] = useState<"success" | "error">("success")	// const [loggedIn, setLoggedIn] = useState(true)
 	const [selectedImage, setSelectedImage] = useState<string | null>(
 		itemData[0].img
 	)
-	const navigate = useNavigate()
+	// const navigate = useNavigate()
 	const id = parseInt(useLoaderData() as string, 10)
 	useEffect(() => {
 		const fetchProduct = async () => {
@@ -91,25 +89,25 @@ export default function Product() {
 		fetchProduct()
 	}, [id])
 
-	const handleDelete = async () => {
-		try {
-			await axios.delete(`/api/product/delete/${product?.product_id}`)
-			setNotificationType("success")
-			setNotificationMessage("Product deleted successfully!")
-		} catch (error) {
-			console.error("Error deleting product", error)
+	// const handleDelete = async () => {
+	// 	try {
+	// 		await axios.delete(`/api/product/delete/${product?.product_id}`)
+	// 		setNotificationType("success")
+	// 		setNotificationMessage("Product deleted successfully!")
+	// 	} catch (error) {
+	// 		console.error("Error deleting product", error)
 
-			setNotificationType("error")
-			setNotificationMessage("Error deleting product.")
-		} finally {
-			setShowNotification(true)
-			navigate("/product")
-		}
-	}
+	// 		setNotificationType("error")
+	// 		setNotificationMessage("Error deleting product.")
+	// 	} finally {
+	// 		setShowNotification(true)
+	// 		navigate("/product")
+	// 	}
+	// }
 	
-	const handleNotificationClose = () => {
-		setShowNotification(false)
-	}
+	// const handleNotificationClose = () => {
+	// 	setShowNotification(false)
+	// }
 
 	return (
 		<div>
@@ -224,16 +222,10 @@ export default function Product() {
 										price={product?.price || 0}
 									/>
 								</div>
-								{updateStatus && (
-									<Notification
-										message={updateStatus}
-										type={updateStatus.startsWith("Error") ? "error" : "success"}
-										onClose={() => setUpdateStatus(null)}
-									/>
-								)}
-								{product && (
+								
+								{/* {product && (
 									<DeleteButton id={product.product_id} onDelete={handleDelete} />
-								)}
+								)} */}
 							</Grid>
 						</Grid>
 					</Grid>
