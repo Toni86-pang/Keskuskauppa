@@ -1,21 +1,27 @@
-import { useState, MouseEvent } from "react"
+import { useState, useEffect } from "react"
 import SearchIcon from "@mui/icons-material/Search"
+import axios from "axios"
 import {
 	AppBar,
 	Box,
 	Toolbar,
 	Typography,
 	Button,
-	IconButton,
-	Menu,
-	MenuItem,
 	styled,
 	InputBase,
-	alpha
+	alpha,
+
+} from "@mui/material"
+
+import CategoryMenu from "./CategoryMenu"
+
+interface Category {
+	category_id: number,
+	category_name: string,
+	subcategory_id: number,
+	subcategory_name: string
+
 }
-	from "@mui/material"
-import MenuIcon from "@mui/icons-material/Menu"
-import Login from "./Login"
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -57,56 +63,62 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	},
 }))
 
+
 const Navbar = () => {
 
-	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-	const open = Boolean(anchorEl)
+	const [categories, setCategories] = useState<Category[]>([])
+	const [subCategories, setSubCategories] = useState<{ [key: number]: Category[] }>({})
 
-	const handleClick = (event: MouseEvent<HTMLElement>) => {
-		setAnchorEl(event.currentTarget)
+	async function fetchCategories() {
+		try {
+			const response = await axios.get("/api/category")
+			const data = response.data as Category[]
+			return data
+		} catch (error) {
+			console.log("Failed to fetch categories:", error)
+			return []
+		}
 	}
 
-	const handleClose = () => {
-		setAnchorEl(null)
+	useEffect(() => {
+		fetchCategories().then((data) => {
+			setCategories(data)
+		})
+	}, [])
+
+	async function fetchSubCategories() {
+		try {
+			const response = await axios.get("/api/category/subcategory")
+			const data = response.data as Category[]
+
+			const subCategoriesGrouped: { [key: number]: Category[] } = {}
+			data.forEach((subCategory) => {
+				const mainCategoryId = subCategory.category_id
+				if (!subCategoriesGrouped[mainCategoryId]) {
+					subCategoriesGrouped[mainCategoryId] = []
+				}
+				subCategoriesGrouped[mainCategoryId].push(subCategory)
+			})
+
+			setSubCategories(subCategoriesGrouped)
+			return data
+		} catch (error) {
+			console.log("Debug 3 subcategories:", error)
+			return []
+		}
 	}
+
+	useEffect(() => {
+		fetchSubCategories()
+	}, [categories])
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="static" sx={{ bgcolor: "#6096ba" }}>
 				<Toolbar>
-					<IconButton
-						onClick={handleClick}
-						size="large"
-						edge="start"
-						color="inherit"
-						aria-label="menu"
-						sx={{
-							mr: 2,
-							":hover": { bgcolor: "darkblue" }
-						}}
-					>
-						<MenuIcon />
-					</IconButton>
-
-					<Menu
-						id="basic-menu"
-						anchorEl={anchorEl}
-						open={open}
-						onClose={handleClose}
-						MenuListProps={{
-							"aria-labelledby": "basic-button",
-						}}
-					>
-						<MenuItem onClick={handleClose}><Button href='/'>Etusivu</Button></MenuItem>
-						<MenuItem onClick={handleClose}><Button href='/product'>Astiat</Button></MenuItem>
-						<MenuItem onClick={handleClose}><Button href='/product'>Eläimet</Button></MenuItem>
-						<MenuItem onClick={handleClose}><Button href='/product'>Astiat</Button></MenuItem>
-						<MenuItem onClick={handleClose}><Button href='/product/new'>Uusi tuote</Button></MenuItem>
-
-
-					</Menu>
+					<CategoryMenu categories={categories} subCategories={subCategories} />
 					<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Keskuskauppa
+						Keskuskauppa
 					</Typography>
 					<Search>
 						<SearchIconWrapper>
@@ -117,13 +129,16 @@ const Navbar = () => {
 							inputProps={{ "aria-label": "search" }}
 						/>
 					</Search>
+
 					<Button
 						href='/register'
-						color="inherit">Rekisteröidy</Button> 
-					<div><Login/></div>
+						color="inherit">Register</Button> <Button
+						href='/login'
+						color="inherit">Login</Button>
 				</Toolbar>
 			</AppBar>
-		</Box>
+
+		</Box >
 	)
 }
 export default Navbar
