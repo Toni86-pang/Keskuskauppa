@@ -19,16 +19,6 @@ interface UpdateProductModalProps {
   price: number
 }
 
-// function Feedback({ status }: { status: string | null }) {
-//   return (
-//     <Snackbar open={status !== null} autoHideDuration={6000}>
-//       <MuiAlert elevation={6} variant="filled" severity={status === "Update successful" ? "success" : "error"}>
-//         {status}
-//       </MuiAlert>
-//     </Snackbar>
-//   );
-// }
-
 function UpdateProductModal({
 	isOpen,
 	onClose,

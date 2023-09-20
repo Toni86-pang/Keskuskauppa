@@ -71,10 +71,9 @@ const itemData = [
 export default function Product() {
 	const [isUpdateModalOpen, setUpdateModalOpen] = useState(false)
 	const [product, setProduct] = useState<Product | null>(null)
-	const [showNotification, setShowNotification] = useState(false)
+	const [updateStatus, setUpdateStatus] = useState(false)
 	const [notificationMessage, setNotificationMessage] = useState("")
-	const [notificationType, setNotificationType] = useState("success")
-	// const [loggedIn, setLoggedIn] = useState(true)
+	const [notificationType, setNotificationType] = useState<"success" | "error">("success")	// const [loggedIn, setLoggedIn] = useState(true)
 	const [selectedImage, setSelectedImage] = useState<string | null>(
 		itemData[0].img
 	)
@@ -95,28 +94,20 @@ export default function Product() {
 	const handleDelete = async () => {
 		try {
 			await axios.delete(`/api/product/delete/${product?.product_id}`)
-			// Perform any other necessary actions here after deletion
-	
-			// Set success message and type
 			setNotificationType("success")
 			setNotificationMessage("Product deleted successfully!")
 		} catch (error) {
 			console.error("Error deleting product", error)
-	
-			// Set error message and type
+
 			setNotificationType("error")
 			setNotificationMessage("Error deleting product.")
 		} finally {
-		// Show the notification
 			setShowNotification(true)
-	
-			// Redirect to the product page (or any other desired route)
 			navigate("/product")
 		}
 	}
 	
 	const handleNotificationClose = () => {
-		// Close the notification
 		setShowNotification(false)
 	}
 
@@ -216,52 +207,34 @@ export default function Product() {
 								</Typography>
 							</Grid>
 							<Grid item>
-								{/* {loggedIn ? (
-									<div>
-										<Button variant="outlined">
-											Ostoskoriin
-										</Button>
-										<Button variant="outlined">
-											Viesti
-										</Button>
-									</div>
-								) : (
-									<Button
-										variant="outlined"
-										href="/login"
-										size="small"
-									>
-										Kirjaudu sisään ostaaksesi
-										</Button>
-								)} */}
 								<div>
 									<Button variant="outlined" onClick={() => setUpdateModalOpen(true)}>
-										Päivitä tuote
+    Päivitä tuote
 									</Button>
 									<UpdateProductModal
 										isOpen={isUpdateModalOpen}
 										onClose={() => setUpdateModalOpen(false)}
-										productId={product?.product_id || 0} 
+										productId={product?.product_id || 0}
 										title={product?.title || ""}
-										category_id={product?.category_id || 0} // Replace with the actual category ID
-										subcategory_id={product?.subcategory_id || 0} // Replace with the actual subcategory ID
-										city={product?.city.split(",")[0] || ""} // Replace with actual location parsing logic
-										postal_code={product?.postal_code.split(",")[1] || ""} // Replace with actual location parsing logic
+										category_id={product?.category_id || 0}
+										subcategory_id={product?.subcategory_id || 0}
+										city={product?.city.split(",")[0] || ""}
+										postal_code={product?.postal_code.split(",")[1] || ""}
 										description={product?.description || ""}
-										price={product?.price || 0} // Replace with the actual price
+										price={product?.price || 0}
 									/>
 								</div>
-								{showNotification && (
-          <Notification
-            message={notificationMessage}
-            type={notificationType}
-            onClose={handleNotificationClose}
-          />
-        )}
-      </div>
-      {product && (
-        <DeleteButton id={product.product_id} onDelete={handleDelete} />
-      )}</Grid>
+								{updateStatus && (
+									<Notification
+										message={updateStatus}
+										type={updateStatus.startsWith("Error") ? "error" : "success"}
+										onClose={() => setUpdateStatus(null)}
+									/>
+								)}
+								{product && (
+									<DeleteButton id={product.product_id} onDelete={handleDelete} />
+								)}
+							</Grid>
 						</Grid>
 					</Grid>
 				</Grid>
