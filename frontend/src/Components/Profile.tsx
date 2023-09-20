@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom"
 import UpdateProfile from "./UpdateProfile"
 import ProductCard from "./ProductCard"
 import Rating from "@mui/material/Rating"
-import Crumbs from "./Crumbs"
 
 //const DEBUG = true
 const DEBUGTOKEN2 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pc3N1bGkiLCJpZCI6NjIsImlhdCI6MTY5NDE1NDM0NH0.DFPZ-EXLcJEyKu_6PkJK_QA5DFT9TB9aOlgW9vax750"
@@ -103,22 +102,22 @@ function Profile() {
 		fetchOwnProducts()
 	})
 
-	interface Crumb {
-		label: string
-		url?: string
-	}
+	// interface Crumb {
+	// 	label: string
+	// 	url?: string
+	// }
 
-	const breadcrumbs : Crumb[] = [
-		{ label: "Home", url: "/" },
-		{ label: "Category", url: "/category" },
-		{ label: "Subcategory", url: "/category/subcategory" },
-		{ label: "Current Page" },
-	]
+	// const breadcrumbs : Crumb[] = [
+	// 	{ label: "Home", url: "/" },
+	// 	{ label: "Category", url: "/category" },
+	// 	{ label: "Subcategory", url: "/category/subcategory" },
+	// 	{ label: "Current Page" },
+	// ]
 
 	return (
 
 		<div className="profile">
-			<Crumbs items={breadcrumbs}/>
+			{/* <Crumbs items={breadcrumbs}/> */}
 			<div>
 				<Breadcrumbs aria-label="breadcrumb">
 					<Link
