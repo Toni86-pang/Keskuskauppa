@@ -57,7 +57,9 @@ function RegisterNewUser() {
 			} else if (response.status === 401) {
 				setNewUser(initialState)
 				setShowErrorNotification(true)
-			} else {
+				
+			} 
+			else {
 				setNewUser(initialState)
 				throw new Error("Something went wrong!")
 			}
