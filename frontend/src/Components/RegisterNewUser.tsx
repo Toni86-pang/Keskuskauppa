@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { Button, Container, TextField } from "@mui/material"
 import VerifyDialog from "./VerifyDialog"
-
+import Notification from "./Notification"
 
 
 export interface User {
@@ -36,6 +36,9 @@ function RegisterNewUser() {
 	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true)
 	const [verifyOpen, setVerifyOpen] = useState(false)
 
+	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
+	const [showErrorNotification, setShowErrorNotification] = useState(false)
+
 	const { name, email, username, phone, address, city, postal_code } = newUser
 
 	const navigate = useNavigate()
@@ -50,20 +53,20 @@ function RegisterNewUser() {
 			})
 			if (response.status === 200) {
 				navigate("/")
-				alert("User register success")
+				setShowSuccessNotification(true)
 			} else if (response.status === 401) {
 				setNewUser(initialState)
-				alert("Username already exists.")
+				setShowErrorNotification(true)
 			} else {
 				setNewUser(initialState)
 				throw new Error("Something went wrong!")
 			}
 		} catch (error) {
 			console.error(error)
-			alert("Something went wrong!")
+			setShowErrorNotification(true) 
 		}
 	}
-
+	
 	const verifyDialogProps = {
 		messageText: "Rekisteröidäänkö näillä tiedoilla?",
 		isOpen: verifyOpen,
@@ -186,6 +189,27 @@ function RegisterNewUser() {
 					Cancel
 				</Button>
 				<VerifyDialog {...verifyDialogProps} />
+
+				{showSuccessNotification && (
+					<Notification
+						open={showErrorNotification}	
+						message="Registration successful!"
+						type="success"
+						onClose={() => setShowSuccessNotification(false)}
+						duration={5000} // Set the duration for the success notification
+					/>
+				)}
+
+				{showErrorNotification && (
+					<Notification
+						open={showErrorNotification}
+						message="Something went wrong or username already exists."
+						type="error"
+						onClose={() => setShowErrorNotification(false)}
+						duration={5000} // Set the duration for the error notification
+					/>
+				)}
+
 			</Container>
 
 		</Container >
