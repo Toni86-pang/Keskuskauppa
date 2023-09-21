@@ -1,0 +1,89 @@
+import React, { useState } from "react"
+import { Button, IconButton, Menu, MenuItem } from "@mui/material"
+import MenuIcon from "@mui/icons-material/Menu"
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
+
+interface Category {
+	category_id: number
+	category_name: string
+	subcategory_id: number
+	subcategory_name: string
+}
+
+interface Props {
+	categories: Category[];
+	subCategories: { [key: number]: Category[] };
+}
+
+const CategoryMenu = ({ categories, subCategories }: Props) => {
+	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+	// anchor element array for submenus 
+	const [submenuAnchorEls, setSubmenuAnchorEls] = useState<(null | HTMLElement)[]>(new Array(categories.length).fill(null))
+	const [openedSubMenuIndex, setOpenedSubMenuIndex] = useState<number | null>(null)
+
+	const open = Boolean(anchorEl)
+
+	const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(event.currentTarget)
+	}
+
+	const handleMenuClose = () => {
+		setAnchorEl(null)
+		setOpenedSubMenuIndex(null)
+	}
+
+	// sets all anchor elements to null and then current one to element received by mouse click event.
+	// sets the index for the open property for current submenu
+	const handleSubMenuOpen = (event: React.MouseEvent<HTMLElement>, index: number) => {
+		const updatedAnchors = new Array(categories.length).fill(null)
+		updatedAnchors[index] = event.currentTarget
+		setSubmenuAnchorEls(updatedAnchors)
+		setOpenedSubMenuIndex(index)
+	}
+
+	const handleSubMenuClose = () => {
+		const updatedAnchors = new Array(categories.length).fill(null)
+		setSubmenuAnchorEls(updatedAnchors)
+		setOpenedSubMenuIndex(null)
+	}
+
+	return (
+		<>
+			<IconButton onClick={handleMenuOpen} size="large" edge="start" color="inherit" aria-label="menu">
+				<MenuIcon />
+			</IconButton>
+
+			<Menu
+				anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
+				<MenuItem>
+					<Button href="/">Etusivu</Button>
+				</MenuItem>
+				{categories.map((category, index) => (
+					<div key={"category " + index.toString()}>
+						<MenuItem onClick={(e) => handleSubMenuOpen(e, index)}>
+							<Button href={`/product/${category.category_id}`} sx={{ "&:hover": { textDecoration: "underline" } }} >{category.category_name}</Button>
+							<ArrowDropDownIcon sx={{ transform: "rotate(-90deg)", marginLeft: "auto" }} />
+						</MenuItem>
+
+						{/* SubMenus */}
+						<Menu
+							anchorEl={submenuAnchorEls[index]}
+							open={openedSubMenuIndex === index}
+							onClose={handleSubMenuClose}
+							anchorOrigin={{ vertical: "top", horizontal: "right" }}
+							transformOrigin={{ vertical: "top", horizontal: "left" }}
+						>
+							{subCategories[1] && subCategories[category.category_id].map((subCategory, subMenuIndex) => (
+								<MenuItem key={"subcategory " + subMenuIndex.toString()} onClick={handleMenuClose}>
+									<Button href={`/product/${subCategory.subcategory_id}`} sx={{ "&:hover": { textDecoration: "underline" } }} >{subCategory.subcategory_name}</Button>
+								</MenuItem>
+							))}
+						</Menu>
+					</div>
+				))}
+			</Menu>
+		</>
+	)
+}
+
+export default CategoryMenu
