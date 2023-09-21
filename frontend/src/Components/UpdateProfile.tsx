@@ -5,19 +5,9 @@ import Button from "@mui/material/Button"
 import DialogContent from "@mui/material/DialogContent"
 import DialogTitle from "@mui/material/DialogTitle"
 import axios from "axios"
+import { User } from "./Login"
 
 const DEBUGTOKEN2 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pc3UiLCJpZCI6NTgsImlhdCI6MTY5NDA3NjA3OH0.Dmnsy545zaR2DsVs1psPQKtUet-rd-Usr136m5zYIdg"
-
-interface User {
-	userId: number
-	username: string
-	name: string
-	email: string
-	phone: string
-	address: string
-	city: string
-	postal_code: string
-}
 
 
 interface Props {
@@ -46,7 +36,7 @@ function UpdateProfile({ isOpen, close, user }: Props) {
 	const [newAddress, setNewAddress] = useState(user.address)
 	const [newPhone, setNewPhone] = useState(user.phone)
 	const [newCity, setNewCity] = useState(user.city)
-	const [newPostalCode, setNewPostalCode] = useState(user.postal_code)
+	const [newPostalCode, setNewPostalCode] = useState(user.postalCode)
 	const [token] = useState(DEBUGTOKEN2)
 
 
@@ -67,7 +57,7 @@ function UpdateProfile({ isOpen, close, user }: Props) {
 		setNewAddress(user.address)
 		setNewPhone(user.phone)
 		setNewCity(user.city)
-		setNewPostalCode(user.postal_code)
+		setNewPostalCode(user.postalCode)
 		// calls profile page's close function when closing the modal. 
 		close(user)
 	}
@@ -86,7 +76,7 @@ function UpdateProfile({ isOpen, close, user }: Props) {
 					"Authorization": `Bearer ${token}`
 				}
 			})
-			close({ ...user, address: newAddress, phone: newPhone, city: newCity, postal_code: newPostalCode })
+			close({ ...user, address: newAddress, phone: newPhone, city: newCity, postalCode: newPostalCode })
 		} catch (error) {
 			console.error("error updating profile", error)
 		}

@@ -1,5 +1,5 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import { useContext, useState } from "react"
+import { ChangeEvent, useContext, useState } from "react"
 import axios from "axios"
 import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
 import { UserDataContext, UserIDContext } from "../App"
@@ -8,8 +8,31 @@ import jwt_decode from "jwt-decode"
 export interface User {
 	id: number,
     username: string,
-    password: string
+    password: string,
+	name?: string,
+	email?: string,
+	phone?: string,
+	address?: string,
+	city?: string,
+	postalCode?:string,
+	is_Admin?: boolean,
+	reviews?: number
 }
+
+const initialState: User = {
+	id: 0,
+	username: "",
+	password: "",
+	name: "",
+	email: "",
+	phone: "",
+	address: "",
+	city: "",
+	postalCode: "",
+	is_Admin: false,
+	reviews: 0
+}
+
 
 interface UserToken {
     username: string,
@@ -22,26 +45,31 @@ const useUserData = (): UserDataContext => useContext(UserIDContext)
 function Login() {
 	const userData = useUserData()
 
+	const [userValues, setUserValues] = useState<User>(initialState)
 	const [open, setOpen] = useState<boolean>(false)
 	const [loggedInUser, setLoggedInUser] = useState<boolean>(false)
+
+	const { username, password } = userValues
 
 	// const navigate = useNavigate()
 
 	const loginUser = async (username: string, password: string): Promise<UserToken | null> => {
-		const token: string = await axios.post("/api/users/login", {
+		const response = await axios.post("/api/users/login", {
 			username,
 			password
 		})
+		const token = response.data.token
+		console.log("this is token: ", token)
 
 		if (token) {
+			localStorage.setItem("token", JSON.stringify(token))
 			const decodedToken = jwt_decode(token)
-			console.log(decodedToken)
+			console.log("this is decodedtoken: ", decodedToken)
 		
 			if (decodedToken) {
 				const { username, id } = decodedToken as { username: string; id: number }
 		
 				const user: UserToken = { id, username, token }
-				localStorage.setItem("user", JSON.stringify(user))
 		
 				return user
 			} else {
@@ -61,28 +89,15 @@ function Login() {
 		return null
 	}
 
-	// const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-	// 	const { name, value } = event.target
-	// 	setUserValues(() => ({
-	// 		...userValues, [name]: value
-	// 	}))
-
-	// }
-
 	const handleLogin = async () => {
-		const username = document.getElementById("username") as HTMLInputElement
-		const password = document.getElementById("password") as HTMLInputElement
 
-		console.log(username)
-		console.log(password)
-
-		const userToken = await loginUser(username.value, password.value)
+		const userToken = await loginUser(username, password)
 
 		if (userToken) {
 			// User logged in successfully
 			console.log("Logged in:", userToken.username)
 			userData.setUser({ id: userToken.id, password: "", username: userToken.username })
-			handleClose()
+			console.log("this is userData: ", userData)
 		} else {
 			// Invalid login credentials
 			console.log("Invalid login credentials")
@@ -100,6 +115,13 @@ function Login() {
 		// }
 		setLoggedInUser(true)
 		handleClose()
+	}
+
+	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = event.target
+		setUserValues(() => ({
+			...userValues, [name]: value
+		}))
 	}
 
 	const handleLogout = () => {
@@ -133,19 +155,19 @@ function Login() {
 				<DialogContent>
 					<TextField
 						sx={{ m: 1 }}
-						id="username"
 						type="text"
 						placeholder="Käyttäjänimi"
 						name="username"
 						value={username}
+						onChange={handleInputChange}
 					/>
 					<TextField
 						sx={{ m: 1 }}
-						id="password"
 						type="password"
 						placeholder="Salasana"
 						name="password"
 						value={password}
+						onChange={handleInputChange}
 					/>
 				</DialogContent>
 				<DialogActions>

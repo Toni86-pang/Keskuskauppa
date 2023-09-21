@@ -1,7 +1,9 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { Button, Container, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material"
+import { UserDataContext, UserIDContext } from "../App"
+import { User } from "./Login"
 
 export interface Product {
     product_id: number
@@ -26,11 +28,27 @@ interface Subcategory {
 	category_id: number
 }
 
+const getLocalStorageItem = (key: string) => {
+	const item = localStorage.getItem(key)
+	if (item) {
+		return JSON.parse(item)
+	}
+	return null
+}
+
+const userToken = (getLocalStorageItem("token"))
+
+const useUserData = (): UserDataContext => useContext(UserIDContext)
+
 function ProductNew() {
 
+	const userData = useUserData()
+
+	const [user, setUser] = useState<User | null>(null)
 	const [newTitle, setNewTitle] = useState<string>("")
 	const [newDescription, setNewDescription] = useState<string>("")
 	const [newPrice, setNewPrice] = useState<number>(0)
+	const [token] = useState<string>(userToken)
 	const [newCategory, setNewCategory] = useState<string>("")
 	const [categoryId, setCategoryId] = useState<number>(0)
 	const [newSubcategory, setNewSubcategory] = useState<string>("")
@@ -39,6 +57,8 @@ function ProductNew() {
 	const [subcategories, setSubcategories] = useState<Subcategory[]>([])
 
 	const navigate = useNavigate()
+
+	const id = userData.user.id
 
 	const fetchCategories = async () => {
 		try {
@@ -49,6 +69,23 @@ function ProductNew() {
 			console.error("error fetching categories", error)
 		}
 	}
+
+	useEffect(() => {
+		const fetchUser = async () => {
+			try {
+				const response = await axios("/api/users/user/", {
+					headers: {
+						"Authorization": `Bearer ${token}`
+					}
+				})
+				console.log("this is response data: ", response.data)
+				setUser(response.data)
+			} catch (error) {
+				console.error("error fetching user	", error)
+			}
+		}
+		fetchUser()
+	}, [id, token])
 
 	useEffect(() => {
 		fetchCategories()
@@ -65,7 +102,7 @@ function ProductNew() {
 	}
 
 	const createNewProduct = async () => {
-		const product = {user_id: 2, title: newTitle, category_id: categoryId, subcategory_id: subcategoryId, postal_code: 90570, city: "Oulu", description: newDescription, price: newPrice}
+		const product = {user_id: id, title: newTitle, category_id: categoryId, subcategory_id: subcategoryId, postal_code: user?.postalCode, city: user?.city, description: newDescription, price: newPrice}
 		console.log(product)
 
 		try {
@@ -82,7 +119,7 @@ function ProductNew() {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (error: Error | any) {
 			console.error(error)
-			alert(error.response.data)
+			alert(error.message)
 		}
 		navigate("/product")
 	}

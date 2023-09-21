@@ -1,26 +1,28 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 // import { useLoaderData } from "react-router-dom"
-import axios from "axios"
 import { Grid, Breadcrumbs, Link, Typography, Button, } from "@mui/material"
 import StarBorderPurpleSharpIcon from "@mui/icons-material/StarBorderPurple500Sharp"
 import StarPurpleSharpIcon from "@mui/icons-material/StarPurple500Sharp"
 import VerifyDialog from "./VerifyDialog"
 import { useNavigate } from "react-router-dom"
 import UpdateProfile from "./UpdateProfile"
+import { UserDataContext, UserIDContext } from "../App"
+import { deleteUser, fetchOwnProducts, fetchUser, getLocalStorageItem } from "../services"
+import { User } from "./Login"
 
 //const DEBUG = true
-const DEBUGTOKEN2 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pcyIsImlkIjo2MSwiaWF0IjoxNjk0MDg1NzczfQ.ihny-nTyCnl0hHNYjQDFjR2BXx8TOwGJCLdCA1imYOQ"
+// const DEBUGTOKEN2 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pcyIsImlkIjo2MSwiaWF0IjoxNjk0MDg1NzczfQ.ihny-nTyCnl0hHNYjQDFjR2BXx8TOwGJCLdCA1imYOQ"
 
-interface User {
-	userId: number
-	username: string
-	name: string
-	email: string
-	phone: string
-	address: string
-	city: string
-	postal_code: string
-}
+// interface User {
+// 	userId: number
+// 	username: string
+// 	name: string
+// 	email: string
+// 	phone: string
+// 	address: string
+// 	city: string
+// 	postal_code: string
+// }
 
 interface Product {
 	product_id: number
@@ -34,33 +36,62 @@ interface Product {
 	// product_image?: any
 }
 
+const userToken = (getLocalStorageItem("token"))
+console.log(userToken)
+
+const useUserData = (): UserDataContext => useContext(UserIDContext)
+
 function Profile() {
-
-	const [user, setUser] = useState<User | null>(null)
+	
+	// const [user, setUser] = useState<User | null>(null)
+	const [token] = useState<string>(userToken)
 	const [updateVisible, setUpdateVisible] = useState(false)
-	const [token] = useState(DEBUGTOKEN2)
 	const [ownProducts, setOwnProducts] = useState<Product[] | null>(null)
-	const [verifyOpen, setVerifyOpen] = useState(false)
+	const [verifyOpen, setVerifyOpen] = useState<boolean>(false)
 	const navigate = useNavigate()
+	const userData = useUserData()
 
-	// const id = useLoaderData() as string
-	const id = 61
+	const id = userData.user.id
+	console.log("this is userid", id)
+	// const id = 61
 
 	const handleVerification = () => {
 		setVerifyOpen(true)
 	}
 
-	const deleteProfile = async () => {
-		try {
-			await axios.delete("/api/users/delete", {
-				headers: {
-					"Authorization": `Bearer ${token}`
-				}
-			})
-			navigate("/")
-		} catch (error) {
-			console.error("error deleting user	", error)
+	useEffect(() => {
+		const fetchUsers = () => {
+			if(token !== undefined){
+				fetchUser(token).then(
+					user => {
+						if (user !== undefined) {
+							console.log("jippijei!")
+							userData.setUser(user)
+						} else {
+							console.error("error fetching user")
+						}
+					}
+				)}
 		}
+		fetchUsers()
+	}, [token])
+
+	useEffect(() => {
+		fetchOwnProducts(id).then(
+			products => {
+				if(products !== undefined) {
+					setOwnProducts(products)
+				} else {
+					console.error("error fetching products")
+				}
+			}
+		)
+	},[id])
+
+	
+	const deleteProfile = async () => {
+		deleteUser(token)
+		navigate("/")
 	}
 
 	const verifyDialogProps = {
@@ -70,35 +101,6 @@ function Profile() {
 		setOpen: setVerifyOpen,
 		onAccept: deleteProfile
 	}
-
-	useEffect(() => {
-		const fetchUser = async () => {
-			try {
-				const response = await axios("/api/users/user/", {
-					headers: {
-						"Authorization": `Bearer ${token}`
-					}
-				})
-				setUser(response.data)
-			} catch (error) {
-				console.error("error fetching user	", error)
-			}
-		}
-		fetchUser()
-	}, [id, token])
-
-	useEffect(() => {
-		const fetchOwnProducts = async () => {
-			try {
-				const response = await axios("/api/product/user/" + id)
-				setOwnProducts(response.data)
-
-			} catch (error) {
-				console.error("error fetching user	", error)
-			}
-		}
-		fetchOwnProducts()
-	})
 
 	return (
 		<div className="profile">
@@ -136,14 +138,14 @@ function Profile() {
 					}} /></div>
 
 				</Grid>
-				<Grid item xs={5}>
+				{userData.user.phone && <Grid item xs={5}>
 					<div className="user">
-						<div className="userName">Nimi: {user?.name}</div>
-						<div className="userUsername">Käyttäjänimi: {user?.username}</div>
-						<div className="userAddress">Osoite: {user?.address}</div>
-						<div className="userCity">Kaupunki: {user?.city}</div>
-						<div className="userEmail">Sähköposti: {user?.email}</div>
-						<div className="userPhone">Puhelinnumero: {user?.phone}</div>
+						<div className="userName">Nimi: {userData.user.name}</div>
+						<div className="userUsername">Käyttäjänimi: {userData.user.username}</div>
+						<div className="userAddress">Osoite: {userData.user.address}</div>
+						<div className="userCity">Kaupunki: {userData.user.city}</div>
+						<div className="userEmail">Sähköposti: {userData.user.email}</div>
+						<div className="userPhone">Puhelinnumero: {userData.user.phone}</div>
 						<div>Tuotteita myynnissä: {ownProducts?.length}</div>
 						<div>Oma tähtiarvio:
 							<StarPurpleSharpIcon />
@@ -152,21 +154,21 @@ function Profile() {
 							<StarBorderPurpleSharpIcon />
 							<StarBorderPurpleSharpIcon /></div>
 					</div>
-
-				</Grid>
+				</Grid>}
+				{!userData.user.phone && <p>Tietoja ladataan...</p>}
 				<Grid item xs={3}>
 					<Grid container direction="column" spacing={2}>
 						<Grid item>
 							<Button variant="contained" onClick={() => setUpdateVisible(true)}>Muokkaa</Button>
 							
-							{user && <UpdateProfile // make sure user is fetched before using component 
+							{userData && <UpdateProfile // make sure user is fetched before using component 
 								isOpen={updateVisible}
 								close={(updatedUser: User) => {
 									// update profile page with new info when modal is closed
-									setUser(updatedUser)
+									userData.setUser(updatedUser)
 									setUpdateVisible(false)
 								}}
-								user = {user}
+								user = {userData.user}
 							/>}
 						</Grid>
 						<Grid item><Button variant="contained">Vaihda salasana</Button></Grid>

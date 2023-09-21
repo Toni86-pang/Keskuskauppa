@@ -8,7 +8,7 @@ import { User } from "./Components/Login"
 function App() {
 	// const [count, setCount] = useState(0)
 	const [userData, setUserData] = useState<{ user: User }>({ user: 
-		{ user_id: 0,
+		{ id: 0,
 			username: "",
 			password: "" } })
 
@@ -32,7 +32,7 @@ export interface UserDataContext {
 }
 
 export const UserIDContext = createContext<UserDataContext>({
-	user: { user_id: 0,
+	user: { id: 0,
 		username: "",
 		password: "",},
 	setUser: () => {
