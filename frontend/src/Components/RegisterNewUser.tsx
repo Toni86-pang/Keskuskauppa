@@ -74,7 +74,7 @@ function RegisterNewUser() {
 			setShowErrorNotificationThree(true)
 		}
 	}
-
+	
 	const verifyDialogProps = {
 		messageText: "Rekisteröidäänkö näillä tiedoilla?",
 		isOpen: verifyOpen,
