@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react"
 import SearchIcon from "@mui/icons-material/Search"
-import axios from "axios"
 import {
 	AppBar,
 	Box,
@@ -12,16 +10,8 @@ import {
 	alpha,
 
 } from "@mui/material"
-
 import CategoryMenu from "./CategoryMenu"
-
-interface Category {
-	category_id: number,
-	category_name: string,
-	subcategory_id: number,
-	subcategory_name: string
-
-}
+import Login from "./Login"
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -66,57 +56,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const Navbar = () => {
 
-	const [categories, setCategories] = useState<Category[]>([])
-	const [subCategories, setSubCategories] = useState<{ [key: number]: Category[] }>({})
-
-	async function fetchCategories() {
-		try {
-			const response = await axios.get("/api/category")
-			const data = response.data as Category[]
-			return data
-		} catch (error) {
-			console.log("Failed to fetch categories:", error)
-			return []
-		}
-	}
-
-	useEffect(() => {
-		fetchCategories().then((data) => {
-			setCategories(data)
-		})
-	}, [])
-
-	async function fetchSubCategories() {
-		try {
-			const response = await axios.get("/api/category/subcategory")
-			const data = response.data as Category[]
-
-			const subCategoriesGrouped: { [key: number]: Category[] } = {}
-			data.forEach((subCategory) => {
-				const mainCategoryId = subCategory.category_id
-				if (!subCategoriesGrouped[mainCategoryId]) {
-					subCategoriesGrouped[mainCategoryId] = []
-				}
-				subCategoriesGrouped[mainCategoryId].push(subCategory)
-			})
-
-			setSubCategories(subCategoriesGrouped)
-			return data
-		} catch (error) {
-			console.log("Debug 3 subcategories:", error)
-			return []
-		}
-	}
-
-	useEffect(() => {
-		fetchSubCategories()
-	}, [categories])
-
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="static" sx={{ bgcolor: "#6096ba" }}>
 				<Toolbar>
-					<CategoryMenu categories={categories} subCategories={subCategories} />
+					<CategoryMenu />
 					<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
 						Keskuskauppa
 					</Typography>
@@ -132,9 +76,8 @@ const Navbar = () => {
 
 					<Button
 						href='/register'
-						color="inherit">Register</Button> <Button
-						href='/login'
-						color="inherit">Login</Button>
+						color="inherit">Rekisteröidy</Button>
+					<div><Login /></div>
 				</Toolbar>
 			</AppBar>
 
