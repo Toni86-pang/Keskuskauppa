@@ -3,7 +3,6 @@ import { ChangeEvent, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
-import NotificationComponent, {addNotification} from "./Notification"
 export interface User {
     username: string,
     password: string
@@ -20,12 +19,12 @@ function Login() {
 	const { username, password } = userValues
 	const navigate = useNavigate()
 
-	const showSuccessNotification = () => {
+	/*const showSuccessNotification = () => {
 		NotificationComponent.addNotification({
 		  message: "Login successful",
 		  type: "success",
 		})
-	  }
+	  }*/
 
 	  const loginUser = async () => {
 		try {
@@ -37,7 +36,7 @@ function Login() {
 	
 		  if (response.status === 200) {
 				navigate("/")
-				showSuccessNotification() // Show the success notification
+				//showSuccessNotification() // Show the success notification
 		  } else if (response.status === 400 || response.status === 401) {
 				alert("Username or password is incorrect")
 		  } else {
@@ -94,7 +93,7 @@ function Login() {
 					<Button onClick={handleClose}>Peruuta</Button>
 				</DialogActions>
 			</Dialog>
-			<NotificationComponent  />
+			{/*<NotificationComponent  /> */}
 		</Container >
 	)
 }
