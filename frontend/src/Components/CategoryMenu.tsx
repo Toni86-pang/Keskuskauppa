@@ -1,7 +1,8 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Button, IconButton, Menu, MenuItem } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
+import axios from "axios"
 
 interface Category {
 	category_id: number
@@ -10,18 +11,61 @@ interface Category {
 	subcategory_name: string
 }
 
-interface Props {
-	categories: Category[];
-	subCategories: { [key: number]: Category[] };
-}
+const CategoryMenu = () => {
 
-const CategoryMenu = ({ categories, subCategories }: Props) => {
+	// anchor element for main category dropdown
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+	const open = Boolean(anchorEl)
+
+	const [categories, setCategories] = useState<Category[]>([])
+	const [subCategories, setSubCategories] = useState<{ [key: number]: Category[] }>({})
+
 	// anchor element array for submenus 
 	const [submenuAnchorEls, setSubmenuAnchorEls] = useState<(null | HTMLElement)[]>(new Array(categories.length).fill(null))
 	const [openedSubMenuIndex, setOpenedSubMenuIndex] = useState<number | null>(null)
 
-	const open = Boolean(anchorEl)
+	async function fetchCategories() {
+		try {
+			const response = await axios.get("/api/category")
+			const data = response.data as Category[]
+			return data
+		} catch (error) {
+			console.log("Failed to fetch categories:", error)
+			return []
+		}
+	}
+
+	useEffect(() => {
+		fetchCategories().then((data) => {
+			setCategories(data)
+		})
+	}, [])
+
+	async function fetchSubCategories() {
+		try {
+			const response = await axios.get("/api/category/subcategory")
+			const data = response.data as Category[]
+
+			const subCategoriesGrouped: { [key: number]: Category[] } = {}
+			data.forEach((subCategory) => {
+				const mainCategoryId = subCategory.category_id
+				if (!subCategoriesGrouped[mainCategoryId]) {
+					subCategoriesGrouped[mainCategoryId] = []
+				}
+				subCategoriesGrouped[mainCategoryId].push(subCategory)
+			})
+
+			setSubCategories(subCategoriesGrouped)
+			return data
+		} catch (error) {
+			console.log("Debug 3 subcategories:", error)
+			return []
+		}
+	}
+
+	useEffect(() => {
+		fetchSubCategories()
+	}, [categories])
 
 	const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget)
