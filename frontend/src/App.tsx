@@ -4,7 +4,7 @@ import { Container } from "@mui/material"
 import { createContext, useState } from "react"
 
 function App() {
-	const [token, setToken] = useState<string>()
+	const [token, setToken] = useState("")
 
 	return (
 		<UserIDContext.Provider value={{ token, setToken }}>
@@ -17,16 +17,12 @@ function App() {
 }
 
 export interface UserTokenContext {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	token: any
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	setToken: (token: any) => void
+	token: string
+	setToken: (token: string) => void
 }
 
 export const UserIDContext = createContext<UserTokenContext>({
-	token: " ",
-	setToken: () => {
-		/*noop*/
-	}
+	token: "",
+	setToken: () => {}
 })
 export default App

@@ -46,36 +46,36 @@ function Profile() {
 		setVerifyOpen(true)
 	}
 
-	useEffect(() => {
-		const fetchUsers = () => {
-			if(userToken.token !== undefined){
-				fetchUser(userToken.token).then(
-					user => {
-						if (user !== undefined) {
-							setUser(user)
-						} else {
-							console.error("error fetching user")
-						}
-					}
-				)}
+	const fetchInfo = async () => {
+		if(!userToken.token){
+			setUser(initialState)
+			setOwnProducts(null)
+			return
 		}
-		fetchUsers()
+
+		const user = await fetchUser(userToken.token)
+
+		if (user === undefined) {
+			console.error("error fetching user")
+			return
+		}
+		
+		const products = await fetchOwnProducts(Number(user.user_id))
+		
+		if(products === undefined) {
+			console.error("error fetching products")
+			return
+		}
+		
+		setUser(user)
+		setOwnProducts(products)
+	}
+
+	useEffect(() => {
+		console.log("haetaan käyttäjää token", userToken.token)
+		fetchInfo()
 	}, [userToken.token])
 
-	useEffect(() => {
-		console.log(user.user_id)
-		fetchOwnProducts(Number(user.user_id)).then(
-			products => {
-				if(products !== undefined) {
-					setOwnProducts(products)
-				} else {
-					console.error("error fetching products")
-				}
-			}
-		)
-	},[userToken.token])
-
-	
 	const deleteProfile = async () => {
 		deleteUser(userToken.token)
 		// navigate("/")
