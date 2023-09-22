@@ -2,13 +2,13 @@
 import axios from "axios"
 
 
-export const getLocalStorageItem = (key: string) => {
-	const item = localStorage.getItem(key)
-	if (item) {
-		return JSON.parse(item)
-	}
-	return null
-}
+// export const getLocalStorageItem = (key: string) => {
+// 	const item = localStorage.getItem(key)
+// 	if (item) {
+// 		return JSON.parse(item)
+// 	}
+// 	return null
+// }
 
 export const deleteUser = async (token: string) => {
 	return axios

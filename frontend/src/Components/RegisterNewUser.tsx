@@ -3,20 +3,7 @@ import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { Button, Container, TextField } from "@mui/material"
 import VerifyDialog from "./VerifyDialog"
-
-
-
-export interface User {
-	user_id?: number
-	name?: string
-	username?: string
-	password?: string
-	email?: string
-	phone?: string
-	address?: string
-	city?: string
-	postal_code?: string
-}
+import { User } from "../types"
 
 const initialState: User = {
 	name: "",
@@ -26,7 +13,7 @@ const initialState: User = {
 	phone: "",
 	address: "",
 	city: "",
-	postal_code: ""
+	postalCode: ""
 }
 
 function RegisterNewUser() {
@@ -36,7 +23,7 @@ function RegisterNewUser() {
 	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true)
 	const [verifyOpen, setVerifyOpen] = useState(false)
 
-	const { name, email, username, phone, address, city, postal_code } = newUser
+	const { name, email, username, phone, address, city, postalCode } = newUser
 
 	const navigate = useNavigate()
 
@@ -146,7 +133,7 @@ function RegisterNewUser() {
 					type="text"
 					placeholder="Postinumero"
 					name="postal_code"
-					value={postal_code}
+					value={postalCode}
 					onChange={handleInputChange}
 				/>
 

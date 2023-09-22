@@ -2,119 +2,45 @@
 import { ChangeEvent, useContext, useState } from "react"
 import axios from "axios"
 import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
-import { UserDataContext, UserIDContext } from "../App"
-import jwt_decode from "jwt-decode"
-
-export interface User {
-	id: number,
-    username: string,
-    password: string,
-	name?: string,
-	email?: string,
-	phone?: string,
-	address?: string,
-	city?: string,
-	postalCode?:string,
-	is_Admin?: boolean,
-	reviews?: number
-}
+import { UserTokenContext, UserIDContext } from "../App"
+import { useNavigate } from "react-router"
+import { User } from "../types"
+// import jwt_decode from "jwt-decode"
 
 const initialState: User = {
-	id: 0,
 	username: "",
 	password: "",
-	name: "",
-	email: "",
-	phone: "",
-	address: "",
-	city: "",
-	postalCode: "",
-	is_Admin: false,
-	reviews: 0
 }
 
-
-interface UserToken {
-    username: string,
-    id: number,
-    token: string
-}
-
-const useUserData = (): UserDataContext => useContext(UserIDContext)
+const useUserToken = (): UserTokenContext => useContext(UserIDContext)
 
 function Login() {
-	const userData = useUserData()
-
 	const [userValues, setUserValues] = useState<User>(initialState)
 	const [open, setOpen] = useState<boolean>(false)
-	const [loggedInUser, setLoggedInUser] = useState<boolean>(false)
-
 	const { username, password } = userValues
+	const userToken = useUserToken()
 
-	// const navigate = useNavigate()
+	const navigate = useNavigate()
 
-	const loginUser = async (username: string, password: string): Promise<UserToken | null> => {
+	const loginUser = async (username: string, password: string) => {
 		const response = await axios.post("/api/users/login", {
 			username,
 			password
 		})
 		const token = response.data.token
-		console.log("this is token: ", token)
-
-		if (token) {
-			localStorage.setItem("token", JSON.stringify(token))
-			const decodedToken = jwt_decode(token)
-			console.log("this is decodedtoken: ", decodedToken)
-		
-			if (decodedToken) {
-				const { username, id } = decodedToken as { username: string; id: number }
-		
-				const user: UserToken = { id, username, token }
-		
-				return user
-			} else {
-				throw new Error("Invalid JWT token")
-			}
-		} 
-			
-		// 	return response.data.token
-		// } else if (response.status === 400) {
-		// 	alert("Username or password is incorrect")
-		// } else if (response.status === 401) {
-		// 	alert("Username or password is incorrect")
-		// } else {
-		// 	throw new Error("Something went wrong!")
-		// }
-	
-		return null
+		return token
 	}
 
 	const handleLogin = async () => {
 
-		const userToken = await loginUser(username, password)
+		const token = await loginUser(username, password)
+		console.log(token)
 
-		if (userToken) {
-			// User logged in successfully
-			console.log("Logged in:", userToken.username)
-			userData.setUser({ id: userToken.id, password: "", username: userToken.username })
-			console.log("this is userData: ", userData)
-		} else {
-			// Invalid login credentials
-			console.log("Invalid login credentials")
-			// Show an error message to the user
+		if (token) {
+			localStorage.setItem("token", JSON.stringify(token))
+			userToken.setToken(token)
+			handleClose()
 		}
-		// if (response.status === 200) {
-		// 	navigate("/")
-		// 	alert("You are logged in")
-		// } else if (response.status === 400) {
-		// 	alert("Username or password is incorrect")
-		// } else if (response.status === 401) {
-		// 	alert("Username or password is incorrect")
-		// } else {
-		// 	throw new Error("Something went wrong!")
-		// }
-		setLoggedInUser(true)
-		handleClose()
 	}
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -125,9 +51,11 @@ function Login() {
 	}
 
 	const handleLogout = () => {
-		setLoggedInUser(false)
 		localStorage.removeItem("token")
+		userToken.setToken(null)
+		console.log("this is usertoken from logout: ", userToken.token)
 		console.log("logged out")
+		navigate("/")
 	}
 
 	const handleOpen = () => {
@@ -140,7 +68,7 @@ function Login() {
 
 	return (
 		<Container sx={{ m: 1 }}>
-			{loggedInUser ? (
+			{userToken.token ? (
 			 <Button sx={{color: "white"}}onClick={handleLogout}>
         		Kirjaudu ulos
 				</Button>

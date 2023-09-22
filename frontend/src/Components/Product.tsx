@@ -17,17 +17,8 @@ import Breadcrumbs from "@mui/material/Breadcrumbs"
 import Link from "@mui/material/Link"
 import DeleteButton from "./DeleteButton"
 import UpdateProductModal from "./UpdateProducts"
+import { ProductType } from "../types"
 
-interface Product {
-	product_id: number
-	title: string
-	category_id: number
-	subcategory_id: number
-	city: string
-	postal_code: string
-	description: string
-	price: number
-}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, react-refresh/only-export-components
 export function loader({ params }: any) {
@@ -71,7 +62,7 @@ const itemData = [
 
 export default function Product() {
 	const [isUpdateModalOpen, setUpdateModalOpen] = useState(false)
-	const [product, setProduct] = useState<Product | null>(null)
+	const [product, setProduct] = useState<ProductType | null>(null)
 	// const [loggedIn, setLoggedIn] = useState(true)
 	const [selectedImage, setSelectedImage] = useState<string | null>(
 		itemData[0].img
@@ -200,7 +191,7 @@ export default function Product() {
 									variant="body2"
 									color="text.secondary"
 								>
-									{product?.postal_code}
+									{product?.postalCode}
 								</Typography>
 
 							</Grid>
@@ -236,7 +227,7 @@ export default function Product() {
 										category_id={product?.category_id || 0} // Replace with the actual category ID
 										subcategory_id={product?.subcategory_id || 0} // Replace with the actual subcategory ID
 										city={product?.city.split(",")[0] || ""} // Replace with actual location parsing logic
-										postal_code={product?.postal_code.split(",")[1] || ""} // Replace with actual location parsing logic
+										postal_code={product?.postalCode.split(",")[1] || ""} // Replace with actual location parsing logic
 										description={product?.description || ""}
 										price={product?.price || 0} // Replace with the actual price
 									/>

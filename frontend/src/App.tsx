@@ -1,23 +1,13 @@
-// import { useState } from 'react'
 import { Outlet } from "react-router"
 import Navbar from "./Components/Navbar"
 import { Container } from "@mui/material"
 import { createContext, useState } from "react"
-import { User } from "./Components/Login"
 
 function App() {
-	// const [count, setCount] = useState(0)
-	const [userData, setUserData] = useState<{ user: User }>({ user: 
-		{ id: 0,
-			username: "",
-			password: "" } })
-
-	const handleSetUserData = (user: User) => {
-		setUserData({ user })
-	}
+	const [token, setToken] = useState<string>()
 
 	return (
-		<UserIDContext.Provider value={{ ...userData, setUser: handleSetUserData }}>
+		<UserIDContext.Provider value={{ token, setToken }}>
 			<Container sx={{ bgcolor: "#e7ecef", minHeight: "100%" }}>
 				<Navbar />
 				<Outlet />
@@ -26,16 +16,16 @@ function App() {
 	)
 }
 
-export interface UserDataContext {
-	user: User
-	setUser: (user: User) => void
+export interface UserTokenContext {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	token: any
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setToken: (token: any) => void
 }
 
-export const UserIDContext = createContext<UserDataContext>({
-	user: { id: 0,
-		username: "",
-		password: "",},
-	setUser: () => {
+export const UserIDContext = createContext<UserTokenContext>({
+	token: " ",
+	setToken: () => {
 		/*noop*/
 	}
 })

@@ -4,55 +4,42 @@ import { Grid, Breadcrumbs, Link, Typography, Button, } from "@mui/material"
 import StarBorderPurpleSharpIcon from "@mui/icons-material/StarBorderPurple500Sharp"
 import StarPurpleSharpIcon from "@mui/icons-material/StarPurple500Sharp"
 import VerifyDialog from "./VerifyDialog"
-import { useNavigate } from "react-router-dom"
+// import { useNavigate } from "react-router-dom"
 import UpdateProfile from "./UpdateProfile"
-import { UserDataContext, UserIDContext } from "../App"
-import { deleteUser, fetchOwnProducts, fetchUser, getLocalStorageItem } from "../services"
-import { User } from "./Login"
+import { UserTokenContext, UserIDContext } from "../App"
+import { deleteUser, fetchOwnProducts, fetchUser} from "../services"
+import { ProductType, User } from "../types"
 
-//const DEBUG = true
-// const DEBUGTOKEN2 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pcyIsImlkIjo2MSwiaWF0IjoxNjk0MDg1NzczfQ.ihny-nTyCnl0hHNYjQDFjR2BXx8TOwGJCLdCA1imYOQ"
-
-// interface User {
-// 	userId: number
-// 	username: string
-// 	name: string
-// 	email: string
-// 	phone: string
-// 	address: string
-// 	city: string
-// 	postal_code: string
-// }
-
-interface Product {
-	product_id: number
-	user_id: number
-	title: string
-	category_id: number
-	subcategory_id: number
-	location: string
-	description: string
-	price: number
-	// product_image?: any
+const initialState: User = {
+	user_id: 0,
+	username: "",
+	password: "",
+	name: "",
+	email: "",
+	phone: "",
+	address: "",
+	city: "",
+	postalCode: "",
+	is_Admin: false,
+	reviews: 0
 }
 
-const userToken = (getLocalStorageItem("token"))
-console.log(userToken)
+// const userToken = (getLocalStorageItem("token"))
+// console.log(userToken)
 
-const useUserData = (): UserDataContext => useContext(UserIDContext)
+const useUserToken = (): UserTokenContext => useContext(UserIDContext)
 
 function Profile() {
 	
-	// const [user, setUser] = useState<User | null>(null)
-	const [token] = useState<string>(userToken)
+	const [user, setUser] = useState<User>(initialState)
+	// const [token] = useState<string>(userToken)
 	const [updateVisible, setUpdateVisible] = useState(false)
-	const [ownProducts, setOwnProducts] = useState<Product[] | null>(null)
+	const [ownProducts, setOwnProducts] = useState<ProductType[] | null>(null)
 	const [verifyOpen, setVerifyOpen] = useState<boolean>(false)
-	const navigate = useNavigate()
-	const userData = useUserData()
+	// const navigate = useNavigate()
+	const userToken = useUserToken()
 
-	const id = userData.user.id
-	console.log("this is userid", id)
+	// const id = userData.user.id
 	// const id = 61
 
 	const handleVerification = () => {
@@ -61,12 +48,11 @@ function Profile() {
 
 	useEffect(() => {
 		const fetchUsers = () => {
-			if(token !== undefined){
-				fetchUser(token).then(
+			if(userToken.token !== undefined){
+				fetchUser(userToken.token).then(
 					user => {
 						if (user !== undefined) {
-							console.log("jippijei!")
-							userData.setUser(user)
+							setUser(user)
 						} else {
 							console.error("error fetching user")
 						}
@@ -74,10 +60,11 @@ function Profile() {
 				)}
 		}
 		fetchUsers()
-	}, [token])
+	}, [userToken.token])
 
 	useEffect(() => {
-		fetchOwnProducts(id).then(
+		console.log(user.user_id)
+		fetchOwnProducts(Number(user.user_id)).then(
 			products => {
 				if(products !== undefined) {
 					setOwnProducts(products)
@@ -86,12 +73,12 @@ function Profile() {
 				}
 			}
 		)
-	},[id])
+	},[userToken.token])
 
 	
 	const deleteProfile = async () => {
-		deleteUser(token)
-		navigate("/")
+		deleteUser(userToken.token)
+		// navigate("/")
 	}
 
 	const verifyDialogProps = {
@@ -138,14 +125,14 @@ function Profile() {
 					}} /></div>
 
 				</Grid>
-				{userData.user.phone && <Grid item xs={5}>
+				{user && <Grid item xs={5}>
 					<div className="user">
-						<div className="userName">Nimi: {userData.user.name}</div>
-						<div className="userUsername">Käyttäjänimi: {userData.user.username}</div>
-						<div className="userAddress">Osoite: {userData.user.address}</div>
-						<div className="userCity">Kaupunki: {userData.user.city}</div>
-						<div className="userEmail">Sähköposti: {userData.user.email}</div>
-						<div className="userPhone">Puhelinnumero: {userData.user.phone}</div>
+						<div className="userName">Nimi: {user.name}</div>
+						<div className="userUsername">Käyttäjänimi: {user.username}</div>
+						<div className="userAddress">Osoite: {user.address}</div>
+						<div className="userCity">Kaupunki: {user.city}</div>
+						<div className="userEmail">Sähköposti: {user.email}</div>
+						<div className="userPhone">Puhelinnumero: {user.phone}</div>
 						<div>Tuotteita myynnissä: {ownProducts?.length}</div>
 						<div>Oma tähtiarvio:
 							<StarPurpleSharpIcon />
@@ -155,20 +142,19 @@ function Profile() {
 							<StarBorderPurpleSharpIcon /></div>
 					</div>
 				</Grid>}
-				{!userData.user.phone && <p>Tietoja ladataan...</p>}
 				<Grid item xs={3}>
 					<Grid container direction="column" spacing={2}>
 						<Grid item>
 							<Button variant="contained" onClick={() => setUpdateVisible(true)}>Muokkaa</Button>
 							
-							{userData && <UpdateProfile // make sure user is fetched before using component 
+							{user && <UpdateProfile // make sure user is fetched before using component 
 								isOpen={updateVisible}
 								close={(updatedUser: User) => {
 									// update profile page with new info when modal is closed
-									userData.setUser(updatedUser)
+									setUser(updatedUser)
 									setUpdateVisible(false)
 								}}
-								user = {userData.user}
+								user = {user}
 							/>}
 						</Grid>
 						<Grid item><Button variant="contained">Vaihda salasana</Button></Grid>
@@ -183,7 +169,7 @@ function Profile() {
 			<div className="ownProducts">
 				<div>Omat tuotteet:</div>
 				<ul>
-					{ownProducts && ownProducts?.map((product: Product) => {
+					{ownProducts && ownProducts?.map((product: ProductType) => {
 						return <li key={"product:" + product.product_id}>{product.title}</li>
 					})}
 				</ul>

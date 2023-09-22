@@ -2,53 +2,20 @@ import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { Button, Container, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material"
-import { UserDataContext, UserIDContext } from "../App"
-import { User } from "./Login"
+import { UserTokenContext, UserIDContext } from "../App"
+import { Category, Subcategory, User } from "../types"
 
-export interface Product {
-    product_id: number
-    user_id: number
-    title: string
-    category_id: number
-    subcategory_id: number
-	postal_code: number
-    city: string
-    description: string
-    price: number
-}
-
-interface Category {
-	category_name: string
-	category_id: number
-}
-
-interface Subcategory {
-	subcategory_id: number
-	subcategory_name: string
-	category_id: number
-}
-
-const getLocalStorageItem = (key: string) => {
-	const item = localStorage.getItem(key)
-	if (item) {
-		return JSON.parse(item)
-	}
-	return null
-}
-
-const userToken = (getLocalStorageItem("token"))
-
-const useUserData = (): UserDataContext => useContext(UserIDContext)
+const useUserData = (): UserTokenContext => useContext(UserIDContext)
 
 function ProductNew() {
 
-	const userData = useUserData()
+	const userToken = useUserData()
 
 	const [user, setUser] = useState<User | null>(null)
 	const [newTitle, setNewTitle] = useState<string>("")
 	const [newDescription, setNewDescription] = useState<string>("")
 	const [newPrice, setNewPrice] = useState<number>(0)
-	const [token] = useState<string>(userToken)
+	const [token] = useState<string>(userToken.token)
 	const [newCategory, setNewCategory] = useState<string>("")
 	const [categoryId, setCategoryId] = useState<number>(0)
 	const [newSubcategory, setNewSubcategory] = useState<string>("")
