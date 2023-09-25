@@ -31,8 +31,8 @@ function Login() {
 			})
 	
 			if (response.status === 200) {
-				navigate("/")
 				setShowSuccessNotification(true) 
+				navigate("/")
 			} 
 		} catch (error) {
 			console.error(error)

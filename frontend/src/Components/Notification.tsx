@@ -4,13 +4,13 @@ import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 
 interface NotificationProps {
-	open: boolean; // Define the open prop to control modal visibility
-	message: string;
-	type: "success" | "error";
-	onClose: () => void;
-	actionText?: string;
-	onActionClick?: () => void;
-	duration?: number;
+	open: boolean // Define the open prop to control modal visibility
+	message: string
+	type: "success" | "error"
+	onClose: () => void
+	actionText?: string
+	onActionClick?: () => void
+	duration?: number
 }
 
 function Notification({

@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 import { Button, Container, TextField } from "@mui/material"
 import VerifyDialog from "./VerifyDialog"
 import Notification from "./Notification"
@@ -37,7 +37,7 @@ function RegisterNewUser() {
 	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true)
 	const [verifyOpen, setVerifyOpen] = useState(false)
 
-	
+
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
 	const [showErrorNotificationTwo, setShowErrorNotificationTwo] = useState(false)
@@ -48,33 +48,41 @@ function RegisterNewUser() {
 	const navigate = useNavigate()
 
 	const registerUser = async () => {
-
 		try {
 			const response = await axios.post("/api/users/register", newUser, {
 				headers: {
 					"Content-Type": "application/json",
 				},
 			})
+
 			if (response.status === 200) {
-				navigate("/")
-				setShowSuccessNotification(true) 
-			//	alert("User register success")
+				setShowSuccessNotification(true)
+				setTimeout(() => {
+					navigate("/")
+				}, 1500)
 			} else if (response.status === 401) {
-				setNewUser(initialState)
 				setShowErrorNotification(true)
-				//alert("Username already exists.")
 			} else {
 				setNewUser(initialState)
-				//throw new Error("Something went wrong!")
 				setShowErrorNotificationTwo(true)
 			}
 		} catch (error) {
-			console.error(error)
-			//alert("Something went wrong!")
-			setShowErrorNotificationThree(true)
+			if (error instanceof AxiosError && error.response) {
+				console.error(error)
+				if (error.response) {
+					if (error.response.status === 401) {
+						setShowErrorNotification(true)
+					} else {
+						setNewUser(initialState)
+						setShowErrorNotificationTwo(true)
+					}
+				} else {
+					setShowErrorNotificationThree(true)
+				}
+			}
 		}
 	}
-	
+
 	const verifyDialogProps = {
 		messageText: "Rekisteröidäänkö näillä tiedoilla?",
 		isOpen: verifyOpen,
@@ -84,6 +92,7 @@ function RegisterNewUser() {
 
 	const handleVerification = () => {
 		setVerifyOpen(true)
+
 	}
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -104,43 +113,7 @@ function RegisterNewUser() {
 	}
 	return (
 		<>
-			{/* Success and error notifications */}
-			{showSuccessNotification && (
-				<Notification
-					open={showSuccessNotification}
-					message="Rekisteröityminen onnistui!"
-					type="success"
-					onClose={() => setShowSuccessNotification(false)}
-					duration={5000}
-				/>
-			)}
-			{showErrorNotification && (
-				<Notification
-					open={showErrorNotification}
-					message="Käyttäjänimi on jo olemassa"
-					type="error"
-					onClose={() => setShowErrorNotification(false)}
-					duration={5000}
-				/>
-			)}
-			{showErrorNotificationTwo && (
-				<Notification
-					open={showErrorNotificationTwo}
-					message="Rekisteröitymisessä tapahtui virhe"
-					type="error"
-					onClose={() => setShowErrorNotificationTwo(false)}
-					duration={5000}
-				/>
-			)}
-			{showErrorNotificationThree && (
-				<Notification
-					open={showErrorNotificationThree}
-					message="Server virhe"
-					type="error"
-					onClose={() => setShowErrorNotificationThree(false)}
-					duration={5000}
-				/>
-			)}
+
 			<Container sx={{ m: 1 }}>
 				<Container>
 					<TextField
@@ -232,13 +205,50 @@ function RegisterNewUser() {
 					}}
 					variant="contained"
 					onClick={handleCancel}>
-					Cancel
+						Cancel
 					</Button>
 					<VerifyDialog {...verifyDialogProps} />
 				</Container>
 			</Container >
+			{/* Success and error notifications */}
+			{showSuccessNotification && (
+				<Notification
+					open={showSuccessNotification}
+					message="Rekisteröityminen onnistui!"
+					type="success"
+					onClose={() => setShowSuccessNotification(false)}
+					duration={5000}
+				/>
+			)}
+			{showErrorNotification && (
+				<Notification
+					open={showErrorNotification}
+					message="Käyttäjänimi on jo olemassa"
+					type="error"
+					onClose={() => setShowErrorNotification(false)}
+					duration={5000}
 
-		
+				/>
+			)}
+			{showErrorNotificationTwo && (
+				<Notification
+					open={showErrorNotificationTwo}
+					message="Rekisteröitymisessä tapahtui virhe"
+					type="error"
+					onClose={() => setShowErrorNotificationTwo(false)}
+					duration={5000}
+				/>
+			)}
+			{showErrorNotificationThree && (
+				<Notification
+					open={showErrorNotificationThree}
+					message="Server virhe"
+					type="error"
+					onClose={() => setShowErrorNotificationThree(false)}
+					duration={5000}
+				/>
+			)}
+
 		</>
 	)
 }
