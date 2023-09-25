@@ -165,7 +165,7 @@ function UpdateProfile({ isOpen, close, user, token }: Props) {
 					message="Product updated successfully!"
 					type="success"
 					onClose={() => setShowSuccessNotification(false)}
-					duration={5000}
+					duration={1500}
 				/>
 			)}
 			{showErrorNotification && (
@@ -174,7 +174,7 @@ function UpdateProfile({ isOpen, close, user, token }: Props) {
 					message="Error updating product."
 					type="error"
 					onClose={() => setShowErrorNotification(false)}
-					duration={5000}
+					duration={1500}
 				/> 
 			)}
 		</>

@@ -18,7 +18,7 @@ function Notification({
 	message,
 	type,
 	onClose,
-	duration = 5000,
+	duration = 1500,
 	actionText,
 	onActionClick,
 }: NotificationProps) {

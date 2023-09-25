@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useLoaderData , useNavigate } from "react-router-dom"
+import { useLoaderData, useNavigate } from "react-router-dom"
 import axios from "axios"
 import {
 	Paper,
@@ -15,7 +15,7 @@ import StarBorderPurple500SharpIcon from "@mui/icons-material/StarBorderPurple50
 import StarPurple500SharpIcon from "@mui/icons-material/StarPurple500Sharp"
 import Breadcrumbs from "@mui/material/Breadcrumbs"
 import Link from "@mui/material/Link"
-import DeleteButton from "./DeleteButton"  
+import DeleteButton from "./DeleteButton"
 import UpdateProductModal from "./UpdateProducts"
 import Notification from "./Notification"
 interface Product {
@@ -28,7 +28,7 @@ interface Product {
 	description: string
 	price: number
 }
-
+  
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, react-refresh/only-export-components
 export function loader({ params }: any) {
 	return params.id
@@ -70,10 +70,10 @@ const itemData = [
 export default function Product() {
 	const [isUpdateModalOpen, setUpdateModalOpen] = useState(false)
 	const [product, setProduct] = useState<Product | null>(null)
-	
-	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
-	const [showErrorNotification, setShowErrorNotification] = useState(false)
-	
+
+	const [showSuccessDeleteNotification, setShowSuccessDeleteNotification] = useState(false)
+	const [showErrorDeleteNotification, setShowErrorDeleteNotification] = useState(false)
+
 	const [selectedImage, setSelectedImage] = useState<string | null>(
 		itemData[0].img
 	)
@@ -93,15 +93,17 @@ export default function Product() {
 
 	const handleDelete = async () => {
 		try {
-			await axios.delete(`/api/product/delete/${product?.product_id}`)
-			setShowSuccessNotification(true)
+			await axios.delete(`/api/product/${product?.product_id}`)
+			setShowSuccessDeleteNotification(true)
+			setTimeout(() => {
+				navigate("/product")
+			}, 1000)
 		} catch (error) {
 			console.error("Error deleting product", error)
-			setShowErrorNotification(true) 
-		} finally {
-			navigate("/product")
+			setShowErrorDeleteNotification(true)
 		}
 	}
+
 
 	return (
 		<div>
@@ -201,7 +203,7 @@ export default function Product() {
 							<Grid item>
 								<div>
 									<Button variant="outlined" onClick={() => setUpdateModalOpen(true)}>
-    Päivitä tuote
+										Päivitä tuote
 									</Button>
 									<UpdateProductModal
 										isOpen={isUpdateModalOpen}
@@ -216,30 +218,31 @@ export default function Product() {
 										price={product?.price || 0}
 									/>
 								</div>
-								
+
 								{product && (
 									<DeleteButton id={product.product_id} onDelete={handleDelete} />
-								)} 
+								)}
 							</Grid>
-							{/* Success and error notifications */}
-							{showSuccessNotification && (
+							{/* Delete success and error notifications */}
+							{showSuccessDeleteNotification && (
 								<Notification
-									open={showSuccessNotification}
-									message="Product updated successfully!"
+									open={showSuccessDeleteNotification}
+									message="Product deleted successfully!"
 									type="success"
-									onClose={() => setShowSuccessNotification(false)}
-									duration={5000}
+									onClose={() => setShowSuccessDeleteNotification(false)}
+									duration={1500}
 								/>
 							)}
-							{showErrorNotification && (
+							{showErrorDeleteNotification && (
 								<Notification
-									open={showErrorNotification}
-									message="Error updating product."
+									open={showErrorDeleteNotification}
+									message="Error deleting product."
 									type="error"
-									onClose={() => setShowErrorNotification(false)}
-									duration={5000}
-								/> 
+									onClose={() => setShowErrorDeleteNotification(false)}
+									duration={1500}
+								/>
 							)}
+
 						</Grid>
 					</Grid>
 				</Grid>

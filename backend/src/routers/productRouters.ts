@@ -56,14 +56,14 @@ product.get("/user/:id", async (req, res) => {
 	}
 })
 
-product.delete("/delete/:id", async (req: Request, res: Response) => {
+product.delete("/:id", async (req: Request, res: Response) => {
 	const product_id = Number(req.params.id)
 
 	console.log("product_id", product_id)
 
 	try {
 		const result = await deleteProduct(product_id)
-
+		console.log(result)
 		if (result.rowCount > 0) {
 			return res.status(200).send("Lets go boss!")
 		} else {
