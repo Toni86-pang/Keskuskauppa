@@ -11,6 +11,7 @@ import { ProductType, User, initialState } from "../types"
 import ProductCard from "./ProductCard"
 import Rating from "@mui/material/Rating"
 
+//Kommentti
 
 function Profile() {
 	
