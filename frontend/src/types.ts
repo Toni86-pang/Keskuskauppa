@@ -35,3 +35,17 @@ export interface Subcategory {
 	subcategory_name: string
 	category_id: number
 }
+
+export const initialState: User = {
+	user_id: 0,
+	username: "",
+	password: "",
+	name: "",
+	email: "",
+	phone: "",
+	address: "",
+	city: "",
+	postalCode: "",
+	is_Admin: false,
+	reviews: 0
+}

@@ -6,54 +6,31 @@ import StarPurpleSharpIcon from "@mui/icons-material/StarPurple500Sharp"
 import VerifyDialog from "./VerifyDialog"
 // import { useNavigate } from "react-router-dom"
 import UpdateProfile from "./UpdateProfile"
-import { UserTokenContext, UserIDContext } from "../App"
+import { UserTokenContext } from "../App"
 import { deleteUser, fetchOwnProducts, fetchUser} from "../services"
-import { ProductType, User } from "../types"
-
-const initialState: User = {
-	user_id: 0,
-	username: "",
-	password: "",
-	name: "",
-	email: "",
-	phone: "",
-	address: "",
-	city: "",
-	postalCode: "",
-	is_Admin: false,
-	reviews: 0
-}
-
-// const userToken = (getLocalStorageItem("token"))
-// console.log(userToken)
-
-const useUserToken = (): UserTokenContext => useContext(UserIDContext)
+import { ProductType, User, initialState } from "../types"
 
 function Profile() {
 	
 	const [user, setUser] = useState<User>(initialState)
-	// const [token] = useState<string>(userToken)
+	const [token] = useContext(UserTokenContext)	
 	const [updateVisible, setUpdateVisible] = useState(false)
 	const [ownProducts, setOwnProducts] = useState<ProductType[] | null>(null)
 	const [verifyOpen, setVerifyOpen] = useState<boolean>(false)
 	// const navigate = useNavigate()
-	const userToken = useUserToken()
-
-	// const id = userData.user.id
-	// const id = 61
 
 	const handleVerification = () => {
 		setVerifyOpen(true)
 	}
 
 	const fetchInfo = async () => {
-		if(!userToken.token){
+		if(!token){
 			setUser(initialState)
 			setOwnProducts(null)
 			return
 		}
 
-		const user = await fetchUser(userToken.token)
+		const user = await fetchUser(token)
 
 		if (user === undefined) {
 			console.error("error fetching user")
@@ -72,12 +49,12 @@ function Profile() {
 	}
 
 	useEffect(() => {
-		console.log("haetaan käyttäjää token", userToken.token)
+		console.log("haetaan käyttäjää token", token)
 		fetchInfo()
-	}, [userToken.token])
+	}, [token])
 
 	const deleteProfile = async () => {
-		deleteUser(userToken.token)
+		deleteUser(token)
 		// navigate("/")
 	}
 

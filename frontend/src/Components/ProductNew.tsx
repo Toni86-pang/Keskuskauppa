@@ -2,20 +2,17 @@ import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { Button, Container, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material"
-import { UserTokenContext, UserIDContext } from "../App"
-import { Category, Subcategory, User } from "../types"
+import { UserTokenContext } from "../App"
+import { Category, Subcategory, User, initialState } from "../types"
+import { fetchUser } from "../services"
 
-const useUserData = (): UserTokenContext => useContext(UserIDContext)
 
 function ProductNew() {
-
-	const userToken = useUserData()
-
+	const [token] = useContext(UserTokenContext)
 	const [user, setUser] = useState<User | null>(null)
 	const [newTitle, setNewTitle] = useState<string>("")
 	const [newDescription, setNewDescription] = useState<string>("")
 	const [newPrice, setNewPrice] = useState<number>(0)
-	const [token] = useState<string>(userToken.token)
 	const [newCategory, setNewCategory] = useState<string>("")
 	const [categoryId, setCategoryId] = useState<number>(0)
 	const [newSubcategory, setNewSubcategory] = useState<string>("")
@@ -24,8 +21,6 @@ function ProductNew() {
 	const [subcategories, setSubcategories] = useState<Subcategory[]>([])
 
 	const navigate = useNavigate()
-
-	const id = userData.user.id
 
 	const fetchCategories = async () => {
 		try {
@@ -37,22 +32,26 @@ function ProductNew() {
 		}
 	}
 
-	useEffect(() => {
-		const fetchUser = async () => {
-			try {
-				const response = await axios("/api/users/user/", {
-					headers: {
-						"Authorization": `Bearer ${token}`
-					}
-				})
-				console.log("this is response data: ", response.data)
-				setUser(response.data)
-			} catch (error) {
-				console.error("error fetching user	", error)
-			}
+	const fetchInfo = async () => {
+		if(!token){
+			setUser(initialState)
+			return
 		}
-		fetchUser()
-	}, [id, token])
+
+		const user = await fetchUser(token)
+
+		if (user === undefined) {
+			console.error("error fetching user")
+			return
+		}
+		
+		setUser(user)
+	}
+
+	useEffect(() => {
+		console.log("haetaan käyttäjää token", token)
+		fetchInfo()
+	}, [token])
 
 	useEffect(() => {
 		fetchCategories()
@@ -69,7 +68,7 @@ function ProductNew() {
 	}
 
 	const createNewProduct = async () => {
-		const product = {user_id: id, title: newTitle, category_id: categoryId, subcategory_id: subcategoryId, postal_code: user?.postalCode, city: user?.city, description: newDescription, price: newPrice}
+		const product = {user_id: user?.user_id, title: newTitle, category_id: categoryId, subcategory_id: subcategoryId, postal_code: user?.postalCode, city: user?.city, description: newDescription, price: newPrice}
 		console.log(product)
 
 		try {

@@ -2,7 +2,7 @@
 import { ChangeEvent, useContext, useState } from "react"
 import axios from "axios"
 import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
-import { UserTokenContext, UserIDContext } from "../App"
+import { UserTokenContext } from "../App"
 // import { useNavigate } from "react-router"
 import { User } from "../types"
 // import jwt_decode from "jwt-decode"
@@ -12,13 +12,12 @@ const initialState: User = {
 	password: "",
 }
 
-const useUserToken = (): UserTokenContext => useContext(UserIDContext)
 
 function Login() {
 	const [userValues, setUserValues] = useState<User>(initialState)
 	const [open, setOpen] = useState<boolean>(false)
+	const [token, setToken] = useContext(UserTokenContext)
 	const { username, password } = userValues
-	const userToken = useUserToken()
 
 	// const navigate = useNavigate()
 
@@ -37,8 +36,8 @@ function Login() {
 		console.log(token)
 
 		if (token) {
-			localStorage.setItem("token", JSON.stringify(token))
-			userToken.setToken(token)
+			localStorage.setItem("token", token)
+			setToken(token)
 			handleClose()
 		}
 	}
@@ -52,8 +51,7 @@ function Login() {
 
 	const handleLogout = () => {
 		localStorage.removeItem("token")
-		userToken.setToken("")
-		console.log("this is usertoken from logout: ", userToken.token)
+		setToken("")
 		console.log("logged out")
 		// navigate("/")
 	}
@@ -68,9 +66,7 @@ function Login() {
 
 	return (
 		<Container sx={{ m: 1 }}>
-			{userToken.token}
-			<br/>
-			{userToken.token ? (
+			{token ? (
 			 <Button sx={{color: "white"}}onClick={handleLogout}>
         		Kirjaudu ulos
 				</Button>
