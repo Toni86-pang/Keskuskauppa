@@ -1,14 +1,16 @@
 import { useState, useEffect, useContext } from "react"
 // import { useLoaderData } from "react-router-dom"
 import { Grid, Breadcrumbs, Link, Typography, Button, } from "@mui/material"
-import StarBorderPurpleSharpIcon from "@mui/icons-material/StarBorderPurple500Sharp"
-import StarPurpleSharpIcon from "@mui/icons-material/StarPurple500Sharp"
+import Divider from "@mui/material/Divider"
 import VerifyDialog from "./VerifyDialog"
 // import { useNavigate } from "react-router-dom"
 import UpdateProfile from "./UpdateProfile"
 import { UserTokenContext } from "../App"
 import { deleteUser, fetchOwnProducts, fetchUser} from "../services"
 import { ProductType, User, initialState } from "../types"
+import ProductCard from "./ProductCard"
+import Rating from "@mui/material/Rating"
+
 
 function Profile() {
 	
@@ -66,16 +68,29 @@ function Profile() {
 		onAccept: deleteProfile
 	}
 
+	// interface Crumb {
+	// 	label: string
+	// 	url?: string
+	// }
+
+	// const breadcrumbs : Crumb[] = [
+	// 	{ label: "Home", url: "/" },
+	// 	{ label: "Category", url: "/category" },
+	// 	{ label: "Subcategory", url: "/category/subcategory" },
+	// 	{ label: "Current Page" },
+	// ]
+
 	return (
+
 		<div className="profile">
+			{/* <Crumbs items={breadcrumbs}/> */}
 			<div>
 				<Breadcrumbs aria-label="breadcrumb">
 					<Link
 						underline="hover"
 						sx={{ display: "flex", alignItems: "center" }}
 						color="inherit"
-						href="/"
-					>
+						href="/">
 						Etusivu
 					</Link>
 					<Typography
@@ -104,26 +119,24 @@ function Profile() {
 				</Grid>
 				{user && <Grid item xs={5}>
 					<div className="user">
-						<div className="userName">Nimi: {user.name}</div>
-						<div className="userUsername">Käyttäjänimi: {user.username}</div>
-						<div className="userAddress">Osoite: {user.address}</div>
-						<div className="userCity">Kaupunki: {user.city}</div>
-						<div className="userEmail">Sähköposti: {user.email}</div>
-						<div className="userPhone">Puhelinnumero: {user.phone}</div>
+						<div className="userName">Nimi: {user?.name}</div>
+						<div className="userUsername">Käyttäjänimi: {user?.username}</div>
+						<div className="userAddress">Osoite: {user?.address}</div>
+						<div className="userCity">Kaupunki: {user?.city}</div>
+						<div className="userPostalCode">Postinumero: {user?.postalCode}</div>
+						<div className="userEmail">Sähköposti: {user?.email}</div>
+						<div className="userPhone">Puhelinnumero: {user?.phone}</div>
 						<div>Tuotteita myynnissä: {ownProducts?.length}</div>
 						<div>Oma tähtiarvio:
-							<StarPurpleSharpIcon />
-							<StarPurpleSharpIcon />
-							<StarPurpleSharpIcon />
-							<StarBorderPurpleSharpIcon />
-							<StarBorderPurpleSharpIcon /></div>
+							<Rating name="read-only" value={3.33} precision={0.1} readOnly />
+						</div>
 					</div>
 				</Grid>}
 				<Grid item xs={3}>
 					<Grid container direction="column" spacing={2}>
 						<Grid item>
 							<Button variant="contained" onClick={() => setUpdateVisible(true)}>Muokkaa</Button>
-							
+
 							{user && <UpdateProfile // make sure user is fetched before using component 
 								isOpen={updateVisible}
 								close={(updatedUser: User) => {
@@ -131,7 +144,8 @@ function Profile() {
 									setUser(updatedUser)
 									setUpdateVisible(false)
 								}}
-								user = {user}
+								user={user}
+								token={token}
 							/>}
 						</Grid>
 						<Grid item><Button variant="contained">Vaihda salasana</Button></Grid>
@@ -143,13 +157,14 @@ function Profile() {
 				</Grid>
 			</Grid>
 
+
 			<div className="ownProducts">
-				<div>Omat tuotteet:</div>
-				<ul>
-					{ownProducts && ownProducts?.map((product: ProductType) => {
-						return <li key={"product:" + product.product_id}>{product.title}</li>
-					})}
-				</ul>
+				<div style={{ marginBottom: "10px" }}>Omat ilmoitukset:</div>
+
+				<Divider variant="middle" style={{ marginBottom: "10px" }} />
+				{ownProducts && ownProducts?.map((product: ProductType) => {
+					return <ProductCard product={product} key={"own product: " + product.product_id} />
+				})}
 			</div>
 
 		</div>
