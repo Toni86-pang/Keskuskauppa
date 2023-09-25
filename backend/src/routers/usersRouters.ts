@@ -4,8 +4,6 @@ import { authentication, checkReqBody } from "../middlewares"
 import argon2 from "argon2"
 import jwt from "jsonwebtoken"
 
-//Maaret täällä rettelöi
-
 interface Profile {
 	email: string
 	phone: string

@@ -1,48 +1,44 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import { ChangeEvent, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { ChangeEvent, useContext, useState } from "react"
 import axios from "axios"
 import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
-
-export interface User {
-    username: string,
-    password: string
-}
+import { UserTokenContext } from "../App"
+import { User } from "../types"
+// import jwt_decode from "jwt-decode"
 
 const initialState: User = {
 	username: "",
 	password: ""
 }
 
+
 function Login() {
 	const [userValues, setUserValues] = useState<User>(initialState)
 	const [open, setOpen] = useState<boolean>(false)
+	const [token, setToken] = useContext(UserTokenContext)
 	const { username, password } = userValues
-	const navigate = useNavigate()
 
-	const loginUser = async () => {
-		try {
-			const response = await axios.post("/api/users/login", userValues, {
-				headers: {
-					"Content-Type": "application/json",
-				},
-			})
+	// const navigate = useNavigate()
 
-			if (response.status === 200) {
-				navigate("/")
-				alert("You are logged in")
-			} else if (response.status === 400) {
-				alert("Username or password is incorrect")
-			} else if (response.status === 401) {
-				alert("Username or password is incorrect")
-			} else {
-				throw new Error("Something went wrong!")
-			}
-		} catch (error) {
-			console.error(error)
-			alert("Something went wrong!")
+	const loginUser = async (username: string, password: string) => {
+		const response = await axios.post("/api/users/login", {
+			username,
+			password
+		})
+		const token = response.data.token
+		return token
+	}
+
+	const handleLogin = async () => {
+
+		const token = await loginUser(username, password)
+		console.log(token)
+
+		if (token) {
+			localStorage.setItem("token", token)
+			setToken(token)
+			handleClose()
 		}
-		handleClose()
 	}
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +48,14 @@ function Login() {
 		}))
 	}
 
-	const handleClickOpen = () => {
+	const handleLogout = () => {
+		localStorage.removeItem("token")
+		setToken("")
+		console.log("logged out")
+		// navigate("/")
+	}
+
+	const handleOpen = () => {
 		setOpen(true)
 	  }
 	
@@ -62,9 +65,16 @@ function Login() {
 
 	return (
 		<Container sx={{ m: 1 }}>
-			 <Button sx={{color: "white"}}onClick={handleClickOpen}>
+			{token ? (
+			 <Button sx={{color: "white"}}onClick={handleLogout}>
+        		Kirjaudu ulos
+				</Button>
+			) : (
+			 <Button sx={{color: "white"}}onClick={handleOpen}>
         		Kirjaudu sisään
-			</Button>
+				</Button>
+			)
+			}
 			<Dialog open={open} onClose={handleClose}>
 				<DialogTitle>Kirjaudu sisään</DialogTitle>
 				<DialogContent>
@@ -86,7 +96,7 @@ function Login() {
 					/>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={loginUser}>Kirjaudu</Button>
+					<Button onClick={handleLogin}>Kirjaudu</Button>
 					<Button onClick={handleClose}>Peruuta</Button>
 				</DialogActions>
 			</Dialog>

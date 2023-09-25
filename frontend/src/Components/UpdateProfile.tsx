@@ -1,31 +1,12 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import Dialog from "@mui/material/Dialog"
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
 import DialogContent from "@mui/material/DialogContent"
 import DialogTitle from "@mui/material/DialogTitle"
 import axios from "axios"
-
-
-
-interface User {
-	userId: number
-	username: string
-	name: string
-	email: string
-	phone: string
-	address: string
-	city: string
-	postal_code: string
-}
-
-
-interface Props {
-	isOpen: boolean
-	close: (updatedUser: User) => void
-	user: User
-	token: string
-}
+import { Props } from "../types"
+import { UserTokenContext } from "../App"
 
 const styles = {
 	section: {
@@ -41,11 +22,10 @@ const styles = {
 	},
 }
 
-
-function UpdateProfile({ isOpen, close, user, token }: Props) {
+function UpdateProfile({ isOpen, close, user }: Props) {
 
 	const [newAddress, setNewAddress] = useState(user.address)
-	// const [token, setToken] = useState(DEBUGTOKEN2)
+	const [token] = useContext(UserTokenContext)	
 	const [newPhone, setNewPhone] = useState(user.phone)
 	const [newCity, setNewCity] = useState(user.city)
 	const [newPostalCode, setNewPostalCode] = useState(user.postal_code)
