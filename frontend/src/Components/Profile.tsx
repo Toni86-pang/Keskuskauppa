@@ -10,8 +10,7 @@ import { deleteUser, fetchOwnProducts, fetchUser} from "../services"
 import { ProductType, User, initialState } from "../types"
 import ProductCard from "./ProductCard"
 import Rating from "@mui/material/Rating"
-
-//Kommentti
+import { useNavigate } from "react-router"
 
 function Profile() {
 	
@@ -20,7 +19,7 @@ function Profile() {
 	const [updateVisible, setUpdateVisible] = useState(false)
 	const [ownProducts, setOwnProducts] = useState<ProductType[] | null>(null)
 	const [verifyOpen, setVerifyOpen] = useState<boolean>(false)
-	// const navigate = useNavigate()
+	const navigate = useNavigate()
 
 	const handleVerification = () => {
 		setVerifyOpen(true)
@@ -52,13 +51,12 @@ function Profile() {
 	}
 
 	useEffect(() => {
-		console.log("haetaan käyttäjää token", token)
 		fetchInfo()
 	}, [token])
 
 	const deleteProfile = async () => {
 		deleteUser(token)
-		// navigate("/")
+		navigate("/")
 	}
 
 	const verifyDialogProps = {

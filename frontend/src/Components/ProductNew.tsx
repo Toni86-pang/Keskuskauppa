@@ -49,7 +49,6 @@ function ProductNew() {
 	}
 
 	useEffect(() => {
-		console.log("haetaan käyttäjää token", token)
 		fetchInfo()
 	}, [token])
 

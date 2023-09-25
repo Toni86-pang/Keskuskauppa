@@ -4,8 +4,6 @@ import { authentication, checkReqBody } from "../middlewares"
 import argon2 from "argon2"
 import jwt from "jsonwebtoken"
 
-//Maaret täällä rettelöi
-
 interface Profile {
 	email: string
 	phone: string
@@ -35,9 +33,7 @@ users.get("/user", authentication, async (req: CustomRequest, res: Response) => 
 		return res.status(404).send("No such user")
 	}
 	const user_id = req.id
-	console.log("this is user id from backend: ", user_id)
 	const result = await getUserByUserId(user_id)
-	console.log("this is result from backend: ", result)
 	return res.status(200).send(result)
 })
 

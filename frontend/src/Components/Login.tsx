@@ -3,13 +3,12 @@ import { ChangeEvent, useContext, useState } from "react"
 import axios from "axios"
 import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
 import { UserTokenContext } from "../App"
-// import { useNavigate } from "react-router"
 import { User } from "../types"
 // import jwt_decode from "jwt-decode"
 
 const initialState: User = {
 	username: "",
-	password: "",
+	password: ""
 }
 
 
