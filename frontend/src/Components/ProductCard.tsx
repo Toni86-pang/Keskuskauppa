@@ -12,7 +12,7 @@ interface Product {
   category_id: number;
   subcategory_id: number;
   city: string;
-  postalCode: string;
+  postal_code: string;
   description: string;
   price: number;
 }

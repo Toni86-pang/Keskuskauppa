@@ -68,7 +68,7 @@ function ProductNew() {
 	}
 
 	const createNewProduct = async () => {
-		const product = {user_id: user?.user_id, title: newTitle, category_id: categoryId, subcategory_id: subcategoryId, postal_code: user?.postalCode, city: user?.city, description: newDescription, price: newPrice}
+		const product = {user_id: user?.user_id, title: newTitle, category_id: categoryId, subcategory_id: subcategoryId, postal_code: user?.postal_code, city: user?.city, description: newDescription, price: newPrice}
 		console.log(product)
 
 		try {

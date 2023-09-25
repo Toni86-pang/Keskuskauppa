@@ -7,7 +7,7 @@ export interface User {
 	phone?: string,
 	address?: string,
 	city?: string,
-	postalCode?:string,
+	postal_code?:string,
 	is_Admin?: boolean,
 	reviews?: number
 }
@@ -19,7 +19,7 @@ export interface ProductType {
 	category_id: number
 	subcategory_id: number
 	city: string
-    postalCode: string
+    postal_code: string
     description: string
 	price: number
 	// product_image?: any
@@ -36,6 +36,12 @@ export interface Subcategory {
 	category_id: number
 }
 
+export interface Props {
+	isOpen: boolean
+	close: (updatedUser: User) => void
+	user: User
+}
+
 export const initialState: User = {
 	user_id: 0,
 	username: "",
@@ -45,7 +51,7 @@ export const initialState: User = {
 	phone: "",
 	address: "",
 	city: "",
-	postalCode: "",
+	postal_code: "",
 	is_Admin: false,
 	reviews: 0
 }

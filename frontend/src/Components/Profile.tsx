@@ -123,7 +123,7 @@ function Profile() {
 						<div className="userUsername">Käyttäjänimi: {user?.username}</div>
 						<div className="userAddress">Osoite: {user?.address}</div>
 						<div className="userCity">Kaupunki: {user?.city}</div>
-						<div className="userPostalCode">Postinumero: {user?.postalCode}</div>
+						<div className="userPostalCode">Postinumero: {user?.postal_code}</div>
 						<div className="userEmail">Sähköposti: {user?.email}</div>
 						<div className="userPhone">Puhelinnumero: {user?.phone}</div>
 						<div>Tuotteita myynnissä: {ownProducts?.length}</div>
@@ -145,7 +145,6 @@ function Profile() {
 									setUpdateVisible(false)
 								}}
 								user={user}
-								token={token}
 							/>}
 						</Grid>
 						<Grid item><Button variant="contained">Vaihda salasana</Button></Grid>

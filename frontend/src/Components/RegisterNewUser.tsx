@@ -13,7 +13,7 @@ const initialState: User = {
 	phone: "",
 	address: "",
 	city: "",
-	postalCode: ""
+	postal_code: ""
 }
 
 function RegisterNewUser() {
@@ -23,7 +23,7 @@ function RegisterNewUser() {
 	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true)
 	const [verifyOpen, setVerifyOpen] = useState(false)
 
-	const { name, email, username, phone, address, city, postalCode } = newUser
+	const { name, email, username, phone, address, city, postal_code } = newUser
 
 	const navigate = useNavigate()
 
@@ -133,7 +133,7 @@ function RegisterNewUser() {
 					type="text"
 					placeholder="Postinumero"
 					name="postal_code"
-					value={postalCode}
+					value={postal_code}
 					onChange={handleInputChange}
 				/>
 

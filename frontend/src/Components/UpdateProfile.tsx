@@ -1,18 +1,12 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import Dialog from "@mui/material/Dialog"
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
 import DialogContent from "@mui/material/DialogContent"
 import DialogTitle from "@mui/material/DialogTitle"
 import axios from "axios"
-import { User } from "../types"
-
-interface Props {
-	isOpen: boolean
-	close: (updatedUser: User) => void
-	user: User
-	token: string
-}
+import { Props } from "../types"
+import { UserTokenContext } from "../App"
 
 const styles = {
 	section: {
@@ -28,14 +22,13 @@ const styles = {
 	},
 }
 
-
-function UpdateProfile({ isOpen, close, user, token }: Props) {
+function UpdateProfile({ isOpen, close, user }: Props) {
 
 	const [newAddress, setNewAddress] = useState(user.address)
-	// const [token, setToken] = useState(DEBUGTOKEN2)
+	const [token] = useContext(UserTokenContext)	
 	const [newPhone, setNewPhone] = useState(user.phone)
 	const [newCity, setNewCity] = useState(user.city)
-	const [newPostalCode, setNewPostalCode] = useState(user.postalCode)
+	const [newPostalCode, setNewPostalCode] = useState(user.postal_code)
 
 
 	const handleAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +48,7 @@ function UpdateProfile({ isOpen, close, user, token }: Props) {
 		setNewAddress(user.address)
 		setNewPhone(user.phone)
 		setNewCity(user.city)
-		setNewPostalCode(user.postalCode)
+		setNewPostalCode(user.postal_code)
 		// calls profile page's close function when closing the modal. 
 		close(user)
 	}
@@ -74,7 +67,7 @@ function UpdateProfile({ isOpen, close, user, token }: Props) {
 					"Authorization": `Bearer ${token}`
 				}
 			})
-			close({ ...user, address: newAddress, phone: newPhone, city: newCity, postalCode: newPostalCode })
+			close({ ...user, address: newAddress, phone: newPhone, city: newCity, postal_code: newPostalCode })
 		} catch (error) {
 			console.error("error updating profile", error)
 		}
