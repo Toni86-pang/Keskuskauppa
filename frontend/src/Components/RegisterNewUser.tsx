@@ -5,8 +5,6 @@ import { Button, Container, TextField } from "@mui/material"
 import VerifyDialog from "./VerifyDialog"
 import Notification from "./Notification"
 
-
-
 export interface User {
 	user_id?: number
 	name?: string
@@ -113,7 +111,6 @@ function RegisterNewUser() {
 	}
 	return (
 		<>
-
 			<Container sx={{ m: 1 }}>
 				<Container>
 					<TextField
