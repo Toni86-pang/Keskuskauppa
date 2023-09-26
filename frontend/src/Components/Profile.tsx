@@ -3,14 +3,14 @@ import { useState, useEffect, useContext } from "react"
 import { Grid, Breadcrumbs, Link, Typography, Button, } from "@mui/material"
 import Divider from "@mui/material/Divider"
 import VerifyDialog from "./VerifyDialog"
-// import { useNavigate } from "react-router-dom"
+import { useNavigate  } from "react-router-dom"
 import UpdateProfile from "./UpdateProfile"
 import { UserTokenContext } from "../App"
 import { deleteUser, fetchOwnProducts, fetchUser} from "../services"
 import { ProductType, User, initialState } from "../types"
 import ProductCard from "./ProductCard"
 import Rating from "@mui/material/Rating"
-import { useNavigate } from "react-router"
+import Notification from "./Notification"
 
 function Profile() {
 	
@@ -20,6 +20,9 @@ function Profile() {
 	const [ownProducts, setOwnProducts] = useState<ProductType[] | null>(null)
 	const [verifyOpen, setVerifyOpen] = useState<boolean>(false)
 	const navigate = useNavigate()
+
+	const [showSuccessDeleteNotification, setShowSuccessDeleteNotification] = useState(false)
+	const [showErrorDeleteNotification, setShowErrorDeleteNotification] = useState(false)
 
 	const handleVerification = () => {
 		setVerifyOpen(true)
@@ -55,8 +58,15 @@ function Profile() {
 	}, [token])
 
 	const deleteProfile = async () => {
-		deleteUser(token)
-		navigate("/")
+		try {
+			await deleteUser(token)
+			setShowSuccessDeleteNotification(true)
+			setTimeout(() => { 
+				navigate("/")
+			}, 2000)
+		} catch (error) {
+			setShowErrorDeleteNotification(true)
+		}
 	}
 
 	const verifyDialogProps = {
@@ -151,6 +161,26 @@ function Profile() {
 							<Button variant="contained" onClick={handleVerification} >Poista profiili</Button>
 							<VerifyDialog {...verifyDialogProps} />
 						</Grid>
+						{/* Delete success and error notifications */}
+						{showSuccessDeleteNotification && (
+							<Notification
+								open={showSuccessDeleteNotification}
+								message="Käyttäjä on poistettu onnistuneesti!"
+								type="success"
+								onClose={() => setShowSuccessDeleteNotification(false)}
+								duration={1500}
+							/>
+						)}
+						{showErrorDeleteNotification && (
+							<Notification
+								open={showErrorDeleteNotification}
+								message="Tapahtui virhe."
+								type="error"
+								onClose={() => setShowErrorDeleteNotification(false)}
+								duration={1500}
+							/>
+						)}
+
 					</Grid>
 				</Grid>
 			</Grid>

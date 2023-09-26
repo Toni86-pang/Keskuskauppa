@@ -219,7 +219,7 @@ export default function Product() {
 							{showSuccessDeleteNotification && (
 								<Notification
 									open={showSuccessDeleteNotification}
-									message="Product deleted successfully!"
+									message="Tuote on poistettu onnistuneesti!"
 									type="success"
 									onClose={() => setShowSuccessDeleteNotification(false)}
 									duration={1500}
@@ -228,7 +228,7 @@ export default function Product() {
 							{showErrorDeleteNotification && (
 								<Notification
 									open={showErrorDeleteNotification}
-									message="Error deleting product."
+									message="Tapahtui virhe poistettaessa."
 									type="error"
 									onClose={() => setShowErrorDeleteNotification(false)}
 									duration={1500}
