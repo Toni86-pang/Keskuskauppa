@@ -18,16 +18,8 @@ import Link from "@mui/material/Link"
 import DeleteButton from "./DeleteButton"
 import UpdateProductModal from "./UpdateProducts"
 import Notification from "./Notification"
-interface Product {
-	product_id: number
-	title: string
-	category_id: number
-	subcategory_id: number
-	city: string
-	postal_code: string
-	description: string
-	price: number
-}
+import { ProductType } from "../types"
+
   
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, react-refresh/only-export-components
 export function loader({ params }: any) {
@@ -69,7 +61,7 @@ const itemData = [
 
 export default function Product() {
 	const [isUpdateModalOpen, setUpdateModalOpen] = useState(false)
-	const [product, setProduct] = useState<Product | null>(null)
+	const [product, setProduct] = useState<ProductType | null>(null)
 
 	const [showSuccessDeleteNotification, setShowSuccessDeleteNotification] = useState(false)
 	const [showErrorDeleteNotification, setShowErrorDeleteNotification] = useState(false)

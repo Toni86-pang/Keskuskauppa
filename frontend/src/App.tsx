@@ -1,17 +1,35 @@
-// import { useState } from 'react'
 import { Outlet } from "react-router"
 import Navbar from "./Components/Navbar"
 import { Container } from "@mui/material"
+import { Dispatch, createContext, useEffect, useState } from "react"
 
 function App() {
-	// const [count, setCount] = useState(0)
+	const [token, setToken] = useState("")
+
+	useEffect(() => {
+		const tokenFromStorage = localStorage.getItem("token")
+		if(tokenFromStorage){
+			setToken(tokenFromStorage)
+		}
+	},[])
 
 	return (
-		<Container sx={{ bgcolor: "#e7ecef", minHeight: "100%" }}>
-			<Navbar />
-			<Outlet />
-		</Container>
+		<UserTokenContext.Provider value={[ token, setToken ]}>
+			<Container sx={{ bgcolor: "#e7ecef", minHeight: "100%" }}>
+				<Navbar />
+				<Outlet />
+			</Container>
+		</UserTokenContext.Provider>
 	)
 }
 
+// export interface UserTokenContext {
+// 	token: string
+// 	setToken: (token: string) => void
+// }
+
+export const UserTokenContext = createContext<[string, Dispatch<string>]>([
+	"",
+	() => {}
+])
 export default App

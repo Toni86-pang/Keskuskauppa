@@ -3,19 +3,8 @@ import { useNavigate } from "react-router-dom"
 import axios, { AxiosError } from "axios"
 import { Button, Container, TextField } from "@mui/material"
 import VerifyDialog from "./VerifyDialog"
+import { User } from "../types"
 import Notification from "./Notification"
-
-export interface User {
-	user_id?: number
-	name?: string
-	username?: string
-	password?: string
-	email?: string
-	phone?: string
-	address?: string
-	city?: string
-	postal_code?: string
-}
 
 const initialState: User = {
 	name: "",

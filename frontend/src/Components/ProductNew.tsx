@@ -1,33 +1,15 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { Button, Container, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material"
+import { UserTokenContext } from "../App"
+import { Category, Subcategory, User, initialState } from "../types"
+import { fetchUser } from "../services"
 
-export interface Product {
-    product_id: number
-    user_id: number
-    title: string
-    category_id: number
-    subcategory_id: number
-	postal_code: number
-    city: string
-    description: string
-    price: number
-}
-
-interface Category {
-	category_name: string
-	category_id: number
-}
-
-interface Subcategory {
-	subcategory_id: number
-	subcategory_name: string
-	category_id: number
-}
 
 function ProductNew() {
-
+	const [token] = useContext(UserTokenContext)
+	const [user, setUser] = useState<User | null>(null)
 	const [newTitle, setNewTitle] = useState<string>("")
 	const [newDescription, setNewDescription] = useState<string>("")
 	const [newPrice, setNewPrice] = useState<number>(0)
@@ -50,6 +32,26 @@ function ProductNew() {
 		}
 	}
 
+	const fetchInfo = async () => {
+		if(!token){
+			setUser(initialState)
+			return
+		}
+
+		const user = await fetchUser(token)
+
+		if (user === undefined) {
+			console.error("error fetching user")
+			return
+		}
+		
+		setUser(user)
+	}
+
+	useEffect(() => {
+		fetchInfo()
+	}, [token])
+
 	useEffect(() => {
 		fetchCategories()
 	}, [])
@@ -65,7 +67,7 @@ function ProductNew() {
 	}
 
 	const createNewProduct = async () => {
-		const product = {user_id: 2, title: newTitle, category_id: categoryId, subcategory_id: subcategoryId, postal_code: 90570, city: "Oulu", description: newDescription, price: newPrice}
+		const product = {user_id: user?.user_id, title: newTitle, category_id: categoryId, subcategory_id: subcategoryId, postal_code: user?.postal_code, city: user?.city, description: newDescription, price: newPrice}
 		console.log(product)
 
 		try {
@@ -82,7 +84,7 @@ function ProductNew() {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (error: Error | any) {
 			console.error(error)
-			alert(error.response.data)
+			alert(error.message)
 		}
 		navigate("/product")
 	}

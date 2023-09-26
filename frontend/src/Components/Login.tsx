@@ -1,47 +1,61 @@
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
+import { UserTokenContext } from "../App"
+import { User } from "../types"
+
 import Notification from "./Notification"
-export interface User {
-	username: string,
-	password: string
-}
+// import jwt_decode from "jwt-decode"
 
 const initialState: User = {
 	username: "",
 	password: ""
 }
 
+
 function Login() {
 	const [userValues, setUserValues] = useState<User>(initialState)
 	const [open, setOpen] = useState<boolean>(false)
+	const [token, setToken] = useContext(UserTokenContext)
 	const { username, password } = userValues
 	const navigate = useNavigate()
 
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
 
-	const loginUser = async () => {
+	const loginUser = async (username: string, password: string) => {
 		try {
-			const response = await axios.post("/api/users/login", userValues, {
-				headers: {
-					"Content-Type": "application/json",
-				},
+			const response = await axios.post("/api/users/login", {
+				username,
+				password
 			})
-	
 			if (response.status === 200) {
-				setShowSuccessNotification(true) 
+				const token = response.data.token
+				setShowSuccessNotification(true)
 				navigate("/")
-			} 
-		} catch (error) {
+				return token
+			}
+		}	catch (error) {
 			console.error(error)
 			setShowErrorNotification(true) 
 		}
 		handleClose()
 	}
 
-	
+	const handleLogin = async () => {
+
+		const token = await loginUser(username, password)
+		console.log(token)
+
+		if (token) {
+			localStorage.setItem("token", token)
+			setToken(token)
+			handleClose()
+		}
+	}
+
+
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target
 		setUserValues(() => ({
@@ -49,7 +63,14 @@ function Login() {
 		}))
 	}
 
-	const handleClickOpen = () => {
+	const handleLogout = () => {
+		localStorage.removeItem("token")
+		setToken("")
+		console.log("logged out")
+		// navigate("/")
+	}
+
+	const handleOpen = () => {
 		setOpen(true)
 	}
 
@@ -60,9 +81,16 @@ function Login() {
 	return (
 		<>
 			<Container sx={{ m: 1 }}>
-				<Button sx={{ color: "white" }} onClick={handleClickOpen}>
-					Kirjaudu sisään
-				</Button>
+				{token ? (
+					<Button sx={{ color: "white" }} onClick={handleLogout}>
+						Kirjaudu ulos
+					</Button>
+				) : (
+					<Button sx={{ color: "white" }} onClick={handleOpen}>
+						Kirjaudu sisään
+					</Button>
+				)
+				}
 				<Dialog open={open} onClose={handleClose}>
 					<DialogTitle>Kirjaudu sisään</DialogTitle>
 					<DialogContent>
@@ -84,7 +112,7 @@ function Login() {
 						/>
 					</DialogContent>
 					<DialogActions>
-						<Button onClick={loginUser}>Kirjaudu</Button>
+						<Button onClick={handleLogin}>Kirjaudu</Button>
 						<Button onClick={handleClose}>Peruuta</Button>
 					</DialogActions>
 				</Dialog>
@@ -109,7 +137,7 @@ function Login() {
 					duration={5000}
 				/>
 			)}
-		
+
 		</>
 	)
 }
