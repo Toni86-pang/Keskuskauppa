@@ -10,7 +10,6 @@ import {
 	Button,
 } from "@mui/material"
 
-
 function Products() {
 	const [products, setProducts] = useState<Product[]>([])
 

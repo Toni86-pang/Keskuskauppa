@@ -1,12 +1,11 @@
 import axios from "axios"
 
 export const deleteUser = async (token: string) => {
-	return axios
-		.delete("/api/users/delete", {
-			headers: {
-				"Authorization": `Bearer ${token}`
-			}
-		}).then((response) => response.data)
+	return axios.delete("/api/users/delete", {
+		headers: {
+			"Authorization": `Bearer ${token}`
+		}
+	}).then((response) => response.data)
 }
 
 export const fetchUser = (token: string) => {
