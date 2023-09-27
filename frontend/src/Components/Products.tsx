@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react"
 import { useLoaderData } from "react-router-dom"
-import axios from "axios"
 import {
 	Container,
 	Typography,
 	List
 } from "@mui/material"
 import ProductCard from "./ProductCard"
+import { fetchAllProducts, fetchCategoryName, fetchProductsByCategory, fetchProductsBySubcategory, fetchSubcategoryName } from "../services"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, react-refresh/only-export-components
 export function loader({ params }: any) {
@@ -35,17 +35,17 @@ const Products = ({ category, subCategory }: Props) => {
 	const id = String(useLoaderData())
 
 	useEffect(() => {
-		const fetchData = async () => {
+		const fetchProducts = async () => {
 			let fetchedProducts: Product[] = []
 			let name = "Kaikki tuotteet"
 			if (!category && !subCategory) {
-				fetchedProducts = await axios.get("/api/product").then(res => res.data)
+				fetchedProducts = await fetchAllProducts() 
 			} else if (category) {
-				name = await axios.get(`/api/category/categoryname/${id}`).then(res => res.data)
-				fetchedProducts = await axios.get(`/api/product/category/${id}`).then(res => res.data)
+				name = await fetchCategoryName(Number(id))
+				fetchedProducts = await fetchProductsByCategory(Number(id))
 			} else {
-				name = await axios.get(`/api/category/subcategoryname/${id}`).then(res => res.data)
-				fetchedProducts = await axios.get(`/api/product/subcategory/${id}`).then(res => res.data)
+				name = await fetchSubcategoryName(Number(id))
+				fetchedProducts = await fetchProductsBySubcategory(Number(id))
 			}
 			setProducts(fetchedProducts)
 
@@ -54,7 +54,7 @@ const Products = ({ category, subCategory }: Props) => {
 			}
 		}
 
-		fetchData()
+		fetchProducts()
 	}, [id, category, subCategory])
 
 	return (
