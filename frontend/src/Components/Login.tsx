@@ -1,33 +1,24 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 import { ChangeEvent, useContext, useState } from "react"
-import axios from "axios"
+import { useNavigate } from "react-router-dom"
 import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
 import { UserTokenContext } from "../App"
-import { User } from "../types"
-// import jwt_decode from "jwt-decode"
+import { UserValues } from "../types"
+import { loginUser } from "../services"
 
-const initialState: User = {
+const initialState: UserValues = {
 	username: "",
 	password: ""
 }
 
 
 function Login() {
-	const [userValues, setUserValues] = useState<User>(initialState)
+	const [userValues, setUserValues] = useState<UserValues>(initialState)
 	const [open, setOpen] = useState<boolean>(false)
 	const [token, setToken] = useContext(UserTokenContext)
 	const { username, password } = userValues
 
-	// const navigate = useNavigate()
-
-	const loginUser = async (username: string, password: string) => {
-		const response = await axios.post("/api/users/login", {
-			username,
-			password
-		})
-		const token = response.data.token
-		return token
-	}
+	const navigate = useNavigate()
 
 	const handleLogin = async () => {
 
@@ -52,7 +43,7 @@ function Login() {
 		localStorage.removeItem("token")
 		setToken("")
 		console.log("logged out")
-		// navigate("/")
+		navigate("/")
 	}
 
 	const handleOpen = () => {

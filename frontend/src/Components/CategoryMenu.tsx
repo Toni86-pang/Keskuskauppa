@@ -2,14 +2,8 @@ import React, { useState, useEffect } from "react"
 import { Button, IconButton, Menu, MenuItem } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
-import axios from "axios"
-
-interface Category {
-	category_id: number
-	category_name: string
-	subcategory_id: number
-	subcategory_name: string
-}
+import { Category } from "../types"
+import { fetchCategories, fetchSubcategories } from "../services"
 
 const CategoryMenu = () => {
 
@@ -24,28 +18,22 @@ const CategoryMenu = () => {
 	const [submenuAnchorEls, setSubmenuAnchorEls] = useState<(null | HTMLElement)[]>(new Array(categories.length).fill(null))
 	const [openedSubMenuIndex, setOpenedSubMenuIndex] = useState<number | null>(null)
 
-	async function fetchCategories() {
-		try {
-			const response = await axios.get("/api/category")
-			const data = response.data as Category[]
-			return data
-		} catch (error) {
-			console.log("Failed to fetch categories:", error)
-			return []
-		}
-	}
-
 	useEffect(() => {
 		fetchCategories().then((data) => {
+			if (data === undefined) {
+				console.error("error fetching categories")
+				return
+			}
 			setCategories(data)
 		})
 	}, [])
 
-	async function fetchSubCategories() {
-		try {
-			const response = await axios.get("/api/category/subcategory")
-			const data = response.data as Category[]
-
+	useEffect(() => {
+		fetchSubcategories().then((data) => {
+			if (data === undefined) {
+				console.error("error fetching subcategories")
+				return
+			}
 			const subCategoriesGrouped: { [key: number]: Category[] } = {}
 			data.forEach((subCategory) => {
 				const mainCategoryId = subCategory.category_id
@@ -56,15 +44,7 @@ const CategoryMenu = () => {
 			})
 
 			setSubCategories(subCategoriesGrouped)
-			return data
-		} catch (error) {
-			console.log("Debug 3 subcategories:", error)
-			return []
-		}
-	}
-
-	useEffect(() => {
-		fetchSubCategories()
+		})
 	}, [categories])
 
 	const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {

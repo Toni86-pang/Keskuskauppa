@@ -4,20 +4,8 @@ import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
 // import Snackbar from "@mui/material/Snackbar";
 // import MuiAlert from "@mui/material/Alert";
-import axios from "axios"
-
-interface UpdateProductModalProps {
-  isOpen: boolean
-  onClose: () => void
-  productId: number
-  title: string
-  category_id: number
-  subcategory_id: number
-  city: string
-  postal_code: string
-  description: string
-  price: number
-}
+import { UpdateProductModalProps } from "../types"
+import { updateProduct } from "../services"
 
 // function Feedback({ status }: { status: string | null }) {
 //   return (
@@ -101,7 +89,7 @@ function UpdateProductModal({
 				description: updatedDescription,
 				price: updatedPrice,
 			}
-			await axios.put(`/api/product/update/${productId}`, updatedData)
+			updateProduct(productId, updatedData)
 			onClose()
 		} catch (error) {
 			console.error("error updating product", error)

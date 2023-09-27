@@ -1,20 +1,9 @@
 import { ChangeEvent, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import axios from "axios"
 import { Button, Container, TextField } from "@mui/material"
 import VerifyDialog from "./VerifyDialog"
-import { User } from "../types"
-
-const initialState: User = {
-	name: "",
-	username: "",
-	password: "",
-	email: "",
-	phone: "",
-	address: "",
-	city: "",
-	postal_code: ""
-}
+import { User, initialState } from "../types"
+import { registerUser } from "../services"
 
 function RegisterNewUser() {
 
@@ -27,35 +16,21 @@ function RegisterNewUser() {
 
 	const navigate = useNavigate()
 
-	const registerUser = async () => {
-
-		try {
-			const response = await axios.post("/api/users/register", newUser, {
-				headers: {
-					"Content-Type": "application/json",
-				},
-			})
+	const register = async () => {
+		registerUser(newUser).then((response) => {
 			if (response.status === 200) {
 				navigate("/")
-				alert("User register success")
 			} else if (response.status === 401) {
 				setNewUser(initialState)
-				alert("Username already exists.")
-			} else {
-				setNewUser(initialState)
-				throw new Error("Something went wrong!")
 			}
-		} catch (error) {
-			console.error(error)
-			alert("Something went wrong!")
-		}
+		})
 	}
-
+		
 	const verifyDialogProps = {
 		messageText: "Rekisteröidäänkö näillä tiedoilla?",
 		isOpen: verifyOpen,
 		setOpen: setVerifyOpen,
-		onAccept: registerUser
+		onAccept: register
 	}
 
 	const handleVerification = () => {

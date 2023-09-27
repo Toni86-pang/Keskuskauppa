@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import axios from "axios"
 import { Link } from "react-router-dom"
 import {
 	Container,
@@ -9,33 +8,21 @@ import {
 	ListItemText,
 	Button,
 } from "@mui/material"
+import { ProductType } from "../types"
+import { fetchAllProducts } from "../services"
 
 
 function Products() {
-	const [products, setProducts] = useState<Product[]>([])
-
-	interface Product {
-		product_id: number
-		title: string
-		category_id: number
-		subcategory_id: number
-		location: string
-		description: string
-		price: number
-	}
-
-	const fetchProducts = async () => {
-		try {
-			const response = await axios.get("/api/product")
-			console.log(response.data)
-			setProducts(response.data)
-		} catch (error) {
-			console.error("error fetching products", error)
-		}
-	}
+	const [products, setProducts] = useState<ProductType[]>([])
 
 	useEffect(() => {
-		fetchProducts()
+		fetchAllProducts().then((data) => {
+			if (data === undefined) {
+				console.error("error fetching products")
+				return
+			}
+			setProducts(data)
+		})
 	}, [])
 
 	return (
