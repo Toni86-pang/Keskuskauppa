@@ -41,6 +41,7 @@ function Profile() {
 			console.error("error fetching user")
 			return
 		}
+
 		
 		const products = await fetchOwnProducts(Number(user.user_id))
 		

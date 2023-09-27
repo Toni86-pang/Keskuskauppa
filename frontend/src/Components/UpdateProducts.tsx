@@ -2,21 +2,11 @@ import { useState } from "react"
 import Dialog from "@mui/material/Dialog"
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
-import axios from "axios"
+// import Snackbar from "@mui/material/Snackbar";
+// import MuiAlert from "@mui/material/Alert";
+import { UpdateProductModalProps } from "../types"
+import { updateProduct } from "../services"
 import Notification from "./Notification"
-
-interface UpdateProductModalProps {
-	isOpen: boolean
-	onClose: () => void
-	productId: number
-	title: string
-	category_id: number
-	subcategory_id: number
-	city: string
-	postal_code: string
-	description: string
-	price: number
-}
 
 function UpdateProductModal({
 	isOpen,
@@ -92,7 +82,7 @@ function UpdateProductModal({
 				description: updatedDescription,
 				price: updatedPrice,
 			}
-			await axios.put(`/api/product/update/${productId}`, updatedData)
+			updateProduct(productId, updatedData)
 			setShowSuccessNotification(true) // Show success notification
 			onClose()
 		} catch (error) {
@@ -141,14 +131,14 @@ function UpdateProductModal({
 							onChange={handlePostalCodeChange}
 						/>
 						<TextField
-							label="Description"
+							label="Kuvailu"
 							value={updatedDescription}
 							onChange={handleDescriptionChange}
 						/>
 					</div>
 					<div style={{ margin: "16px" }}>
 						<TextField
-							label="Price"
+							label="Hinta"
 							value={updatedPrice}
 							onChange={handlePriceChange}
 						/>
@@ -167,19 +157,19 @@ function UpdateProductModal({
 			{showSuccessNotification && (
 				<Notification
 					open={showSuccessNotification}
-					message="Product updated successfully!"
+					message="Tuote päivitetty!"
 					type="success"
 					onClose={() => setShowSuccessNotification(false)}
-					duration={5000}
+					duration={1500}
 				/>
 			)}
 			{showErrorNotification && (
 				<Notification
 					open={showErrorNotification}
-					message="Error updating product."
+					message="Tuotteen päivitys ei onnistunut."
 					type="error"
 					onClose={() => setShowErrorNotification(false)}
-					duration={5000}
+					duration={1500}
 				/> 
 			)}
 		</>

@@ -126,7 +126,6 @@ users.put("/update", authentication, async (req: CustomRequest, res: Response) =
 	try {
 		const result = await updateProfile(
 			user_id,
-			updatedProfile.email,
 			updatedProfile.phone,
 			updatedProfile.address,
 			updatedProfile.city,

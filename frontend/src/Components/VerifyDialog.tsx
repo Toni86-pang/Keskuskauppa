@@ -4,6 +4,7 @@ import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
+import { VerifyProps } from "../types"
 
 const DEFAULT_OK = "OK"
 const DEFAULT_CANCEL = "PERUUTA"
@@ -21,18 +22,7 @@ const DEFAULT_CANCEL = "PERUUTA"
 
 */
 
-interface Props {
-	titleText?: string
-	messageText: string
-	isOpen: boolean
-	setOpen: (open:boolean) => void
-	onAccept: () => void
-	onDecline?: () => void
-	acceptButtonText?: string
-	declineButtonText?: string
-}
-
-export default function VerifyDialog(props: Props) {
+export default function VerifyDialog(props: VerifyProps) {
 
 	const handleAccept = () => {
 		onAccept()
