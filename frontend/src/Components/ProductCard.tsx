@@ -5,21 +5,7 @@ import Typography from "@mui/material/Typography"
 import Button from "@mui/material/Button"
 import { Grid } from "@mui/material"
 import { useNavigate } from "react-router"
-
-interface Product {
-  product_id: number;
-  title: string;
-  category_id: number;
-  subcategory_id: number;
-  city: string;
-  postal_code: string;
-  description: string;
-  price: number;
-}
-
-interface Props {
-  product: Product;
-}
+import { ProductProps } from "../types"
 
 const cardStyle = {
 	marginTop: "10px",
@@ -31,7 +17,7 @@ const gridContainerStyle = {
 	alignItems: "center"
 }
 
-function ProductCard({ product }: Props) {
+function ProductCard({ product }: ProductProps) {
 
 	const navigate = useNavigate()
 

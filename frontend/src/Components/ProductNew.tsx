@@ -1,15 +1,14 @@
 import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import axios from "axios"
 import { Button, Container, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material"
 import { UserTokenContext } from "../App"
 import { Category, Subcategory, User, initialState } from "../types"
-import { fetchUser } from "../services"
+import { fetchCategories, fetchIndividualSubcategory, fetchUser, newProduct } from "../services"
 
 
 function ProductNew() {
 	const [token] = useContext(UserTokenContext)
-	const [user, setUser] = useState<User | null>(null)
+	const [user, setUser] = useState<User>(initialState)
 	const [newTitle, setNewTitle] = useState<string>("")
 	const [newDescription, setNewDescription] = useState<string>("")
 	const [newPrice, setNewPrice] = useState<number>(0)
@@ -21,16 +20,6 @@ function ProductNew() {
 	const [subcategories, setSubcategories] = useState<Subcategory[]>([])
 
 	const navigate = useNavigate()
-
-	const fetchCategories = async () => {
-		try {
-			const response = await axios.get("/api/category")
-			console.log(response.data)
-			setCategories(response.data)
-		} catch (error) {
-			console.error("error fetching categories", error)
-		}
-	}
 
 	const fetchInfo = async () => {
 		if(!token){
@@ -53,53 +42,43 @@ function ProductNew() {
 	}, [token])
 
 	useEffect(() => {
-		fetchCategories()
+		fetchCategories().then((data) => {
+			if (data === undefined) {
+				console.error("error fetching categories")
+				return
+			}
+			setCategories(data)
+		})
 	}, [])
 
 	const fetchSubcategories = async (categoryId: number) => {
-		try {
-			const response = await axios.get("/api/category/subcategory/" + categoryId)
-			console.log(response.data)
-			setSubcategories(response.data)
-		} catch (error) {
-			console.error("error fetching subcategories", error)
-		}
+		fetchIndividualSubcategory(categoryId).then((data) => {
+			if (data === undefined) {
+				console.error("error fetching subcategories")
+				return
+			}
+			setSubcategories(data)
+		})
 	}
 
 	const createNewProduct = async () => {
-		const product = {user_id: user?.user_id, title: newTitle, category_id: categoryId, subcategory_id: subcategoryId, postal_code: user?.postal_code, city: user?.city, description: newDescription, price: newPrice}
-		console.log(product)
+		const product = {user_id: user.user_id, title: newTitle, category_id: categoryId, subcategory_id: subcategoryId, postal_code: user.postal_code, city: user.city, description: newDescription, price: newPrice}
 
-		try {
-			const response = await axios.post("/api/product/", product, {
-				headers: {
-					"Content-Type": "application/json",
-				},
-			})
-
+		newProduct(product).then((response) => {
 			if (response.status === 200) {
-				alert("Product creation success")
-				navigate("/")
+				console.log("Product creation success")
+				navigate("/product")
 			}
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		} catch (error: Error | any) {
-			console.error(error)
-			alert(error.message)
-		}
-		navigate("/product")
+		})
 	}
 
 	const getCategory = (array: Array<{ category_id: number; category_name: string }>, name: string) => {
 		const filtered = array.filter((category) => category.category_name === name)
-		console.log(filtered)
-		console.log(filtered[0].category_id)
 		return filtered[0].category_id
 	}
 
 	const getSubcategory = (array: Array<{ subcategory_id: number; subcategory_name: string }>, name: string) => {
 		const filtered = array.filter((category) => category.subcategory_name === name)
-		console.log(filtered)
-		console.log(filtered[0].subcategory_id)
 		return filtered[0].subcategory_id
 	}
 
@@ -121,7 +100,6 @@ function ProductNew() {
 		const categoryId = getCategory(categories, categoryName)
 		setNewCategory(categoryName)
 		setCategoryId(categoryId)
-		console.log(categoryId)
 		fetchSubcategories(categoryId)
 	}
 	

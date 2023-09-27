@@ -127,6 +127,7 @@ export const getProductsByCategory = async (category_ID: number): Promise<Produc
 	SELECT
     products.product_id,
     products.title,
+	products.price,
     category.category_id,
     category.category_name,
     subcategory.subcategory_id,
@@ -149,6 +150,7 @@ export const getProductsBySubcategory = async (subcategory_ID: number): Promise<
 	SELECT
 	products.product_id,
 	products.title,
+	products.price,
 	subcategory.subcategory_id,
 	subcategory.subcategory_name,
 	subcategory.category_id
@@ -163,3 +165,20 @@ export const getProductsBySubcategory = async (subcategory_ID: number): Promise<
 
 	return result.rows
 }
+
+//GET category name
+export const getCategoryName = async (categoryId: number) => {
+	const query = "SELECT category_name FROM category WHERE category_id = $1"
+	const params = [categoryId]
+	const result = await executeQuery(query, params)
+	return result.rows[0].category_name
+}
+
+//GET subcategory name
+export const getSubcategoryName = async (subcategoryId: number) => {
+	const query = "SELECT subcategory_name FROM subcategory WHERE subcategory_id = $1"
+	const params = [subcategoryId]
+	const result = await executeQuery(query, params)
+	return result.rows[0].subcategory_name
+}
+

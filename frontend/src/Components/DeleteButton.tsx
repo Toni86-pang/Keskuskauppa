@@ -1,10 +1,6 @@
 import { useState } from "react"
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material"
-
-interface DeleteButtonprops {
-	id: number
-	onDelete: () => void
-}
+import { DeleteButtonprops } from "../types"
 
 export default function DeleteButton({ id, onDelete }: DeleteButtonprops) {
 	console.log("DeleteButton id:", id)
