@@ -139,7 +139,7 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 			{showSuccessNotification && (
 				<Notification
 					open={showSuccessNotification}
-					message="Product updated successfully!"
+					message="Profile updated successfully!"
 					type="success"
 					onClose={() => setShowSuccessNotification(false)}
 					duration={1500}
@@ -148,7 +148,7 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 			{showErrorNotification && (
 				<Notification
 					open={showErrorNotification}
-					message="Error updating product."
+					message="Error updating profile."
 					type="error"
 					onClose={() => setShowErrorNotification(false)}
 					duration={1500}

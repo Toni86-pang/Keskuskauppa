@@ -7,10 +7,11 @@ import Login from "./Components/Login.tsx"
 // import "./index.css"
 import ErrorPage from "./Pages/ErrorPage.tsx"
 // import { Login } from '@mui/icons-material'
-import Products from "./Components/Products.tsx"
+import Products, { loader as productsLoader } from "./Components/Products.tsx"
 import Product, { loader as productLoader } from "./Components/Product.tsx"
 import ProductNew from "./Components/ProductNew.tsx"
 import Profile from "./Components/Profile.tsx"
+import Carousel from "./Components/Carousel.tsx"
 
 const router = createBrowserRouter([
 	{
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
 		element: <App />,
 		errorElement: <ErrorPage />,
 		children: [
+			{
+				path: "/",
+				element: <Carousel />,
+			},
 			{
 				path: "/register",
 				element: <Register />,
@@ -27,8 +32,27 @@ const router = createBrowserRouter([
 				element: <Login />,
 			},
 			{
-				path: "/product",
+				path: "/products",
 				element: <Products />,
+			},
+			{
+				path: "/products/category/:id",
+				element: <Products category={true}/>,
+				loader: productsLoader
+			},
+			{
+				path: "/products/subcategory/:id",
+				element: <Products subCategory={true}/>,
+				loader: productsLoader
+			},
+			{
+				path: "/product/new",
+				element: <ProductNew />,
+			},
+			{
+				path: "/product/:id",
+				element: <Product />,
+				loader: productLoader,
 			},
 			{
 				path: "/profile",

@@ -35,6 +35,11 @@ export interface ProductProps {
     product: ProductType
   }
 
+export interface CategoryProps {
+	category?: boolean
+	subCategory?: boolean
+  }
+
 export interface Category {
 	category_name: string
 	category_id: number
