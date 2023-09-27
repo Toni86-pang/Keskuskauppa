@@ -7,18 +7,18 @@ import { Grid } from "@mui/material"
 import { useNavigate } from "react-router"
 
 interface Product {
-  product_id: number;
-  title: string;
-  category_id: number;
-  subcategory_id: number;
-  city: string;
-  postal_code: string;
-  description: string;
-  price: number;
+  product_id: number
+  title: string
+  category_id: number
+  subcategory_id: number
+  city: string
+  postal_code: string
+  description: string
+  price: number
 }
 
 interface Props {
-  product: Product;
+  product: Product
 }
 
 const cardStyle = {
