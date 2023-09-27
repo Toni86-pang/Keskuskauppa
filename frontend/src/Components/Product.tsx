@@ -236,7 +236,7 @@ export default function Product() {
 										category_id={product?.category_id || 0} // Replace with the actual category ID
 										subcategory_id={product?.subcategory_id || 0} // Replace with the actual subcategory ID
 										city={product?.city.split(",")[0] || ""} // Replace with actual location parsing logic
-										postal_code={product?.postal_code.split(",")[1] || ""} // Replace with actual location parsing logic
+										postal_code={product?.postal_code ?? "0000"} // Replace with actual location parsing logic
 										description={product?.description || ""}
 										price={product?.price || 0} // Replace with the actual price
 									/>
