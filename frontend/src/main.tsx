@@ -11,6 +11,7 @@ import Products, { loader as productsLoader } from "./Components/Products.tsx"
 import Product, { loader as productLoader } from "./Components/Product.tsx"
 import ProductNew from "./Components/ProductNew.tsx"
 import Profile from "./Components/Profile.tsx"
+import Carousel from "./Components/Carousel.tsx"
 
 const router = createBrowserRouter([
 	{
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
 		element: <App />,
 		errorElement: <ErrorPage />,
 		children: [
+			{
+				path: "/",
+				element: <Carousel />,
+			},
 			{
 				path: "/register",
 				element: <Register />,
