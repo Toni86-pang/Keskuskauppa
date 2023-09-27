@@ -6,13 +6,6 @@ export default function DeleteButton({ id, onDelete }: DeleteButtonprops) {
 	console.log("DeleteButton id:", id)
 	const [dialogOpen, setDialogOpen] = useState(false)
 
-	const handleDelete = async () => {
-		try {
-			onDelete()
-		} catch (error){
-			console.error("error deleteting product", error)
-		}
-	}
 	return (
 		<div>
 			<Button variant="outlined" color="secondary" onClick={() => setDialogOpen(true)}>
@@ -29,7 +22,7 @@ export default function DeleteButton({ id, onDelete }: DeleteButtonprops) {
 					<Button onClick={()=> setDialogOpen(false)} color="primary">
 						Cancel
 					</Button>
-					<Button onClick={handleDelete} color="secondary"> 
+					<Button onClick={onDelete} color="secondary"> 
 					Delete
 					</Button>
 				</DialogActions>

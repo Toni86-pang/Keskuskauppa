@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom"
 import { Button, Container, TextField } from "@mui/material"
 import VerifyDialog from "./VerifyDialog"
 import { User, initialState } from "../types"
-import { registerUser } from "../services"
+// import { registerUser } from "../services"
+import Notification from "./Notification"
+import axios, { AxiosError } from "axios"
 
 function RegisterNewUser() {
 
@@ -11,19 +13,66 @@ function RegisterNewUser() {
 	const [confirmPassword, setConfirmPassword] = useState<string>("")
 	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true)
 	const [verifyOpen, setVerifyOpen] = useState(false)
+	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
+	const [showErrorNotification, setShowErrorNotification] = useState(false)
+	const [showErrorNotificationTwo, setShowErrorNotificationTwo] = useState(false)
+	const [showErrorNotificationThree, setShowErrorNotificationThree] = useState(false)
 
 	const { name, email, username, phone, address, city, postal_code } = newUser
 
 	const navigate = useNavigate()
 
+	// const register = async () => {
+	// 	await registerUser(newUser).then((response) => {
+	// 		if (response.status === 200) {
+	// 			setShowSuccessNotification(true)
+	// 			setTimeout(() => {
+	// 				navigate("/")
+	// 			}, 1500)
+	// 			navigate("/")
+	// 		} else if (response.status === 401) {
+	// 			setNewUser(initialState)
+	// 			setShowErrorNotification(true)
+	// 		} else {
+	// 			setNewUser(initialState)
+	// 			setShowErrorNotificationTwo(true)
+	// 		}
+	// 	})
+
 	const register = async () => {
-		registerUser(newUser).then((response) => {
+		try {
+			const response = await axios.post("/api/users/register", newUser, {
+				headers: {
+					"Content-Type": "application/json",
+				},
+			})
+
 			if (response.status === 200) {
-				navigate("/")
+				setShowSuccessNotification(true)
+				setTimeout(() => {
+					navigate("/")
+				}, 1500)
 			} else if (response.status === 401) {
+				setShowErrorNotification(true)
+			} else {
 				setNewUser(initialState)
+				setShowErrorNotificationTwo(true)
 			}
-		})
+		} catch (error) {
+			if (error instanceof AxiosError && error.response) {
+				console.error(error)
+				if (error.response) {
+					if (error.response.status === 401) {
+						setShowErrorNotification(true)
+					} else {
+						setNewUser(initialState)
+						setShowErrorNotificationTwo(true)
+					}
+				} else {
+					setShowErrorNotificationThree(true)
+				}
+			}
+		}
 	}
 		
 	const verifyDialogProps = {
@@ -35,6 +84,7 @@ function RegisterNewUser() {
 
 	const handleVerification = () => {
 		setVerifyOpen(true)
+
 	}
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -54,104 +104,145 @@ function RegisterNewUser() {
 		setPasswordsMatch(true)
 	}
 	return (
-		<Container sx={{ m: 1 }}>
-			<Container>
-				<TextField
-					type="text"
-					placeholder="your name"
-					name="name"
-					value={name}
-					onChange={handleInputChange}
-				/>
+		<>
+			<Container sx={{ m: 1 }}>
+				<Container>
+					<TextField
+						type="text"
+						placeholder="Nimi"
+						name="name"
+						value={name}
+						onChange={handleInputChange}
+					/>
 
-				<TextField
-					type="email"
-					placeholder="your email"
-					name="email"
-					value={email}
-					onChange={handleInputChange}
-				/>
+					<TextField
+						type="email"
+						placeholder="Sähköpostiosoite"
+						name="email"
+						value={email}
+						onChange={handleInputChange}
+					/>
 
-				<TextField
-					type="text"
-					placeholder="enter a username"
-					name="username"
-					value={username}
-					onChange={handleInputChange}
-				/>
+					<TextField
+						type="text"
+						placeholder="Käyttäjänimi"
+						name="username"
+						value={username}
+						onChange={handleInputChange}
+					/>
 
-				<TextField
-					type="text"
-					placeholder="enter a phone number"
-					name="phone"
-					value={phone}
-					onChange={handleInputChange}
-				/>
+					<TextField
+						type="text"
+						placeholder="Puhelinnumero"
+						name="phone"
+						value={phone}
+						onChange={handleInputChange}
+					/>
 
-				<TextField
-					type="text"
-					placeholder="enter a address"
-					name="address"
-					value={address}
-					onChange={handleInputChange}
-				/>
+					<TextField
+						type="text"
+						placeholder="Osoite"
+						name="address"
+						value={address}
+						onChange={handleInputChange}
+					/>
 
-				<TextField
-					type="text"
-					placeholder="enter a city"
-					name="city"
-					value={city}
-					onChange={handleInputChange}
-				/>
+					<TextField
+						type="text"
+						placeholder="Kaupunki"
+						name="city"
+						value={city}
+						onChange={handleInputChange}
+					/>
 
-				<TextField
-					type="text"
-					placeholder="Postinumero"
-					name="postal_code"
-					value={postal_code}
-					onChange={handleInputChange}
-				/>
+					<TextField
+						type="text"
+						placeholder="Postinumero"
+						name="postal_code"
+						value={postal_code}
+						onChange={handleInputChange}
+					/>
 
-				<TextField
-					type="password"
-					placeholder="Enter a password"
-					name="password"
-					value={newUser.password}
-					onChange={handleInputChange}
-				/>
-				<TextField
-					type="password"
-					placeholder="Enter the password again"
-					name="confirmPassword"
-					value={confirmPassword}
-					onChange={handleConfirmPasswordChange}
-					error={!passwordsMatch}
-					helperText={!passwordsMatch ? "Passwords do not match" : ""}
-				/>
-			</Container>
-			<Container>
-				<Button
-					sx={{
+					<TextField
+						type="password"
+						placeholder="Salasana"
+						name="password"
+						value={newUser.password}
+						onChange={handleInputChange}
+					/>
+					<TextField
+						type="password"
+						placeholder="Salasana uudelleen"
+						name="confirmPassword"
+						value={confirmPassword}
+						onChange={handleConfirmPasswordChange}
+						error={!passwordsMatch}
+						helperText={!passwordsMatch ? "Salasanat ovat erilaiset." : ""}
+					/>
+				</Container>
+				<Container>
+					<Button
+						sx={{
+							m: 1,
+							bgcolor: "#6096ba",
+							":hover": { bgcolor: "darkblue" }
+						}}
+						variant="contained"
+						onClick={handleVerification}>Rekisteröidy</Button>
+					<Button sx={{
 						m: 1,
 						bgcolor: "#6096ba",
-						":hover": { bgcolor: "darkblue" }
+						":hover": { bgcolor: "#d32f2f" },
 					}}
 					variant="contained"
-					onClick={handleVerification}>Register</Button>
-				<Button sx={{
-					m: 1,
-					bgcolor: "#6096ba",
-					":hover": { bgcolor: "#d32f2f" },
-				}}
-				variant="contained"
-				onClick={handleCancel}>
-					Cancel
-				</Button>
-				<VerifyDialog {...verifyDialogProps} />
-			</Container>
+					onClick={handleCancel}>
+						Cancel
+					</Button>
+					<VerifyDialog {...verifyDialogProps} />
+				</Container>
+			</Container >
+			{/* Success and error notifications */}
+			{showSuccessNotification && (
+				<Notification
+					open={showSuccessNotification}
+					message="Rekisteröityminen onnistui!"
+					type="success"
+					onClose={() => setShowSuccessNotification(false)}
+					duration={1500}
+				/>
+			)}
+			{showErrorNotification && (
+				<Notification
+					open={showErrorNotification}
+					message="Käyttäjänimi on jo olemassa"
+					type="error"
+					onClose={() => setShowErrorNotification(false)}
+					duration={1500}
 
-		</Container >
+				/>
+			)}
+			{showErrorNotificationTwo && (
+				<Notification
+					open={showErrorNotificationTwo}
+					message="Rekisteröitymisessä tapahtui virhe"
+					type="error"
+					onClose={() => setShowErrorNotificationTwo(false)}
+					duration={1500}
+				/>
+			)}
+			{showErrorNotificationThree && (
+				<Notification
+					open={showErrorNotificationThree}
+					message="Server-virhe"
+					type="error"
+					onClose={() => setShowErrorNotificationThree(false)}
+					duration={1500}
+				/>
+			)}
+
+		</>
 	)
 }
+
 
 export default RegisterNewUser

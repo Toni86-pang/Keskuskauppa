@@ -18,8 +18,9 @@ import DeleteButton from "./DeleteButton"
 import UpdateProductModal from "./UpdateProducts"
 import { ProductType, initialStateProduct } from "../types"
 import { deleteProduct, fetchProduct } from "../services"
+import Notification from "./Notification"
 
-
+  
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, react-refresh/only-export-components
 export function loader({ params }: any) {
 	return params.id
@@ -58,17 +59,17 @@ const itemData = [
 	},
 ]
 
-///////////
-
 export default function Product() {
 	const [isUpdateModalOpen, setUpdateModalOpen] = useState(false)
 	const [product, setProduct] = useState<ProductType>(initialStateProduct)
+	const [showSuccessDeleteNotification, setShowSuccessDeleteNotification] = useState(false)
+	const [showErrorDeleteNotification, setShowErrorDeleteNotification] = useState(false)
+
 	const [selectedImage, setSelectedImage] = useState<string | null>(
 		itemData[0].img
 	)
 	const navigate = useNavigate()
 	const id = parseInt(useLoaderData() as string, 10)
-
 	useEffect(() => {
 		fetchProduct(id).then((data) => {
 			if (data === undefined) {
@@ -79,20 +80,18 @@ export default function Product() {
 		})
 	}, [id])
 
-
-
 	const handleDelete = async () => {
 		try {
 			deleteProduct(product)
+			setShowSuccessDeleteNotification(true)
+			setTimeout(() => {
+				navigate("/product")
+			}, 1000)
 		} catch (error) {
-			console.error("error deleting product", error)
-		}
-		finally {
-			navigate("/product")
+			console.error("Error deleting product", error)
+			setShowErrorDeleteNotification(true)
 		}
 	}
-	console.log("producst", product)
-
 
 
 	return (
@@ -189,28 +188,8 @@ export default function Product() {
 								>
 									{product?.postal_code}
 								</Typography>
-
 							</Grid>
-
 							<Grid item>
-								{/* {loggedIn ? (
-									<div>
-										<Button variant="outlined">
-											Ostoskoriin
-										</Button>
-										<Button variant="outlined">
-											Viesti
-										</Button>
-									</div>
-								) : (
-									<Button
-										variant="outlined"
-										href="/login"
-										size="small"
-									>
-										Kirjaudu sisään ostaaksesi
-										</Button>
-								)} */}
 								<div>
 									<Button variant="outlined" onClick={() => setUpdateModalOpen(true)}>
 										Päivitä tuote
@@ -218,18 +197,41 @@ export default function Product() {
 									<UpdateProductModal
 										isOpen={isUpdateModalOpen}
 										onClose={() => setUpdateModalOpen(false)}
-										productId={product?.product_id || 0} 
+										productId={product?.product_id || 0}
 										title={product?.title || ""}
-										category_id={product?.category_id || 0} // Replace with the actual category ID
-										subcategory_id={product?.subcategory_id || 0} // Replace with the actual subcategory ID
-										city={product?.city.split(",")[0] || ""} // Replace with actual location parsing logic
-										postal_code={product?.postal_code.split(",")[1] || ""} // Replace with actual location parsing logic
+										category_id={product?.category_id || 0}
+										subcategory_id={product?.subcategory_id || 0}
+										city={product?.city.split(",")[0] || ""}
+										postal_code={product?.postal_code.split(",")[1] || ""}
 										description={product?.description || ""}
-										price={product?.price || 0} // Replace with the actual price
+										price={product?.price || 0}
 									/>
 								</div>
-								{product && <DeleteButton id={product.product_id} onDelete={handleDelete} />}
+
+								{product && (
+									<DeleteButton id={product.product_id} onDelete={handleDelete} />
+								)}
 							</Grid>
+							{/* Delete success and error notifications */}
+							{showSuccessDeleteNotification && (
+								<Notification
+									open={showSuccessDeleteNotification}
+									message="Tuote on poistettu onnistuneesti!"
+									type="success"
+									onClose={() => setShowSuccessDeleteNotification(false)}
+									duration={1500}
+								/>
+							)}
+							{showErrorDeleteNotification && (
+								<Notification
+									open={showErrorDeleteNotification}
+									message="Tapahtui virhe poistettaessa."
+									type="error"
+									onClose={() => setShowErrorDeleteNotification(false)}
+									duration={1500}
+								/>
+							)}
+
 						</Grid>
 					</Grid>
 				</Grid>

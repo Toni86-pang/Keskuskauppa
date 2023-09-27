@@ -11,7 +11,6 @@ import {
 import { ProductType } from "../types"
 import { fetchAllProducts } from "../services"
 
-
 function Products() {
 	const [products, setProducts] = useState<ProductType[]>([])
 

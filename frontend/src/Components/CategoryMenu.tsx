@@ -42,7 +42,6 @@ const CategoryMenu = () => {
 				}
 				subCategoriesGrouped[mainCategoryId].push(subCategory)
 			})
-
 			setSubCategories(subCategoriesGrouped)
 		})
 	}, [categories])
@@ -82,10 +81,13 @@ const CategoryMenu = () => {
 				<MenuItem>
 					<Button href="/">Etusivu</Button>
 				</MenuItem>
+				<MenuItem>
+					<Button href="/product">Kaikki tuotteet</Button>
+				</MenuItem>
 				{categories.map((category, index) => (
 					<div key={"category " + index.toString()}>
 						<MenuItem onClick={(e) => handleSubMenuOpen(e, index)}>
-							<Button href={`/product/${category.category_id}`} sx={{ "&:hover": { textDecoration: "underline" } }} >{category.category_name}</Button>
+							<Button href={`/product/category/${category.category_id}`} sx={{ "&:hover": { textDecoration: "underline" } }} >{category.category_name}</Button>
 							<ArrowDropDownIcon sx={{ transform: "rotate(-90deg)", marginLeft: "auto" }} />
 						</MenuItem>
 

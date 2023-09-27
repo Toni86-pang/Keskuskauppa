@@ -2,12 +2,11 @@ import axios from "axios"
 import { Category, ProductType, UpdatedProduct, UpdatedUser, User, } from "./types"
 
 export const deleteUser = async (token: string) => {
-	return axios
-		.delete("/api/users/delete", {
-			headers: {
-				"Authorization": `Bearer ${token}`
-			}
-		}).then((response) => response.data)
+	return axios.delete("/api/users/delete", {
+		headers: {
+			"Authorization": `Bearer ${token}`
+		}
+	}).then((response) => response.data)
 }
 
 export const fetchUser = (token: string) => {
@@ -73,8 +72,7 @@ export const loginUser = async (username: string, password: string) => {
 		username,
 		password
 	})
-	const token = response.data.token
-	return token
+	return response
 }
 
 export const registerUser = async (newUser: User) => {
