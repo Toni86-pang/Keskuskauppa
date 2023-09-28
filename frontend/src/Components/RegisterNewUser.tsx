@@ -1,6 +1,7 @@
-import { ChangeEvent, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { Button, Container, TextField } from "@mui/material"
+import { ChangeEvent, useState, useContext } from "react"
+import { UserTokenContext } from "../App"
+// import { useNavigate } from "react-router-dom"
+import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
 import VerifyDialog from "./VerifyDialog"
 import { User, initialState } from "../types"
 // import { registerUser } from "../services"
@@ -10,6 +11,7 @@ import axios, { AxiosError } from "axios"
 function RegisterNewUser() {
 
 	const [newUser, setNewUser] = useState<User>(initialState)
+	const [ , setToken] = useContext(UserTokenContext)
 	const [confirmPassword, setConfirmPassword] = useState<string>("")
 	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true)
 	const [verifyOpen, setVerifyOpen] = useState(false)
@@ -18,9 +20,9 @@ function RegisterNewUser() {
 	const [showErrorNotificationTwo, setShowErrorNotificationTwo] = useState(false)
 	const [showErrorNotificationThree, setShowErrorNotificationThree] = useState(false)
 
-	const { name, email, username, phone, address, city, postal_code } = newUser
+	const [dialogOpen, setDialogOpen] = useState(false)
 
-	const navigate = useNavigate()
+	const { name, email, username, phone, address, city, postal_code } = newUser
 
 	// const register = async () => {
 	// 	await registerUser(newUser).then((response) => {
@@ -49,9 +51,7 @@ function RegisterNewUser() {
 
 			if (response.status === 200) {
 				setShowSuccessNotification(true)
-				setTimeout(() => {
-					navigate("/")
-				}, 1500)
+				handleLogin(response.data)
 			} else if (response.status === 401) {
 				setShowErrorNotification(true)
 			} else {
@@ -74,7 +74,15 @@ function RegisterNewUser() {
 			}
 		}
 	}
-		
+
+	const handleLogin = (registerToken: string) => {
+		if (registerToken) {
+			localStorage.setItem("token", registerToken)
+			setToken(registerToken)
+			handleDialogClose()
+		}
+	}
+
 	const verifyDialogProps = {
 		messageText: "Rekisteröidäänkö näillä tiedoilla?",
 		isOpen: verifyOpen,
@@ -84,7 +92,6 @@ function RegisterNewUser() {
 
 	const handleVerification = () => {
 		setVerifyOpen(true)
-
 	}
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -93,114 +100,122 @@ function RegisterNewUser() {
 			...newUser, [name]: value
 		}))
 	}
+
 	const handleConfirmPasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const newConfirmPassword = event.target.value
 		setConfirmPassword(newConfirmPassword)
 		setPasswordsMatch(newUser.password === newConfirmPassword)
 	}
+
 	const handleCancel = () => {
 		setNewUser(initialState)
 		setConfirmPassword("")
 		setPasswordsMatch(true)
+		setDialogOpen(false)
 	}
+
+	const handleDialogOpen = () => {
+		setDialogOpen(true)
+	}
+
+	const handleDialogClose = () => {
+		setDialogOpen(false)
+	}
+
 	return (
 		<>
+
 			<Container sx={{ m: 1 }}>
-				<Container>
-					<TextField
-						type="text"
-						placeholder="Nimi"
-						name="name"
-						value={name}
-						onChange={handleInputChange}
-					/>
+				<Button sx={{ color: "white" }} onClick={handleDialogOpen}>
+					Rekisteröidy
+				</Button>
+				<Dialog open={dialogOpen} onClose={handleDialogClose}>
+					<DialogTitle>Rekisteröidy</DialogTitle>
+					<DialogContent>
 
-					<TextField
-						type="email"
-						placeholder="Sähköpostiosoite"
-						name="email"
-						value={email}
-						onChange={handleInputChange}
-					/>
+						<TextField
+							type="text"
+							placeholder="Nimi"
+							name="name"
+							value={name}
+							onChange={handleInputChange}
+						/>
 
-					<TextField
-						type="text"
-						placeholder="Käyttäjänimi"
-						name="username"
-						value={username}
-						onChange={handleInputChange}
-					/>
+						<TextField
+							type="email"
+							placeholder="Sähköpostiosoite"
+							name="email"
+							value={email}
+							onChange={handleInputChange}
+						/>
 
-					<TextField
-						type="text"
-						placeholder="Puhelinnumero"
-						name="phone"
-						value={phone}
-						onChange={handleInputChange}
-					/>
+						<TextField
+							type="text"
+							placeholder="Käyttäjänimi"
+							name="username"
+							value={username}
+							onChange={handleInputChange}
+						/>
 
-					<TextField
-						type="text"
-						placeholder="Osoite"
-						name="address"
-						value={address}
-						onChange={handleInputChange}
-					/>
+						<TextField
+							type="text"
+							placeholder="Puhelinnumero"
+							name="phone"
+							value={phone}
+							onChange={handleInputChange}
+						/>
 
-					<TextField
-						type="text"
-						placeholder="Kaupunki"
-						name="city"
-						value={city}
-						onChange={handleInputChange}
-					/>
+						<TextField
+							type="text"
+							placeholder="Osoite"
+							name="address"
+							value={address}
+							onChange={handleInputChange}
+						/>
 
-					<TextField
-						type="text"
-						placeholder="Postinumero"
-						name="postal_code"
-						value={postal_code}
-						onChange={handleInputChange}
-					/>
+						<TextField
+							type="text"
+							placeholder="Kaupunki"
+							name="city"
+							value={city}
+							onChange={handleInputChange}
+						/>
 
-					<TextField
-						type="password"
-						placeholder="Salasana"
-						name="password"
-						value={newUser.password}
-						onChange={handleInputChange}
-					/>
-					<TextField
-						type="password"
-						placeholder="Salasana uudelleen"
-						name="confirmPassword"
-						value={confirmPassword}
-						onChange={handleConfirmPasswordChange}
-						error={!passwordsMatch}
-						helperText={!passwordsMatch ? "Salasanat ovat erilaiset." : ""}
-					/>
-				</Container>
-				<Container>
-					<Button
-						sx={{
-							m: 1,
-							bgcolor: "#6096ba",
-							":hover": { bgcolor: "darkblue" }
-						}}
-						variant="contained"
-						onClick={handleVerification}>Rekisteröidy</Button>
-					<Button sx={{
-						m: 1,
-						bgcolor: "#6096ba",
-						":hover": { bgcolor: "#d32f2f" },
-					}}
-					variant="contained"
-					onClick={handleCancel}>
-						Cancel
-					</Button>
-					<VerifyDialog {...verifyDialogProps} />
-				</Container>
+						<TextField
+							type="text"
+							placeholder="Postinumero"
+							name="postal_code"
+							value={postal_code}
+							onChange={handleInputChange}
+						/>
+
+						<TextField
+							type="password"
+							placeholder="Salasana"
+							name="password"
+							value={newUser.password}
+							onChange={handleInputChange}
+						/>
+
+						<TextField
+							type="password"
+							placeholder="Salasana uudelleen"
+							name="confirmPassword"
+							value={confirmPassword}
+							onChange={handleConfirmPasswordChange}
+							error={!passwordsMatch}
+							helperText={!passwordsMatch ? "Salasanat ovat erilaiset." : ""}
+						/>
+
+					</DialogContent>
+					<DialogActions>
+						<Button onClick={handleVerification}>Rekisteröidy</Button>
+						<Button onClick={handleCancel}>Peruuta</Button>
+					</DialogActions>
+				</Dialog>
+				<VerifyDialog {...verifyDialogProps} />
 			</Container >
+
 			{/* Success and error notifications */}
 			{showSuccessNotification && (
 				<Notification
@@ -239,7 +254,6 @@ function RegisterNewUser() {
 					duration={1500}
 				/>
 			)}
-
 		</>
 	)
 }

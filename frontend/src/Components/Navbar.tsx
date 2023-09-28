@@ -4,7 +4,6 @@ import {
 	Box,
 	Toolbar,
 	Typography,
-	Button,
 	styled,
 	InputBase,
 	alpha,
@@ -12,6 +11,7 @@ import {
 } from "@mui/material"
 import CategoryMenu from "./CategoryMenu"
 import Login from "./Login"
+import RegisterNewUser from "./RegisterNewUser"
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -73,9 +73,10 @@ const Navbar = () => {
 						/>
 					</Search>
 
-					<Button
+					{/* <Button
 						href='/register'
-						color="inherit">Rekisteröidy</Button>
+						color="inherit">Rekisteröidy</Button> */}
+					<div><RegisterNewUser /></div>
 					<div><Login /></div>
 				</Toolbar>
 			</AppBar>
