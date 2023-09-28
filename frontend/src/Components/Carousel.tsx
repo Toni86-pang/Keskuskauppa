@@ -19,7 +19,7 @@ function CustomCarousel() {
 
 		if (isPlaying) {
 			intervalId = setInterval(() => {
-				// If the current slide is the last one, reset it to the first slide
+			
 				setCurrentIndex((prevIndex) =>
 					prevIndex === 4 ? 0 : prevIndex + 1
 				)
