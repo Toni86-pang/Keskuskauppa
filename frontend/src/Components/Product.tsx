@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { useLoaderData, useNavigate } from "react-router-dom"
 import {
 	Paper,
@@ -16,9 +16,10 @@ import Breadcrumbs from "@mui/material/Breadcrumbs"
 import Link from "@mui/material/Link"
 import DeleteButton from "./DeleteButton"
 import UpdateProductModal from "./UpdateProducts"
-import { ProductType, initialStateProduct } from "../types"
-import { deleteProduct, fetchProduct } from "../services"
+import { ProductType, User, initialState, initialStateProduct } from "../types"
+import { deleteProduct, fetchProduct, fetchUser } from "../services"
 import Notification from "./Notification"
+import { UserTokenContext } from "../App"
 
   
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, react-refresh/only-export-components
@@ -64,6 +65,9 @@ export default function Product() {
 	const [product, setProduct] = useState<ProductType>(initialStateProduct)
 	const [showSuccessDeleteNotification, setShowSuccessDeleteNotification] = useState(false)
 	const [showErrorDeleteNotification, setShowErrorDeleteNotification] = useState(false)
+	const [hidden, setHidden] = useState<boolean>(false)
+	const [token] = useContext(UserTokenContext)
+	const [user, setUser] = useState<User>(initialState)
 
 	const [selectedImage, setSelectedImage] = useState<string | null>(
 		itemData[0].img
@@ -80,17 +84,49 @@ export default function Product() {
 		})
 	}, [id])
 
+	const showUpdateAndDelete = async () => {
+		await (user.user_id !== 0 && product.user_id === user.user_id) ? setHidden(true) : setHidden(false)
+	}
+
+	showUpdateAndDelete()
+
+	const fetchUserDetails = async () => {
+		if(!token){
+			setUser(initialState)
+			return
+		}
+	
+		const user = await fetchUser(token)
+	
+		if (user === undefined) {
+			console.error("error fetching user")
+			return
+		}		   
+		setUser(user)
+	}
+
+	
+	useEffect(() => {
+		fetchUserDetails()
+	}, [token])
+	
+
 	const handleDelete = async () => {
 		try {
 			deleteProduct(product)
 			setShowSuccessDeleteNotification(true)
 			setTimeout(() => {
-				navigate("/product")
+				navigate("/products")
 			}, 1000)
 		} catch (error) {
 			console.error("Error deleting product", error)
 			setShowErrorDeleteNotification(true)
 		}
+	}
+
+	const openModal = () => {
+		setUpdateModalOpen(true)
+		console.log(isUpdateModalOpen)
 	}
 
 
@@ -189,29 +225,34 @@ export default function Product() {
 									{product?.postal_code}
 								</Typography>
 							</Grid>
-							<Grid item>
-								<div>
-									<Button variant="outlined" onClick={() => setUpdateModalOpen(true)}>
-										Päivitä tuote
-									</Button>
-									<UpdateProductModal
-										isOpen={isUpdateModalOpen}
-										onClose={() => setUpdateModalOpen(false)}
-										productId={product?.product_id || 0}
-										title={product?.title || ""}
-										category_id={product?.category_id || 0}
-										subcategory_id={product?.subcategory_id || 0}
-										city={product?.city.split(",")[0] || ""}
-										postal_code={product?.postal_code.split(",")[1] || ""}
-										description={product?.description || ""}
-										price={product?.price || 0}
-									/>
-								</div>
+							{ hidden ? (
+								<Grid item>
+									<div>
+										<Button variant="outlined" onClick={openModal}>
+									Päivitä tuote
+										</Button>
+										<UpdateProductModal
+											isOpen={isUpdateModalOpen}
+											onClose={() => setUpdateModalOpen(false)}
+											productId={product?.product_id || 0}
+											title={product?.title || ""}
+											category_id={product?.category_id || 0}
+											subcategory_id={product?.subcategory_id || 0}
+											city={product?.city.split(",")[0] || ""}
+											postal_code={product?.postal_code.split(",")[1] || ""}
+											description={product?.description || ""}
+											price={product?.price || 0}
+										/>
+									</div>
 
-								{product && (
-									<DeleteButton id={product.product_id} onDelete={handleDelete} />
-								)}
-							</Grid>
+									{product && (
+										<DeleteButton id={product.product_id} onDelete={handleDelete} />
+									)}
+								</Grid>
+							)
+								:
+								<></>
+							}
 							{/* Delete success and error notifications */}
 							{showSuccessDeleteNotification && (
 								<Notification
