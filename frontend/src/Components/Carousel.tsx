@@ -4,51 +4,21 @@ import img3 from "./assets/img3.jpeg"
 import img4 from "./assets/img4.jpg"
 import img5 from "./assets/img5.png"
 import img6 from "./assets/img6.jpg"
-import { useEffect, useState } from "react"
-import "react-responsive-carousel/lib/styles/carousel.min.css"
+import "react-responsive-carousel/lib/styles/carousel.min.css" 
 import "react-responsive-carousel/lib/styles/carousel.css"
 import { Carousel } from "react-responsive-carousel"
 import "./Carousel.css"
 
 function CustomCarousel() {
-	const [isPlaying, setIsPlaying] = useState(true)
-	const [currentIndex, setCurrentIndex] = useState(0)
-
-	useEffect(() => {
-		let intervalId: NodeJS.Timeout
-
-		if (isPlaying) {
-			intervalId = setInterval(() => {
-			
-				setCurrentIndex((prevIndex) =>
-					prevIndex === 4 ? 0 : prevIndex + 1
-				)
-			}, 2500)
-		}
-		return () => {
-			clearInterval(intervalId)
-		}
-	}, [isPlaying])
-
-
-	const handleMouseEnter = () => {
-		setIsPlaying(false)
-	}
-
-	const handleMouseLeave = () => {
-		setIsPlaying(true)
-	}
-
+	
 	return (
 		<div
-			onMouseEnter={handleMouseEnter}
-			onMouseLeave={handleMouseLeave}
-			className="carousel-container"
+			className="carousel-container" 
 		>
 			<Carousel
-				autoPlay={isPlaying}
-				interval={5000}
-				selectedItem={currentIndex}
+				autoPlay={true}
+				interval={1500} 
+				infiniteLoop={true}
 			>
 				<div className="carousel-slide">
 					<img src={img1} alt="Product 1"
