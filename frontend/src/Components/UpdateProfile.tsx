@@ -4,9 +4,9 @@ import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
 import DialogContent from "@mui/material/DialogContent"
 import DialogTitle from "@mui/material/DialogTitle"
-import axios from "axios"
-import { Props } from "../types"
+import { UpdateProfileProps } from "../types"
 import { UserTokenContext } from "../App"
+import { updateUser } from "../services"
 import Notification from "./Notification"
 
 const styles = {
@@ -23,10 +23,10 @@ const styles = {
 	},
 }
 
-function UpdateProfile({ isOpen, close, user }: Props) {
+function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 
-	const [newAddress, setNewAddress] = useState(user.address)
 	const [token] = useContext(UserTokenContext)	
+	const [newAddress, setNewAddress] = useState(user.address)
 	const [newPhone, setNewPhone] = useState(user.phone)
 	const [newCity, setNewCity] = useState(user.city)
 	const [newPostalCode, setNewPostalCode] = useState(user.postal_code)
@@ -65,11 +65,7 @@ function UpdateProfile({ isOpen, close, user }: Props) {
 				postal_code: newPostalCode,
 				phone: newPhone
 			}
-			await axios.put("/api/users/update", updatedData, {
-				headers: {
-					"Authorization": `Bearer ${token}`
-				}
-			})
+			updateUser(updatedData, token)
 			setShowSuccessNotification(true)
 			close({ ...user, address: newAddress, phone: newPhone, city: newCity, postal_code: newPostalCode })
 		} catch (error) {
@@ -94,7 +90,7 @@ function UpdateProfile({ isOpen, close, user }: Props) {
 						<div style={styles.section}>
 							<TextField
 								label="Katuosoite"
-								value={newAddress}
+								defaultValue={newAddress}
 								onChange={handleAddressChange}
 								fullWidth
 							/>
@@ -103,7 +99,7 @@ function UpdateProfile({ isOpen, close, user }: Props) {
 						<div style={styles.section}>
 							<TextField
 								label="Kaupunki"
-								value={newCity}
+								defaultValue={newCity}
 								onChange={handleCityChange}
 								fullWidth
 							/>
@@ -112,16 +108,17 @@ function UpdateProfile({ isOpen, close, user }: Props) {
 						<div style={styles.section}>
 							<TextField
 								label="Postinumero"
-								value={newPostalCode}
+								defaultValue={newPostalCode}
 								onChange={handlePostalCodeChange}
 								fullWidth
 							/>
 						</div>
 					</div>
 					<div style={styles.section}>
+						<div style={styles.label}>Puhelinnumero:</div>
 						<TextField
 							label="Puhelinnumero"
-							value={newPhone}
+							defaultValue={newPhone}
 							onChange={handlePhoneChange}
 							fullWidth
 						/>
@@ -142,7 +139,7 @@ function UpdateProfile({ isOpen, close, user }: Props) {
 			{showSuccessNotification && (
 				<Notification
 					open={showSuccessNotification}
-					message="Product updated successfully!"
+					message="Profile updated successfully!"
 					type="success"
 					onClose={() => setShowSuccessNotification(false)}
 					duration={1500}
@@ -151,7 +148,7 @@ function UpdateProfile({ isOpen, close, user }: Props) {
 			{showErrorNotification && (
 				<Notification
 					open={showErrorNotification}
-					message="Error updating product."
+					message="Error updating profile."
 					type="error"
 					onClose={() => setShowErrorNotification(false)}
 					duration={1500}

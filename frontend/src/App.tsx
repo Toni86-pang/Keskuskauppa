@@ -23,11 +23,6 @@ function App() {
 	)
 }
 
-// export interface UserTokenContext {
-// 	token: string
-// 	setToken: (token: string) => void
-// }
-
 export const UserTokenContext = createContext<[string, Dispatch<string>]>([
 	"",
 	() => {}

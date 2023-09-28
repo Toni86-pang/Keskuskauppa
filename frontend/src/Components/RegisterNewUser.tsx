@@ -1,21 +1,11 @@
 import { ChangeEvent, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import axios, { AxiosError } from "axios"
 import { Button, Container, TextField } from "@mui/material"
 import VerifyDialog from "./VerifyDialog"
-import { User } from "../types"
+import { User, initialState } from "../types"
+// import { registerUser } from "../services"
 import Notification from "./Notification"
-
-const initialState: User = {
-	name: "",
-	username: "",
-	password: "",
-	email: "",
-	phone: "",
-	address: "",
-	city: "",
-	postal_code: ""
-}
+import axios, { AxiosError } from "axios"
 
 function RegisterNewUser() {
 
@@ -23,8 +13,6 @@ function RegisterNewUser() {
 	const [confirmPassword, setConfirmPassword] = useState<string>("")
 	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true)
 	const [verifyOpen, setVerifyOpen] = useState(false)
-
-
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
 	const [showErrorNotificationTwo, setShowErrorNotificationTwo] = useState(false)
@@ -34,7 +22,24 @@ function RegisterNewUser() {
 
 	const navigate = useNavigate()
 
-	const registerUser = async () => {
+	// const register = async () => {
+	// 	await registerUser(newUser).then((response) => {
+	// 		if (response.status === 200) {
+	// 			setShowSuccessNotification(true)
+	// 			setTimeout(() => {
+	// 				navigate("/")
+	// 			}, 1500)
+	// 			navigate("/")
+	// 		} else if (response.status === 401) {
+	// 			setNewUser(initialState)
+	// 			setShowErrorNotification(true)
+	// 		} else {
+	// 			setNewUser(initialState)
+	// 			setShowErrorNotificationTwo(true)
+	// 		}
+	// 	})
+
+	const register = async () => {
 		try {
 			const response = await axios.post("/api/users/register", newUser, {
 				headers: {
@@ -69,12 +74,12 @@ function RegisterNewUser() {
 			}
 		}
 	}
-
+		
 	const verifyDialogProps = {
 		messageText: "Rekisteröidäänkö näillä tiedoilla?",
 		isOpen: verifyOpen,
 		setOpen: setVerifyOpen,
-		onAccept: registerUser
+		onAccept: register
 	}
 
 	const handleVerification = () => {
@@ -104,7 +109,7 @@ function RegisterNewUser() {
 				<Container>
 					<TextField
 						type="text"
-						placeholder="your name"
+						placeholder="Nimi"
 						name="name"
 						value={name}
 						onChange={handleInputChange}
@@ -112,7 +117,7 @@ function RegisterNewUser() {
 
 					<TextField
 						type="email"
-						placeholder="your email"
+						placeholder="Sähköpostiosoite"
 						name="email"
 						value={email}
 						onChange={handleInputChange}
@@ -120,7 +125,7 @@ function RegisterNewUser() {
 
 					<TextField
 						type="text"
-						placeholder="enter a username"
+						placeholder="Käyttäjänimi"
 						name="username"
 						value={username}
 						onChange={handleInputChange}
@@ -128,7 +133,7 @@ function RegisterNewUser() {
 
 					<TextField
 						type="text"
-						placeholder="enter a phone number"
+						placeholder="Puhelinnumero"
 						name="phone"
 						value={phone}
 						onChange={handleInputChange}
@@ -136,7 +141,7 @@ function RegisterNewUser() {
 
 					<TextField
 						type="text"
-						placeholder="enter a address"
+						placeholder="Osoite"
 						name="address"
 						value={address}
 						onChange={handleInputChange}
@@ -144,7 +149,7 @@ function RegisterNewUser() {
 
 					<TextField
 						type="text"
-						placeholder="enter a city"
+						placeholder="Kaupunki"
 						name="city"
 						value={city}
 						onChange={handleInputChange}
@@ -160,19 +165,19 @@ function RegisterNewUser() {
 
 					<TextField
 						type="password"
-						placeholder="Enter a password"
+						placeholder="Salasana"
 						name="password"
 						value={newUser.password}
 						onChange={handleInputChange}
 					/>
 					<TextField
 						type="password"
-						placeholder="Enter the password again"
+						placeholder="Salasana uudelleen"
 						name="confirmPassword"
 						value={confirmPassword}
 						onChange={handleConfirmPasswordChange}
 						error={!passwordsMatch}
-						helperText={!passwordsMatch ? "Passwords do not match" : ""}
+						helperText={!passwordsMatch ? "Salasanat ovat erilaiset." : ""}
 					/>
 				</Container>
 				<Container>
@@ -183,7 +188,7 @@ function RegisterNewUser() {
 							":hover": { bgcolor: "darkblue" }
 						}}
 						variant="contained"
-						onClick={handleVerification}>Register</Button>
+						onClick={handleVerification}>Rekisteröidy</Button>
 					<Button sx={{
 						m: 1,
 						bgcolor: "#6096ba",
@@ -203,7 +208,7 @@ function RegisterNewUser() {
 					message="Rekisteröityminen onnistui!"
 					type="success"
 					onClose={() => setShowSuccessNotification(false)}
-					duration={5000}
+					duration={1500}
 				/>
 			)}
 			{showErrorNotification && (
@@ -212,7 +217,7 @@ function RegisterNewUser() {
 					message="Käyttäjänimi on jo olemassa"
 					type="error"
 					onClose={() => setShowErrorNotification(false)}
-					duration={5000}
+					duration={1500}
 
 				/>
 			)}
@@ -222,21 +227,22 @@ function RegisterNewUser() {
 					message="Rekisteröitymisessä tapahtui virhe"
 					type="error"
 					onClose={() => setShowErrorNotificationTwo(false)}
-					duration={5000}
+					duration={1500}
 				/>
 			)}
 			{showErrorNotificationThree && (
 				<Notification
 					open={showErrorNotificationThree}
-					message="Server virhe"
+					message="Server-virhe"
 					type="error"
 					onClose={() => setShowErrorNotificationThree(false)}
-					duration={5000}
+					duration={1500}
 				/>
 			)}
 
 		</>
 	)
 }
+
 
 export default RegisterNewUser

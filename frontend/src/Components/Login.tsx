@@ -1,28 +1,26 @@
 import { ChangeEvent, useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import axios from "axios"
 import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
 import { UserTokenContext } from "../App"
-import { User } from "../types"
-
+import { UserValues } from "../types"
+// import { loginUser } from "../services"
 import Notification from "./Notification"
-// import jwt_decode from "jwt-decode"
+import axios from "axios"
 
-const initialState: User = {
+const initialState: UserValues = {
 	username: "",
 	password: ""
 }
 
 
 function Login() {
-	const [userValues, setUserValues] = useState<User>(initialState)
+	const [userValues, setUserValues] = useState<UserValues>(initialState)
 	const [open, setOpen] = useState<boolean>(false)
 	const [token, setToken] = useContext(UserTokenContext)
 	const { username, password } = userValues
-	const navigate = useNavigate()
-
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
+	const navigate = useNavigate()
 
 	const loginUser = async (username: string, password: string) => {
 		try {
@@ -46,7 +44,6 @@ function Login() {
 	const handleLogin = async () => {
 
 		const token = await loginUser(username, password)
-		console.log(token)
 
 		if (token) {
 			localStorage.setItem("token", token)
@@ -67,7 +64,7 @@ function Login() {
 		localStorage.removeItem("token")
 		setToken("")
 		console.log("logged out")
-		// navigate("/")
+		navigate("/")
 	}
 
 	const handleOpen = () => {
@@ -125,7 +122,7 @@ function Login() {
 					message="Kirjautuminen onnistui!"
 					type="success"
 					onClose={() => setShowSuccessNotification(false)}
-					duration={5000}
+					duration={1500}
 				/>
 			)}
 			{showErrorNotification && (
@@ -134,7 +131,7 @@ function Login() {
 					message="Käyttäjänimi tai salasana on virheellinen"
 					type="error"
 					onClose={() => setShowErrorNotification(false)}
-					duration={5000}
+					duration={1500}
 				/>
 			)}
 

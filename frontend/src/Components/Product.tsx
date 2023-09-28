@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
 import { useLoaderData, useNavigate } from "react-router-dom"
-import axios from "axios"
 import {
 	Paper,
 	Grid,
@@ -17,8 +16,9 @@ import Breadcrumbs from "@mui/material/Breadcrumbs"
 import Link from "@mui/material/Link"
 import DeleteButton from "./DeleteButton"
 import UpdateProductModal from "./UpdateProducts"
+import { ProductType, initialStateProduct } from "../types"
+import { deleteProduct, fetchProduct } from "../services"
 import Notification from "./Notification"
-import { ProductType } from "../types"
 
   
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, react-refresh/only-export-components
@@ -61,8 +61,7 @@ const itemData = [
 
 export default function Product() {
 	const [isUpdateModalOpen, setUpdateModalOpen] = useState(false)
-	const [product, setProduct] = useState<ProductType | null>(null)
-
+	const [product, setProduct] = useState<ProductType>(initialStateProduct)
 	const [showSuccessDeleteNotification, setShowSuccessDeleteNotification] = useState(false)
 	const [showErrorDeleteNotification, setShowErrorDeleteNotification] = useState(false)
 
@@ -72,20 +71,18 @@ export default function Product() {
 	const navigate = useNavigate()
 	const id = parseInt(useLoaderData() as string, 10)
 	useEffect(() => {
-		const fetchProduct = async () => {
-			try {
-				const response = await axios.get("/api/product/" + id)
-				setProduct(response.data)
-			} catch (error) {
-				console.error("error fetching products", error)
+		fetchProduct(id).then((data) => {
+			if (data === undefined) {
+				console.error("error fetching product")
+				return
 			}
-		}
-		fetchProduct()
+			setProduct(data)
+		})
 	}, [id])
 
 	const handleDelete = async () => {
 		try {
-			await axios.delete(`/api/product/${product?.product_id}`)
+			deleteProduct(product)
 			setShowSuccessDeleteNotification(true)
 			setTimeout(() => {
 				navigate("/product")
