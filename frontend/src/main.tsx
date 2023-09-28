@@ -11,6 +11,7 @@ import Products from "./Components/Products.tsx"
 import Product, { loader as productLoader } from "./Components/Product.tsx"
 import ProductNew from "./Components/ProductNew.tsx"
 import Profile from "./Components/Profile.tsx"
+import LandingPage from "./Components/LandingPage.tsx"
 
 const router = createBrowserRouter([
 	{
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
 		element: <App />,
 		errorElement: <ErrorPage />,
 		children: [
+			{
+				path: "/",
+				element: <LandingPage />,
+			},
 			{
 				path: "/register",
 				element: <Register />,
