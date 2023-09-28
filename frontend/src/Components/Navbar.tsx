@@ -1,4 +1,8 @@
+import { useState, useContext } from "react"
+import { Link } from "react-router-dom"
 import SearchIcon from "@mui/icons-material/Search"
+import AccountCircleIcon from "@mui/icons-material/AccountCircle"
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import {
 	AppBar,
 	Box,
@@ -8,10 +12,13 @@ import {
 	styled,
 	InputBase,
 	alpha,
-
+	Menu,
+	IconButton,
+	MenuItem,
 } from "@mui/material"
 import CategoryMenu from "./CategoryMenu"
 import Login from "./Login"
+import { UserTokenContext } from "../App"
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -53,8 +60,24 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	},
 }))
 
-
 const Navbar = () => {
+	const [token, setToken] = useContext(UserTokenContext)
+	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+
+	const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(event.currentTarget)
+	}
+
+	const handleMenuClose = () => {
+		setAnchorEl(null)
+	}
+
+	const handleLogout = () => {
+		// Clear the token and reset the user state
+		localStorage.removeItem("token")
+		setToken("")
+		handleMenuClose()
+	}
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="static" sx={{ bgcolor: "#6096ba" }}>
@@ -73,14 +96,58 @@ const Navbar = () => {
 						/>
 					</Search>
 
-					<Button
-						href='/register'
-						color="inherit">Rekisteröidy</Button>
-					<div><Login /></div>
+					{token ? (
+						// User is logged in, display user dropdown
+						<>
+							<IconButton
+								onClick={handleMenuOpen}
+								color="inherit"
+								aria-controls="user-menu"
+								aria-haspopup="true"
+							>
+								<AccountCircleIcon />
+								<ArrowDropDownIcon />
+							</IconButton>
+							<Menu
+								id="user-menu"
+								anchorEl={anchorEl}
+								open={Boolean(anchorEl)}
+								onClose={handleMenuClose}
+							>
+								<MenuItem 
+									onClick={handleMenuClose}
+									component={Link} to="/profile">
+									Profiili
+								</MenuItem>
+								<MenuItem 
+									onClick={handleMenuClose}
+									component={Link} 
+									to="/product/new">	
+									Lisää uusituote
+								</MenuItem>
+								<MenuItem 
+									onClick={handleMenuClose}
+									component={Link} 
+									to="/products">
+									Tuoteet
+								</MenuItem>
+
+								<MenuItem onClick={handleLogout}>Kirjaudu ulos</MenuItem>
+							</Menu>
+						</>
+					) : (
+						<>
+							<Button href="/register" color="inherit">
+								Rekisteröidy
+							</Button>
+							<div>
+								<Login />
+							</div>
+						</>
+					)}
 				</Toolbar>
 			</AppBar>
-
-		</Box >
+		</Box>
 	)
 }
 export default Navbar
