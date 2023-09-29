@@ -66,6 +66,7 @@ export interface VerifyProps {
 	onDecline?: () => void
 	acceptButtonText?: string
 	declineButtonText?: string
+	preformattedText?: string
 }
 
 export interface UpdateProductModalProps {

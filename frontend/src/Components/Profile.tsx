@@ -15,7 +15,7 @@ import Notification from "./Notification"
 function Profile() {
 	
 	const [user, setUser] = useState<User>(initialState)
-	const [token] = useContext(UserTokenContext)	
+	const [token, setToken] = useContext(UserTokenContext)	
 	const [updateVisible, setUpdateVisible] = useState(false)
 	const [ownProducts, setOwnProducts] = useState<ProductType[] | null>(null)
 	const [verifyOpen, setVerifyOpen] = useState<boolean>(false)
@@ -41,7 +41,6 @@ function Profile() {
 			console.error("error fetching user")
 			return
 		}
-
 		
 		const products = await fetchOwnProducts(Number(user.user_id))
 		
@@ -62,12 +61,19 @@ function Profile() {
 		try {
 			await deleteUser(token)
 			setShowSuccessDeleteNotification(true)
-			setTimeout(() => { 
-				navigate("/")
-			}, 2000)
+			handleLogout()
 		} catch (error) {
 			setShowErrorDeleteNotification(true)
 		}
+	}
+
+	const handleLogout = () => {
+		localStorage.removeItem("token")
+		setToken("")
+		console.log("logged out")
+		setTimeout(() => { 
+			navigate("/")
+		}, 2000)
 	}
 
 	const verifyDialogProps = {
@@ -78,17 +84,6 @@ function Profile() {
 		onAccept: deleteProfile
 	}
 
-	// interface Crumb {
-	// 	label: string
-	// 	url?: string
-	// }
-
-	// const breadcrumbs : Crumb[] = [
-	// 	{ label: "Home", url: "/" },
-	// 	{ label: "Category", url: "/category" },
-	// 	{ label: "Subcategory", url: "/category/subcategory" },
-	// 	{ label: "Current Page" },
-	// ]
 
 	return (
 

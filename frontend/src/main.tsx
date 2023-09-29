@@ -50,11 +50,6 @@ const router = createBrowserRouter([
 				element: <NewProduct />,
 			},
 			{
-				path: "/product/:id",
-				element: <Product />,
-				loader: productLoader,
-			},
-			{
 				path: "/profile",
 				element: <Profile />,
 				// loader: userLoader,
