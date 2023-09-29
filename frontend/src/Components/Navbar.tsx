@@ -9,7 +9,6 @@ import {
 	Box,
 	Toolbar,
 	Typography,
-	Button,
 	styled,
 	InputBase,
 	alpha,
@@ -19,6 +18,7 @@ import {
 } from "@mui/material"
 import CategoryMenu from "./CategoryMenu"
 import Login from "./Login"
+import RegisterNewUser from "./RegisterNewUser"
 import { UserTokenContext } from "../App"
 import { fetchUser } from "../services"
 import { User } from "../types"
@@ -162,21 +162,51 @@ const Navbar = () => {
 										to="/products">
 										Tuoteet
 									</MenuItem>
+					{token ? (
+						// User is logged in, display user dropdown
+						<>
+							<IconButton
+								onClick={handleMenuOpen}
+								color="inherit"
+								aria-controls="user-menu"
+								aria-haspopup="true"
+							>
+								<AccountCircleIcon />
+								<ArrowDropDownIcon />
+							</IconButton>
+							<Menu
+								id="user-menu"
+								anchorEl={anchorEl}
+								open={Boolean(anchorEl)}
+								onClose={handleMenuClose}
+							>
+								<MenuItem
+									onClick={handleMenuClose}
+									component={Link} to="/profile">
+									Profiili
+								</MenuItem>
+								<MenuItem
+									onClick={handleMenuClose}
+									component={Link}
+									to="/product/new">
+									Lisää uusituote
+								</MenuItem>
+								<MenuItem
+									onClick={handleMenuClose}
+									component={Link}
+									to="/products">
+									Tuoteet
+								</MenuItem>
 
-									<MenuItem onClick={handleLogout}>Kirjaudu ulos</MenuItem>
-								</Menu>
-							</>
-						) : (
-							<>
-								<Button href="/register" color="inherit">
-									Rekisteröidy
-								</Button>
-								<div>
-									<Login />
-								</div>
-							</>
-						)}
-					</div>
+								<MenuItem onClick={handleLogout}>Kirjaudu ulos</MenuItem>
+							</Menu>
+						</>
+					) : (
+						<>
+							<div><RegisterNewUser /></div>
+							<div><Login /></div>
+						</>
+					)}
 				</Toolbar>
 			</AppBar>
 		</Box>

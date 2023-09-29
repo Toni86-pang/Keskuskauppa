@@ -61,11 +61,12 @@ users.post("/register", async (req: Request, res: Response) => {
 	}
 
 	//Create token
-	const token = jwt.sign(username, secret)
+	// const token = jwt.sign(username, secret)
 
 	//Hash password and add user in database
 	const hashedPassword = await argon2.hash(password)
-	await addUser(username, name, email, phone, address, city, postal_code, hashedPassword)
+	const userId = await addUser(username, name, email, phone, address, city, postal_code, hashedPassword)
+	const token = jwt.sign({ username, id: userId }, secret)
 	return res.status(200).send(token)
 })
 
