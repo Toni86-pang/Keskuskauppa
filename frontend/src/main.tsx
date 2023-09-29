@@ -9,7 +9,7 @@ import ErrorPage from "./Pages/ErrorPage.tsx"
 // import { Login } from '@mui/icons-material'
 import Products, { loader as productsLoader } from "./Components/Products.tsx"
 import Product, { loader as productLoader } from "./Components/Product.tsx"
-import ProductNew from "./Components/ProductNew.tsx"
+import NewProduct from "./Components/NewProduct.tsx"
 import Profile from "./Components/Profile.tsx"
 import Carousel from "./Components/Carousel.tsx"
 
@@ -47,7 +47,7 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "/product/new",
-				element: <ProductNew />,
+				element: <NewProduct />,
 			},
 			{
 				path: "/profile",
@@ -56,7 +56,7 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "/product/new",
-				element: <ProductNew />
+				element: <NewProduct />
 			},
 			{
 				path: "/product/:id",
