@@ -8,7 +8,6 @@ import {
 	Box,
 	Toolbar,
 	Typography,
-	Button,
 	styled,
 	InputBase,
 	alpha,
@@ -18,6 +17,7 @@ import {
 } from "@mui/material"
 import CategoryMenu from "./CategoryMenu"
 import Login from "./Login"
+import RegisterNewUser from "./RegisterNewUser"
 import { UserTokenContext } from "../App"
 
 const Search = styled("div")(({ theme }) => ({
@@ -114,20 +114,20 @@ const Navbar = () => {
 								open={Boolean(anchorEl)}
 								onClose={handleMenuClose}
 							>
-								<MenuItem 
+								<MenuItem
 									onClick={handleMenuClose}
 									component={Link} to="/profile">
 									Profiili
 								</MenuItem>
-								<MenuItem 
+								<MenuItem
 									onClick={handleMenuClose}
-									component={Link} 
-									to="/product/new">	
+									component={Link}
+									to="/product/new">
 									Lisää uusituote
 								</MenuItem>
-								<MenuItem 
+								<MenuItem
 									onClick={handleMenuClose}
-									component={Link} 
+									component={Link}
 									to="/products">
 									Tuoteet
 								</MenuItem>
@@ -137,12 +137,8 @@ const Navbar = () => {
 						</>
 					) : (
 						<>
-							<Button href="/register" color="inherit">
-								Rekisteröidy
-							</Button>
-							<div>
-								<Login />
-							</div>
+							<div><RegisterNewUser /></div>
+							<div><Login /></div>
 						</>
 					)}
 				</Toolbar>
