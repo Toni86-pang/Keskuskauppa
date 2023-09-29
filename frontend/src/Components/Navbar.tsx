@@ -108,9 +108,10 @@ const Navbar = () => {
 					<CategoryMenu />
 					<Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
 						<Typography variant="h6">
-								Keskuskauppa
+							Keskuskauppa
 						</Typography>
 					</Link>
+
 					{/* Middle (search bar) */}
 					<Search>
 						<SearchIconWrapper>
@@ -133,9 +134,9 @@ const Navbar = () => {
 									aria-haspopup="true"
 								>
 									<AccountCircleIcon />
-									<Typography variant="body1" sx={{ mt: 1 }} >
+									<Typography variant="body1" sx={{ mt: 1 }}>
 										{user?.name} {/* Access the user's name */}
-									</Typography>				
+									</Typography>
 									<ArrowDropDownIcon />
 									<ShoppingCartIcon />
 								</IconButton>
@@ -147,66 +148,34 @@ const Navbar = () => {
 								>
 									<MenuItem
 										onClick={handleMenuClose}
-										component={Link} to="/profile">
+										component={Link} to="/profile"
+									>
 										Profiili
 									</MenuItem>
 									<MenuItem
 										onClick={handleMenuClose}
 										component={Link}
-										to="/product/new">
+										to="/product/new"
+									>
 										Lisää uusituote
 									</MenuItem>
 									<MenuItem
 										onClick={handleMenuClose}
 										component={Link}
-										to="/products">
+										to="/products"
+									>
 										Tuoteet
 									</MenuItem>
-					{token ? (
-						// User is logged in, display user dropdown
-						<>
-							<IconButton
-								onClick={handleMenuOpen}
-								color="inherit"
-								aria-controls="user-menu"
-								aria-haspopup="true"
-							>
-								<AccountCircleIcon />
-								<ArrowDropDownIcon />
-							</IconButton>
-							<Menu
-								id="user-menu"
-								anchorEl={anchorEl}
-								open={Boolean(anchorEl)}
-								onClose={handleMenuClose}
-							>
-								<MenuItem
-									onClick={handleMenuClose}
-									component={Link} to="/profile">
-									Profiili
-								</MenuItem>
-								<MenuItem
-									onClick={handleMenuClose}
-									component={Link}
-									to="/product/new">
-									Lisää uusituote
-								</MenuItem>
-								<MenuItem
-									onClick={handleMenuClose}
-									component={Link}
-									to="/products">
-									Tuoteet
-								</MenuItem>
-
-								<MenuItem onClick={handleLogout}>Kirjaudu ulos</MenuItem>
-							</Menu>
-						</>
-					) : (
-						<>
-							<div><RegisterNewUser /></div>
-							<div><Login /></div>
-						</>
-					)}
+									<MenuItem onClick={handleLogout}>Kirjaudu ulos</MenuItem>
+								</Menu>
+							</>
+						) : (
+							<>
+								<div><RegisterNewUser /></div>
+								<div><Login /></div>
+							</>
+						)}
+					</div>
 				</Toolbar>
 			</AppBar>
 		</Box>
