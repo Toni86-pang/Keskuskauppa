@@ -59,7 +59,7 @@ export const updateProfile = async (
 ) => {
 	const params = [phone, address, city, postal_code, user_id]
 	const query =
-	"UPDATE users SET phone = $2, address = $3, city = $4, postal_code = $5 WHERE user_id = $6 RETURNING user_id, username, name, email, phone, address, city, postal_code"
+	"UPDATE users SET phone = $1, address = $2, city = $3, postal_code = $4 WHERE user_id = $5 RETURNING user_id, username, name, email, phone, address, city, postal_code"
 	const result = await executeQuery(query, params)
 	if (result.rows.length === 0) {
 		return null
