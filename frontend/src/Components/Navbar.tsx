@@ -171,8 +171,8 @@ const Navbar = () => {
 							</>
 						) : (
 							<>
-								<div><RegisterNewUser /></div>
-								<div><Login /></div>
+								<RegisterNewUser />
+								<Login />
 							</>
 						)}
 					</div>
