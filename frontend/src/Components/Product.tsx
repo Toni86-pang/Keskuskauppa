@@ -16,15 +16,15 @@ import Breadcrumbs from "@mui/material/Breadcrumbs"
 import Link from "@mui/material/Link"
 import DeleteButton from "./DeleteButton"
 import UpdateProductModal from "./UpdateProducts"
-import { ProductType, User, initialState, initialStateProduct } from "../types"
+import { ProductType } from "../types"
 import { deleteProduct, fetchProduct, fetchUser } from "../services"
 import Notification from "./Notification"
 import { UserTokenContext } from "../App"
 
-  
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, react-refresh/only-export-components
-export function loader({ params }: any) {
-	return params.id
+export async function loader({ params }: any) {
+	const productData = await fetchProduct(params.id)
+	return productData
 }
 
 // Imaget testiä varten ////////////////////////
@@ -62,55 +62,30 @@ const itemData = [
 
 export default function Product() {
 	const [isUpdateModalOpen, setUpdateModalOpen] = useState(false)
-	const [product, setProduct] = useState<ProductType>(initialStateProduct)
 	const [showSuccessDeleteNotification, setShowSuccessDeleteNotification] = useState(false)
 	const [showErrorDeleteNotification, setShowErrorDeleteNotification] = useState(false)
 	const [hidden, setHidden] = useState<boolean>(false)
 	const [token] = useContext(UserTokenContext)
-	const [user, setUser] = useState<User>(initialState)
-
 	const [selectedImage, setSelectedImage] = useState<string | null>(
 		itemData[0].img
 	)
 	const navigate = useNavigate()
-	const id = parseInt(useLoaderData() as string, 10)
-	useEffect(() => {
-		fetchProduct(id).then((data) => {
-			if (data === undefined) {
-				console.error("error fetching product")
-				return
-			}
-			setProduct(data)
-		})
-	}, [id])
-
-	const showUpdateAndDelete = async () => {
-		await (user.user_id !== 0 && product.user_id === user.user_id) ? setHidden(true) : setHidden(false)
-	}
-
-	showUpdateAndDelete()
+	const product = useLoaderData() as ProductType
 
 	const fetchUserDetails = async () => {
-		if(!token){
-			setUser(initialState)
-			return
-		}
-	
 		const user = await fetchUser(token)
 	
 		if (user === undefined) {
 			console.error("error fetching user")
 			return
 		}		   
-		setUser(user)
+		user.user_id !== 0 && product.user_id === user.user_id ? setHidden(true) : setHidden(false)
 	}
-
 	
 	useEffect(() => {
 		fetchUserDetails()
 	}, [token])
 	
-
 	const handleDelete = async () => {
 		try {
 			deleteProduct(product)
@@ -123,12 +98,6 @@ export default function Product() {
 			setShowErrorDeleteNotification(true)
 		}
 	}
-
-	const openModal = () => {
-		setUpdateModalOpen(true)
-		console.log(isUpdateModalOpen)
-	}
-
 
 	return (
 		<div>
@@ -195,23 +164,29 @@ export default function Product() {
 								<Typography variant="body2" gutterBottom>
 									{product?.price} €
 								</Typography>
-								<Typography
-									variant="body2"
-									color="text.secondary"
-								>
+								{!hidden ? (
+									<>
+										<Typography
+											variant="body2"
+											color="text.secondary"
+										>
 									Myyjän nimi
-								</Typography>
-								<Typography
-									variant="body2"
-									color="text.secondary"
-									marginTop={1}
-								>
-									<StarPurple500SharpIcon />
-									<StarPurple500SharpIcon />
-									<StarPurple500SharpIcon />
-									<StarBorderPurple500SharpIcon />
-									<StarBorderPurple500SharpIcon />
-								</Typography>
+										</Typography>
+										<Typography
+											variant="body2"
+											color="text.secondary"
+											marginTop={1}
+										>
+											<StarPurple500SharpIcon />
+											<StarPurple500SharpIcon />
+											<StarPurple500SharpIcon />
+											<StarBorderPurple500SharpIcon />
+											<StarBorderPurple500SharpIcon />
+										</Typography>
+									</>
+								):(
+									<></>
+								)}
 								<Typography
 									variant="body2"
 									color="text.secondary"
@@ -228,7 +203,7 @@ export default function Product() {
 							{ hidden ? (
 								<Grid item>
 									<div>
-										<Button variant="outlined" onClick={openModal}>
+										<Button variant="outlined" onClick={() => {setUpdateModalOpen(true)}}>
 									Päivitä tuote
 										</Button>
 										<UpdateProductModal

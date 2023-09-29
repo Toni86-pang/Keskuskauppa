@@ -9,13 +9,13 @@ export default function DeleteButton({ id, onDelete }: DeleteButtonprops) {
 	return (
 		<div>
 			<Button variant="outlined" color="secondary" onClick={() => setDialogOpen(true)}>
-				Delete Product
+				Poista tuote
 			</Button>
 			<Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
 				<DialogTitle>Delete Product</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
-						Are you sure you want to delete this product? This cannot be undone.
+						Haluatko varmasti poistaa tuotteen pysyvästi?
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
