@@ -4,61 +4,59 @@ import Container from "@mui/material/Container"
 import Button from "@mui/material/Button"
 import Login from "./Login"
 import "./LandingPage.css"
-import { User, initialState } from "../types"
+import { User } from "../types"
 import { fetchUser } from "../services"
 import { UserTokenContext } from "../App"
-
+import CustomCarousel from "./Carousel"
 
 const LandingPage = () => {
-
-	//const [isLoggedIn] = useState(true)
 	const [token] = useContext(UserTokenContext)
-	const [user, setUser] = useState<User>(initialState)
-	
-	
-	const fetchUserDetails = async () => {
-		if(!token){
-			setUser(initialState)
-			return
-		}
-		const user = await fetchUser(token)
-	
-		if (user === undefined) {
-			console.error("error fetching user")
-			return
-		}
-		setUser(user)
-	}	
+	const [user, setUser] = useState<User | null>(null)
+	const isLoggedIn = Boolean(user)
+
 	useEffect(() => {
+		const fetchUserDetails = async () => {
+			if (!token) {
+				setUser(null)
+				return
+			}
+			const user = await fetchUser(token)
+
+			if (!user) {
+				console.error("error fetching user")
+				return
+			}
+			setUser(user)
+		}
 		fetchUserDetails()
 	}, [token])
 
 	return (
 		<Box>
-			<Container className="carousel-container">
-				<div>
-					<h1>Karuselli</h1>
-				</div>
+			<Container className="custom-carousel">
+				<CustomCarousel />
 			</Container>
 			<Box className="custom-container-one" display="flex">
 				<Box className="custom-container-two">
-					{user ? (
+					{isLoggedIn ? (
 						<div>
-							<h2>Tervetuloa käyttäjä x!</h2>
+							<h2>Tervetuloa {user?.username}!</h2>
 						</div>
 					) : (
 						<div>
 							<h2> Onko sinulla jo käyttäjätunnus?</h2>
-							<Button className="loginButton" variant="contained" color="primary"><Login /></Button>
+							<div className="loginButton">
+								<Login />
+							</div>
 						</div>
 					)}
 				</Box>
 				<Box className="custom-container-two">
-					{user ? (
+					{isLoggedIn ? (
 						<div>
-							<h2>Katso omat tuotteet</h2>
-							<Button href='/' variant="contained" color="primary">
-								Omat tuotteet
+							<h2>Selaa tuotteita</h2>
+							<Button href='/products' variant="contained" color="primary">
+								Kaikki tuotteet
 							</Button>
 						</div>
 					) : (
@@ -76,35 +74,3 @@ const LandingPage = () => {
 }
 
 export default LandingPage
-
-
-{/*<h2>{isLoggedIn ? "Tervetuloa käyttäjä x!": "Onko sinulla jo käyttäjätunnus?"}</h2>*/ }
-
-
-/*const [token] = useContext(UserTokenContext)
-	const [user, setUser] = useState<User>(initialState)
-	
-	
-	const fetchUserDetails = async () => {
-		if(!token){
-			setUser(initialState)
-			return
-		}
-	
-	
-		const user = await fetchUser(token)
-	
-	
-		if (user === undefined) {
-			console.error("error fetching user")
-			return
-		}
-		   
-		setUser(user)
-	}
-	
-	
-	useEffect(() => {
-		fetchUserDetails()
-	}, [token])
-	*/
