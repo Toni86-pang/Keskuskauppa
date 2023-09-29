@@ -1,8 +1,9 @@
-import { useState, useContext } from "react"
+import { useState, useContext, useEffect } from "react"
 import { Link } from "react-router-dom"
 import SearchIcon from "@mui/icons-material/Search"
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
 import {
 	AppBar,
 	Box,
@@ -19,6 +20,8 @@ import CategoryMenu from "./CategoryMenu"
 import Login from "./Login"
 import RegisterNewUser from "./RegisterNewUser"
 import { UserTokenContext } from "../App"
+import { fetchUser } from "../services"
+import { User } from "../types"
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -63,6 +66,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const Navbar = () => {
 	const [token, setToken] = useContext(UserTokenContext)
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+	const [user, setUser] = useState<User | null>(null)
 
 	const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget)
@@ -73,19 +77,42 @@ const Navbar = () => {
 	}
 
 	const handleLogout = () => {
-		// Clear the token and reset the user state
+		// Clear the token, reset the user state, and user's name
 		localStorage.removeItem("token")
 		setToken("")
+		setUser(null) // Reset the user object
 		handleMenuClose()
 	}
+
+	useEffect(() => {
+		// Fetch the user's information when the component mounts
+		if (token) {
+			fetchUser(token) // Use the fetchUser API call from your services
+				.then((fetchedUser) => {
+					if (fetchedUser) {
+						setUser(fetchedUser)
+					} else {
+						console.error("Error fetching user")
+					}
+				})
+				.catch((error) => {
+					console.error("Error fetching user:", error)
+				})
+		}
+	}, [token])
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="static" sx={{ bgcolor: "#6096ba" }}>
-				<Toolbar>
+				<Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+					{/* Left side (store name and category menu) */}
 					<CategoryMenu />
-					<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-						Keskuskauppa
-					</Typography>
+					<Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+						<Typography variant="h6">
+							Keskuskauppa
+						</Typography>
+					</Link>
+
+					{/* Middle (search bar) */}
 					<Search>
 						<SearchIconWrapper>
 							<SearchIcon />
@@ -96,51 +123,59 @@ const Navbar = () => {
 						/>
 					</Search>
 
-					{token ? (
-						// User is logged in, display user dropdown
-						<>
-							<IconButton
-								onClick={handleMenuOpen}
-								color="inherit"
-								aria-controls="user-menu"
-								aria-haspopup="true"
-							>
-								<AccountCircleIcon />
-								<ArrowDropDownIcon />
-							</IconButton>
-							<Menu
-								id="user-menu"
-								anchorEl={anchorEl}
-								open={Boolean(anchorEl)}
-								onClose={handleMenuClose}
-							>
-								<MenuItem
-									onClick={handleMenuClose}
-									component={Link} to="/profile">
-									Profiili
-								</MenuItem>
-								<MenuItem
-									onClick={handleMenuClose}
-									component={Link}
-									to="/product/new">
-									Lisää uusituote
-								</MenuItem>
-								<MenuItem
-									onClick={handleMenuClose}
-									component={Link}
-									to="/products">
-									Tuoteet
-								</MenuItem>
-
-								<MenuItem onClick={handleLogout}>Kirjaudu ulos</MenuItem>
-							</Menu>
-						</>
-					) : (
-						<>
-							<div><RegisterNewUser /></div>
-							<div><Login /></div>
-						</>
-					)}
+					{/* Right side (user-related elements) */}
+					<div>
+						{token ? (
+							<>
+								<IconButton
+									onClick={handleMenuOpen}
+									color="inherit"
+									aria-controls="user-menu"
+									aria-haspopup="true"
+								>
+									<AccountCircleIcon />
+									<Typography variant="body1" sx={{ mt: 1 }}>
+										{user?.name} {/* Access the user's name */}
+									</Typography>
+									<ArrowDropDownIcon />
+									<ShoppingCartIcon />
+								</IconButton>
+								<Menu
+									id="user-menu"
+									anchorEl={anchorEl}
+									open={Boolean(anchorEl)}
+									onClose={handleMenuClose}
+								>
+									<MenuItem
+										onClick={handleMenuClose}
+										component={Link} to="/profile"
+									>
+										Profiili
+									</MenuItem>
+									<MenuItem
+										onClick={handleMenuClose}
+										component={Link}
+										to="/product/new"
+									>
+										Lisää uusituote
+									</MenuItem>
+									<MenuItem
+										onClick={handleMenuClose}
+										component={Link}
+										to="/products"
+									>
+										Tuoteet
+									</MenuItem>
+									<MenuItem onClick={handleLogout}>Kirjaudu ulos</MenuItem>
+								</Menu>
+							</>
+						) : (
+							<>
+								<RegisterNewUser />
+								<Login />
+							</>
+						)}
+					</div>
 				</Toolbar>
 			</AppBar>
 		</Box>
