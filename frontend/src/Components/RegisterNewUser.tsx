@@ -1,6 +1,5 @@
 import { ChangeEvent, useState, useContext } from "react"
 import { UserTokenContext } from "../App"
-// import { useNavigate } from "react-router-dom"
 import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
 import VerifyDialog from "./VerifyDialog"
 import { User, initialState } from "../types"
@@ -11,7 +10,7 @@ import axios, { AxiosError } from "axios"
 function RegisterNewUser() {
 
 	const [newUser, setNewUser] = useState<User>(initialState)
-	const [ , setToken] = useContext(UserTokenContext)
+	const [, setToken] = useContext(UserTokenContext)
 	const [confirmPassword, setConfirmPassword] = useState<string>("")
 	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true)
 	const [verifyOpen, setVerifyOpen] = useState(false)
@@ -83,8 +82,10 @@ function RegisterNewUser() {
 		}
 	}
 
+	// preformattedText keeps linebreaks, tabs etc. It comes after messagetext.
 	const verifyDialogProps = {
 		messageText: "Rekisteröidäänkö näillä tiedoilla?",
+		preformattedText: `Nimi: ${name}\nSähköposti: ${email}\nKäyttäjänimi: ${username}\nOsoite: ${address}\nKaupunki: ${city}\nPostinumero: ${postal_code}`,
 		isOpen: verifyOpen,
 		setOpen: setVerifyOpen,
 		onAccept: register
@@ -124,11 +125,12 @@ function RegisterNewUser() {
 
 	return (
 		<>
-
 			<Container sx={{ m: 1 }}>
+
 				<Button sx={{ color: "white" }} onClick={handleDialogOpen}>
 					Rekisteröidy
 				</Button>
+
 				<Dialog open={dialogOpen} onClose={handleDialogClose}>
 					<DialogTitle>Rekisteröidy</DialogTitle>
 					<DialogContent>
