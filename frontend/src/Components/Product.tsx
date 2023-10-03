@@ -88,7 +88,7 @@ export default function Product() {
 	
 	const handleDelete = async () => {
 		try {
-			deleteProduct(product)
+			await deleteProduct(product.product_id)
 			setShowSuccessDeleteNotification(true)
 			setTimeout(() => {
 				navigate("/products")
