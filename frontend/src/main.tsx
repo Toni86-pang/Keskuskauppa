@@ -6,13 +6,13 @@ import Register from "./Components/RegisterNewUser.tsx"
 import Login from "./Components/Login.tsx"
 // import "./index.css"
 import ErrorPage from "./Pages/ErrorPage.tsx"
-// import { Login } from '@mui/icons-material'
 import Products, { loader as productsLoader } from "./Components/Products.tsx"
 import Product, { loader as productLoader } from "./Components/Product.tsx"
 import NewProduct from "./Components/NewProduct.tsx"
 import Profile from "./Components/Profile.tsx"
-import LandingPage from "./Components/LandingPage.tsx"
-import Carousel from "./Components/Carousel.tsx"
+import ProductSearch from "./Components/Searchbar.tsx"
+// import LandingPage from "./Components/LandingPage.tsx"
+
 
 const router = createBrowserRouter([
 	{
@@ -20,13 +20,13 @@ const router = createBrowserRouter([
 		element: <App />,
 		errorElement: <ErrorPage />,
 		children: [
+			// {
+			// 	path: "/",
+			// 	element: <LandingPage />,
+			// },
 			{
-				path: "/",
-				element: <LandingPage />,
-			},
-			{
-				path: "/",
-				element: <Carousel />,
+				path: "/search", // Add the path for searching products
+				element: <ProductSearch />, // Replace with the appropriate component for searching products
 			},
 			{
 				path: "/register",

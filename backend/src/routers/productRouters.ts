@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { createProduct, getAllProducts, getProductById, getProductsByCategory, getProductsBySubcategory, updateProductData, deleteProduct, getProductsByUserId, Product  } from "../daos/productsDao"
+import { createProduct, getAllProducts,getProductById, getProductsByCategory,getProductsBySubcategory, updateProductData,deleteProduct, getProductsByUserId,searchProducts,Product  } from "../daos/productsDao"
 import { validateCategoryId } from "../middlewares"
 
 const product = express.Router()
@@ -120,6 +120,20 @@ product.get("/subcategory/:id", validateCategoryId, async (req, res) => {
 		res.status(500).json({ message: "The product information of the subcategory couldn't be displayed" })
 	}
 
+})
+
+product.get("/search", async (req, res) => {
+	const searchQuery = req.query.query as string
+	try {
+		if(typeof searchQuery !== "string" || !searchQuery.trim()){
+			return res.status(400).json({error: "Search query is required"})
+		}
+		const products: Product[] = await searchProducts (searchQuery)
+		res.status(200).json(products)
+	} catch (error){
+		console.error(error)
+		res.status(500).json({error: "An error occurred on searchquery"})
+	}
 })
 
 export default product
