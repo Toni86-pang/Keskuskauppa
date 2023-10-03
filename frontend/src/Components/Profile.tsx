@@ -17,7 +17,7 @@ function Profile() {
 	const [user, setUser] = useState<User>(initialState)
 	const [token, setToken] = useContext(UserTokenContext)	
 	const [updateVisible, setUpdateVisible] = useState(false)
-	const [ownProducts, setOwnProducts] = useState<ProductType[] | null>(null)
+	const [ownProducts, setOwnProducts] = useState<ProductType[]>([])
 	const [verifyOpen, setVerifyOpen] = useState<boolean>(false)
 	const navigate = useNavigate()
 
@@ -31,7 +31,7 @@ function Profile() {
 	const fetchInfo = async () => {
 		if(!token){
 			setUser(initialState)
-			setOwnProducts(null)
+			setOwnProducts([])
 			return
 		}
 
@@ -186,9 +186,15 @@ function Profile() {
 				<div style={{ marginBottom: "10px" }}>Omat ilmoitukset:</div>
 
 				<Divider variant="middle" style={{ marginBottom: "10px" }} />
-				{ownProducts && ownProducts?.map((product: ProductType) => {
-					return <ProductCard product={product} key={"own product: " + product.product_id} />
-				})}
+				{ownProducts.length > 0 ? (
+					ownProducts && ownProducts?.map((product: ProductType) => {
+						return <ProductCard product={product} key={"own product: " + product.product_id} />
+					}))
+					:
+					(
+						<p>Ei omia tuotteita. Kun lisäät tuotteen myyntiin, näet sen täällä.</p>
+					)
+				}
 			</div>
 
 		</div>
