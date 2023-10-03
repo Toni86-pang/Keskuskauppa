@@ -1,7 +1,7 @@
 import axios from "axios"
 import { Category, ProductType, UpdatedProduct, UpdatedUser, } from "./types"
 
-export const deleteUser = async (token: string) => {
+export const deleteUser = (token: string) => {
 	return axios.delete("/api/users/delete", {
 		headers: {
 			"Authorization": `Bearer ${token}`
@@ -49,8 +49,8 @@ export const updateProduct = async (productId: number, updatedData: UpdatedProdu
 	await axios.put(`/api/product/update/${productId}`, updatedData)
 }
 
-export const deleteProduct = async (product: ProductType) => {
-	await axios.delete(`/api/product/delete/${product?.product_id}`)
+export const deleteProduct = (product_id: number) => {
+	return axios.delete(`/api/product/${product_id}`).then((response) => response.data)
 }
 
 export const fetchCategories = async () => {

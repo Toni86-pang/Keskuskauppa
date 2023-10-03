@@ -65,13 +65,13 @@ product.delete("/:id", async (req: Request, res: Response) => {
 		const result = await deleteProduct(product_id)
 		console.log(result)
 		if (result.rowCount > 0) {
-			return res.status(200).send("Lets go boss!")
+			return res.status(200).send("Deleted")
 		} else {
-			return res.status(404).send("no products to delete")
+			return res.status(404).send("No products to delete")
 		}
 	} catch (error) {
 		console.error(error)
-		return res.status(500).send("You should leave?")
+		return res.status(500).send("Error")
 	}
 })
 

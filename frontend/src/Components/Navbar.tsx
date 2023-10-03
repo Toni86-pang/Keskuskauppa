@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate} from "react-router-dom"
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
@@ -25,6 +25,7 @@ const Navbar = () => {
 	const [token, setToken] = useContext(UserTokenContext)
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 	const [user, setUser] = useState<User | null>(null)
+	const navigate = useNavigate()
 
 	const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget)
@@ -40,6 +41,7 @@ const Navbar = () => {
 		setToken("")
 		setUser(null) // Reset the user object
 		handleMenuClose()
+		navigate("/")
 	}
 
 	useEffect(() => {
@@ -108,14 +110,14 @@ const Navbar = () => {
 										component={Link}
 										to="/product/new"
 									>
-										Lisää uusituote
+										Lisää uusi tuote
 									</MenuItem>
 									<MenuItem
 										onClick={handleMenuClose}
 										component={Link}
 										to="/products"
 									>
-										Tuoteet
+										Tuotteet
 									</MenuItem>
 									<MenuItem onClick={handleLogout}>Kirjaudu ulos</MenuItem>
 								</Menu>
