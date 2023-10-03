@@ -111,6 +111,10 @@ export interface UpdatedUser {
     phone: string
 }
 
+export interface DisplayProductsProps {
+	productList: ProductType[]
+}
+
 export const initialState: User = {
 	user_id: 0,
 	username: "",
@@ -136,3 +140,4 @@ export const initialStateProduct: ProductType = {
 	price: 0
 	// product_image?: any
 }
+

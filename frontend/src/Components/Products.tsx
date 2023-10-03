@@ -3,18 +3,16 @@ import { useState, useEffect } from "react"
 import { useLoaderData } from "react-router-dom"
 import {
 	Container,
-	Typography,
-	List
+	Typography
 } from "@mui/material"
-import ProductCard from "./ProductCard"
 import { fetchAllProducts, fetchCategoryName, fetchProductsByCategory, fetchProductsBySubcategory, fetchSubcategoryName } from "../services"
 import { CategoryProps, ProductType } from "../types"
+import DisplayProducts from "./DisplayProducts"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, react-refresh/only-export-components
 export function loader({ params }: any) {
 	return params.id
 }
-
 
 const Products = ({ category, subCategory }: CategoryProps) => {
 	const [products, setProducts] = useState<ProductType[]>([])
@@ -49,11 +47,7 @@ const Products = ({ category, subCategory }: CategoryProps) => {
 			<Typography variant="h3" gutterBottom>
 				{categoryHeader}
 			</Typography>
-			<List>
-				{products.map((product, index) => (
-					<ProductCard key={"products " + index} product={product} />
-				))}
-			</List>
+			<DisplayProducts productList={products}/>
 		</Container>
 	)
 }
