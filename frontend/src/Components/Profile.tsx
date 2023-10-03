@@ -186,9 +186,15 @@ function Profile() {
 				<div style={{ marginBottom: "10px" }}>Omat ilmoitukset:</div>
 
 				<Divider variant="middle" style={{ marginBottom: "10px" }} />
-				{ownProducts && ownProducts?.map((product: ProductType) => {
-					return <ProductCard product={product} key={"own product: " + product.product_id} />
-				})}
+				{ownProducts !== undefined ? (
+					ownProducts && ownProducts?.map((product: ProductType) => {
+						return <ProductCard product={product} key={"own product: " + product.product_id} />
+					}))
+					:
+					(
+						<p>Ei omia tuotteita. Kun lisäät tuotteen myyntiin, näet sen täällä.</p>
+					)
+				}
 			</div>
 
 		</div>

@@ -71,6 +71,7 @@ export default function Product() {
 	)
 	const navigate = useNavigate()
 	const product = useLoaderData() as ProductType
+	console.log(product.product_id)
 
 	const fetchUserDetails = async () => {
 		const user = await fetchUser(token)
@@ -88,7 +89,7 @@ export default function Product() {
 	
 	const handleDelete = async () => {
 		try {
-			deleteProduct(product)
+			await deleteProduct(product.product_id)
 			setShowSuccessDeleteNotification(true)
 			setTimeout(() => {
 				navigate("/products")

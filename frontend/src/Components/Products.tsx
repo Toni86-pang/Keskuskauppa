@@ -15,7 +15,6 @@ export function loader({ params }: any) {
 	return params.id
 }
 
-
 const Products = ({ category, subCategory }: CategoryProps) => {
 	const [products, setProducts] = useState<ProductType[]>([])
 	const [categoryHeader, setCategoryHeader] = useState("")
