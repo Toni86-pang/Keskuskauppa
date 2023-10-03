@@ -71,7 +71,6 @@ export default function Product() {
 	)
 	const navigate = useNavigate()
 	const product = useLoaderData() as ProductType
-	console.log(product.product_id)
 
 	const fetchUserDetails = async () => {
 		const user = await fetchUser(token)

@@ -50,7 +50,7 @@ export const updateProduct = async (productId: number, updatedData: UpdatedProdu
 }
 
 export const deleteProduct = (product_id: number) => {
-	return axios.delete(`/api/product/delete/${product_id}`).then((response) => response.data)
+	return axios.delete(`/api/product/${product_id}`).then((response) => response.data)
 }
 
 export const fetchCategories = async () => {
