@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react"
 // import { useLoaderData } from "react-router-dom"
-import { Grid, Breadcrumbs, Link, Typography, Button, } from "@mui/material"
+import { Grid, Button, } from "@mui/material"
 import Divider from "@mui/material/Divider"
 import VerifyDialog from "./VerifyDialog"
 import { useNavigate  } from "react-router-dom"
@@ -88,24 +88,6 @@ function Profile() {
 	return (
 
 		<div className="profile">
-			{/* <Crumbs items={breadcrumbs}/> */}
-			<div>
-				<Breadcrumbs aria-label="breadcrumb">
-					<Link
-						underline="hover"
-						sx={{ display: "flex", alignItems: "center" }}
-						color="inherit"
-						href="/">
-						Etusivu
-					</Link>
-					<Typography
-						sx={{ display: "flex", alignItems: "center" }}
-						color="text.primary"
-					>
-						Profiili
-					</Typography>
-				</Breadcrumbs>
-			</div>
 			<Grid
 				container
 				spacing={1}
