@@ -1,7 +1,7 @@
 import axios from "axios"
 import { Category, ProductType, UpdatedProduct, UpdatedUser, } from "./types"
 
-export const deleteUser = async (token: string) => {
+export const deleteUser = (token: string) => {
 	return axios.delete("/api/users/delete", {
 		headers: {
 			"Authorization": `Bearer ${token}`
@@ -16,6 +16,10 @@ export const fetchUser = (token: string) => {
 		}
 	}).then((response) => response.data)
 }
+
+// export const fetchProductOwner = (id: number) => {
+// 	return axios.get("/api/users/user/" + id).then((response) => response.data)
+// }
 
 export const updateUser = async (updatedData: UpdatedUser, token: string) => {
 	await axios.put("/api/users/update", updatedData, {
@@ -45,8 +49,8 @@ export const updateProduct = async (productId: number, updatedData: UpdatedProdu
 	await axios.put(`/api/product/update/${productId}`, updatedData)
 }
 
-export const deleteProduct = async (product: ProductType) => {
-	await axios.delete(`/api/product/delete/${product?.product_id}`)
+export const deleteProduct = (product_id: number) => {
+	return axios.delete(`/api/product/${product_id}`).then((response) => response.data)
 }
 
 export const fetchCategories = async () => {
@@ -112,3 +116,26 @@ export const fetchProductsByCategory = (id: number) => {
 export const fetchProductsBySubcategory = (id: number) => {
 	return axios.get(`/api/product/subcategory/${id}`).then(res => res.data)
 }
+
+/*   search api:s          */
+export const searchProducts = async (searchQuery:string):Promise<ProductType[]> => {
+	const response = await fetch(`/api/product/search?query=${searchQuery}`)
+	if (!response.ok) {
+		throw new Error("Network response was not ok")
+	}
+	const products = await response.json()
+	return products
+}
+  
+
+// export const fetchsearchAllProducts = async (query:string) => {
+// 	const response = await axios.get("/api/product")
+// 	const data = response.data as ProductType[]
+// 	return data
+// }
+ 
+// export const fetchsearchCategories = async (query:string) => {
+// 	const response = await axios.get("/api/category")
+// 	const data = response.data as Category[]
+// 	return data
+// }

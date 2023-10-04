@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import Dialog from "@mui/material/Dialog"
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
@@ -56,6 +56,13 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 		close(user)
 	}
 
+	useEffect(() => {
+		setNewAddress(user.address)
+		setNewCity(user.city)
+		setNewPostalCode(user.postal_code)
+		setNewPhone(user.phone)
+	}, [user])
+
 
 	const handleUpdateSubmit = async () => {
 		try {
@@ -65,7 +72,7 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 				postal_code: newPostalCode,
 				phone: newPhone
 			}
-			updateUser(updatedData, token)
+			await updateUser(updatedData, token)
 			setShowSuccessNotification(true)
 			close({ ...user, address: newAddress, phone: newPhone, city: newCity, postal_code: newPostalCode })
 		} catch (error) {
@@ -90,7 +97,7 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 						<div style={styles.section}>
 							<TextField
 								label="Katuosoite"
-								defaultValue={newAddress}
+								value={newAddress}
 								onChange={handleAddressChange}
 								fullWidth
 							/>
@@ -99,7 +106,7 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 						<div style={styles.section}>
 							<TextField
 								label="Kaupunki"
-								defaultValue={newCity}
+								value= {newCity}
 								onChange={handleCityChange}
 								fullWidth
 							/>
@@ -108,7 +115,7 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 						<div style={styles.section}>
 							<TextField
 								label="Postinumero"
-								defaultValue={newPostalCode}
+								value={newPostalCode}
 								onChange={handlePostalCodeChange}
 								fullWidth
 							/>
@@ -118,7 +125,7 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 						<div style={styles.label}>Puhelinnumero:</div>
 						<TextField
 							label="Puhelinnumero"
-							defaultValue={newPhone}
+							value={newPhone}
 							onChange={handlePhoneChange}
 							fullWidth
 						/>

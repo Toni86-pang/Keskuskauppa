@@ -6,7 +6,7 @@ import { Category, Subcategory, User, initialState } from "../types"
 import { fetchCategories, fetchIndividualSubcategory, fetchUser, newProduct } from "../services"
 
 
-function ProductNew() {
+function NewProduct() {
 	const [token] = useContext(UserTokenContext)
 	const [user, setUser] = useState<User>(initialState)
 	const [newTitle, setNewTitle] = useState<string>("")
@@ -18,6 +18,9 @@ function ProductNew() {
 	const [subcategoryId, setSubcategoryId] = useState<number>(0)
 	const [categories, setCategories] = useState<Category[]>([])
 	const [subcategories, setSubcategories] = useState<Subcategory[]>([])
+	const [newCity, setNewCity] = useState<string>(user.city)
+	const [newPostalCode, setNewPostalCode] = useState<string>(user.postal_code)
+	const [hidden, setHidden] = useState<boolean>(false)
 
 	const navigate = useNavigate()
 
@@ -62,12 +65,12 @@ function ProductNew() {
 	}
 
 	const createNewProduct = async () => {
-		const product = {user_id: user.user_id, title: newTitle, category_id: categoryId, subcategory_id: subcategoryId, postal_code: user.postal_code, city: user.city, description: newDescription, price: newPrice}
+		const product = {user_id: user.user_id, title: newTitle, category_id: categoryId, subcategory_id: subcategoryId, postal_code: newPostalCode, city: newCity, description: newDescription, price: newPrice}
 
 		newProduct(product).then((response) => {
-			if (response.status === 200) {
+			if (response.status === 201) {
 				console.log("Product creation success")
-				navigate("/product")
+				navigate("/products")
 			}
 		})
 	}
@@ -94,6 +97,14 @@ function ProductNew() {
 		const value = Number(event.target.value)
 		setNewPrice(value)
 	}
+	const handleCityChange = (event: ChangeEvent<HTMLInputElement>) => {
+		const value = (event.target.value)
+		setNewCity(value)
+	}
+	const handlePostCodeChange = (event: ChangeEvent<HTMLInputElement>) => {
+		const value = (event.target.value)
+		setNewPostalCode(value)
+	}
 
 	const handleCategoryChange = (event: SelectChangeEvent) => {
 		const categoryName = String(event.target.value)
@@ -112,6 +123,14 @@ function ProductNew() {
 
 	const handleCancel = () => {
 		navigate("/")
+	}
+
+	const location = `${user.postal_code} ${user.city}`
+
+	const handleCancelChange = () => {
+		setHidden(false)
+		setNewCity(user.city)
+		setNewPostalCode(user.postal_code)
 	}
 
 	return (
@@ -177,31 +196,64 @@ function ProductNew() {
 				) : (
 					<></>
 				)}
-				<Container>
-					<Button
-						sx={{
-							m: 1,
-							bgcolor: "#6096ba",
-							":hover": { bgcolor: "darkblue" }
-						}}
-						variant="contained"
-						onClick={createNewProduct}>
+				{!hidden ? (
+					<FormControl>
+						<Container >Lokaatio: {location}</Container>
+						<Button id="location" onClick={() => setHidden(true)}>Vaihda tuotteen lokaatio</Button>
+					</FormControl>
+				):(
+					<></>
+				)}
+				{hidden ? (
+					<FormControl>
+						<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="city">Kaupunki:</InputLabel>
+						<TextField
+							type="text"
+							name="city"
+							value={newCity}
+							onChange={handleCityChange}
+						/>
+						<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="postalcode">Postinumero:</InputLabel>
+						<TextField
+							type="text"
+							name="postal_code"
+							value={newPostalCode}
+							onChange={handlePostCodeChange}
+						/>
+						<Button 	
+							sx={{
+								m: 1,
+							}}
+							onClick={(handleCancelChange)}>
+								Peruuta
+						</Button>
+					</FormControl>
+				):(
+					<></>
+				)}
+				<Button
+					sx={{
+						m: 1,
+						bgcolor: "#6096ba",
+						":hover": { bgcolor: "darkblue" }
+					}}
+					variant="contained"
+					onClick={createNewProduct}>
 							Lähetä
-					</Button>
-					<Button 
-						sx={{
-							m: 1,
-							bgcolor: "#6096ba",
-							":hover": { bgcolor: "#d32f2f" },
-						}}
-						variant="contained"
-						onClick={handleCancel}>
+				</Button>
+				<Button 
+					sx={{
+						m: 1,
+						bgcolor: "#6096ba",
+						":hover": { bgcolor: "#d32f2f" },
+					}}
+					variant="contained"
+					onClick={handleCancel}>
 							Peruuta
-					</Button>
-				</Container>
+				</Button>
 			</FormControl>
 		</Container>
 	)
 }
 
-export default ProductNew
+export default NewProduct

@@ -91,9 +91,6 @@ function UpdateProductModal({
 		}
 	}
 
-
-
-
 	const handleCloseModal = () => {
 		onClose()
 	}

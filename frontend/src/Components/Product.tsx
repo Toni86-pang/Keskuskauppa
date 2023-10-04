@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { useLoaderData, useNavigate } from "react-router-dom"
 import {
 	Paper,
@@ -16,14 +16,15 @@ import Breadcrumbs from "@mui/material/Breadcrumbs"
 import Link from "@mui/material/Link"
 import DeleteButton from "./DeleteButton"
 import UpdateProductModal from "./UpdateProducts"
-import { ProductType, initialStateProduct } from "../types"
-import { deleteProduct, fetchProduct } from "../services"
+import { ProductType } from "../types"
+import { deleteProduct, fetchProduct, fetchUser } from "../services"
 import Notification from "./Notification"
+import { UserTokenContext } from "../App"
 
-  
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, react-refresh/only-export-components
-export function loader({ params }: any) {
-	return params.id
+export async function loader({ params }: any) {
+	const productData = await fetchProduct(params.id)
+	return productData
 }
 
 // Imaget testiä varten ////////////////////////
@@ -61,38 +62,42 @@ const itemData = [
 
 export default function Product() {
 	const [isUpdateModalOpen, setUpdateModalOpen] = useState(false)
-	const [product, setProduct] = useState<ProductType>(initialStateProduct)
 	const [showSuccessDeleteNotification, setShowSuccessDeleteNotification] = useState(false)
 	const [showErrorDeleteNotification, setShowErrorDeleteNotification] = useState(false)
-
+	const [hidden, setHidden] = useState<boolean>(false)
+	const [token] = useContext(UserTokenContext)
 	const [selectedImage, setSelectedImage] = useState<string | null>(
 		itemData[0].img
 	)
 	const navigate = useNavigate()
-	const id = parseInt(useLoaderData() as string, 10)
-	useEffect(() => {
-		fetchProduct(id).then((data) => {
-			if (data === undefined) {
-				console.error("error fetching product")
-				return
-			}
-			setProduct(data)
-		})
-	}, [id])
+	const product = useLoaderData() as ProductType
 
+	const fetchUserDetails = async () => {
+		const user = await fetchUser(token)
+	
+		if (user === undefined) {
+			console.error("error fetching user")
+			return
+		}		   
+		user.user_id !== 0 && product.user_id === user.user_id ? setHidden(true) : setHidden(false)
+	}
+	
+	useEffect(() => {
+		fetchUserDetails()
+	}, [token])
+	
 	const handleDelete = async () => {
 		try {
-			deleteProduct(product)
+			await deleteProduct(product.product_id)
 			setShowSuccessDeleteNotification(true)
 			setTimeout(() => {
-				navigate("/product")
+				navigate("/products")
 			}, 1000)
 		} catch (error) {
 			console.error("Error deleting product", error)
 			setShowErrorDeleteNotification(true)
 		}
 	}
-
 
 	return (
 		<div>
@@ -159,23 +164,29 @@ export default function Product() {
 								<Typography variant="body2" gutterBottom>
 									{product?.price} €
 								</Typography>
-								<Typography
-									variant="body2"
-									color="text.secondary"
-								>
+								{!hidden ? (
+									<>
+										<Typography
+											variant="body2"
+											color="text.secondary"
+										>
 									Myyjän nimi
-								</Typography>
-								<Typography
-									variant="body2"
-									color="text.secondary"
-									marginTop={1}
-								>
-									<StarPurple500SharpIcon />
-									<StarPurple500SharpIcon />
-									<StarPurple500SharpIcon />
-									<StarBorderPurple500SharpIcon />
-									<StarBorderPurple500SharpIcon />
-								</Typography>
+										</Typography>
+										<Typography
+											variant="body2"
+											color="text.secondary"
+											marginTop={1}
+										>
+											<StarPurple500SharpIcon />
+											<StarPurple500SharpIcon />
+											<StarPurple500SharpIcon />
+											<StarBorderPurple500SharpIcon />
+											<StarBorderPurple500SharpIcon />
+										</Typography>
+									</>
+								):(
+									<></>
+								)}
 								<Typography
 									variant="body2"
 									color="text.secondary"
@@ -189,29 +200,34 @@ export default function Product() {
 									{product?.postal_code}
 								</Typography>
 							</Grid>
-							<Grid item>
-								<div>
-									<Button variant="outlined" onClick={() => setUpdateModalOpen(true)}>
-										Päivitä tuote
-									</Button>
-									<UpdateProductModal
-										isOpen={isUpdateModalOpen}
-										onClose={() => setUpdateModalOpen(false)}
-										productId={product?.product_id || 0}
-										title={product?.title || ""}
-										category_id={product?.category_id || 0}
-										subcategory_id={product?.subcategory_id || 0}
-										city={product?.city.split(",")[0] || ""}
-										postal_code={product?.postal_code.split(",")[1] || ""}
-										description={product?.description || ""}
-										price={product?.price || 0}
-									/>
-								</div>
+							{ hidden ? (
+								<Grid item>
+									<div>
+										<Button variant="outlined" onClick={() => {setUpdateModalOpen(true)}}>
+									Päivitä tuote
+										</Button>
+										<UpdateProductModal
+											isOpen={isUpdateModalOpen}
+											onClose={() => setUpdateModalOpen(false)}
+											productId={product?.product_id || 0}
+											title={product?.title || ""}
+											category_id={product?.category_id || 0}
+											subcategory_id={product?.subcategory_id || 0}
+											city={product?.city.split(",")[0] || ""}
+											postal_code={product?.postal_code.split(",")[1] || ""}
+											description={product?.description || ""}
+											price={product?.price || 0}
+										/>
+									</div>
 
-								{product && (
-									<DeleteButton id={product.product_id} onDelete={handleDelete} />
-								)}
-							</Grid>
+									{product && (
+										<DeleteButton id={product.product_id} onDelete={handleDelete} />
+									)}
+								</Grid>
+							)
+								:
+								<></>
+							}
 							{/* Delete success and error notifications */}
 							{showSuccessDeleteNotification && (
 								<Notification
