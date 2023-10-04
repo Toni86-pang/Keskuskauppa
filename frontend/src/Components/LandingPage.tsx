@@ -8,6 +8,7 @@ import { User } from "../types"
 import { fetchUser } from "../services"
 import { UserTokenContext } from "../App"
 import CustomCarousel from "./Carousel"
+import RegisterNewUser from "./RegisterNewUser"
 
 const LandingPage = () => {
 	const [token] = useContext(UserTokenContext)
@@ -62,9 +63,9 @@ const LandingPage = () => {
 					) : (
 						<div>
 							<h2> Liity joukkoomme!</h2>
-							<Button href='/register' variant="contained" color="primary">
-								Rekisteröidy
-							</Button>
+							<div className="loginButton">
+								<RegisterNewUser />
+							</div>
 						</div>
 					)}
 				</Box>

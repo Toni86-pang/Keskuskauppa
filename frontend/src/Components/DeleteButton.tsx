@@ -12,7 +12,7 @@ export default function DeleteButton({ id, onDelete }: DeleteButtonprops) {
 				Poista tuote
 			</Button>
 			<Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-				<DialogTitle>Delete Product</DialogTitle>
+				<DialogTitle>Poista tuote</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
 						Haluatko varmasti poistaa tuotteen pysyvästi?
@@ -20,10 +20,10 @@ export default function DeleteButton({ id, onDelete }: DeleteButtonprops) {
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={()=> setDialogOpen(false)} color="primary">
-						Cancel
+						Peruuta
 					</Button>
 					<Button onClick={onDelete} color="secondary"> 
-					Delete
+						Poista
 					</Button>
 				</DialogActions>
 			</Dialog>
