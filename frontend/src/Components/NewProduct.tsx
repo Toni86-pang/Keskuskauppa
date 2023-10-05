@@ -24,23 +24,22 @@ function NewProduct() {
 
 	const navigate = useNavigate()
 
-	const fetchInfo = async () => {
-		if(!token){
-			setUser(initialState)
-			return
-		}
-
-		const user = await fetchUser(token)
-
-		if (user === undefined) {
-			console.error("error fetching user")
-			return
-		}
-		
-		setUser(user)
-	}
-
 	useEffect(() => {
+		const fetchInfo = async () => {
+			if(!token){
+				setUser(initialState)
+				return
+			}
+	
+			const user = await fetchUser(token)
+	
+			if (user === undefined) {
+				console.error("error fetching user")
+				return
+			}
+			
+			setUser(user)
+		}
 		fetchInfo()
 	}, [token])
 
@@ -70,7 +69,7 @@ function NewProduct() {
 		newProduct(product).then((response) => {
 			if (response.status === 201) {
 				console.log("Product creation success")
-				navigate("/products")
+				navigate("/profile")
 			}
 		})
 	}

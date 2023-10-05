@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react"
+import { useState, useEffect, useContext, MouseEventHandler } from "react"
 import { useLoaderData, useNavigate } from "react-router-dom"
 import {
 	Paper,
@@ -71,19 +71,19 @@ export default function Product() {
 	)
 	const navigate = useNavigate()
 	const product = useLoaderData() as ProductType
-
-	const fetchUserDetails = async () => {
-		const user = await fetchUser(token)
-	
-		if (user === undefined) {
-			console.error("error fetching user")
-			return
-		}		   
-		user.user_id !== 0 && product.user_id === user.user_id ? setHidden(true) : setHidden(false)
-	}
 	
 	useEffect(() => {
+		const fetchUserDetails = async () => {
+			const user = await fetchUser(token)
+		
+			if (user === undefined) {
+				console.error("error fetching user")
+				return
+			}		   
+			user.user_id !== 0 && product.user_id === user.user_id ? setHidden(true) : setHidden(false)
+		}
 		fetchUserDetails()
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [token])
 	
 	const handleDelete = async () => {
@@ -97,6 +97,14 @@ export default function Product() {
 			console.error("Error deleting product", error)
 			setShowErrorDeleteNotification(true)
 		}
+	}
+
+	const cart: ProductType[] = []
+
+	const handleAddToShoppingCart = (product: ProductType): MouseEventHandler<HTMLButtonElement> | undefined => {
+		cart.push(product)
+		sessionStorage.setItem("myCart", JSON.stringify(cart))
+		return
 	}
 
 	return (
@@ -226,7 +234,13 @@ export default function Product() {
 								</Grid>
 							)
 								:
-								<></>
+								<>
+									<Button sx={{
+										width: 150, height: 50, 
+									}} variant="outlined" onClick={handleAddToShoppingCart(product)}>
+											Ostoskoriin
+									</Button>
+								</>
 							}
 							{/* Delete success and error notifications */}
 							{showSuccessDeleteNotification && (

@@ -82,6 +82,11 @@ export interface UpdateProductModalProps {
     price: number
   }
 
+export interface ShoppingCartProps {
+    isOpen: boolean
+    onClose: () => void
+  }
+
 export interface Category {
 	category_id: number
 	category_name: string

@@ -22,6 +22,7 @@ import RegisterNewUser from "./RegisterNewUser"
 import { UserTokenContext } from "../App"
 import { fetchUser } from "../services"
 import { User } from "../types"
+import ShoppingCart from "./ShoppingCart"
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -67,6 +68,7 @@ const Navbar = () => {
 	const [token, setToken] = useContext(UserTokenContext)
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 	const [user, setUser] = useState<User | null>(null)
+	const [isShoppingCartOpen, setShoppingCartOpen] = useState(false)
 	const navigate = useNavigate()
 
 	const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -140,8 +142,20 @@ const Navbar = () => {
 										{user?.name} {/* Access the user's name */}
 									</Typography>
 									<ArrowDropDownIcon />
+								</IconButton>
+								<IconButton
+									onClick={() => {setShoppingCartOpen(true)}}
+									
+									color="inherit"
+									aria-controls="user-menu"
+									aria-haspopup="true"
+								>
 									<ShoppingCartIcon />
 								</IconButton>
+								<ShoppingCart
+									isOpen={isShoppingCartOpen}
+									onClose={() => setShoppingCartOpen(false)}
+								/>
 								<Menu
 									id="user-menu"
 									anchorEl={anchorEl}
@@ -152,7 +166,7 @@ const Navbar = () => {
 										onClick={handleMenuClose}
 										component={Link} to="/profile"
 									>
-										Profiili
+										Oma sivu
 									</MenuItem>
 									<MenuItem
 										onClick={handleMenuClose}
@@ -160,13 +174,6 @@ const Navbar = () => {
 										to="/product/new"
 									>
 										Lisää uusi tuote
-									</MenuItem>
-									<MenuItem
-										onClick={handleMenuClose}
-										component={Link}
-										to="/products"
-									>
-										Tuotteet
 									</MenuItem>
 									<MenuItem onClick={handleLogout}>Kirjaudu ulos</MenuItem>
 								</Menu>
