@@ -119,7 +119,7 @@ export const fetchProductsBySubcategory = (id: number) => {
 
 /*   search api:s          */
 export const searchProducts = async (searchQuery:string):Promise<ProductType[]> => {
-	const response = await fetch(`/api/product/search?query=${searchQuery}`)
+	const response = await fetch(`/api/search?query=${searchQuery}`)
 	if (!response.ok) {
 		throw new Error("Network response was not ok")
 	}
