@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import SearchIcon from "@mui/icons-material/Search"
 import { Button, TextField, Typography } from "@mui/material"
 import { alpha, styled } from "@mui/material" 
 import { ProductType } from "../types"
@@ -53,7 +52,6 @@ const ProductSearch = () => {
 		if (searchQuery) {
 			performSearch()
 		} else {
-			// Clear search results when the query is empty
 			setSearchResults([])
 			setError(null)
 		}
@@ -66,8 +64,7 @@ const ProductSearch = () => {
 			</Typography>
 
 			<Search>
-				<SearchIconWrapper>
-					<SearchIcon />
+				<SearchIconWrapper>	
 				</SearchIconWrapper>
 				<TextField
 					label="Etsi tuotteita..."
