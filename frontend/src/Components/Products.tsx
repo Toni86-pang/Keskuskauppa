@@ -24,7 +24,7 @@ const Products = ({ category, subCategory }: CategoryProps) => {
 			let fetchedProducts: ProductType[] = []
 			let name = "Kaikki tuotteet"
 			if (!category && !subCategory) {
-				fetchedProducts = await fetchAllProducts() 
+				fetchedProducts = await fetchAllProducts()
 			} else if (category) {
 				name = await fetchCategoryName(Number(id))
 				fetchedProducts = await fetchProductsByCategory(Number(id))
@@ -43,11 +43,12 @@ const Products = ({ category, subCategory }: CategoryProps) => {
 	}, [id, category, subCategory])
 
 	return (
+
 		<Container>
 			<Typography variant="h3" gutterBottom>
 				{categoryHeader}
 			</Typography>
-			<DisplayProducts productList={products}/>
+			<DisplayProducts productList={products} />
 		</Container>
 	)
 }
