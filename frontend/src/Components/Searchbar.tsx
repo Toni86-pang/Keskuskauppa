@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react"
-import { Button, TextField, Typography } from "@mui/material"
-import { alpha, styled } from "@mui/material" 
+import { useState } from "react"
+import { Button, TextField, Typography, Popover, List, ListItem, ListItemText } from "@mui/material"
+import { alpha, styled } from "@mui/material"
 import { ProductType } from "../types"
 import { searchProducts } from "../services"
-// Import styled
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -21,41 +20,30 @@ const Search = styled("div")(({ theme }) => ({
 	},
 }))
 
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-	padding: theme.spacing(0, 2),
-	height: "100%",
-	position: "absolute",
-	pointerEvents: "none",
-	display: "flex",
-	alignItems: "center",
-	justifyContent: "center",
-}))
-
 const ProductSearch = () => {
 	const [searchQuery, setSearchQuery] = useState("")
 	const [searchResults, setSearchResults] = useState<ProductType[]>([])
-	const [error, setError] = useState<string | null>(null)
+	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
-	useEffect(() => {
-		const performSearch = async () => {
-			try {
-				const products = await searchProducts(searchQuery)
-				setSearchResults(products)
-				setError(null)
-			} catch (error) {
-				console.error("Error performing search:", error)
-				setError("An error occurred while searching.")
-				setSearchResults([])
-			}
-		}
+	const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(event.currentTarget)
+	}
 
-		if (searchQuery) {
-			performSearch()
-		} else {
+	const handlePopoverClose = () => {
+		setAnchorEl(null)
+	}
+
+	const open = Boolean(anchorEl)
+
+	const performSearch = async () => {
+		try {
+			const products = await searchProducts(searchQuery)
+			setSearchResults(products)
+		} catch (error) {
+			console.error("Error performing search:", error)
 			setSearchResults([])
-			setError(null)
 		}
-	}, [searchQuery])
+	}
 
 	return (
 		<div>
@@ -64,29 +52,39 @@ const ProductSearch = () => {
 			</Typography>
 
 			<Search>
-				<SearchIconWrapper>	
-				</SearchIconWrapper>
 				<TextField
 					label="Etsi tuotteita..."
 					variant="outlined"
 					value={searchQuery}
 					onChange={(e) => setSearchQuery(e.target.value)}
+					onFocus={handlePopoverOpen}
 				/>
-				<Button variant="contained" color="primary">
+				<Button variant="contained" color="primary" onClick={performSearch}>
           Search
 				</Button>
 			</Search>
 
-			{error && (
-				<Typography variant="body2" color="error" gutterBottom>
-					{error}
-				</Typography>
-			)}
-			<ul>
-				{searchResults.map((product) => (
-					<li key={product.product_id}>{product.title}</li>
-				))}
-			</ul>
+			<Popover
+				open={open}
+				anchorEl={anchorEl}
+				onClose={handlePopoverClose}
+				anchorOrigin={{
+					vertical: "bottom",
+					horizontal: "left",
+				}}
+				transformOrigin={{
+					vertical: "top",
+					horizontal: "left",
+				}}
+			>
+				<List>
+					{searchResults.map((product) => (
+						<ListItem key={product.product_id} button>
+							<ListItemText primary={product.title} />
+						</ListItem>
+					))}
+				</List>
+			</Popover>
 		</div>
 	)
 }
