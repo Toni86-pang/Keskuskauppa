@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { getAllUsers, addUser, deleteUser, getUserByUsername, findUserByUSername, findUserByEmail, getUserByUserId, updateProfile } from "../daos/usersDao"
+import { getAllUsers, addUser, deleteUser, getUserByUsername, findUserByUSername, findUserByEmail, getUserByUserId, updateProfile, getSellerDetails } from "../daos/usersDao"
 import { authentication, checkReqBody } from "../middlewares"
 import argon2 from "argon2"
 import jwt from "jsonwebtoken"
@@ -170,5 +170,16 @@ users.put("/logout", async (req: Request, res: Response) => {
   })
 })
 */
+
+//GET seller details with products details
+users.get("/product/:productId", async (req: CustomRequest, res: Response) => {
+	try {
+		const productId = Number(req.params.productId)
+		const result = await getSellerDetails(productId)
+		return res.status(200).send(result)
+	} catch (error) {
+		res.status(500).json({ message: "Seller information couldn't be displayed" })
+	}
+})
 
 export default users
