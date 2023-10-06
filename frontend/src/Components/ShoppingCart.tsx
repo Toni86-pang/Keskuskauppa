@@ -5,7 +5,8 @@ import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
-import { ShoppingCartProps } from "../types"
+import { ProductType, ShoppingCartProps } from "../types"
+import ProductCard from "./ProductCard"
 
 export default function ShoppingCart ({isOpen, onClose}: ShoppingCartProps){
 	const [scroll] = React.useState<DialogProps["scroll"]>("paper")
@@ -20,6 +21,8 @@ export default function ShoppingCart ({isOpen, onClose}: ShoppingCartProps){
 		}
 	}, [open])
   
+	const cart = JSON.parse(sessionStorage.getItem("myCart"))
+
 	return (
 		<div>
 			<Dialog
@@ -36,6 +39,7 @@ export default function ShoppingCart ({isOpen, onClose}: ShoppingCartProps){
 						ref={descriptionElementRef}
 						tabIndex={-1}
 					>
+						{cart && cart.map((product: ProductType) => ProductCard({product}))}
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>

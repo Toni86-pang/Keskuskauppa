@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, MouseEventHandler } from "react"
+import { useState, useEffect, useContext } from "react"
 import { useLoaderData, useNavigate } from "react-router-dom"
 import {
 	Paper,
@@ -99,12 +99,16 @@ export default function Product() {
 		}
 	}
 
-	const cart: ProductType[] = []
+	let cart: ProductType[] = []
 
-	const handleAddToShoppingCart = (product: ProductType): MouseEventHandler<HTMLButtonElement> | undefined => {
+	const handleAddToShoppingCart = (product: ProductType) => {
+		if(sessionStorage.myCart){
+			cart = JSON.parse(sessionStorage.getItem("myCart") || "")
+		} else {
+			cart = []
+		}
 		cart.push(product)
 		sessionStorage.setItem("myCart", JSON.stringify(cart))
-		return
 	}
 
 	return (
@@ -237,7 +241,7 @@ export default function Product() {
 								<>
 									<Button sx={{
 										width: 150, height: 50, 
-									}} variant="outlined" onClick={handleAddToShoppingCart(product)}>
+									}} variant="outlined" onClick={() => handleAddToShoppingCart(product)}>
 											Ostoskoriin
 									</Button>
 								</>
