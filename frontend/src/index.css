@@ -4,3 +4,13 @@ body {
     justify-content: center;
     align-items: center;
 }
+
+.search-results {
+    position: absolute;
+    background-color: aliceblue;
+    display: flex;
+    padding-right: 2.5rem;
+    top: 100%; 
+    left: 35%; 
+    z-index: 1; 
+  }

@@ -1,8 +1,15 @@
-import { useState } from "react"
-import { Button, TextField, Typography, Popover, List, ListItem, ListItemText } from "@mui/material"
-import { alpha, styled } from "@mui/material"
+import { useState, useEffect } from "react"
+import {
+	TextField,
+	Typography,
+	styled,
+	alpha,
+	Button,
+} from "@mui/material"
 import { ProductType } from "../types"
 import { searchProducts } from "../services"
+import ProductCard from "./ProductCard"
+import { useNavigate, useLocation } from "react-router-dom"
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -15,41 +22,63 @@ const Search = styled("div")(({ theme }) => ({
 	marginLeft: 0,
 	width: "100%",
 	[theme.breakpoints.up("sm")]: {
-		marginLeft: theme.spacing(3),
 		width: "auto",
 	},
 }))
 
+const initialMaxResultsToShow = 3
+
 const ProductSearch = () => {
 	const [searchQuery, setSearchQuery] = useState("")
 	const [searchResults, setSearchResults] = useState<ProductType[]>([])
-	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+	const [error, setError] = useState<string | null>(null)
+	const [maxResultsToShow, setMaxResultsToShow] = useState(initialMaxResultsToShow)
+	const [modalOpen, setModalOpen] = useState(false) 
+	const navigate = useNavigate()
+	const location = useLocation()
 
-	const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
-		setAnchorEl(event.currentTarget)
-	}
-
-	const handlePopoverClose = () => {
-		setAnchorEl(null)
-	}
-
-	const open = Boolean(anchorEl)
-
-	const performSearch = async () => {
-		try {
-			const products = await searchProducts(searchQuery)
-			setSearchResults(products)
-		} catch (error) {
-			console.error("Error performing search:", error)
-			setSearchResults([])
+	useEffect(() => {
+		const performSearch = async () => {
+			try {
+				const products = await searchProducts(searchQuery)
+				setSearchResults(products)
+				setError(null)
+				setModalOpen(true) 
+			} catch (error) {
+				console.error("Error performing search:", error)
+				setError("An error occurred while searching.")
+				setSearchResults([])
+				setModalOpen(false) 
+			}
 		}
+
+		if (searchQuery) {
+			performSearch()
+		} else {
+			setSearchResults([])
+			setError(null)
+			setModalOpen(false)
+		}
+	}, [searchQuery])
+
+	const handleShowMore = () => {
+		setMaxResultsToShow(maxResultsToShow + 3)
 	}
+
+	const handleShowAllResults = () => {
+		setModalOpen(false)
+		navigate(`/search-results?query=${encodeURIComponent(searchQuery)}`)
+	}
+
+
+	useEffect(() => {
+		if (location.pathname.startsWith("/product/") || location.pathname.startsWith("/search-results")) {
+			setSearchQuery("") 
+		}
+	}, [location.pathname])
 
 	return (
 		<div>
-			<Typography variant="h5" component="div" gutterBottom>
-        Product Search
-			</Typography>
 
 			<Search>
 				<TextField
@@ -57,34 +86,47 @@ const ProductSearch = () => {
 					variant="outlined"
 					value={searchQuery}
 					onChange={(e) => setSearchQuery(e.target.value)}
-					onFocus={handlePopoverOpen}
 				/>
-				<Button variant="contained" color="primary" onClick={performSearch}>
-          Search
-				</Button>
 			</Search>
 
-			<Popover
-				open={open}
-				anchorEl={anchorEl}
-				onClose={handlePopoverClose}
-				anchorOrigin={{
-					vertical: "bottom",
-					horizontal: "left",
-				}}
-				transformOrigin={{
-					vertical: "top",
-					horizontal: "left",
-				}}
-			>
-				<List>
-					{searchResults.map((product) => (
-						<ListItem key={product.product_id} button>
-							<ListItemText primary={product.title} />
-						</ListItem>
-					))}
-				</List>
-			</Popover>
+			{error && (
+				<Typography variant="body2" color="error" gutterBottom>
+					{error}
+				</Typography>
+			)}
+
+			{modalOpen && searchQuery && searchResults.length > 0 && (
+				<div className="search-results">
+					<ul>
+						{searchResults.slice(0, maxResultsToShow).map((product) => (
+							<ProductCard 
+								key={product.product_id} 
+								product={product} 
+							/>
+						))}
+
+						{searchResults.length > maxResultsToShow && (
+							<Button
+								onClick={handleShowMore}
+								variant="outlined"
+								color="primary"
+								sx={{ marginTop: 2 }}
+							>
+                Show More
+							</Button>
+						)}
+
+						<Button
+							onClick={handleShowAllResults}
+							variant="outlined"
+							color="primary"
+							sx={{ marginTop: 2 }}
+						>
+              Show All Results
+						</Button>
+					</ul>
+				</div>
+			)}
 		</div>
 	)
 }

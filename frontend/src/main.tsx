@@ -10,8 +10,8 @@ import Products, { loader as productsLoader } from "./Components/Products.tsx"
 import Product, { loader as productLoader } from "./Components/Product.tsx"
 import NewProduct from "./Components/NewProduct.tsx"
 import Profile from "./Components/Profile.tsx"
-import ProductSearch from "./Components/Searchbar.tsx"
-// import LandingPage from "./Components/LandingPage.tsx"
+import LandingPage from "./Components/LandingPage.tsx"
+import SearchResultsPage from "./Components/Searchfilterpage.tsx"
 
 
 const router = createBrowserRouter([
@@ -20,13 +20,13 @@ const router = createBrowserRouter([
 		element: <App />,
 		errorElement: <ErrorPage />,
 		children: [
-			// {
-			// 	path: "/",
-			// 	element: <LandingPage />,
-			// },
 			{
-				path: "/search", // Add the path for searching products
-				element: <ProductSearch />, // Replace with the appropriate component for searching products
+				path: "/",
+				element: <LandingPage />,
+			},
+			{
+				path: "/search-results",
+				element: <SearchResultsPage />, 
 			},
 			{
 				path: "/register",

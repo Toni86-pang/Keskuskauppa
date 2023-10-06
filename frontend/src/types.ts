@@ -139,5 +139,7 @@ export const initialStateProduct: ProductType = {
 	description: "",
 	price: 0
 	// product_image?: any
+	,
 }
+
 
