@@ -141,3 +141,8 @@ export const initialStateProduct: ProductType = {
 	// product_image?: any
 }
 
+export type BreadcrumbResolver = (params: string) => Promise<[string, string][]>
+
+export type categoryMapType = {
+	[key: string]: [string, number] 
+}	

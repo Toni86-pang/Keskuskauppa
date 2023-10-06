@@ -22,6 +22,7 @@ import RegisterNewUser from "./RegisterNewUser"
 import { UserTokenContext } from "../App"
 import { fetchUser } from "../services"
 import { User } from "../types"
+import Crumbs from "./Crumbs"
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -180,6 +181,7 @@ const Navbar = () => {
 					</div>
 				</Toolbar>
 			</AppBar>
+			<Crumbs />
 		</Box>
 	)
 }

@@ -12,8 +12,6 @@ import {
 } from "@mui/material"
 import StarBorderPurple500SharpIcon from "@mui/icons-material/StarBorderPurple500Sharp"
 import StarPurple500SharpIcon from "@mui/icons-material/StarPurple500Sharp"
-import Breadcrumbs from "@mui/material/Breadcrumbs"
-import Link from "@mui/material/Link"
 import DeleteButton from "./DeleteButton"
 import UpdateProductModal from "./UpdateProducts"
 import { ProductType } from "../types"
@@ -101,32 +99,6 @@ export default function Product() {
 
 	return (
 		<div>
-			<div>
-				<Breadcrumbs aria-label="breadcrumb">
-					<Link
-						underline="hover"
-						sx={{ display: "flex", alignItems: "center" }}
-						color="inherit"
-						href="/"
-					>
-						Etusivu
-					</Link>
-					<Link
-						underline="hover"
-						sx={{ display: "flex", alignItems: "center" }}
-						color="inherit"
-						href="/product"
-					>
-						Kaikki tuotteet
-					</Link>
-					<Typography
-						sx={{ display: "flex", alignItems: "center" }}
-						color="text.primary"
-					>
-						{product?.title}
-					</Typography>
-				</Breadcrumbs>
-			</div>
 			<Paper
 				sx={{
 					p: 2,
