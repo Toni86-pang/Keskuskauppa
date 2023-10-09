@@ -182,3 +182,17 @@ export const getSubcategoryName = async (subcategoryId: number) => {
 	return result.rows[0].subcategory_name
 }
 
+// GET search products
+export const searchProducts =async (searchQuery: string): Promise<Product[]>  => {
+	try {
+		const query = ` 
+		SELECT * FROM products
+		WHERE title ILIKE $1;
+		`
+		const result = await executeQuery(query, [`%${searchQuery}%`])
+		return result.rows
+	} catch (error) {
+		console.error(error)
+		throw new Error("Error searching for products.")
+	}
+}

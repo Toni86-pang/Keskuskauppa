@@ -116,3 +116,26 @@ export const fetchProductsByCategory = (id: number) => {
 export const fetchProductsBySubcategory = (id: number) => {
 	return axios.get(`/api/product/subcategory/${id}`).then(res => res.data)
 }
+
+/*   search api:s          */
+export const searchProducts = async (searchQuery:string):Promise<ProductType[]> => {
+	const response = await fetch(`/api/search?query=${searchQuery}`)
+	if (!response.ok) {
+		throw new Error("Network response was not ok")
+	}
+	const products = await response.json()
+	return products
+}
+  
+
+// export const fetchsearchAllProducts = async (query:string) => {
+// 	const response = await axios.get("/api/product")
+// 	const data = response.data as ProductType[]
+// 	return data
+// }
+ 
+// export const fetchsearchCategories = async (query:string) => {
+// 	const response = await axios.get("/api/category")
+// 	const data = response.data as Category[]
+// 	return data
+// }
