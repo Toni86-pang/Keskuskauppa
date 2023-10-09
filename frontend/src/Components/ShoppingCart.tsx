@@ -12,6 +12,7 @@ import { useEffect, useState } from "react"
 export default function ShoppingCart ({isOpen, onClose}: ShoppingCartProps){
 	const [scroll] = useState<DialogProps["scroll"]>("paper")
 	const storageItem = sessionStorage.getItem("myCart") ?? "[]"
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const cart = JSON.parse(storageItem)
   
 	const descriptionElementRef = React.useRef<HTMLElement>(null)
@@ -24,16 +25,16 @@ export default function ShoppingCart ({isOpen, onClose}: ShoppingCartProps){
 		}
 	}, [isOpen])
 
-	useEffect(() => {
-		const mapCart = () => {
-			return cart.map((product: ProductType) => ProductCard({product}))
-		}
-		mapCart()
-	}, [cart])
+	// useEffect(() => {
+	// 	const mapCart = () => {
+	// 		return cart.map((product: ProductType) => ProductCard({product}))
+	// 	}
+	// 	mapCart()
+	// }, [cart])
   
 	const handleEmptyShoppingCart = () => {
 		sessionStorage.clear()
-		cart.splice(0, cart.length)	
+		cart.splice(0, cart.length)
 	}
 
 	return (
@@ -57,7 +58,7 @@ export default function ShoppingCart ({isOpen, onClose}: ShoppingCartProps){
 						)
 							:
 							(
-								<p>Ostoskorissa ei vielä tuotteita. Kun lisäät tuotteita ostoskoriin, ne näkyvät tässä.</p>
+								<div>Ostoskorissa ei vielä tuotteita. Kun lisäät tuotteita ostoskoriin, ne näkyvät tässä.</div>
 							)
 						
 						}
