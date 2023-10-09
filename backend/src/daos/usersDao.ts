@@ -77,7 +77,8 @@ export const getUserDetailsByUserId = async (user_id: number) => {
 		users.reg_day
 	FROM
 		users
-  	WHERE user_id = $1;`
+  	WHERE 
+		user_id = $1;`
 	
 	const params = [user_id]
 	const result = await executeQuery(query, params)
