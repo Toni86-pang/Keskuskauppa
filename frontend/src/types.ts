@@ -10,6 +10,7 @@ export interface User {
 	postal_code:string,
 	is_Admin?: boolean,
 	reviews?: number
+	reg_day?: string
 }
 
 export interface UserValues {
@@ -139,6 +140,7 @@ export const initialStateProduct: ProductType = {
 	description: "",
 	price: 0
 	// product_image?: any
+	,
 }
 
 export type BreadcrumbResolver = (params: string) => Promise<[string, string][]>
