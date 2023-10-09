@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { getAllUsers, addUser, deleteUser, getUserByUsername, findUserByUSername, findUserByEmail, getUserByUserId, updateProfile, getSellerDetails } from "../daos/usersDao"
+import { getAllUsers, addUser, deleteUser, getUserByUsername, findUserByUSername, findUserByEmail, getUserByUserId, updateProfile, getUserDetailsByUserId } from "../daos/usersDao"
 import { authentication, checkReqBody } from "../middlewares"
 import argon2 from "argon2"
 import jwt from "jsonwebtoken"
@@ -171,14 +171,17 @@ users.put("/logout", async (req: Request, res: Response) => {
 })
 */
 
-//GET seller details with products details
-users.get("/product/:productId", async (req: CustomRequest, res: Response) => {
+//GET user details by user_id
+users.get("/:id", async (req: CustomRequest, res: Response) => {
 	try {
-		const productId = Number(req.params.productId)
-		const result = await getSellerDetails(productId)
+		const userId = Number(req.params.id)
+		if (isNaN(userId)) {
+			return res.status(400).json({ message: "Invalid user id provided" })
+		}
+		const result = await getUserDetailsByUserId(userId)
 		return res.status(200).send(result)
 	} catch (error) {
-		res.status(500).json({ message: "Seller information couldn't be displayed" })
+		res.status(500).json({ message: "User information couldn't be displayed" })
 	}
 })
 
