@@ -112,7 +112,7 @@ const ProductSearch = () => {
 								color="primary"
 								sx={{ marginTop: 2 }}
 							>
-                Show More
+                Näytä lisää tuloksia
 							</Button>
 						)}
 
@@ -122,7 +122,7 @@ const ProductSearch = () => {
 							color="primary"
 							sx={{ marginTop: 2 }}
 						>
-              Show All Results
+              Näytä kaikki tulokset
 						</Button>
 					</ul>
 				</div>

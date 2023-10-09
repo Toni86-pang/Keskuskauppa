@@ -58,13 +58,13 @@ const SearchResultsPage = () => {
 
 	return (
 		<div>
-			<h2>Search Results</h2>
+			<h2>Löytyneet tuotteet</h2>
 			{categories.map((category) => {
 				const categoryProductCount = getCategoryProductCount(category)
 				return categoryProductCount > 0 ? (
 					<div key={category.category_id}>
 						<h3>
-							{category.category_name} ({categoryProductCount} Tuotetta)
+							{category.category_name} ({categoryProductCount} Kpl)
 						</h3>
 						<ul>
 							{searchResults

@@ -7,7 +7,7 @@ import "./LandingPage.css"
 import { User } from "../types"
 import { fetchUser } from "../services"
 import { UserTokenContext } from "../App"
-import CustomCarousel from "./Carousel"
+// import CustomCarousel from "./Carousel"
 import RegisterNewUser from "./RegisterNewUser"
 
 const LandingPage = () => {
@@ -35,7 +35,7 @@ const LandingPage = () => {
 	return (
 		<Box>
 			<Container className="custom-carousel">
-				<CustomCarousel />
+				{/* <CustomCarousel /> */}
 			</Container>
 			<Box className="custom-container-one" display="flex">
 				<Box className="custom-container-two">
