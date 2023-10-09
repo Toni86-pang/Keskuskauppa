@@ -6,6 +6,7 @@ import {
 	alpha,
 	Button,
 } from "@mui/material"
+import "./Searchbar.css"
 import { ProductType } from "../types"
 import { searchProducts } from "../services"
 import ProductCard from "./ProductCard"

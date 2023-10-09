@@ -10,6 +10,7 @@ export interface User {
 	postal_code:string,
 	is_Admin?: boolean,
 	reviews?: number
+	reg_day?: string
 }
 
 export interface UserValues {
