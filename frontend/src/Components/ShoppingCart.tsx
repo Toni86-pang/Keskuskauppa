@@ -7,21 +7,34 @@ import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import { ProductType, ShoppingCartProps } from "../types"
 import ProductCard from "./ProductCard"
+import { useEffect, useState } from "react"
 
 export default function ShoppingCart ({isOpen, onClose}: ShoppingCartProps){
-	const [scroll] = React.useState<DialogProps["scroll"]>("paper")
+	const [scroll] = useState<DialogProps["scroll"]>("paper")
+	const storageItem = sessionStorage.getItem("myCart") ?? "[]"
+	const cart = JSON.parse(storageItem)
   
 	const descriptionElementRef = React.useRef<HTMLElement>(null)
-	React.useEffect(() => {
+	useEffect(() => {
 		if (isOpen) {
 			const { current: descriptionElement } = descriptionElementRef
 			if (descriptionElement !== null) {
 				descriptionElement.focus()
 			}
 		}
-	}, [open])
+	}, [isOpen])
+
+	useEffect(() => {
+		const mapCart = () => {
+			return cart.map((product: ProductType) => ProductCard({product}))
+		}
+		mapCart()
+	}, [cart])
   
-	const cart = JSON.parse(sessionStorage.getItem("myCart"))
+	const handleEmptyShoppingCart = () => {
+		sessionStorage.clear()
+		cart.splice(0, cart.length)	
+	}
 
 	return (
 		<div>
@@ -39,12 +52,21 @@ export default function ShoppingCart ({isOpen, onClose}: ShoppingCartProps){
 						ref={descriptionElementRef}
 						tabIndex={-1}
 					>
-						{cart && cart.map((product: ProductType) => ProductCard({product}))}
+						{cart.length > 0 ? (
+							cart.map((product: ProductType) => ProductCard({product}))
+						)
+							:
+							(
+								<p>Ostoskorissa ei vielä tuotteita. Kun lisäät tuotteita ostoskoriin, ne näkyvät tässä.</p>
+							)
+						
+						}
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={onClose}>Kassalle</Button>
-					<Button onClick={onClose}>Peruuta</Button>
+					<Button onClick={() => (handleEmptyShoppingCart())}>Tyhjennä ostoskori</Button>
+					<Button onClick={onClose}>Sulje</Button>
 				</DialogActions>
 			</Dialog>
 		</div>
