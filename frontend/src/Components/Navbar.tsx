@@ -18,6 +18,7 @@ import RegisterNewUser from "./RegisterNewUser"
 import { UserTokenContext } from "../App"
 import { fetchUser } from "../services"
 import { User } from "../types"
+import Crumbs from "./Crumbs"
 import ProductSearch from "./Searchbar"
 
 
@@ -132,6 +133,7 @@ const Navbar = () => {
 					</div>
 				</Toolbar>
 			</AppBar>
+			<Crumbs />
 		</Box>
 	)
 }

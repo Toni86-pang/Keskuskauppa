@@ -59,7 +59,7 @@ export const updateProfile = async (
 ) => {
 	const params = [phone, address, city, postal_code, user_id]
 	const query =
-	"UPDATE users SET phone = $1, address = $2, city = $3, postal_code = $4 WHERE user_id = $5 RETURNING user_id, username, name, email, phone, address, city, postal_code"
+		"UPDATE users SET phone = $1, address = $2, city = $3, postal_code = $4 WHERE user_id = $5 RETURNING user_id, username, name, email, phone, address, city, postal_code"
 	const result = await executeQuery(query, params)
 	if (result.rows.length === 0) {
 		return null
@@ -67,3 +67,32 @@ export const updateProfile = async (
 	console.log(result.rows[0])
 	return result.rows[0]
 }
+
+//GET product seller details without products details
+export const getSellerDetails = async (product_id: number) => {
+	const query = `
+	SELECT DISTINCT
+		users.username,
+		users.city,
+		users.postal_code,
+		users.reg_day
+  	FROM
+		users
+  	JOIN
+		products
+  	ON
+		users.user_id = products.user_id
+  	WHERE
+		users.user_id = (
+	  	SELECT user_id
+	  	FROM products
+	  	WHERE product_id = $1
+	);`
+	const params = [product_id]
+	const result = await executeQuery(query, params)
+
+	return result.rows
+}
+
+
+
