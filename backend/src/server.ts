@@ -13,7 +13,7 @@ import users from "./routers/usersRouters"
 import product from "./routers/productRouters"
 import category from "./routers/categoryRouters"
 import { unknownEndpoint } from "./middlewares"
-import search from "./routers/searchproducts"
+import search from "./routers/searchproductRouters"
 
 export const server = express()
 server.use(express.json())

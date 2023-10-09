@@ -90,7 +90,7 @@ const Navbar = () => {
 								>
 									<AccountCircleIcon />
 									<Typography variant="body1" sx={{ mt: 1 }}>
-										{user?.name} {/* Access the user's name */}
+										{user?.username} {/* Access the user's name */}
 									</Typography>
 									<ArrowDropDownIcon />
 									<ShoppingCartIcon />
