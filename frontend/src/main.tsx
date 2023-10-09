@@ -9,7 +9,7 @@ import Product, { loader as productLoader } from "./Components/Product.tsx"
 import NewProduct from "./Components/NewProduct.tsx"
 import Profile from "./Components/Profile.tsx"
 import LandingPage from "./Components/LandingPage.tsx"
-import SearchResultsPage from "./Components/Searchfilterpage.tsx"
+import SearchResultsPage from "./Components/SearchResultpage.tsx"
 
 
 const router = createBrowserRouter([
