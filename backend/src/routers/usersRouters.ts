@@ -172,7 +172,7 @@ users.put("/logout", async (req: Request, res: Response) => {
 */
 
 //GET user details by user_id
-users.get("/:id", async (req: CustomRequest, res: Response) => {
+users.get("/:id", async (req:Request, res: Response) => {
 	try {
 		const userId = Number(req.params.id)
 		if (isNaN(userId)) {
