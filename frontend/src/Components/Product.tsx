@@ -9,13 +9,14 @@ import {
 	ImageList,
 	ImageListItem,
 	Button,
+	SelectChangeEvent,
 } from "@mui/material"
 import StarBorderPurple500SharpIcon from "@mui/icons-material/StarBorderPurple500Sharp"
 import StarPurple500SharpIcon from "@mui/icons-material/StarPurple500Sharp"
 import DeleteButton from "./DeleteButton"
 import UpdateProductModal from "./UpdateProducts"
-import { ProductType } from "../types"
-import { deleteProduct, fetchProduct, fetchUser } from "../services"
+import { Category, ProductType, Subcategory } from "../types"
+import { deleteProduct, fetchCategories, fetchProduct, fetchSubcategoriesByMainCategory, fetchUser, fetchUsernameByUserId } from "../services"
 import Notification from "./Notification"
 import { UserTokenContext } from "../App"
 
@@ -59,17 +60,68 @@ const itemData = [
 ]
 
 export default function Product() {
-	const [ownerUsername, setOwnerUsername] = useState<string>("")
 	const [isUpdateModalOpen, setUpdateModalOpen] = useState(false)
 	const [showSuccessDeleteNotification, setShowSuccessDeleteNotification] = useState(false)
 	const [showErrorDeleteNotification, setShowErrorDeleteNotification] = useState(false)
 	const [hidden, setHidden] = useState<boolean>(false)
 	const [token] = useContext(UserTokenContext)
-	const [selectedImage, setSelectedImage] = useState<string | null>(
-		itemData[0].img
-	)
+	const [ownerUsername, setOwnerUsername] = useState<string | null>("")
+	const [selectedImage, setSelectedImage] = useState<string | null>(itemData[0].img)
 	const navigate = useNavigate()
 	const product = useLoaderData() as ProductType
+	const [updatedCategory, setUpdatedCategory] = useState<number>(product?.category_id || 0)
+	const [updatedSubcategory, setUpdatedSubcategory] = useState<number>(product?.subcategory_id || 0)
+	
+
+	const [categories, setCategories] = useState<Category[]>([])
+	const [subcategories, setSubcategories] = useState<Subcategory[]>([])
+
+	const handleCategoryChange = (event: SelectChangeEvent<number>) => {
+		const categoryId = Number(event.target.value)
+		setUpdatedCategory(categoryId)
+	
+		fetchSubcategoriesByMainCategory(categoryId).then((data) => {
+			setSubcategories(data)
+	
+	
+			if (data.length > 0) {
+				setUpdatedSubcategory(data[0].subcategory_id)
+			} else {
+				console.error("Invalid category ID input:", event.target.value)
+			}
+		})
+	}
+	
+	const handleSubcategoryChange = (event: SelectChangeEvent<number>) => {
+		const subcategoryId = Number(event.target.value)
+		if (!isNaN(subcategoryId)) { 
+			setUpdatedSubcategory(subcategoryId)
+		} else {
+			console.error("Invalid subcategory ID input:", event.target.value)
+		}
+	
+		fetchSubcategoriesByMainCategory(subcategoryId).then((data) => {
+			setSubcategories(data)
+	
+			if (data.length > 0) {
+				setUpdatedSubcategory(data[0].subcategory_id)
+			} else {
+				console.error("Invalid category ID input:", event.target.value)
+			}
+		})
+	}
+	
+	useEffect(() => {
+		fetchCategories().then((data) => {
+			setCategories(data)
+		})
+	
+		
+		const initialCategoryId = product?.category_id || 0 
+		fetchSubcategoriesByMainCategory(initialCategoryId).then((data) => {
+			setSubcategories(data)
+		})
+	}, [])
 
 	const fetchUserDetails = async () => {
 		const user = await fetchUser(token)
@@ -97,22 +149,25 @@ export default function Product() {
 			setShowErrorDeleteNotification(true)
 		}
 	}
+
+	const fetchUsernameForDisplay = async () => {
+		try {
+			const username = await fetchUsernameByUserId(product.user_id)
+			if (username !== undefined) {
+				setOwnerUsername(username)
+			} else {
+				console.error("Error fetching owner user data")
+				setOwnerUsername("N/A")
+			}
+		} catch (error) {
+			console.error("Error fetching owner user data:", error)
+			setOwnerUsername("N/A")
+		}
+	}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
-		const userIdAsString = product.user_id.toString()
-		fetchUser(userIdAsString)
-			.then((user) => {
-				if (user !== undefined) {
-					setOwnerUsername(user.username)
-				} else {
-					console.error("Error fetching owner user data")
-					setOwnerUsername("N/A") // Set a default value if user data is not available
-				}
-			})
-			.catch((error) => {
-				console.error("Error fetching owner user data:", error)
-				setOwnerUsername("N/A") // Set a default value in case of an error
-			})
-	}, [product.user_id])
+		fetchUsernameForDisplay()
+	}, [])
 
 	return (
 		<div>
@@ -155,7 +210,7 @@ export default function Product() {
 								</Typography>
 								{!hidden ? (
 									<>
-										<Typography variant="body2" color="text.secondary">
+										<Typography variant="body2" gutterBottom>
 											Myyjän nimi: {ownerUsername}
 										</Typography>
 
@@ -204,7 +259,14 @@ export default function Product() {
 											postal_code={product?.postal_code.split(",")[1] || ""}
 											description={product?.description || ""}
 											price={product?.price || 0}
+											updatedCategory={updatedCategory}
+											updatedSubcategory={updatedSubcategory}
+											handleCategoryChange={handleCategoryChange}
+											handleSubcategoryChange={handleSubcategoryChange}
+											subcategories={subcategories}
+											categories={categories}
 										/>
+
 									</div>
 
 									{product && (

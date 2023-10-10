@@ -23,7 +23,9 @@ export const getUserByUsername = async (username: string) => {
 export const getUserByUserId = async (user_id: number) => {
 	const query = "SELECT * FROM users WHERE user_id = $1"
 	const params = [user_id]
+	console.log("Executing query:", query, "with params:", params)
 	const result = await executeQuery(query, params)
+	console.log("Query result:", result.rows[0])
 	return result.rows[0]
 }
 

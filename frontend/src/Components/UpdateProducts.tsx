@@ -1,7 +1,7 @@
 import { useState } from "react"
-import { Dialog, TextField, Button } from "@mui/material"
-import { UpdateProductModalProps } from "../types"
-import { updateProduct } from "../services"
+import { Dialog, TextField, Button, Select, MenuItem, SelectChangeEvent } from "@mui/material"
+import { Category, Subcategory, UpdateProductModalProps } from "../types"
+import { fetchCategories, fetchSubcategoriesByMainCategory, updateProduct } from "../services"
 import Notification from "./Notification"
 
 function UpdateProductModal({
@@ -14,7 +14,8 @@ function UpdateProductModal({
 	city,
 	postal_code,
 	description,
-	price
+	price,
+	
 }: UpdateProductModalProps) {
 	const [updatedTitle, setUpdatedTitle] = useState(title)
 	const [updatedCategory, setUpdatedCategory] = useState(category_id)
@@ -23,6 +24,9 @@ function UpdateProductModal({
 	const [updatedPostalCode, setUpdatedPostalCode] = useState(postal_code)
 	const [updatedDescription, setUpdatedDescription] = useState(description)
 	const [updatedPrice, setUpdatedPrice] = useState(price)
+	const [subcategories, setSubcategories] = useState<Subcategory[]>([])
+	const [categories, setCategories] = useState<Category[]>([])
+
 
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
@@ -30,24 +34,44 @@ function UpdateProductModal({
 	const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setUpdatedTitle(event.target.value)
 	}
-	const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const inputValue = event.target.value
-		const category = parseFloat(inputValue)
-		if (!isNaN(category)) {
-			setUpdatedCategory(category)
-		} else {
-			console.error("Invalid price input:", inputValue)
-		}
+
+	const handleCategoryChange = (event: SelectChangeEvent<number>) => {
+		const categoryId = event.target.value as number
+		setUpdatedCategory(categoryId)
+
+		// Fetch subcategories based on the selected category
+		fetchCategories().then((data) => {
+			if (data === undefined) {
+				console.error("error fetching categories")
+				return
+			}
+			setCategories(data)
+		})
 	}
-	const handleSubCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const inputValue = event.target.value
-		const subcategory = parseFloat(inputValue)
-		if (!isNaN(subcategory)) {
-			setUpdatedSubcategory(subcategory)
+
+
+	const handleSubcategoryChange = (event: SelectChangeEvent<number>) => {
+		const subcategoryId = Number(event.target.value) // Convert the value to a number
+		if (!isNaN(subcategoryId)) { // Check if the conversion was successful
+			setUpdatedSubcategory(subcategoryId)
 		} else {
-			console.error("Invalid price input:", inputValue)
+			console.error("Invalid subcategory ID input:", event.target.value)
 		}
+	
+		fetchSubcategoriesByMainCategory(subcategoryId).then((data) => {
+			setSubcategories(data)
+
+			// Set the first subcategory as selected
+			if (data.length > 0) {
+				setUpdatedSubcategory(data[0].category_id)
+			} else {
+				console.error("Invalid category ID input:", event.target.value)
+			}
+		})
 	}
+
+
+
 	const handleCityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setUpdatedCity(event.target.value)
 	}
@@ -101,16 +125,31 @@ function UpdateProductModal({
 							value={updatedTitle}
 							onChange={handleTitleChange}
 						/>
-						<TextField
+						{/* Dropdown for Categories */}
+						<Select
 							label="Category"
 							value={updatedCategory}
 							onChange={handleCategoryChange}
-						/>
-						<TextField
-							label="subCaterogy"
+						>
+							{categories.map((category) => (
+								<MenuItem key={category.category_id} value={category.category_id}>
+									{category.category_name}
+								</MenuItem>
+							))}
+						</Select>
+						{/* Dropdown for Subcategories */}
+						<Select
+							label="Subcategory"
 							value={updatedSubcategory}
-							onChange={handleSubCategoryChange}
-						/>
+							onChange={handleSubcategoryChange}
+						>
+							{subcategories.map((subcategory) => (
+								<MenuItem key={subcategory.subcategory_id} value={subcategory.subcategory_id}>
+									{subcategory.subcategory_name}
+								</MenuItem>
+							))}
+						</Select>
+
 					</div>
 					<div style={{ margin: "16px" }}>
 						<TextField
@@ -163,7 +202,7 @@ function UpdateProductModal({
 					type="error"
 					onClose={() => setShowErrorNotification(false)}
 					duration={1500}
-				/> 
+				/>
 			)}
 		</>
 	)
