@@ -70,7 +70,7 @@ function NewProduct() {
 		newProduct(product).then((response) => {
 			if (response.status === 201) {
 				console.log("Product creation success")
-				navigate("/products")
+				navigate("/profile")
 			}
 		})
 	}
