@@ -59,6 +59,7 @@ const itemData = [
 ]
 
 export default function Product() {
+	const [ownerUsername, setOwnerUsername] = useState<string>("")
 	const [isUpdateModalOpen, setUpdateModalOpen] = useState(false)
 	const [showSuccessDeleteNotification, setShowSuccessDeleteNotification] = useState(false)
 	const [showErrorDeleteNotification, setShowErrorDeleteNotification] = useState(false)
@@ -72,18 +73,18 @@ export default function Product() {
 
 	const fetchUserDetails = async () => {
 		const user = await fetchUser(token)
-	
+
 		if (user === undefined) {
 			console.error("error fetching user")
 			return
-		}		   
+		}
 		user.user_id !== 0 && product.user_id === user.user_id ? setHidden(true) : setHidden(false)
 	}
-	
+
 	useEffect(() => {
 		fetchUserDetails()
 	}, [token])
-	
+
 	const handleDelete = async () => {
 		try {
 			await deleteProduct(product.product_id)
@@ -96,6 +97,22 @@ export default function Product() {
 			setShowErrorDeleteNotification(true)
 		}
 	}
+	useEffect(() => {
+		const userIdAsString = product.user_id.toString()
+		fetchUser(userIdAsString)
+			.then((user) => {
+				if (user !== undefined) {
+					setOwnerUsername(user.username)
+				} else {
+					console.error("Error fetching owner user data")
+					setOwnerUsername("N/A") // Set a default value if user data is not available
+				}
+			})
+			.catch((error) => {
+				console.error("Error fetching owner user data:", error)
+				setOwnerUsername("N/A") // Set a default value in case of an error
+			})
+	}, [product.user_id])
 
 	return (
 		<div>
@@ -138,12 +155,10 @@ export default function Product() {
 								</Typography>
 								{!hidden ? (
 									<>
-										<Typography
-											variant="body2"
-											color="text.secondary"
-										>
-									Myyjän nimi
+										<Typography variant="body2" color="text.secondary">
+											Myyjän nimi: {ownerUsername}
 										</Typography>
+
 										<Typography
 											variant="body2"
 											color="text.secondary"
@@ -156,7 +171,7 @@ export default function Product() {
 											<StarBorderPurple500SharpIcon />
 										</Typography>
 									</>
-								):(
+								) : (
 									<></>
 								)}
 								<Typography
@@ -172,11 +187,11 @@ export default function Product() {
 									{product?.postal_code}
 								</Typography>
 							</Grid>
-							{ hidden ? (
+							{hidden ? (
 								<Grid item>
 									<div>
-										<Button variant="outlined" onClick={() => {setUpdateModalOpen(true)}}>
-									Päivitä tuote
+										<Button variant="outlined" onClick={() => { setUpdateModalOpen(true) }}>
+											Päivitä tuote
 										</Button>
 										<UpdateProductModal
 											isOpen={isUpdateModalOpen}

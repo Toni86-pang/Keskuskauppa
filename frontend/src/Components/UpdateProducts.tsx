@@ -1,9 +1,5 @@
 import { useState } from "react"
-import Dialog from "@mui/material/Dialog"
-import TextField from "@mui/material/TextField"
-import Button from "@mui/material/Button"
-// import Snackbar from "@mui/material/Snackbar";
-// import MuiAlert from "@mui/material/Alert";
+import { Dialog, TextField, Button } from "@mui/material"
 import { UpdateProductModalProps } from "../types"
 import { updateProduct } from "../services"
 import Notification from "./Notification"

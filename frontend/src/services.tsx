@@ -17,10 +17,6 @@ export const fetchUser = (token: string) => {
 	}).then((response) => response.data)
 }
 
-// export const fetchProductOwner = (id: number) => {
-// 	return axios.get("/api/users/user/" + id).then((response) => response.data)
-// }
-
 export const updateUser = async (updatedData: UpdatedUser, token: string) => {
 	await axios.put("/api/users/update", updatedData, {
 		headers: {
