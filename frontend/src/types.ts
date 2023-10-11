@@ -1,3 +1,4 @@
+
 export interface User {
 	user_id: number,
     username: string,
@@ -71,17 +72,19 @@ export interface VerifyProps {
 }
 
 export interface UpdateProductModalProps {
-    isOpen: boolean
-    onClose: () => void
-    productId: number
-    title: string
-    category_id: number
-    subcategory_id: number
-    city: string
-    postal_code: string
-    description: string
-    price: number
+	isOpen: boolean
+	onClose: () => void
+	productId: number
+	title: string
+	category_id: number
+	subcategory_id: number
+	city: string
+	postal_code: string
+	description: string
+	price: number
+	
   }
+  
 
 export interface Category {
 	category_id: number

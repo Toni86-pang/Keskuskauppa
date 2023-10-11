@@ -1,15 +1,14 @@
 import { useLocation } from "react-router-dom"
 import ProductCard from "./ProductCard"
 import { searchProducts } from "../services"
-import { fetchCategories, fetchSubcategories } from "../services"
+import { fetchSubcategories } from "../services"
 import { useEffect, useState } from "react"
-import { ProductType, Category, Subcategory } from "../types"
+import { ProductType, Subcategory } from "../types"
 
 const SearchResultsPage = () => {
 	const location = useLocation()
 	const searchQuery = new URLSearchParams(location.search).get("query")
 	const [searchResults, setSearchResults] = useState<ProductType[]>([])
-	const [categories, setCategories] = useState<Category[]>([])
 	const [subcategories, setSubcategories] = useState<Subcategory[]>([])
 
 	useEffect(() => {
@@ -29,9 +28,7 @@ const SearchResultsPage = () => {
 
 		const fetchCategoriesAndSubcategories = async () => {
 			try {
-				const categoriesData = await fetchCategories()
 				const subcategoriesData = await fetchSubcategories()
-				setCategories(categoriesData)
 				setSubcategories(subcategoriesData)
 			} catch (error) {
 				console.error("Error fetching categories and subcategories:", error)
@@ -44,12 +41,6 @@ const SearchResultsPage = () => {
 		}
 	}, [searchQuery])
 
-	const getCategoryProductCount = (category: Category) => {
-		return searchResults.filter(
-			(product) => product.category_id === category.category_id
-		).length
-	}
-
 	const getSubcategoryProductCount = (subcategory: Subcategory) => {
 		return searchResults.filter(
 			(product) => product.subcategory_id === subcategory.subcategory_id
@@ -59,26 +50,7 @@ const SearchResultsPage = () => {
 	return (
 		<div>
 			<h2>Löytyneet tuotteet</h2>
-			{categories.map((category) => {
-				const categoryProductCount = getCategoryProductCount(category)
-				return categoryProductCount > 0 ? (
-					<div key={category.category_id}>
-						<h3>
-							{category.category_name} ({categoryProductCount} Kpl)
-						</h3>
-						<ul>
-							{searchResults
-								.filter(
-									(product) => product.category_id === category.category_id
-								)
-								.map((product) => (
-									<ProductCard key={product.product_id} product={product} />
-								))}
-						</ul>
-					</div>
-				) : null
-			})}
-
+			
 			{subcategories.map((subcategory) => {
 				const subcategoryProductCount = getSubcategoryProductCount(subcategory)
 				return subcategoryProductCount > 0 ? (
