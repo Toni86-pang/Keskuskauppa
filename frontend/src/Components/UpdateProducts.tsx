@@ -14,7 +14,8 @@ function UpdateProductModal({
 	city,
 	postal_code,
 	description,
-	price
+	price,
+	
 }: UpdateProductModalProps) {
 	const [updatedTitle, setUpdatedTitle] = useState(title)
 
@@ -22,6 +23,9 @@ function UpdateProductModal({
 	const [updatedPostalCode, setUpdatedPostalCode] = useState(postal_code)
 	const [updatedDescription, setUpdatedDescription] = useState(description)
 	const [updatedPrice, setUpdatedPrice] = useState(price)
+	const [subcategories, setSubcategories] = useState<Subcategory[]>([])
+	const [categories, setCategories] = useState<Category[]>([])
+
 
 	const [categories, setCategories] = useState<Category[]>([])
 	const [subcategories, setSubcategories] = useState<Category[]>([])	
@@ -199,7 +203,7 @@ function UpdateProductModal({
 					type="error"
 					onClose={() => setShowErrorNotification(false)}
 					duration={1500}
-				/> 
+				/>
 			)}
 		</>
 	)

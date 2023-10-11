@@ -1,5 +1,5 @@
 import axios from "axios"
-import { Category, ProductType, UpdatedProduct, UpdatedUser, } from "./types"
+import { Category, ProductType, Subcategory, UpdatedProduct, UpdatedUser, User, } from "./types"
 
 export const deleteUser = (token: string) => {
 	return axios.delete("/api/users/delete", {
@@ -16,6 +16,21 @@ export const fetchUser = (token: string) => {
 		}
 	}).then((response) => response.data)
 }
+
+
+export const fetchUsernameByUserId = async (id: number) => {
+	try {
+		const response = await axios.get(`/api/users/${id}`)
+		const data = response.data[0] as User // Extract the first user object from the array
+		return data.username
+	} catch (error) {
+		console.error("Error fetching username by user ID:", error)
+		return undefined
+	}
+}
+  
+  
+  
 
 export const updateUser = async (updatedData: UpdatedUser, token: string) => {
 	await axios.put("/api/users/update", updatedData, {
@@ -66,6 +81,14 @@ export const fetchIndividualSubcategory = async (categoryId: number) => {
 	const data = response.data as Category[]
 	return data
 }
+  
+
+export const fetchSubcategoriesByMainCategory = async (mainCategoryId: number) => {
+	const response = await axios.get(`/api/category/main/${mainCategoryId}/subcategory`)
+	const data = response.data as Subcategory[]
+	return data
+}
+  
 
 // export const loginUser = async (username: string, password: string) => {
 // 	const response = await axios.post("/api/users/login", {
