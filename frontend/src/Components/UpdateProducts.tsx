@@ -1,7 +1,7 @@
-import { useState } from "react"
-import { Dialog, TextField, Button } from "@mui/material"
-import { UpdateProductModalProps } from "../types"
-import { updateProduct } from "../services"
+import { useEffect, useState } from "react"
+import { Dialog, TextField, Button, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from "@mui/material"
+import { Category, UpdateProductModalProps } from "../types"
+import { fetchCategories, fetchSubcategories, updateProduct } from "../services"
 import Notification from "./Notification"
 
 function UpdateProductModal({
@@ -17,36 +17,54 @@ function UpdateProductModal({
 	price
 }: UpdateProductModalProps) {
 	const [updatedTitle, setUpdatedTitle] = useState(title)
-	const [updatedCategory, setUpdatedCategory] = useState(category_id)
-	const [updatedSubcategory, setUpdatedSubcategory] = useState(subcategory_id)
+
 	const [updatedCity, setUpdatedCity] = useState(city)
 	const [updatedPostalCode, setUpdatedPostalCode] = useState(postal_code)
 	const [updatedDescription, setUpdatedDescription] = useState(description)
 	const [updatedPrice, setUpdatedPrice] = useState(price)
 
+	const [categories, setCategories] = useState<Category[]>([])
+	const [subcategories, setSubcategories] = useState<Category[]>([])	
+	const [selectedCategoryId, setSelectedCategoryId] = useState(category_id)
+	const [selectedSubcategoryId, setSelectedSubcategoryId] = useState(subcategory_id)
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
+
+	useEffect(() => {
+		async function fetchCategoryData() {
+			try {
+				const data = await fetchCategories() // Fetch categories from your API
+				setCategories(data)
+			} catch (error) {
+				console.error("Error fetching categories", error)
+			}
+		}
+	
+		async function fetchSubcategoryData() {
+			try {
+				const data = await fetchSubcategories() // Fetch subcategories from your API
+				setSubcategories(data)
+			} catch (error) {
+				console.error("Error fetching subcategories", error)
+			}
+		}
+		fetchCategoryData()
+		fetchSubcategoryData()
+	}, [])
+	
 
 	const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setUpdatedTitle(event.target.value)
 	}
-	const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const inputValue = event.target.value
-		const category = parseFloat(inputValue)
-		if (!isNaN(category)) {
-			setUpdatedCategory(category)
-		} else {
-			console.error("Invalid price input:", inputValue)
-		}
+
+	const handleCategoryChange = (event: SelectChangeEvent<number>) => {
+		const selectedCategoryId = event.target.value as number
+		setSelectedCategoryId(selectedCategoryId)
 	}
-	const handleSubCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const inputValue = event.target.value
-		const subcategory = parseFloat(inputValue)
-		if (!isNaN(subcategory)) {
-			setUpdatedSubcategory(subcategory)
-		} else {
-			console.error("Invalid price input:", inputValue)
-		}
+
+	const handleSubCategoryChange = (event: SelectChangeEvent<number>) => {
+		const selectedSubcategoryId = event.target.value
+		setSelectedSubcategoryId(Number(selectedSubcategoryId))
 	}
 	const handleCityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setUpdatedCity(event.target.value)
@@ -71,8 +89,8 @@ function UpdateProductModal({
 		try {
 			const updatedData = {
 				title: updatedTitle,
-				category_id: updatedCategory,
-				subcategory_id: updatedSubcategory,
+				category_id: selectedCategoryId,
+				subcategory_id: selectedSubcategoryId,
 				city: updatedCity,
 				postal_code: updatedPostalCode,
 				description: updatedDescription,
@@ -101,16 +119,34 @@ function UpdateProductModal({
 							value={updatedTitle}
 							onChange={handleTitleChange}
 						/>
-						<TextField
-							label="Category"
-							value={updatedCategory}
-							onChange={handleCategoryChange}
-						/>
-						<TextField
-							label="subCaterogy"
-							value={updatedSubcategory}
-							onChange={handleSubCategoryChange}
-						/>
+						<FormControl>
+							<InputLabel>Category</InputLabel>
+							<Select
+								value={selectedCategoryId}
+								onChange={handleCategoryChange}
+							>
+								{categories.map(category => (
+									<MenuItem key={category.category_id} value={category.category_id}>
+										{category.category_name}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+						<FormControl>
+							<InputLabel>Subcategory</InputLabel>
+							<Select
+								value={selectedSubcategoryId}
+								onChange={handleSubCategoryChange}
+							>
+								{subcategories
+									.filter(subcategory => subcategory.category_id === selectedCategoryId)
+									.map(subcategory => (
+										<MenuItem key={subcategory.subcategory_id} value={subcategory.subcategory_id}>
+											{subcategory.subcategory_name}
+										</MenuItem>
+									))}
+							</Select>
+						</FormControl>
 					</div>
 					<div style={{ margin: "16px" }}>
 						<TextField

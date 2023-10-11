@@ -97,6 +97,7 @@ export default function Product() {
 			setShowErrorDeleteNotification(true)
 		}
 	}
+	
 	useEffect(() => {
 		const userIdAsString = product.user_id.toString()
 		fetchUser(userIdAsString)
