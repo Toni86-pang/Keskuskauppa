@@ -70,19 +70,20 @@ export default function Product() {
 	const product = useLoaderData() as ProductType
 		
 	
-	const fetchUserDetails = async () => {
-		const user = await fetchUser(token)
-
-		if (user === undefined) {
-			console.error("error fetching user")
-			return
-		}
-		user.user_id !== 0 && product.user_id === user.user_id ? setHidden(true) : setHidden(false)
-	}
+	
 
 	useEffect(() => {
+		const fetchUserDetails = async () => {
+			const user = await fetchUser(token)
+	
+			if (user === undefined) {
+				console.error("error fetching user")
+				return
+			}
+			user.user_id !== 0 && product.user_id === user.user_id ? setHidden(true) : setHidden(false)
+		}
 		fetchUserDetails()
-	}, [token])
+	}, [token, product.user_id])
 
 	const handleDelete = async () => {
 		try {
@@ -97,24 +98,24 @@ export default function Product() {
 		}
 	}
 
-	const fetchUsernameForDisplay = async () => {
-		try {
-			const username = await fetchUsernameByUserId(product.user_id)
-			if (username !== undefined) {
-				setOwnerUsername(username)
-			} else {
-				console.error("Error fetching owner user data")
+	
+	useEffect(() => {
+		const fetchUsernameForDisplay = async () => {
+			try {
+				const username = await fetchUsernameByUserId(product.user_id)
+				if (username !== undefined) {
+					setOwnerUsername(username)
+				} else {
+					console.error("Error fetching owner user data")
+					setOwnerUsername("N/A")
+				}
+			} catch (error) {
+				console.error("Error fetching owner user data:", error)
 				setOwnerUsername("N/A")
 			}
-		} catch (error) {
-			console.error("Error fetching owner user data:", error)
-			setOwnerUsername("N/A")
 		}
-	}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	useEffect(() => {
 		fetchUsernameForDisplay()
-	}, [])
+	}, [product.user_id])
 
 	return (
 		<div>

@@ -92,7 +92,6 @@ export const getProductsByUserId = async (user_ID: number) => {
 	const query = "SELECT * FROM products WHERE user_id = $1"
 	const params = [user_ID]
 	const result = await executeQuery(query, params)
-
 	return result.rows
 }
 
