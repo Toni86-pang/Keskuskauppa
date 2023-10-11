@@ -18,14 +18,10 @@ function UpdateProductModal({
 	
 }: UpdateProductModalProps) {
 	const [updatedTitle, setUpdatedTitle] = useState(title)
-
 	const [updatedCity, setUpdatedCity] = useState(city)
 	const [updatedPostalCode, setUpdatedPostalCode] = useState(postal_code)
 	const [updatedDescription, setUpdatedDescription] = useState(description)
 	const [updatedPrice, setUpdatedPrice] = useState(price)
-	const [subcategories, setSubcategories] = useState<Subcategory[]>([])
-	const [categories, setCategories] = useState<Category[]>([])
-
 
 	const [categories, setCategories] = useState<Category[]>([])
 	const [subcategories, setSubcategories] = useState<Category[]>([])	
@@ -119,12 +115,12 @@ function UpdateProductModal({
 				<div style={{ maxHeight: "80vh", overflowY: "auto", padding: "16px" }}>
 					<div style={{ margin: "16px" }}>
 						<TextField
-							label="Title"
+							label="Nimi"
 							value={updatedTitle}
 							onChange={handleTitleChange}
 						/>
 						<FormControl>
-							<InputLabel>Category</InputLabel>
+							<InputLabel>Kategoria</InputLabel>
 							<Select
 								value={selectedCategoryId}
 								onChange={handleCategoryChange}
@@ -137,7 +133,7 @@ function UpdateProductModal({
 							</Select>
 						</FormControl>
 						<FormControl>
-							<InputLabel>Subcategory</InputLabel>
+							<InputLabel>Alakategoria</InputLabel>
 							<Select
 								value={selectedSubcategoryId}
 								onChange={handleSubCategoryChange}
@@ -154,12 +150,12 @@ function UpdateProductModal({
 					</div>
 					<div style={{ margin: "16px" }}>
 						<TextField
-							label="City"
+							label="Kaupunki"
 							value={updatedCity}
 							onChange={handleCityChange}
 						/>
 						<TextField
-							label="Postalcode"
+							label="Postinumero"
 							value={updatedPostalCode}
 							onChange={handlePostalCodeChange}
 						/>
@@ -181,7 +177,7 @@ function UpdateProductModal({
 							Päivitä
 						</Button>
 						<Button variant="outlined" onClick={handleCloseModal}>
-							Cancel
+							Peruuta
 						</Button>
 					</div>
 				</div>

@@ -1,5 +1,5 @@
 import axios from "axios"
-import { Category, ProductType, Subcategory, UpdatedProduct, UpdatedUser, User, } from "./types"
+import { Category, ProductType, UpdatedProduct, UpdatedUser, User, } from "./types"
 
 export const deleteUser = (token: string) => {
 	return axios.delete("/api/users/delete", {
@@ -82,12 +82,6 @@ export const fetchIndividualSubcategory = async (categoryId: number) => {
 	return data
 }
   
-
-export const fetchSubcategoriesByMainCategory = async (mainCategoryId: number) => {
-	const response = await axios.get(`/api/category/main/${mainCategoryId}/subcategory`)
-	const data = response.data as Subcategory[]
-	return data
-}
   
 
 // export const loginUser = async (username: string, password: string) => {

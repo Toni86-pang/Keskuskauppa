@@ -1,5 +1,3 @@
-import { SelectChangeEvent } from "@mui/material"
-
 
 export interface User {
 	user_id: number,
@@ -84,12 +82,7 @@ export interface UpdateProductModalProps {
 	postal_code: string
 	description: string
 	price: number
-	updatedCategory: number
-	updatedSubcategory: number
-	categories: Category[]
-	subcategories: Subcategory[]
-	handleCategoryChange: (event: SelectChangeEvent<number>) => void
-	handleSubcategoryChange: (event: SelectChangeEvent<number>) => void
+	
   }
   
 

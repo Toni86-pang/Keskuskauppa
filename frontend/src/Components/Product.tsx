@@ -9,14 +9,13 @@ import {
 	ImageList,
 	ImageListItem,
 	Button,
-	SelectChangeEvent,
 } from "@mui/material"
 import StarBorderPurple500SharpIcon from "@mui/icons-material/StarBorderPurple500Sharp"
 import StarPurple500SharpIcon from "@mui/icons-material/StarPurple500Sharp"
 import DeleteButton from "./DeleteButton"
 import UpdateProductModal from "./UpdateProducts"
-import { Category, ProductType, Subcategory } from "../types"
-import { deleteProduct, fetchCategories, fetchProduct, fetchSubcategoriesByMainCategory, fetchUser, fetchUsernameByUserId } from "../services"
+import { ProductType } from "../types"
+import { deleteProduct, fetchProduct,  fetchUser, fetchUsernameByUserId } from "../services"
 import Notification from "./Notification"
 import { UserTokenContext } from "../App"
 
@@ -69,60 +68,8 @@ export default function Product() {
 	const [selectedImage, setSelectedImage] = useState<string | null>(itemData[0].img)
 	const navigate = useNavigate()
 	const product = useLoaderData() as ProductType
-	const [updatedCategory, setUpdatedCategory] = useState<number>(product?.category_id || 0)
-	const [updatedSubcategory, setUpdatedSubcategory] = useState<number>(product?.subcategory_id || 0)
-	
-
-	const [categories, setCategories] = useState<Category[]>([])
-	const [subcategories, setSubcategories] = useState<Subcategory[]>([])
-
-	const handleCategoryChange = (event: SelectChangeEvent<number>) => {
-		const categoryId = Number(event.target.value)
-		setUpdatedCategory(categoryId)
-	
-		fetchSubcategoriesByMainCategory(categoryId).then((data) => {
-			setSubcategories(data)
-	
-	
-			if (data.length > 0) {
-				setUpdatedSubcategory(data[0].subcategory_id)
-			} else {
-				console.error("Invalid category ID input:", event.target.value)
-			}
-		})
-	}
-	
-	const handleSubcategoryChange = (event: SelectChangeEvent<number>) => {
-		const subcategoryId = Number(event.target.value)
-		if (!isNaN(subcategoryId)) { 
-			setUpdatedSubcategory(subcategoryId)
-		} else {
-			console.error("Invalid subcategory ID input:", event.target.value)
-		}
-	
-		fetchSubcategoriesByMainCategory(subcategoryId).then((data) => {
-			setSubcategories(data)
-	
-			if (data.length > 0) {
-				setUpdatedSubcategory(data[0].subcategory_id)
-			} else {
-				console.error("Invalid category ID input:", event.target.value)
-			}
-		})
-	}
-	
-	useEffect(() => {
-		fetchCategories().then((data) => {
-			setCategories(data)
-		})
-	
 		
-		const initialCategoryId = product?.category_id || 0 
-		fetchSubcategoriesByMainCategory(initialCategoryId).then((data) => {
-			setSubcategories(data)
-		})
-	}, [])
-
+	
 	const fetchUserDetails = async () => {
 		const user = await fetchUser(token)
 
@@ -206,7 +153,7 @@ export default function Product() {
 						<Grid item xs container direction="column" spacing={4}>
 							<Grid item xs sx={{ margin: 4 }}>
 								<Typography variant="body2" gutterBottom>
-									{product?.price} €
+									Hinta:	{product?.price} €
 								</Typography>
 								{!hidden ? (
 									<>
@@ -233,20 +180,22 @@ export default function Product() {
 									variant="body2"
 									color="text.secondary"
 								>
-									{product?.city}
+								Kaupunki:	{product?.city}
 								</Typography>
 								<Typography
 									variant="body2"
 									color="text.secondary"
 								>
-									{product?.postal_code}
+								Postinumero:	{product?.postal_code}
 								</Typography>
 							</Grid>
 							{hidden ? (
 								<Grid item>
 									<div>
-										<Button variant="outlined" onClick={() => { setUpdateModalOpen(true) }}>
-											Päivitä tuote
+										<Button variant="outlined" onClick={() => { 
+											setUpdateModalOpen(true) 
+										}}>
+										Päivitä tuote
 										</Button>
 										<UpdateProductModal
 											isOpen={isUpdateModalOpen}
@@ -256,17 +205,10 @@ export default function Product() {
 											category_id={product?.category_id || 0}
 											subcategory_id={product?.subcategory_id || 0}
 											city={product?.city.split(",")[0] || ""}
-											postal_code={product?.postal_code.split(",")[1] || ""}
+											postal_code={product?.postal_code.split(",")[0] || ""}
 											description={product?.description || ""}
 											price={product?.price || 0}
-											updatedCategory={updatedCategory}
-											updatedSubcategory={updatedSubcategory}
-											handleCategoryChange={handleCategoryChange}
-											handleSubcategoryChange={handleSubcategoryChange}
-											subcategories={subcategories}
-											categories={categories}
 										/>
-
 									</div>
 
 									{product && (
