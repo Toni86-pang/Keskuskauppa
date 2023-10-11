@@ -71,8 +71,6 @@ export default function Product() {
 	)
 	const navigate = useNavigate()
 	const product = useLoaderData() as ProductType
-	const cart: ProductType[] = []
-
 	
 	useEffect(() => {
 		const fetchUserDetails = async () => {
@@ -102,13 +100,10 @@ export default function Product() {
 	}
 
 	const handleAddToShoppingCart = (product: ProductType) => {
-		if(sessionStorage.myCart){
-			cart.push = JSON.parse(sessionStorage.getItem("myCart") || "")
-		} else {
-			cart.splice(0, cart.length)	
-		}
-		cart.push(product)
-		sessionStorage.setItem("myCart", JSON.stringify(cart))
+		const storageItem = sessionStorage.getItem("myCart")
+		const tempCart: ProductType[] = storageItem !== null ? JSON.parse(storageItem) : []
+		tempCart.push(product)
+		sessionStorage.setItem("myCart", JSON.stringify(tempCart))
 	}
 
 	return (
