@@ -37,32 +37,33 @@ function Profile() {
 		setVerifyOpen(true)
 	}
 
-	const fetchInfo = async () => {
-		if(!token){
-			setUser(initialState)
-			setOwnProducts([])
-			return
-		}
-
-		const user = await fetchUser(token)
-
-		if (user === undefined) {
-			console.error("error fetching user")
-			return
-		}
-		
-		const products = await fetchOwnProducts(Number(user.user_id))
-		
-		if(products === undefined) {
-			console.error("error fetching products")
-			return
-		}
-		
-		setUser(user)
-		setOwnProducts(products)
-	}
+	
 
 	useEffect(() => {
+		const fetchInfo = async () => {
+			if(!token){
+				setUser(initialState)
+				setOwnProducts([])
+				return
+			}
+	
+			const user = await fetchUser(token)
+	
+			if (user === undefined) {
+				console.error("error fetching user")
+				return
+			}
+			
+			const products = await fetchOwnProducts(Number(user.user_id))
+			
+			if(products === undefined) {
+				console.error("error fetching products")
+				return
+			}
+			
+			setUser(user)
+			setOwnProducts(products)
+		}
 		fetchInfo()
 	}, [token])
 

@@ -24,23 +24,24 @@ function NewProduct() {
 
 	const navigate = useNavigate()
 
-	const fetchInfo = async () => {
-		if(!token){
-			setUser(initialState)
-			return
-		}
-
-		const user = await fetchUser(token)
-
-		if (user === undefined) {
-			console.error("error fetching user")
-			return
-		}
-		
-		setUser(user)
-	}
+	
 
 	useEffect(() => {
+		const fetchInfo = async () => {
+			if(!token){
+				setUser(initialState)
+				return
+			}
+	
+			const user = await fetchUser(token)
+	
+			if (user === undefined) {
+				console.error("error fetching user")
+				return
+			}
+			
+			setUser(user)
+		}
 		fetchInfo()
 	}, [token])
 
