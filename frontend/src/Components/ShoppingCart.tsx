@@ -8,15 +8,11 @@ import DialogTitle from "@mui/material/DialogTitle"
 import { ProductType, ShoppingCartProps } from "../types"
 import { useEffect, useState } from "react"
 import SalesProductCard from "./SalesProductCard"
-// import { Grid } from "@mui/material"
-import { useNavigate } from "react-router"
 import VerifyDialog from "./VerifyDialog"
 
-export default function ShoppingCart ({isOpen, onClose}: ShoppingCartProps){
+export default function ShoppingCart ({isOpen, onClose, cart, setCart}: ShoppingCartProps){
 	const [scroll] = useState<DialogProps["scroll"]>("paper")
-	const [cart, setCart] = useState<Array<ProductType> | null>(null)
 	const [verifyOpen, setVerifyOpen] = useState(false)
-	const navigate = useNavigate()
 	let sum = 0
 	cart?.forEach((product) => {sum = sum +product.price})
   
@@ -39,19 +35,6 @@ export default function ShoppingCart ({isOpen, onClose}: ShoppingCartProps){
 	const handleEmptyShoppingCart = () => {
 		sessionStorage.clear()
 		setCart(null)
-	}
-
-	const handleRemoveFromCart = (product_id: ProductType) => {
-		const storageItem = sessionStorage.getItem("myCart")
-		const tempCart: ProductType[] = storageItem !== null ? JSON.parse(storageItem) : []
-		const filteredCart: ProductType[] = tempCart.filter(function (cartProduct) {return cartProduct.product_id !== product_id})
-		sessionStorage.clear()
-		if(filteredCart.length > 0){
-			setCart(filteredCart)
-			sessionStorage.setItem("myCart", JSON.stringify(filteredCart))
-		} else {
-			setCart(null)
-		}
 	}
 
 	const verifyDialogProps = {
@@ -84,22 +67,13 @@ export default function ShoppingCart ({isOpen, onClose}: ShoppingCartProps){
 						{cart !== null
 							? cart.map((product: ProductType) =>
 								<>
-									<SalesProductCard product={product} key={product.product_id + product.title} />
-									<>
-										<Button variant="contained" color="primary" onClick={() => {
-											navigate(`/product/${product.product_id}`)
-											onClose()
-										}}>
-											Katso tuote
-										</Button>
-									</>
-									<>
-										<Button variant="contained" color="primary" onClick={() => {
-											handleRemoveFromCart(product.product_id)
-										}}>
-											Poista ostoskorista
-										</Button>
-									</></>)
+									<SalesProductCard 
+										product={product} 
+										key={product.product_id + product.title} 
+										onClose={onClose}
+										setCart={setCart}	
+									/>
+								</>)
 							: <>Ostoskorissa ei vielä tuotteita. Kun lisäät tuotteita ostoskoriin, ne näkyvät tässä.</>
 						}
 						<p>Summa: {sum} €</p>

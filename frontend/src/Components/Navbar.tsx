@@ -21,8 +21,9 @@ import Login from "./Login"
 import RegisterNewUser from "./RegisterNewUser"
 import { UserTokenContext } from "../App"
 import { fetchUser } from "../services"
-import { ProductType, User } from "../types"
+import { NavbarProps, User } from "../types"
 import ShoppingCart from "./ShoppingCart"
+import "./Navbar.css"
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -64,12 +65,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	},
 }))
 
-const Navbar = () => {
+const Navbar = ({cart, setCart}: NavbarProps) => {
 	const [token, setToken] = useContext(UserTokenContext)
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 	const [user, setUser] = useState<User | null>(null)
 	const [isShoppingCartOpen, setShoppingCartOpen] = useState(false)
-	const [cart, setCart] = useState<Array<ProductType> | null>(null)
 	const navigate = useNavigate()
 
 	const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -105,15 +105,6 @@ const Navbar = () => {
 				})
 		}
 	}, [token])
-
-	useEffect(() => {
-		const storageItem = sessionStorage.getItem("myCart")
-		if(storageItem !== null){
-			setCart(JSON.parse(storageItem))
-		} else {
-			setCart(null)
-		}
-	}, [cart])
 
 	return (
 		<>
@@ -162,7 +153,11 @@ const Navbar = () => {
 										aria-haspopup="true"
 									>
 										<ShoppingCartIcon />
-										<>{cart?.length || 0}</>
+										<div className="products-in-shopping-cart">
+											<p>
+												({cart?.length || 0})
+											</p>
+										</div>
 									</IconButton>
 									<Menu
 										id="user-menu"
@@ -199,6 +194,8 @@ const Navbar = () => {
 			<ShoppingCart
 				isOpen={isShoppingCartOpen}
 				onClose={() => setShoppingCartOpen(false)}
+				cart={cart}
+				setCart={setCart}
 			/>
 		</>
 	)

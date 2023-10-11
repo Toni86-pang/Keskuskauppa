@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react"
-import { useLoaderData, useNavigate } from "react-router-dom"
+import { useLoaderData, useNavigate, useOutletContext } from "react-router-dom"
 import {
 	Paper,
 	Grid,
@@ -19,7 +19,7 @@ import UpdateProductModal from "./UpdateProducts"
 import { ProductType } from "../types"
 import { deleteProduct, fetchProduct, fetchUser } from "../services"
 import Notification from "./Notification"
-import { UserTokenContext } from "../App"
+import { CartContextType, UserTokenContext } from "../App"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, react-refresh/only-export-components
 export async function loader({ params }: any) {
@@ -69,8 +69,10 @@ export default function Product() {
 	const [selectedImage, setSelectedImage] = useState<string | null>(
 		itemData[0].img
 	)
+	const [showErrorNotification, setShowErrorNotification] = useState(false)
 	const navigate = useNavigate()
 	const product = useLoaderData() as ProductType
+	const [ setCart ] = useOutletContext<CartContextType>()
 	
 	useEffect(() => {
 		const fetchUserDetails = async () => {
@@ -102,8 +104,12 @@ export default function Product() {
 	const handleAddToShoppingCart = (product: ProductType) => {
 		const storageItem = sessionStorage.getItem("myCart")
 		const tempCart: ProductType[] = storageItem !== null ? JSON.parse(storageItem) : []
-		tempCart.push(product)
-		sessionStorage.setItem("myCart", JSON.stringify(tempCart))
+		const alreadyInCart = tempCart.find(tempProduct => { return (tempProduct.product_id === product.product_id)})
+		if(!alreadyInCart){
+			tempCart.push(product),
+			sessionStorage.setItem("myCart", JSON.stringify(tempCart)),
+			setCart(tempCart)
+		} else {setShowErrorNotification(true)}
 	}
 
 	return (
@@ -294,6 +300,15 @@ export default function Product() {
 					</Grid>
 				</Grid>
 			</Paper>
+			{showErrorNotification && (
+				<Notification
+					open={showErrorNotification}
+					message="Tuote on jo ostoskorissa."
+					type="error"
+					onClose={() => setShowErrorNotification(false)}
+					duration={1500}
+				/>
+			)}
 		</div>
 	)
 }
