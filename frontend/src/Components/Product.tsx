@@ -99,7 +99,6 @@ export default function Product() {
 	}
 
 	
-	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
 		const fetchUsernameForDisplay = async () => {
 			try {
