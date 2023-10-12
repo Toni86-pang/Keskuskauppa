@@ -5,7 +5,6 @@ import { UserTokenContext } from "../App"
 import { Category, Subcategory, User, initialState } from "../types"
 import { fetchCategories, fetchIndividualSubcategory, fetchUser, newProduct } from "../services"
 
-
 function NewProduct() {
 	const [token] = useContext(UserTokenContext)
 	const [user, setUser] = useState<User>(initialState)
@@ -23,8 +22,6 @@ function NewProduct() {
 	const [hidden, setHidden] = useState<boolean>(false)
 
 	const navigate = useNavigate()
-
-	
 
 	useEffect(() => {
 		const fetchInfo = async () => {
@@ -123,7 +120,7 @@ function NewProduct() {
 	}
 
 	const handleCancel = () => {
-		navigate("/")
+		navigate("/profile")
 	}
 
 	const location = `${user.postal_code} ${user.city}`

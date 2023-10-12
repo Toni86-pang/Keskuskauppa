@@ -21,7 +21,7 @@ function UpdateProductModal({
 	const [updatedCity, setUpdatedCity] = useState(city)
 	const [updatedPostalCode, setUpdatedPostalCode] = useState(postal_code)
 	const [updatedDescription, setUpdatedDescription] = useState(description)
-	const [updatedPrice, setUpdatedPrice] = useState(price)
+	const [updatedPrice, setUpdatedPrice] = useState(price || "")
 
 	const [categories, setCategories] = useState<Category[]>([])
 	const [subcategories, setSubcategories] = useState<Category[]>([])	
@@ -52,7 +52,6 @@ function UpdateProductModal({
 		fetchSubcategoryData()
 	}, [])
 	
-
 	const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setUpdatedTitle(event.target.value)
 	}
