@@ -37,7 +37,7 @@ users.get("/user", authentication, async (req: CustomRequest, res: Response) => 
 	return res.status(200).send(result)
 })
 
-// //Get a specific user's info by their id
+//Get a specific user's info by their id
 // //Tämän rakensi Maaret vahingossa valmiiksi myyjän profiilisivua varten kun yritti tehdä muuta
 // users.get("/user/:id", async (req: CustomRequest, res: Response) => {
 // 	const user_id = Number(req.params.id)

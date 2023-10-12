@@ -1,7 +1,6 @@
 import axios from "axios"
 import { Category, ProductType, UpdatedProduct, UpdatedUser, User } from "./types"
 
-
 export const deleteUser = (token: string) => {
 	return axios.delete("/api/users/delete", {
 		headers: {
@@ -18,6 +17,20 @@ export const fetchUser = (token: string) => {
 	}).then((response) => response.data)
 }
 
+
+export const fetchUsernameByUserId = async (id: number) => {
+	try {
+		const response = await axios.get(`/api/users/${id}`)
+		const data = response.data[0] as User // Extract the first user object from the array
+		return data.username
+	} catch (error) {
+		console.error("Error fetching username by user ID:", error)
+		return undefined
+	}
+}
+  
+  
+  
 export const fetchUserDetailsByUserId = async (user_id: number) => {
 	const response = await axios.get("/api/users/" + user_id)
 	const data = response.data[0] as User
