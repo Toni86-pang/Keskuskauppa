@@ -56,8 +56,12 @@ export const fetchAllProducts = async () => {
 	return data
 }
 
-export const updateProduct = async (productId: number, updatedData: UpdatedProduct) => {
-	await axios.put(`/api/product/update/${productId}`, updatedData)
+export const updateProduct = async (productId: number, updatedData: UpdatedProduct, token: string) => {
+	await axios.put(`/api/product/update/${productId}`, updatedData,{
+		headers: {
+			"Authorization": `Bearer ${token}`
+		}
+	})
 }
 
 export const deleteProduct = (product_id: number) => {

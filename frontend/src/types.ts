@@ -77,6 +77,7 @@ export interface VerifyProps {
 export interface UpdateProductModalProps {
 	isOpen: boolean
 	onClose: () => void
+	token: string
 	productId: number
 	title: string
 	category_id: number

@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { createProduct, getAllProducts, getProductById, getProductsByCategory, getProductsBySubcategory, updateProductData, deleteProduct, getProductsByUserId, Product  } from "../daos/productsDao"
+import { createProduct, getAllProducts, getProductById, getProductsByCategory, getProductsBySubcategory, updateProductData, deleteProduct, getProductsByUserId, Product, updateProductListed } from "../daos/productsDao"
 import { authentication, validateCategoryId } from "../middlewares"
 
 const product = express.Router()
@@ -9,14 +9,14 @@ interface CustomRequest extends Request {
 }
 
 /*  			 Products endpoints 				  */
-product.post("/", authentication,  async (req: CustomRequest, res) => {
+product.post("/", authentication, async (req: CustomRequest, res) => {
 	const user_id = req.id
 	try {
-		const {title, category_id, subcategory_id, description, price, postal_code, city} = req.body
-		if(!user_id || !title || !category_id || !subcategory_id || !price){
+		const { title, category_id, subcategory_id, description, price, postal_code, city } = req.body
+		if (!user_id || !title || !category_id || !subcategory_id || !price) {
 			return res.status(400).send("Required information is missing.")
 		}
-		await createProduct({user_id, title, category_id, subcategory_id, description, price, postal_code, city})
+		await createProduct({ user_id, title, category_id, subcategory_id, description, price, postal_code, city })
 		res.status(201).json({ message: "Product created successfully" })
 	} catch (error) {
 		res.status(500).json({ message: "Error creating product" })
@@ -78,8 +78,17 @@ product.delete("/:id", async (req: Request, res: Response) => {
 
 product.put("/update/:id", authentication, async (req: CustomRequest, res: Response) => {
 	const product_Id = parseInt(req.params.id, 10)
+	const userId = req.id
 	const updatedProductData = req.body
 	try {
+		const product: Product | null = await getProductById(product_Id)
+		if(!product) {
+			return res.send(404).send()
+		}
+		// Can only update own products.
+		if(product.user_id !== userId) {
+			return res.send(403).send()
+		}
 		const updateProduct: Product | null = await updateProductData(
 			product_Id,
 			updatedProductData.title,
@@ -102,13 +111,33 @@ product.put("/update/:id", authentication, async (req: CustomRequest, res: Respo
 })
 // update products 'listed' property
 product.put("/listed/:id", authentication, async (req: CustomRequest, res: Response) => {
+	const userId = req.id
 	const productId = Number(req.params.id)
-	
+	const listed = req.body.listed
+	try {
+		const product: Product | null = await getProductById(productId)
+		if(!product) {
+			return res.send(404).send()
+		}
+		// Can only update own products.
+		if(product.user_id !== userId) {
+			return res.send(403).send()
+		}
+		const updatedProduct: Product | null = await updateProductListed(productId, listed)
+		if (updatedProduct) {
+			res.status(200).send(updatedProduct)
+		} else {
+			res.status(404).send()
+		}
+	} catch (error) {
+		console.error("Error updating product:", error)
+		res.status(500).send("Internal Server Error")
+	}
 })
 
 
 //Serve products by category
-product.get("/category/:id",validateCategoryId, async (req, res) => {
+product.get("/category/:id", validateCategoryId, async (req, res) => {
 	const categoryId = parseInt(req.params.id)
 	try {
 		const products: Product[] = await getProductsByCategory(categoryId)

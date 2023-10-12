@@ -102,7 +102,11 @@ export default function Product() {
 	useEffect(() => {
 		const fetchUsernameForDisplay = async () => {
 			try {
-				const username = await fetchUsernameByUserId(product.user_id)
+				let username
+				if(product.user_id) 
+				{
+					username = await fetchUsernameByUserId(product.user_id)
+				}
 				if (username !== undefined) {
 					setOwnerUsername(username)
 				} else {
@@ -212,6 +216,7 @@ export default function Product() {
 										<UpdateProductModal
 											isOpen={isUpdateModalOpen}
 											onClose={() => setUpdateModalOpen(false)}
+											token={token}
 											productId={product?.product_id || 0}
 											title={product?.title || ""}
 											category_id={product?.category_id || 0}
