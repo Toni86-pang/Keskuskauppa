@@ -30,7 +30,7 @@ function Profile() {
 		const year: string = joinDate.substring(0, 4)
 		const month: string = joinDate.substring(5, 7)
 		const day: string = joinDate.substring(8, 10)
-		formattedJoinDate = `${day}.${month}.${year}` // Assign a value here
+		formattedJoinDate = `${day}.${month}.${year}`
 	}
 
 	const handleVerification = () => {
