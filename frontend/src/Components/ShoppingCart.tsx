@@ -30,7 +30,7 @@ export default function ShoppingCart ({isOpen, onClose, cart, setCart}: Shopping
 		} else {
 			setCart(null)
 		}
-	}, [isOpen])
+	}, [isOpen, setCart])
 
 	const handleEmptyShoppingCart = () => {
 		sessionStorage.clear()
