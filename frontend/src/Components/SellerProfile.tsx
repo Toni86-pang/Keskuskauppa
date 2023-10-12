@@ -4,7 +4,6 @@ import Divider from "@mui/material/Divider"
 import { ProductType, User } from "../types"
 import ProductCard from "./ProductCard"
 //import Rating from "@mui/material/Rating"
-import Notification from "./Notification"
 import { fetchUserDetailsByUserId, fetchUsersProducts } from "../services"
 import { useLoaderData } from "react-router-dom"
 
@@ -16,8 +15,6 @@ export async function loader({ params }: any) {
 
 function SellerProfile() {
 	const [ownProducts, setOwnProducts] = useState<ProductType[]>([])
-	const [showSuccessDeleteNotification, setShowSuccessDeleteNotification] = useState(false)
-	const [showErrorDeleteNotification, setShowErrorDeleteNotification] = useState(false)
 	const user = useLoaderData() as User
 
 	const fetchProducts = async (id: number) => {
@@ -68,32 +65,7 @@ function SellerProfile() {
 						</div> */}
 					</div>
 				</Grid>}
-				<Grid item xs={3}>
-					<Grid container direction="column" spacing={2}>
 
-
-						{/* Delete success and error notifications */}
-						{showSuccessDeleteNotification && (
-							<Notification
-								open={showSuccessDeleteNotification}
-								message="Käyttäjä on poistettu onnistuneesti!"
-								type="success"
-								onClose={() => setShowSuccessDeleteNotification(false)}
-								duration={1500}
-							/>
-						)}
-						{showErrorDeleteNotification && (
-							<Notification
-								open={showErrorDeleteNotification}
-								message="Tapahtui virhe."
-								type="error"
-								onClose={() => setShowErrorDeleteNotification(false)}
-								duration={1500}
-							/>
-						)}
-
-					</Grid>
-				</Grid>
 			</Grid>
 			<div className="ownProducts">
 				<div style={{ marginBottom: "10px" }}>Myytävät tuotteet:</div>
