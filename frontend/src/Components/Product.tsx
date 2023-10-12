@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react"
-import { useLoaderData, useNavigate } from "react-router-dom"
+import { useLoaderData, useNavigate, useOutletContext } from "react-router-dom"
 import {
 	Paper,
 	Grid,
@@ -17,7 +17,7 @@ import UpdateProductModal from "./UpdateProducts"
 import { ProductType } from "../types"
 import { deleteProduct, fetchProduct,  fetchUser, fetchUsernameByUserId } from "../services"
 import Notification from "./Notification"
-import { UserTokenContext } from "../App"
+import { CartContextType, UserTokenContext } from "../App"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, react-refresh/only-export-components
 export async function loader({ params }: any) {
@@ -66,25 +66,25 @@ export default function Product() {
 	const [token] = useContext(UserTokenContext)
 	const [ownerUsername, setOwnerUsername] = useState<string | null>("")
 	const [selectedImage, setSelectedImage] = useState<string | null>(itemData[0].img)
+	const [showErrorNotification, setShowErrorNotification] = useState(false)
 	const navigate = useNavigate()
 	const product = useLoaderData() as ProductType
-		
+	const [ setCart ] = useOutletContext<CartContextType>()
 	
-	
-
 	useEffect(() => {
 		const fetchUserDetails = async () => {
 			const user = await fetchUser(token)
-	
+		
 			if (user === undefined) {
 				console.error("error fetching user")
 				return
-			}
+			}		   
 			user.user_id !== 0 && product.user_id === user.user_id ? setHidden(true) : setHidden(false)
 		}
 		fetchUserDetails()
-	}, [token, product.user_id])
-
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [token])
+	
 	const handleDelete = async () => {
 		try {
 			await deleteProduct(product.product_id)
@@ -116,6 +116,17 @@ export default function Product() {
 		}
 		fetchUsernameForDisplay()
 	}, [product.user_id])
+
+	const handleAddToShoppingCart = (product: ProductType) => {
+		const storageItem = sessionStorage.getItem("myCart")
+		const tempCart: ProductType[] = storageItem !== null ? JSON.parse(storageItem) : []
+		const alreadyInCart = tempCart.find(tempProduct => { return (tempProduct.product_id === product.product_id)})
+		if(!alreadyInCart){
+			tempCart.push(product),
+			sessionStorage.setItem("myCart", JSON.stringify(tempCart)),
+			setCart(tempCart)
+		} else {setShowErrorNotification(true)}
+	}
 
 	return (
 		<div>
@@ -218,7 +229,13 @@ export default function Product() {
 								</Grid>
 							)
 								:
-								<></>
+								<>
+									<Button sx={{
+										width: 150, height: 50, 
+									}} variant="outlined" onClick={() => handleAddToShoppingCart(product)}>
+											Ostoskoriin
+									</Button>
+								</>
 							}
 							{/* Delete success and error notifications */}
 							{showSuccessDeleteNotification && (
@@ -273,6 +290,15 @@ export default function Product() {
 					</Grid>
 				</Grid>
 			</Paper>
+			{showErrorNotification && (
+				<Notification
+					open={showErrorNotification}
+					message="Tuote on jo ostoskorissa."
+					type="error"
+					onClose={() => setShowErrorNotification(false)}
+					duration={1500}
+				/>
+			)}
 		</div>
 	)
 }

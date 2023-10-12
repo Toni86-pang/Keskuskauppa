@@ -1,3 +1,4 @@
+import { Dispatch } from "react"
 
 export interface User {
 	user_id: number,
@@ -35,6 +36,8 @@ export interface ProductType {
 
 export interface ProductProps {
     product: ProductType
+	onClose?: () => void
+	setCart?: Dispatch<React.SetStateAction<ProductType[] | null>>
   }
 
 export interface CategoryProps {
@@ -86,6 +89,13 @@ export interface UpdateProductModalProps {
   }
   
 
+export interface ShoppingCartProps {
+    isOpen: boolean
+    onClose: () => void
+	cart: ProductType[] | null
+	setCart: Dispatch<React.SetStateAction<ProductType[] | null>>
+  }
+
 export interface Category {
 	category_id: number
 	category_name: string
@@ -113,6 +123,11 @@ export interface UpdatedUser {
     city: string,
     postal_code: string,
     phone: string
+}
+
+export interface NavbarProps {
+	cart: ProductType[] | null
+	setCart: Dispatch<React.SetStateAction<ProductType[] | null>>
 }
 
 export interface DisplayProductsProps {
