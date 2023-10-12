@@ -74,7 +74,8 @@ export const getUserDetailsByUserId = async (user_id: number) => {
 		users.username,
 		users.city,
 		users.postal_code,
-		users.reg_day
+		users.reg_day,
+		users.user_id
 	FROM
 		users
   	WHERE 
