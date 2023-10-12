@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react"
-import { useLoaderData, useNavigate } from "react-router-dom"
+import { useLoaderData, useNavigate, Link } from "react-router-dom"
 import {
 	Paper,
 	Grid,
@@ -62,7 +62,7 @@ export default function Product() {
 	const [isUpdateModalOpen, setUpdateModalOpen] = useState(false)
 	const [showSuccessDeleteNotification, setShowSuccessDeleteNotification] = useState(false)
 	const [showErrorDeleteNotification, setShowErrorDeleteNotification] = useState(false)
-	const [hidden, setHidden] = useState<boolean>(false)
+	const [myProduct, setMyProduct] = useState<boolean>(false)
 	const [token] = useContext(UserTokenContext)
 	const [selectedImage, setSelectedImage] = useState<string | null>(
 		itemData[0].img
@@ -72,18 +72,18 @@ export default function Product() {
 
 	const fetchUserDetails = async () => {
 		const user = await fetchUser(token)
-	
+
 		if (user === undefined) {
 			console.error("error fetching user")
 			return
-		}		   
-		user.user_id !== 0 && product.user_id === user.user_id ? setHidden(true) : setHidden(false)
+		}
+		user.user_id !== 0 && product.user_id === user.user_id ? setMyProduct(true) : setMyProduct(false)
 	}
-	
+
 	useEffect(() => {
 		fetchUserDetails()
 	}, [token])
-	
+
 	const handleDelete = async () => {
 		try {
 			await deleteProduct(product.product_id)
@@ -97,6 +97,7 @@ export default function Product() {
 		}
 	}
 
+	
 	return (
 		<div>
 			<Paper
@@ -136,19 +137,25 @@ export default function Product() {
 								<Typography variant="body2" gutterBottom>
 									{product?.price} €
 								</Typography>
-								{!hidden ? (
+								{!myProduct ? (
 									<>
 										<Typography
 											variant="body2"
 											color="text.secondary"
+											style={{ textAlign: "left" }}
 										>
-									Myyjän nimi
+											Myyjän nimi
 										</Typography>
 										<Typography
 											variant="body2"
 											color="text.secondary"
 											marginTop={1}
 										>
+											<Box style={{ marginBottom: "8px" }}>
+												<Link to={`/user/${product.user_id}`} style={{ color: "#6096ba", textDecoration: "underline" }}>
+													Katso profiili
+												</Link>
+											</Box>
 											<StarPurple500SharpIcon />
 											<StarPurple500SharpIcon />
 											<StarPurple500SharpIcon />
@@ -156,7 +163,7 @@ export default function Product() {
 											<StarBorderPurple500SharpIcon />
 										</Typography>
 									</>
-								):(
+								) : (
 									<></>
 								)}
 								<Typography
@@ -172,11 +179,11 @@ export default function Product() {
 									{product?.postal_code}
 								</Typography>
 							</Grid>
-							{ hidden ? (
+							{myProduct ? (
 								<Grid item>
 									<div>
-										<Button variant="outlined" onClick={() => {setUpdateModalOpen(true)}}>
-									Päivitä tuote
+										<Button variant="outlined" onClick={() => { setUpdateModalOpen(true) }}>
+											Päivitä tuote
 										</Button>
 										<UpdateProductModal
 											isOpen={isUpdateModalOpen}

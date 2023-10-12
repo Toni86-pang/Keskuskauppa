@@ -88,9 +88,9 @@ export const updateProductData = async (
 	return result.rows[0] as Product
 }
 
-export const getProductsByUserId = async (user_ID: number) => {
+export const getProductsByUserId = async (user_id: number) => {
 	const query = "SELECT * FROM products WHERE user_id = $1"
-	const params = [user_ID]
+	const params = [user_id]
 	const result = await executeQuery(query, params)
 
 	return result.rows
