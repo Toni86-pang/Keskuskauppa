@@ -88,11 +88,10 @@ export const updateProductData = async (
 	return result.rows[0] as Product
 }
 
-export const getProductsByUserId = async (user_ID: number) => {
+export const getProductsByUserId = async (user_id: number) => {
 	const query = "SELECT * FROM products WHERE user_id = $1"
-	const params = [user_ID]
+	const params = [user_id]
 	const result = await executeQuery(query, params)
-
 	return result.rows
 }
 
@@ -182,3 +181,17 @@ export const getSubcategoryName = async (subcategoryId: number) => {
 	return result.rows[0].subcategory_name
 }
 
+// GET search products
+export const searchProducts =async (searchQuery: string): Promise<Product[]>  => {
+	try {
+		const query = ` 
+		SELECT * FROM products
+		WHERE title ILIKE $1;
+		`
+		const result = await executeQuery(query, [`%${searchQuery}%`])
+		return result.rows
+	} catch (error) {
+		console.error(error)
+		throw new Error("Error searching for products.")
+	}
+}

@@ -12,7 +12,9 @@ import express, { Request, Response } from "express"
 import users from "./routers/usersRouters"
 import product from "./routers/productRouters"
 import category from "./routers/categoryRouters"
+import sales from "./routers/salesRouters"
 import { unknownEndpoint } from "./middlewares"
+import search from "./routers/searchproductRouters"
 
 export const server = express()
 server.use(express.json())
@@ -21,9 +23,11 @@ server.use(express.json())
 server.use("/api/users", users)
 server.use("/api/product", product)
 server.use("/api/category", category)
+server.use("/api/sales", sales)
+server.use("/api/search", search)
 server.use("/", express.static("./dist/frontend"))
 server.use("/version", (req: Request, res: Response) => {
-	res.send("1.5")
+	res.send("1.8")
 })
 
 server.get("*", (_req, res) => {

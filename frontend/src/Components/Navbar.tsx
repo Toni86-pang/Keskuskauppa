@@ -1,6 +1,5 @@
 import { useState, useContext, useEffect } from "react"
 import { Link, useNavigate} from "react-router-dom"
-import SearchIcon from "@mui/icons-material/Search"
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
@@ -9,9 +8,6 @@ import {
 	Box,
 	Toolbar,
 	Typography,
-	styled,
-	InputBase,
-	alpha,
 	Menu,
 	IconButton,
 	MenuItem,
@@ -21,53 +17,18 @@ import Login from "./Login"
 import RegisterNewUser from "./RegisterNewUser"
 import { UserTokenContext } from "../App"
 import { fetchUser } from "../services"
-import { User } from "../types"
+import { NavbarProps, User } from "../types"
+import ShoppingCart from "./ShoppingCart"
+import "./Navbar.css"
 import Crumbs from "./Crumbs"
+import ProductSearch from "./Searchbar"
 
-const Search = styled("div")(({ theme }) => ({
-	position: "relative",
-	borderRadius: theme.shape.borderRadius,
-	backgroundColor: alpha(theme.palette.common.white, 0.15),
-	"&:hover": {
-		backgroundColor: alpha(theme.palette.common.white, 0.25),
-	},
-	marginRight: theme.spacing(2),
-	marginLeft: 0,
-	width: "100%",
-	[theme.breakpoints.up("sm")]: {
-		marginLeft: theme.spacing(3),
-		width: "auto",
-	},
-}))
 
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-	padding: theme.spacing(0, 2),
-	height: "100%",
-	position: "absolute",
-	pointerEvents: "none",
-	display: "flex",
-	alignItems: "center",
-	justifyContent: "center",
-}))
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-	color: "inherit",
-	"& .MuiInputBase-input": {
-		padding: theme.spacing(1, 1, 1, 0),
-		// vertical padding + font size from searchIcon
-		paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-		transition: theme.transitions.create("width"),
-		width: "100%",
-		[theme.breakpoints.up("md")]: {
-			width: "20ch",
-		},
-	},
-}))
-
-const Navbar = () => {
+const Navbar = ({cart, setCart}: NavbarProps) => {
 	const [token, setToken] = useContext(UserTokenContext)
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 	const [user, setUser] = useState<User | null>(null)
+	const [isShoppingCartOpen, setShoppingCartOpen] = useState(false)
 	const navigate = useNavigate()
 
 	const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -104,85 +65,92 @@ const Navbar = () => {
 		}
 	}, [token])
 	return (
-		<Box sx={{ flexGrow: 1 }}>
-			<AppBar position="static" sx={{ bgcolor: "#6096ba" }}>
-				<Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-					{/* Left side (store name and category menu) */}
-					<CategoryMenu />
-					<Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-						<Typography variant="h6">
+		<>
+			<Box sx={{ flexGrow: 1 }}>
+				<AppBar position="static" sx={{ bgcolor: "#6096ba" }}>
+					<Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+						{/* Left side (store name and category menu) */}
+						<CategoryMenu />
+						<Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+							<Typography variant="h6">
 							Keskuskauppa
-						</Typography>
-					</Link>
+							</Typography>
+						</Link>
 
-					{/* Middle (search bar) */}
-					<Search>
-						<SearchIconWrapper>
-							<SearchIcon />
-						</SearchIconWrapper>
-						<StyledInputBase
-							placeholder="Haku…"
-							inputProps={{ "aria-label": "search" }}
-						/>
-					</Search>
+						{/* Middle (search bar) */}
+						
+						<ProductSearch />
 
-					{/* Right side (user-related elements) */}
-					<div>
-						{token ? (
-							<>
-								<IconButton
-									onClick={handleMenuOpen}
-									color="inherit"
-									aria-controls="user-menu"
-									aria-haspopup="true"
-								>
-									<AccountCircleIcon />
-									<Typography variant="body1" sx={{ mt: 1 }}>
-										{user?.name} {/* Access the user's name */}
-									</Typography>
-									<ArrowDropDownIcon />
-									<ShoppingCartIcon />
-								</IconButton>
-								<Menu
-									id="user-menu"
-									anchorEl={anchorEl}
-									open={Boolean(anchorEl)}
-									onClose={handleMenuClose}
-								>
-									<MenuItem
-										onClick={handleMenuClose}
-										component={Link} to="/profile"
+						{/* Right side (user-related elements) */}
+						<div>
+							{token ? (
+								<>
+									<IconButton
+										onClick={handleMenuOpen}
+										color="inherit"
+										aria-controls="user-menu"
+										aria-haspopup="true"
 									>
-										Profiili
-									</MenuItem>
-									<MenuItem
-										onClick={handleMenuClose}
-										component={Link}
-										to="/product/new"
+										<AccountCircleIcon />
+										<Typography variant="body1" sx={{ mt: 1 }}>
+											{user?.name} {/* Access the user's name */}
+										</Typography>
+										<ArrowDropDownIcon />
+									</IconButton>
+									<IconButton
+										onClick={() => {setShoppingCartOpen(true)}}
+										color="inherit"
+										aria-controls="user-menu"
+										aria-haspopup="true"
 									>
+										<ShoppingCartIcon />
+										<div className="products-in-shopping-cart">
+											<p>
+												({cart?.length || 0})
+											</p>
+										</div>
+									</IconButton>
+									<Menu
+										id="user-menu"
+										anchorEl={anchorEl}
+										open={Boolean(anchorEl)}
+										onClose={handleMenuClose}
+									>
+										<MenuItem
+											onClick={handleMenuClose}
+											component={Link} to="/profile"
+										>
+										Oma sivu
+										</MenuItem>
+										<MenuItem
+											onClick={handleMenuClose}
+											component={Link}
+											to="/product/new"
+										>
 										Lisää uusi tuote
-									</MenuItem>
-									<MenuItem
-										onClick={handleMenuClose}
-										component={Link}
-										to="/products"
-									>
-										Tuotteet
-									</MenuItem>
-									<MenuItem onClick={handleLogout}>Kirjaudu ulos</MenuItem>
-								</Menu>
-							</>
-						) : (
-							<>
-								<RegisterNewUser />
-								<Login />
-							</>
-						)}
-					</div>
-				</Toolbar>
-			</AppBar>
-			<Crumbs />
-		</Box>
+										</MenuItem>
+										<MenuItem onClick={handleLogout}>Kirjaudu ulos</MenuItem>
+									</Menu>
+								</>
+							) : (
+								<>
+									<RegisterNewUser />
+									<Login />
+								</>
+							)}
+						</div>
+					</Toolbar>
+				</AppBar>
+				<Crumbs />
+			</Box>
+			<ShoppingCart
+				isOpen={isShoppingCartOpen}
+				onClose={() => setShoppingCartOpen(false)}
+				cart={cart}
+				setCart={setCart}
+			/>
+		</>
 	)
 }
+
 export default Navbar

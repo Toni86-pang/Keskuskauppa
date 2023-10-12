@@ -1,3 +1,5 @@
+import { Dispatch } from "react"
+
 export interface User {
 	user_id: number,
     username: string,
@@ -10,6 +12,7 @@ export interface User {
 	postal_code:string,
 	is_Admin?: boolean,
 	reviews?: number
+	reg_day?: string
 }
 
 export interface UserValues {
@@ -33,6 +36,8 @@ export interface ProductType {
 
 export interface ProductProps {
     product: ProductType
+	onClose?: () => void
+	setCart?: Dispatch<React.SetStateAction<ProductType[] | null>>
   }
 
 export interface CategoryProps {
@@ -70,16 +75,25 @@ export interface VerifyProps {
 }
 
 export interface UpdateProductModalProps {
+	isOpen: boolean
+	onClose: () => void
+	productId: number
+	title: string
+	category_id: number
+	subcategory_id: number
+	city: string
+	postal_code: string
+	description: string
+	price: number
+	
+  }
+  
+
+export interface ShoppingCartProps {
     isOpen: boolean
     onClose: () => void
-    productId: number
-    title: string
-    category_id: number
-    subcategory_id: number
-    city: string
-    postal_code: string
-    description: string
-    price: number
+	cart: ProductType[] | null
+	setCart: Dispatch<React.SetStateAction<ProductType[] | null>>
   }
 
 export interface Category {
@@ -111,6 +125,11 @@ export interface UpdatedUser {
     phone: string
 }
 
+export interface NavbarProps {
+	cart: ProductType[] | null
+	setCart: Dispatch<React.SetStateAction<ProductType[] | null>>
+}
+
 export interface DisplayProductsProps {
 	productList: ProductType[]
 }
@@ -139,6 +158,7 @@ export const initialStateProduct: ProductType = {
 	description: "",
 	price: 0
 	// product_image?: any
+	,
 }
 
 export type BreadcrumbResolver = (params: string) => Promise<[string, string][]>

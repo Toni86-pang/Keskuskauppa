@@ -1,4 +1,3 @@
-
 import img1 from "./assets/Tulesa.png"
 import img3 from "./assets/img3.jpeg"
 import img4 from "./assets/img4.jpg"

@@ -32,6 +32,7 @@ product.get("/", async (_req, res) => {
 	}
 })
 
+
 product.get("/:id", async (req, res) => {
 	try {
 		const product_id: number = parseInt(req.params.id, 10)
@@ -121,5 +122,7 @@ product.get("/subcategory/:id", validateCategoryId, async (req, res) => {
 	}
 
 })
+
+
 
 export default product
