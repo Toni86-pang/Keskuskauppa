@@ -101,11 +101,11 @@ export const fetchIndividualSubcategory = async (categoryId: number) => {
 // 	return response
 // }
 
-export const newProduct = async (product: ProductType) => {
+export const newProduct = async (product: ProductType, token: string) => {
 	const response = await axios.post("/api/product/", product, {
 		headers: {
-			"Content-Type": "application/json",
-		},
+			"Authorization": `Bearer ${token}`
+		}
 	})
 	return response
 }

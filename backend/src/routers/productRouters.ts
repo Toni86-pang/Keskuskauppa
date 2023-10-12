@@ -1,19 +1,19 @@
 import express, { Request, Response } from "express"
 import { createProduct, getAllProducts, getProductById, getProductsByCategory, getProductsBySubcategory, updateProductData, deleteProduct, getProductsByUserId, Product  } from "../daos/productsDao"
-import { validateCategoryId } from "../middlewares"
+import { authentication, validateCategoryId } from "../middlewares"
 
 const product = express.Router()
 
 interface CustomRequest extends Request {
-	logged_in?: boolean
-	user_id?: number
+	id?: number
 }
 
 /*  			 Products endpoints 				  */
-product.post("/", async (req, res) => {
+product.post("/", authentication,  async (req: CustomRequest, res) => {
+	const user_id = req.id
 	try {
-		const {user_id, title, category_id, subcategory_id, description, price, postal_code, city} = req.body
-		if(!title || !category_id || !subcategory_id || !price){
+		const {title, category_id, subcategory_id, description, price, postal_code, city} = req.body
+		if(!user_id || !title || !category_id || !subcategory_id || !price){
 			return res.status(400).send("Required information is missing.")
 		}
 		await createProduct({user_id, title, category_id, subcategory_id, description, price, postal_code, city})
@@ -76,8 +76,7 @@ product.delete("/:id", async (req: Request, res: Response) => {
 	}
 })
 
-
-product.put("/update/:id", async (req: CustomRequest, res: Response) => {
+product.put("/update/:id", authentication, async (req: CustomRequest, res: Response) => {
 	const product_Id = parseInt(req.params.id, 10)
 	const updatedProductData = req.body
 	try {
@@ -101,6 +100,13 @@ product.put("/update/:id", async (req: CustomRequest, res: Response) => {
 		res.status(500).send("Internal Server Error")
 	}
 })
+// update products 'listed' property
+product.put("/listed/:id", authentication, async (req: CustomRequest, res: Response) => {
+	const productId = Number(req.params.id)
+	
+})
+
+
 //Serve products by category
 product.get("/category/:id",validateCategoryId, async (req, res) => {
 	const categoryId = parseInt(req.params.id)
@@ -122,7 +128,5 @@ product.get("/subcategory/:id", validateCategoryId, async (req, res) => {
 	}
 
 })
-
-
 
 export default product
