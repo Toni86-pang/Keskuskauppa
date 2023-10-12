@@ -12,6 +12,7 @@ export interface User {
 	postal_code:string,
 	is_Admin?: boolean,
 	reviews?: number
+	reg_day?: string
 }
 
 export interface UserValues {
@@ -74,17 +75,19 @@ export interface VerifyProps {
 }
 
 export interface UpdateProductModalProps {
-    isOpen: boolean
-    onClose: () => void
-    productId: number
-    title: string
-    category_id: number
-    subcategory_id: number
-    city: string
-    postal_code: string
-    description: string
-    price: number
+	isOpen: boolean
+	onClose: () => void
+	productId: number
+	title: string
+	category_id: number
+	subcategory_id: number
+	city: string
+	postal_code: string
+	description: string
+	price: number
+	
   }
+  
 
 export interface ShoppingCartProps {
     isOpen: boolean
@@ -127,6 +130,10 @@ export interface NavbarProps {
 	setCart: Dispatch<React.SetStateAction<ProductType[] | null>>
 }
 
+export interface DisplayProductsProps {
+	productList: ProductType[]
+}
+
 export const initialState: User = {
 	user_id: 0,
 	username: "",
@@ -151,4 +158,11 @@ export const initialStateProduct: ProductType = {
 	description: "",
 	price: 0
 	// product_image?: any
+	,
 }
+
+export type BreadcrumbResolver = (params: string) => Promise<[string, string][]>
+
+export type categoryMapType = {
+	[key: string]: [string, number] 
+}	

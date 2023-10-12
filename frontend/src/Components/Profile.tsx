@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react"
 // import { useLoaderData } from "react-router-dom"
-import { Grid, Breadcrumbs, Link, Typography, Button, } from "@mui/material"
+import { Grid, Button, } from "@mui/material"
 import Divider from "@mui/material/Divider"
 import VerifyDialog from "./VerifyDialog"
 import { useNavigate  } from "react-router-dom"
@@ -13,7 +13,7 @@ import Rating from "@mui/material/Rating"
 import Notification from "./Notification"
 
 function Profile() {
-	
+
 	const [user, setUser] = useState<User>(initialState)
 	const [token, setToken] = useContext(UserTokenContext)	
 	const [updateVisible, setUpdateVisible] = useState(false)
@@ -24,10 +24,20 @@ function Profile() {
 	const [showSuccessDeleteNotification, setShowSuccessDeleteNotification] = useState(false)
 	const [showErrorDeleteNotification, setShowErrorDeleteNotification] = useState(false)
 
+	const joinDate: string | undefined = user?.reg_day
+	let formattedJoinDate: string | undefined = undefined
+	if (joinDate) {
+		const year: string = joinDate.substring(0, 4)
+		const month: string = joinDate.substring(5, 7)
+		const day: string = joinDate.substring(8, 10)
+		formattedJoinDate = `${day}.${month}.${year}` // Assign a value here
+	}
+
 	const handleVerification = () => {
 		setVerifyOpen(true)
 	}
 
+	
 
 	useEffect(() => {
 		const fetchInfo = async () => {
@@ -88,24 +98,6 @@ function Profile() {
 	return (
 
 		<div className="profile">
-			{/* <Crumbs items={breadcrumbs}/> */}
-			<div>
-				<Breadcrumbs aria-label="breadcrumb">
-					<Link
-						underline="hover"
-						sx={{ display: "flex", alignItems: "center" }}
-						color="inherit"
-						href="/">
-						Etusivu
-					</Link>
-					<Typography
-						sx={{ display: "flex", alignItems: "center" }}
-						color="text.primary"
-					>
-						Profiili
-					</Typography>
-				</Breadcrumbs>
-			</div>
 			<Grid
 				container
 				spacing={1}
@@ -124,6 +116,7 @@ function Profile() {
 				</Grid>
 				{user && <Grid item xs={5}>
 					<div className="user">
+						<div className="liittymispäivä"> Liittymispäivä {formattedJoinDate} </div>
 						<div className="userName">Nimi: {user?.name}</div>
 						<div className="userUsername">Käyttäjänimi: {user?.username}</div>
 						<div className="userAddress">Osoite: {user?.address}</div>

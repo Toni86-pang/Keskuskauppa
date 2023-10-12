@@ -2,17 +2,15 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import App from "./App.tsx"
-import Register from "./Components/RegisterNewUser.tsx"
-import Login from "./Components/Login.tsx"
 // import "./index.css"
 import ErrorPage from "./Pages/ErrorPage.tsx"
-// import { Login } from '@mui/icons-material'
 import Products, { loader as productsLoader } from "./Components/Products.tsx"
 import Product, { loader as productLoader } from "./Components/Product.tsx"
 import NewProduct from "./Components/NewProduct.tsx"
 import Profile from "./Components/Profile.tsx"
 import LandingPage from "./Components/LandingPage.tsx"
-import Carousel from "./Components/Carousel.tsx"
+import SearchResultsPage from "./Components/SearchResultpage.tsx"
+
 
 const router = createBrowserRouter([
 	{
@@ -25,16 +23,8 @@ const router = createBrowserRouter([
 				element: <LandingPage />,
 			},
 			{
-				path: "/",
-				element: <Carousel />,
-			},
-			{
-				path: "/register",
-				element: <Register />,
-			},
-			{
-				path: "/login",
-				element: <Login />,
+				path: "/search-results",
+				element: <SearchResultsPage />, 
 			},
 			{
 				path: "/products",
@@ -51,13 +41,8 @@ const router = createBrowserRouter([
 				loader: productsLoader
 			},
 			{
-				path: "/product/new",
-				element: <NewProduct />,
-			},
-			{
 				path: "/profile",
 				element: <Profile />,
-				// loader: userLoader,
 			},
 			{
 				path: "/product/new",

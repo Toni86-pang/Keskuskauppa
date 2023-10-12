@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { getAllUsers, addUser, deleteUser, getUserByUsername, findUserByUSername, findUserByEmail, getUserByUserId, updateProfile } from "../daos/usersDao"
+import { getAllUsers, addUser, deleteUser, getUserByUsername, findUserByUSername, findUserByEmail, getUserByUserId, updateProfile, getUserDetailsByUserId } from "../daos/usersDao"
 import { authentication, checkReqBody } from "../middlewares"
 import argon2 from "argon2"
 import jwt from "jsonwebtoken"
@@ -37,7 +37,7 @@ users.get("/user", authentication, async (req: CustomRequest, res: Response) => 
 	return res.status(200).send(result)
 })
 
-// //Get a specific user's info by their id
+//Get a specific user's info by their id
 // //Tämän rakensi Maaret vahingossa valmiiksi myyjän profiilisivua varten kun yritti tehdä muuta
 // users.get("/user/:id", async (req: CustomRequest, res: Response) => {
 // 	const user_id = Number(req.params.id)
@@ -170,5 +170,19 @@ users.put("/logout", async (req: Request, res: Response) => {
   })
 })
 */
+
+//GET user details by user_id
+users.get("/:id", async (req:Request, res: Response) => {
+	try {
+		const userId = Number(req.params.id)
+		if (isNaN(userId)) {
+			return res.status(400).json({ message: "Invalid user id provided" })
+		}
+		const result = await getUserDetailsByUserId(userId)
+		return res.status(200).send(result)
+	} catch (error) {
+		res.status(500).json({ message: "User information couldn't be displayed" })
+	}
+})
 
 export default users

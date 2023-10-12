@@ -5,6 +5,8 @@ import { Dispatch, createContext, useEffect, useState } from "react"
 import { ProductType } from "./types"
 
 export type CartContextType = [ Dispatch<React.SetStateAction<ProductType[] | null>> ]
+import { Footer } from "./Components/Footer"
+import Box from "@mui/material/Box"
 
 function App() {
 	const [token, setToken] = useState("")
@@ -12,16 +14,29 @@ function App() {
 	
 	useEffect(() => {
 		const tokenFromStorage = localStorage.getItem("token")
-		if(tokenFromStorage){
+		if (tokenFromStorage) {
 			setToken(tokenFromStorage)
 		}
-	},[])
+	}, [])
 
 	return (
-		<UserTokenContext.Provider value={[ token, setToken ]}>
-			<Container sx={{ bgcolor: "#e7ecef", minHeight: "100%" }}>
+		<UserTokenContext.Provider value={[token, setToken]}>
+			<Container
+				sx={{
+					bgcolor: "#e7ecef",
+					minHeight: "100vh",
+					display: "flex",
+					flexDirection: "column",
+				}}>
 				<Navbar cart={cart} setCart={setCart}/>
-				<Outlet context={[ setCart ] satisfies CartContextType} />
+				<Box
+					sx={{
+						flex: 1,
+						paddingTop: "20px",
+					}}>
+					<Outlet context={[ setCart ] satisfies CartContextType} />
+				</Box>
+				<Footer />
 			</Container>
 		</UserTokenContext.Provider>
 	)
@@ -29,7 +44,7 @@ function App() {
 
 export const UserTokenContext = createContext<[string, Dispatch<string>]>([
 	"",
-	() => {}
+	() => { }
 ])
 
 export default App

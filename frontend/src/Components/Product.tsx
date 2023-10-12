@@ -12,12 +12,10 @@ import {
 } from "@mui/material"
 import StarBorderPurple500SharpIcon from "@mui/icons-material/StarBorderPurple500Sharp"
 import StarPurple500SharpIcon from "@mui/icons-material/StarPurple500Sharp"
-import Breadcrumbs from "@mui/material/Breadcrumbs"
-import Link from "@mui/material/Link"
 import DeleteButton from "./DeleteButton"
 import UpdateProductModal from "./UpdateProducts"
 import { ProductType } from "../types"
-import { deleteProduct, fetchProduct, fetchUser } from "../services"
+import { deleteProduct, fetchProduct,  fetchUser, fetchUsernameByUserId } from "../services"
 import Notification from "./Notification"
 import { CartContextType, UserTokenContext } from "../App"
 
@@ -66,9 +64,8 @@ export default function Product() {
 	const [showErrorDeleteNotification, setShowErrorDeleteNotification] = useState(false)
 	const [hidden, setHidden] = useState<boolean>(false)
 	const [token] = useContext(UserTokenContext)
-	const [selectedImage, setSelectedImage] = useState<string | null>(
-		itemData[0].img
-	)
+	const [ownerUsername, setOwnerUsername] = useState<string | null>("")
+	const [selectedImage, setSelectedImage] = useState<string | null>(itemData[0].img)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
 	const navigate = useNavigate()
 	const product = useLoaderData() as ProductType
@@ -101,6 +98,25 @@ export default function Product() {
 		}
 	}
 
+	
+	useEffect(() => {
+		const fetchUsernameForDisplay = async () => {
+			try {
+				const username = await fetchUsernameByUserId(product.user_id)
+				if (username !== undefined) {
+					setOwnerUsername(username)
+				} else {
+					console.error("Error fetching owner user data")
+					setOwnerUsername("N/A")
+				}
+			} catch (error) {
+				console.error("Error fetching owner user data:", error)
+				setOwnerUsername("N/A")
+			}
+		}
+		fetchUsernameForDisplay()
+	}, [product.user_id])
+
 	const handleAddToShoppingCart = (product: ProductType) => {
 		const storageItem = sessionStorage.getItem("myCart")
 		const tempCart: ProductType[] = storageItem !== null ? JSON.parse(storageItem) : []
@@ -114,32 +130,6 @@ export default function Product() {
 
 	return (
 		<div>
-			<div>
-				<Breadcrumbs aria-label="breadcrumb">
-					<Link
-						underline="hover"
-						sx={{ display: "flex", alignItems: "center" }}
-						color="inherit"
-						href="/"
-					>
-						Etusivu
-					</Link>
-					<Link
-						underline="hover"
-						sx={{ display: "flex", alignItems: "center" }}
-						color="inherit"
-						href="/product"
-					>
-						Kaikki tuotteet
-					</Link>
-					<Typography
-						sx={{ display: "flex", alignItems: "center" }}
-						color="text.primary"
-					>
-						{product?.title}
-					</Typography>
-				</Breadcrumbs>
-			</div>
 			<Paper
 				sx={{
 					p: 2,
@@ -175,16 +165,14 @@ export default function Product() {
 						<Grid item xs container direction="column" spacing={4}>
 							<Grid item xs sx={{ margin: 4 }}>
 								<Typography variant="body2" gutterBottom>
-									{product?.price} €
+									Hinta:	{product?.price} €
 								</Typography>
 								{!hidden ? (
 									<>
-										<Typography
-											variant="body2"
-											color="text.secondary"
-										>
-									Myyjän nimi
+										<Typography variant="body2" gutterBottom>
+											Myyjän nimi: {ownerUsername}
 										</Typography>
+
 										<Typography
 											variant="body2"
 											color="text.secondary"
@@ -197,27 +185,29 @@ export default function Product() {
 											<StarBorderPurple500SharpIcon />
 										</Typography>
 									</>
-								):(
+								) : (
 									<></>
 								)}
 								<Typography
 									variant="body2"
 									color="text.secondary"
 								>
-									{product?.city}
+								Kaupunki:	{product?.city}
 								</Typography>
 								<Typography
 									variant="body2"
 									color="text.secondary"
 								>
-									{product?.postal_code}
+								Postinumero:	{product?.postal_code}
 								</Typography>
 							</Grid>
-							{ hidden ? (
+							{hidden ? (
 								<Grid item>
 									<div>
-										<Button variant="outlined" onClick={() => {setUpdateModalOpen(true)}}>
-									Päivitä tuote
+										<Button variant="outlined" onClick={() => { 
+											setUpdateModalOpen(true) 
+										}}>
+										Päivitä tuote
 										</Button>
 										<UpdateProductModal
 											isOpen={isUpdateModalOpen}
@@ -227,7 +217,7 @@ export default function Product() {
 											category_id={product?.category_id || 0}
 											subcategory_id={product?.subcategory_id || 0}
 											city={product?.city.split(",")[0] || ""}
-											postal_code={product?.postal_code.split(",")[1] || ""}
+											postal_code={product?.postal_code.split(",")[0] || ""}
 											description={product?.description || ""}
 											price={product?.price || 0}
 										/>

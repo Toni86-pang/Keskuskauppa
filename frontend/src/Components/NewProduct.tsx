@@ -24,6 +24,8 @@ function NewProduct() {
 
 	const navigate = useNavigate()
 
+	
+
 	useEffect(() => {
 		const fetchInfo = async () => {
 			if(!token){
@@ -155,7 +157,7 @@ function NewProduct() {
 				<FormControl>
 					<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="price">Hinta*</InputLabel>
 					<TextField
-						type="text"
+						type="number"
 						name="price"
 						value={newPrice}
 						onChange={handlePriceChange}
