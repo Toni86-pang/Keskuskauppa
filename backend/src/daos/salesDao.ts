@@ -58,6 +58,64 @@ export const createSale = async (sale: Sale): Promise<Sale> => {
 export const updateSaleStatus = async (salesId: number, salesStatus: number) => {
 	const params = [salesId, salesStatus]
 	const query = "UPDATE sales SET sales_status = $2 WHERE sales_id = $1 RETURNING *"
-	const result = executeQuery(query, params)
-	return (await result).rows[0]
+	const result = await executeQuery(query, params)
+	return result.rows[0]
+}
+
+interface ProductSale {
+	sales_id: number
+	sales_status: string
+	title: string
+	price: number
+	buyer: string
+}
+
+export const fetchOwnSold = async (userId: number): Promise<ProductSale[]>  => {
+	const params = [userId]
+	const query = `
+	SELECT
+		s.sales_id as sales_id,
+		st.sales_status,
+		p.title AS title,
+		p.price AS price,
+		u.username AS buyer
+	FROM 
+		sales AS s
+	JOIN 
+		users AS u ON s.buyer_id = u.user_id
+	JOIN
+    	products AS p ON s.product_id = p.product_id
+	JOIN
+		sales_status AS st on s.sales_status = st.status_id
+	WHERE
+    	s.seller_id = $1`
+	
+	const result = await executeQuery(query, params)
+	console.log(result.rows[0])
+	return result.rows
+}
+
+export const fetchOwnBought = async (userId: number): Promise<ProductSale[]>  => {
+	const params = [userId]
+	const query = `
+	SELECT
+		s.sales_id as sales_id,
+		st.sales_status,
+		p.title AS title,
+		p.price AS price,
+		u.username AS seller
+	FROM 
+		sales AS s
+	JOIN 
+		users AS u ON s.seller_id = u.user_id
+	JOIN
+    	products AS p ON s.product_id = p.product_id
+	JOIN
+		sales_status AS st on s.sales_status = st.status_id
+	WHERE
+    	s.buyer_id = $1`
+	
+	const result = await executeQuery(query, params)
+	console.log(result.rows[0])
+	return result.rows
 }
