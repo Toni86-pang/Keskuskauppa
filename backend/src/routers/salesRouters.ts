@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { updateSaleStatus, createSale, getSaleById } from "../daos/salesDao"
+import { updateSaleStatus, createSale, getSaleById, fetchOwnSold, fetchOwnBought } from "../daos/salesDao"
 import { authentication } from "../middlewares"
 
 const sales = express.Router()
@@ -26,7 +26,6 @@ sales.post("/", authentication, async (req: CustomRequest, res: Response) => {
 	const buyer_id = req.id
 	try {
 		const { product_id, seller_id, buyer_name, buyer_address, buyer_city, buyer_postcode, buyer_phone, buyer_email } = req.body
-		console.log(product_id, seller_id, buyer_id, buyer_name, buyer_address, buyer_city, buyer_postcode, buyer_phone, buyer_email)
 		if (!product_id || !seller_id || !buyer_id || !buyer_name || !buyer_address || !buyer_city || !buyer_postcode || !buyer_phone || !buyer_email) {
 			return res.status(400).send("Required information is missing.")
 		}
@@ -36,6 +35,39 @@ sales.post("/", authentication, async (req: CustomRequest, res: Response) => {
 		res.status(500).json({ message: "Error creating product" })
 	}
 })
+
+sales.get("/sold", authentication, async (req: CustomRequest, res: Response) => {
+	const userId = req.id
+	try {
+		if (userId) {
+			const sales: ProductSale[] = await fetchOwnSold(userId)
+			return res.status(200).send(sales)
+		}
+		
+		return res.status(401).send()
+
+	} catch (error) {
+		console.error("Error fetching user's sales: ", error)
+		res.status(500).send("Internal Server Error")
+	}
+})
+
+sales.get("/bought", authentication, async (req: CustomRequest, res: Response) => {
+	const userId = req.id
+	try {
+		if (userId) {
+			const sales: ProductSale[] = await fetchOwnBought(userId)
+			return res.status(200).send(sales)
+		}
+		
+		return res.status(401).send()
+
+	} catch (error) {
+		console.error("Error fetching user's sales: ", error)
+		res.status(500).send("Internal Server Error")
+	}
+})
+
 
 sales.get("/:id", authentication, async (req: CustomRequest, res: Response) => {
 	const userId = req.id
@@ -97,5 +129,15 @@ sales.put("/update/:id", authentication, async (req: CustomRequest, res: Respons
 	}
 
 })
+
+interface ProductSale {
+	sales_id: number
+	sales_status: string
+	title: string
+	price: number
+	buyer: string
+}
+
+
 
 export default sales
