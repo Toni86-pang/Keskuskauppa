@@ -9,12 +9,14 @@ import { ProductType, ShoppingCartProps } from "../types"
 import { useEffect, useState } from "react"
 import SalesProductCard from "./SalesProductCard"
 import VerifyDialog from "./VerifyDialog"
+import { useNavigate } from "react-router-dom"
 
 export default function ShoppingCart ({isOpen, onClose, cart, setCart}: ShoppingCartProps){
 	const [scroll] = useState<DialogProps["scroll"]>("paper")
 	const [verifyOpen, setVerifyOpen] = useState(false)
+	const navigate = useNavigate()
 	let sum = 0
-	cart?.forEach((product) => {sum = sum +product.price})
+	cart?.forEach((product) => {sum = sum + product.price})
   
 	const descriptionElementRef = React.useRef<HTMLElement>(null)
 	useEffect(() => {
@@ -48,6 +50,19 @@ export default function ShoppingCart ({isOpen, onClose, cart, setCart}: Shopping
 		setVerifyOpen(true)
 	}
 
+	function genUniqueId(): string {
+		const dateStr = Date
+			.now()
+			.toString(36) // convert num to base 36 and stringify
+	
+		const randomStr = Math
+			.random()
+			.toString(36)
+			.substring(2, 8) // start at index 2 to skip decimal point
+	
+		return `${dateStr}-${randomStr}`
+	}
+
 	return (
 		<div>
 			<Dialog
@@ -64,12 +79,12 @@ export default function ShoppingCart ({isOpen, onClose, cart, setCart}: Shopping
 						ref={descriptionElementRef}
 						tabIndex={-1}
 					>
-						{cart !== null
-							? cart.map((product: ProductType) =>
+						{cart !== null ?
+							cart.map((product: ProductType) =>
 								<>
 									<SalesProductCard 
 										product={product} 
-										key={product.product_id + product.title} 
+										key={genUniqueId()} 
 										onClose={onClose}
 										setCart={setCart}	
 									/>
@@ -79,11 +94,15 @@ export default function ShoppingCart ({isOpen, onClose, cart, setCart}: Shopping
 						<p>Summa: {sum} €</p>
 					</DialogContentText>
 				</DialogContent>
-				<DialogActions>
-					<Button onClick={onClose}>Kassalle</Button>
-					<Button onClick={() => (handleVerification())}>Tyhjennä ostoskori</Button>
+				{cart !== null ? (
+					<DialogActions>
+						<Button onClick={() => (handleVerification())}>Tyhjennä ostoskori</Button>
+						<Button onClick={() => {navigate("/checkout"), onClose()}}>Kassalle</Button>
+						<Button onClick={onClose}>Sulje</Button>
+					</DialogActions>
+				) : (<DialogActions>
 					<Button onClick={onClose}>Sulje</Button>
-				</DialogActions>
+				</DialogActions>)}
 				<VerifyDialog {...verifyDialogProps} />
 			</Dialog>
 		</div>

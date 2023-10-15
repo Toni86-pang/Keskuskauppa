@@ -32,6 +32,7 @@ export interface ProductType {
     description: string
 	price: number
 	// product_image?: any
+	listed: boolean
 }
 
 export interface ProductProps {
@@ -134,6 +135,37 @@ export interface DisplayProductsProps {
 	productList: ProductType[]
 }
 
+export interface SummaryProps {
+	isOpen: boolean
+	onClose: () => void
+	buyerInfo: BuyerInfo
+	sum: number
+	cart: ProductType[] | null
+  }
+
+export interface BuyerInfo { 
+		buyer_id: number
+		buyer_name: string
+		buyer_address: string
+		buyer_city: string
+		buyer_postcode: string
+		buyer_phone: string
+		buyer_email: string
+  }
+
+export interface Sale {
+	product_id: number
+	buyer_id: number
+	buyer_name: string
+	buyer_address: string
+	buyer_city: string
+	buyer_postcode: string
+	buyer_phone: string
+	buyer_email: string
+	seller_id: number
+	sales_status: number
+}
+
 export const initialState: User = {
 	user_id: 0,
 	username: "",
@@ -148,6 +180,7 @@ export const initialState: User = {
 	reviews: 0
 }
 
+
 export const initialStateProduct: ProductType = {
 	user_id: 0,
 	title: "",
@@ -156,9 +189,10 @@ export const initialStateProduct: ProductType = {
 	city: "",
 	postal_code: "",
 	description: "",
-	price: 0
+	price: 0,
+	listed: true
 	// product_image?: any
-	,
+	
 }
 
 export type BreadcrumbResolver = (params: string) => Promise<[string, string][]>

@@ -23,23 +23,6 @@ function RegisterNewUser() {
 
 	const { name, email, username, phone, address, city, postal_code } = newUser
 
-	// const register = async () => {
-	// 	await registerUser(newUser).then((response) => {
-	// 		if (response.status === 200) {
-	// 			setShowSuccessNotification(true)
-	// 			setTimeout(() => {
-	// 				navigate("/")
-	// 			}, 1500)
-	// 			navigate("/")
-	// 		} else if (response.status === 401) {
-	// 			setNewUser(initialState)
-	// 			setShowErrorNotification(true)
-	// 		} else {
-	// 			setNewUser(initialState)
-	// 			setShowErrorNotificationTwo(true)
-	// 		}
-	// 	})
-
 	const register = async () => {
 		try {
 			const response = await axios.post("/api/users/register", newUser, {

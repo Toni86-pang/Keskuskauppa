@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { createProduct, getAllProducts, getProductById, getProductsByCategory, getProductsBySubcategory, updateProductData, deleteProduct, getProductsByUserId, Product  } from "../daos/productsDao"
+import { createProduct, getAllProducts, getProductById, getProductsByCategory, getProductsBySubcategory, updateProductData, deleteProduct, getProductsByUserId, Product } from "../daos/productsDao"
 import { validateCategoryId } from "../middlewares"
 
 const product = express.Router()
@@ -12,11 +12,11 @@ interface CustomRequest extends Request {
 /*  			 Products endpoints 				  */
 product.post("/", async (req, res) => {
 	try {
-		const {user_id, title, category_id, subcategory_id, description, price, postal_code, city} = req.body
+		const {user_id, title, category_id, subcategory_id, description, price, postal_code, city, listed} = req.body
 		if(!title || !category_id || !subcategory_id || !price){
 			return res.status(400).send("Required information is missing.")
 		}
-		await createProduct({user_id, title, category_id, subcategory_id, description, price, postal_code, city})
+		await createProduct({user_id, title, category_id, subcategory_id, description, price, postal_code, city, listed})
 		res.status(201).json({ message: "Product created successfully" })
 	} catch (error) {
 		res.status(500).json({ message: "Error creating product" })
@@ -101,6 +101,26 @@ product.put("/update/:id", async (req: CustomRequest, res: Response) => {
 		res.status(500).send("Internal Server Error")
 	}
 })
+
+// Maaret yritti tässä rakentaa tuotteen statuksen muokkausta muttei onnistunut
+// product.put("/checkout/:id", async (req: CustomRequest, res: Response) => {
+// 	const product_Id = parseInt(req.params.id, 10)
+// 	try {
+// 		const updateProduct: Product | null = await updateProductStatus(
+// 			product_Id,
+// 		)
+// 		if (updateProduct) {
+// 			res.status(200).json({ message: "product status update is complete", updateProduct })
+// 		} else {
+// 			res.status(404).json({ message: "product not found" })
+// 		}
+// 	} catch (error) {
+// 		console.error("Error updating product:", error)
+// 		res.status(500).send("Internal Server Error")
+// 	}
+// })
+
+
 //Serve products by category
 product.get("/category/:id",validateCategoryId, async (req, res) => {
 	const categoryId = parseInt(req.params.id)

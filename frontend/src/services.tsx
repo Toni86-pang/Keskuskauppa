@@ -1,5 +1,5 @@
 import axios from "axios"
-import { Category, ProductType, UpdatedProduct, UpdatedUser, User, } from "./types"
+import { Category, ProductType, Sale, UpdatedProduct, UpdatedUser, User, } from "./types"
 
 export const deleteUser = (token: string) => {
 	return axios.delete("/api/users/delete", {
@@ -81,25 +81,6 @@ export const fetchIndividualSubcategory = async (categoryId: number) => {
 	const data = response.data as Category[]
 	return data
 }
-  
-  
-
-// export const loginUser = async (username: string, password: string) => {
-// 	const response = await axios.post("/api/users/login", {
-// 		username,
-// 		password
-// 	})
-// 	return response
-// }
-
-// export const registerUser = async (newUser: User) => {
-// 	const response = await axios.post("/api/users/register", newUser, {
-// 		headers: {
-// 			"Content-Type": "application/json",
-// 		},
-// 	})
-// 	return response
-// }
 
 export const newProduct = async (product: ProductType) => {
 	const response = await axios.post("/api/product/", product, {
@@ -110,9 +91,15 @@ export const newProduct = async (product: ProductType) => {
 	return response
 }
 
-// export const fetchAllProducts = () => {
-// 	return axios.get("/api/product").then(res => res.data)
-// }
+export const newSale = async (sale: Sale, token: string) => {
+	const response = await axios.post("/api/sales/", sale, {
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization": `Bearer ${token}`
+		},
+	})
+	return response
+}
 
 export const fetchCategoryName = (id: number) => {
 	return axios.get(`/api/category/categoryname/${id}`).then(res => res.data)
