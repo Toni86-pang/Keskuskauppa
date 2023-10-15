@@ -102,9 +102,19 @@ export const updateProductData = async (
 // 	return result.rows[0] as Product
 // }
 
-export const getProductsByUserId = async (user_ID: number) => {
+export const updateProductListed = async (productId: number, isListed: boolean) => {
+	const params = [productId, isListed]
+	const query = "UPDATE Products SET listed = $2 WHERE product_id = $1 RETURNING *"
+	const result = await executeQuery(query, params)
+	if (result.rows.length === 0) {
+		return null
+	}
+	return result.rows[0] as Product
+}
+
+export const getProductsByUserId = async (user_id: number) => {
 	const query = "SELECT * FROM products WHERE user_id = $1"
-	const params = [user_ID]
+	const params = [user_id]
 	const result = await executeQuery(query, params)
 	return result.rows
 }

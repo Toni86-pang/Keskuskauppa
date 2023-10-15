@@ -27,6 +27,7 @@ const breadcrumbMap: Record<string, [string, string][] | BreadcrumbResolver> = {
 	"/product/new": [["Uusi tuote", "/products/new"]],
 	"/profile": [["Profiili", "/profile"]],
 	"/checkout": [["Vastaanottajan tiedot", "/checkout"]],
+	"/user/:id": [["Myyjän profiili", ""]],
 	"/search-results":[["Hakutulokset",""]],
 	"/product/:id": async (id) => {
 		const product: ProductType = await fetchProduct(Number(id))

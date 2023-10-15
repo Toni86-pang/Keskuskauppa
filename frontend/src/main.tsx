@@ -6,7 +6,8 @@ import App from "./App.tsx"
 import ErrorPage from "./Pages/ErrorPage.tsx"
 import Products, { loader as productsLoader } from "./Components/Products.tsx"
 import Product, { loader as productLoader } from "./Components/Product.tsx"
-import { loader as anotherUserLoader } from "./Components/CheckOut.tsx"
+import { loader as userLoader } from "./Components/CheckOut.tsx"
+import SellerProfile, { loader as sellerLoader } from "./Components/SellerProfile.tsx"
 import NewProduct from "./Components/NewProduct.tsx"
 import Profile from "./Components/Profile.tsx"
 import LandingPage from "./Components/LandingPage.tsx"
@@ -57,7 +58,12 @@ const router = createBrowserRouter([
 			{
 				path: "/checkout",
 				element: <CheckOut />,
-				loader: anotherUserLoader,
+				loader: userLoader,
+			},
+			{
+				path: "/user/:id",
+				element: <SellerProfile />,
+				loader: sellerLoader,
 			},
 		],
 	},

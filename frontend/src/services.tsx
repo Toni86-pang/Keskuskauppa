@@ -1,5 +1,5 @@
 import axios from "axios"
-import { Category, ProductType, Sale, UpdatedProduct, UpdatedUser, User, } from "./types"
+import { Category, ProductType, Sale, UpdatedProduct, UpdatedUser, User } from "./types"
 
 export const deleteUser = (token: string) => {
 	return axios.delete("/api/users/delete", {
@@ -31,6 +31,11 @@ export const fetchUsernameByUserId = async (id: number) => {
   
   
   
+export const fetchUserDetailsByUserId = async (user_id: number) => {
+	const response = await axios.get("/api/users/" + user_id)
+	const data = response.data[0] as User
+	return data
+}
 
 export const updateUser = async (updatedData: UpdatedUser, token: string) => {
 	await axios.put("/api/users/update", updatedData, {
@@ -42,6 +47,12 @@ export const updateUser = async (updatedData: UpdatedUser, token: string) => {
 
 export const fetchOwnProducts = (id: number) => {
 	return axios.get("/api/product/user/" + id).then((response) => response.data)
+}
+
+export const fetchUsersProducts = async (id: number) => {
+	const response = await axios.get("/api/product/user/" + id)
+	const data = response.data as ProductType[]
+	return data
 }
 
 export const fetchProduct = async (id: number) => {
@@ -56,8 +67,12 @@ export const fetchAllProducts = async () => {
 	return data
 }
 
-export const updateProduct = async (productId: number, updatedData: UpdatedProduct) => {
-	await axios.put(`/api/product/update/${productId}`, updatedData)
+export const updateProduct = async (productId: number, updatedData: UpdatedProduct, token: string) => {
+	await axios.put(`/api/product/update/${productId}`, updatedData,{
+		headers: {
+			"Authorization": `Bearer ${token}`
+		}
+	})
 }
 
 export const deleteProduct = (product_id: number) => {
@@ -82,11 +97,11 @@ export const fetchIndividualSubcategory = async (categoryId: number) => {
 	return data
 }
 
-export const newProduct = async (product: ProductType) => {
+export const newProduct = async (product: ProductType, token: string) => {
 	const response = await axios.post("/api/product/", product, {
 		headers: {
-			"Content-Type": "application/json",
-		},
+			"Authorization": `Bearer ${token}`
+		}
 	})
 	return response
 }
