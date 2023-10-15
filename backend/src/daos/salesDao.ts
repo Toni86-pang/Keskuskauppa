@@ -1,4 +1,5 @@
 import { executeQuery } from "../database"
+import { hideProdutsInSale,relistProductsAfterCancellation} from "./productsDao"
 
 interface Sale {
 	sales_id?: number
@@ -27,7 +28,7 @@ export const getSaleById = async (saleId: number): Promise<Sale> => {
 	}
 }
 
-export const createSale = async (sale: Sale): Promise<Sale> => {
+export const createSale = async (sale: Sale, productIds: number[]): Promise<Sale> => {
 	const params = [
 		sale.product_id,
 		sale.seller_id,
@@ -44,9 +45,11 @@ export const createSale = async (sale: Sale): Promise<Sale> => {
 	INSERT INTO sales
 	  ( product_id, seller_id, buyer_id, buyer_name, buyer_address, buyer_city, buyer_postcode, buyer_phone, buyer_email  )
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+	RETURNING *
   `
 	try {
 		const result = await executeQuery(query, params)
+		await hideProdutsInSale(productIds)
 		return result.rows[0]
 	} catch (error) {
 		console.error("Error creating sale:", error)
@@ -55,9 +58,15 @@ export const createSale = async (sale: Sale): Promise<Sale> => {
 
 }
 
-export const updateSaleStatus = async (salesId: number, salesStatus: number) => {
+export const updateSaleStatus = async (salesId: number, salesStatus: number, productIds: number[]) => {
 	const params = [salesId, salesStatus]
 	const query = "UPDATE sales SET sales_status = $2 WHERE sales_id = $1 RETURNING *"
-	const result = executeQuery(query, params)
-	return (await result).rows[0]
+	try{
+		const result = executeQuery(query, params)
+		await relistProductsAfterCancellation(productIds)
+		return (await result).rows[0]
+	}catch (error){
+		console.error("Error updating sale status", error)
+		throw error
+	}
 }

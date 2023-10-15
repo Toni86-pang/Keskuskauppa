@@ -10,7 +10,8 @@ function NewProduct() {
 	const [user, setUser] = useState<User>(initialState)
 	const [newTitle, setNewTitle] = useState<string>("")
 	const [newDescription, setNewDescription] = useState<string>("")
-	const [newPrice, setNewPrice] = useState<number>(0)
+	const [newPrice, setNewPrice] = useState<number >(0)
+	const [, setError] = useState<string>("")
 	const [newCategory, setNewCategory] = useState<string>("")
 	const [categoryId, setCategoryId] = useState<number>(0)
 	const [newSubcategory, setNewSubcategory] = useState<string>("")
@@ -92,9 +93,27 @@ function NewProduct() {
 		setNewDescription(value)
 	}
 	const handlePriceChange = (event: ChangeEvent<HTMLInputElement>) => {
-		const value = Number(event.target.value)
-		setNewPrice(value)
+		const inputValue = event.target.value
+	
+		// Treat empty input as 0
+		if (inputValue === "") {
+			setNewPrice(0)
+			setError("")
+			return
+		}
+	
+		const price = parseFloat(inputValue)
+	
+		if (isNaN(price) || price < 0) {
+			setNewPrice(0)
+			setError("Invalid price input. Please enter a valid positive number.")
+		} else {
+			setNewPrice(price)
+			setError("")
+		}
 	}
+	
+	
 	const handleCityChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const value = (event.target.value)
 		setNewCity(value)
