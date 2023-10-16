@@ -12,11 +12,14 @@ interface CustomRequest extends Request {
 /*  			 Products endpoints 				  */
 product.post("/", async (req, res) => {
 	try {
-		const {user_id, title, category_id, subcategory_id, description, price, postal_code, city} = req.body
+		const {user_id, title, category_id, subcategory_id, description, price, postal_code, city } = req.body
 		if(!title || !category_id || !subcategory_id || !price){
 			return res.status(400).send("Required information is missing.")
 		}
-		await createProduct({user_id, title, category_id, subcategory_id, description, price, postal_code, city})
+		const newProduct = {
+			user_id, title, category_id, subcategory_id, description, price, postal_code, city , listed: true
+		}
+		await createProduct(newProduct)
 		res.status(201).json({ message: "Product created successfully" })
 	} catch (error) {
 		res.status(500).json({ message: "Error creating product" })

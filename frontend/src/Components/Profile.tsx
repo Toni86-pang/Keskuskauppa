@@ -30,14 +30,12 @@ function Profile() {
 		const year: string = joinDate.substring(0, 4)
 		const month: string = joinDate.substring(5, 7)
 		const day: string = joinDate.substring(8, 10)
-		formattedJoinDate = `${day}.${month}.${year}` // Assign a value here
+		formattedJoinDate = `${day}.${month}.${year}`
 	}
 
 	const handleVerification = () => {
 		setVerifyOpen(true)
 	}
-
-	
 
 	useEffect(() => {
 		const fetchInfo = async () => {
@@ -94,9 +92,7 @@ function Profile() {
 		onAccept: deleteProfile
 	}
 
-
 	return (
-
 		<div className="profile">
 			<Grid
 				container
@@ -112,11 +108,10 @@ function Profile() {
 						maxWidth: "220px",
 						maxHeight: "220px",
 					}} /></div>
-
 				</Grid>
 				{user && <Grid item xs={5}>
 					<div className="user">
-						<div className="liittymispäivä"> Liittymispäivä {formattedJoinDate} </div>
+						<div className="liittymispäivä"> Liittymispäivä: {formattedJoinDate} </div>
 						<div className="userName">Nimi: {user?.name}</div>
 						<div className="userUsername">Käyttäjänimi: {user?.username}</div>
 						<div className="userAddress">Osoite: {user?.address}</div>
@@ -169,15 +164,11 @@ function Profile() {
 								duration={1500}
 							/>
 						)}
-
 					</Grid>
 				</Grid>
 			</Grid>
-
-
 			<div className="ownProducts">
 				<div style={{ marginBottom: "10px" }}>Omat ilmoitukset:</div>
-
 				<Divider variant="middle" style={{ marginBottom: "10px" }} />
 				{ownProducts.length > 0 ? (
 					ownProducts && ownProducts?.map((product: ProductType) => {
@@ -189,9 +180,7 @@ function Profile() {
 					)
 				}
 			</div>
-
 		</div>
 	)
 }
-
 export default Profile
