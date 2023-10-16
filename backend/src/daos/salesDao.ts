@@ -14,6 +14,13 @@ interface Sale {
 	buyer_email?: string
 	sales_status?: number
 }
+interface ProductSale {
+	sales_id: number
+	sales_status: string
+	title: string
+	price: number
+	buyer: string
+}
 
 export const getSaleById = async (saleId: number): Promise<Sale> => {
 	const params = [saleId]
@@ -65,15 +72,13 @@ export const updateSaleStatus = async (salesId: number, salesStatus: number, pro
 		const result = await executeQuery(query, params)
 		await relistProductsAfterCancellation(productIds)
 		return result.rows[0]
+	}catch (error){
+		console.error("Error updating sale status", error)
+		throw error
+	}
 }
 
-interface ProductSale {
-	sales_id: number
-	sales_status: string
-	title: string
-	price: number
-	buyer: string
-}
+
 
 export const fetchOwnSold = async (userId: number): Promise<ProductSale[]>  => {
 	const params = [userId]
@@ -119,10 +124,10 @@ export const fetchOwnBought = async (userId: number): Promise<ProductSale[]>  =>
 		sales_status AS st on s.sales_status = st.status_id
 	WHERE
     	s.buyer_id = $1`
-	
-	const result = await executeQuery(query, params)
-	console.log(result.rows[0])
-	return result.rows
+	try{
+		const result = await executeQuery(query, params)
+		console.log(result.rows[0])
+		return result.rows
 	}catch (error){
 		console.error("Error updating sale status", error)
 		throw error

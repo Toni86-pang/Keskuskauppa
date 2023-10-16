@@ -17,7 +17,7 @@ product.post("/", authentication, async (req: CustomRequest, res) => {
 			return res.status(400).send("Required information is missing.")
 		}
 		const newProduct = {
-			 user_id, title, category_id, subcategory_id, description, price, postal_code, city, listed  , listed: true
+			user_id, title, category_id, subcategory_id, description, price, postal_code, city, listed  , listed: true
 		}
 		await createProduct(newProduct)
 		res.status(201).json({ message: "Product created successfully" })
