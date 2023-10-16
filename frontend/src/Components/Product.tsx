@@ -62,6 +62,7 @@ export default function Product() {
 	const [isUpdateModalOpen, setUpdateModalOpen] = useState(false)
 	const [showSuccessDeleteNotification, setShowSuccessDeleteNotification] = useState(false)
 	const [showErrorDeleteNotification, setShowErrorDeleteNotification] = useState(false)
+	const [showNotLoggedInNotif, setShowNotLoggedinNotif] = useState(false)
 	const [myProduct, setMyProduct] = useState<boolean>(false)
 	const [token] = useContext(UserTokenContext)
 	const [ownerUsername, setOwnerUsername] = useState<string | null>("")
@@ -133,7 +134,7 @@ export default function Product() {
 	}
 
 	return (
-		<div>
+		<>
 			<Paper
 				sx={{
 					p: 2,
@@ -143,162 +144,173 @@ export default function Product() {
 					flexGrow: 1,
 				}}
 			>
-				<Grid container spacing={5}>
-					<Grid item>
-						<Typography
-							gutterBottom
-							variant="subtitle1"
-							component="div"
-						>
-							{product?.title}
-						</Typography>
-						{selectedImage && (
-							<img
-								alt="Image"
-								src={selectedImage}
-								style={{
-									margin: "auto",
-									display: "block",
-									maxWidth: "270px",
-									maxHeight: "270px",
-								}}
-							/>
-						)}
-					</Grid>
-					<Grid item xl={5} sm container>
-						<Grid item xs container direction="column" spacing={4}>
-							<Grid item xs sx={{ margin: 4 }}>
-								<Typography variant="body2" gutterBottom>
-									Hinta:	{product?.price} €
+				{product.listed ? (
+					<>
+						<Grid container spacing={5}>
+							<Grid item>
+								<Typography
+									gutterBottom
+									variant="subtitle1"
+									component="div"
+								>
+									{product?.title}
 								</Typography>
-								{!myProduct ? (
-									<>
-										<Typography variant="body2" gutterBottom>
+								{selectedImage && (
+									<img
+										alt="Image"
+										src={selectedImage}
+										style={{
+											margin: "auto",
+											display: "block",
+											maxWidth: "270px",
+											maxHeight: "270px",
+										}}
+									/>
+								)}
+							</Grid>
+							<Grid item xl={5} sm container>
+								<Grid item xs container direction="column" spacing={4}>
+									<Grid item xs sx={{ margin: 4 }}>
+										{!myProduct ? (
+											<>
+												<Typography variant="body2" gutterBottom>
+									Hinta:	{product?.price} €
+												</Typography>
+												{!myProduct ? (
+													<>
+														<Typography variant="body2" gutterBottom>
 											Myyjän nimi: {ownerUsername}
-										</Typography>
-
+														</Typography>
+													</>
+												) : (
+													<></>
+												)}
+												<Typography
+													variant="body2"
+													color="text.secondary"
+												>
+													<Box style={{ marginBottom: "8px" }}>
+														<Link to={`/user/${product.user_id}`} style={{ color: "#6096ba", textDecoration: "underline" }}>
+													Katso profiili
+														</Link>
+													</Box>
+													<StarPurple500SharpIcon />
+													<StarPurple500SharpIcon />
+													<StarPurple500SharpIcon />
+													<StarBorderPurple500SharpIcon />
+													<StarBorderPurple500SharpIcon />
+												</Typography>
+											</>
+										) : (
+											<></>
+										)}
 										<Typography
 											variant="body2"
 											color="text.secondary"
-											marginTop={1}
 										>
-											<Box style={{ marginBottom: "8px" }}>
-												<Link to={`/user/${product.user_id}`} style={{ color: "#6096ba", textDecoration: "underline" }}>
-													Katso profiili
-												</Link>
-											</Box>
-											<StarPurple500SharpIcon />
-											<StarPurple500SharpIcon />
-											<StarPurple500SharpIcon />
-											<StarBorderPurple500SharpIcon />
-											<StarBorderPurple500SharpIcon />
-										</Typography>
-									</>
-								) : (
-									<></>
-								)}
-								<Typography
-									variant="body2"
-									color="text.secondary"
-								>
 								Kaupunki:	{product?.city}
-								</Typography>
-								<Typography
-									variant="body2"
-									color="text.secondary"
-								>
+										</Typography>
+										<Typography
+											variant="body2"
+											color="text.secondary"
+										>
 								Postinumero:	{product?.postal_code}
-								</Typography>
-							</Grid>
-							{myProduct ? (
-								<Grid item>
-									<div>
-										<Button variant="outlined" onClick={() => { 
-											setUpdateModalOpen(true) 
-										}}>
+										</Typography>
+									</Grid>
+									{myProduct ? (
+										<Grid item>
+											<div>
+												<Button variant="outlined" onClick={() => { 
+													setUpdateModalOpen(true) 
+												}}>
 										Päivitä tuote
-										</Button>
-										<UpdateProductModal
-											isOpen={isUpdateModalOpen}
-											onClose={() => setUpdateModalOpen(false)}
-											token={token}
-											productId={product?.product_id || 0}
-											title={product?.title || ""}
-											category_id={product?.category_id || 0}
-											subcategory_id={product?.subcategory_id || 0}
-											city={product?.city.split(",")[0] || ""}
-											postal_code={product?.postal_code.split(",")[0] || ""}
-											description={product?.description || ""}
-											price={product?.price || 0}
-										/>
-									</div>
+												</Button>
+												<UpdateProductModal
+													isOpen={isUpdateModalOpen}
+													onClose={() => setUpdateModalOpen(false)}
+													token={token}
+													productId={product?.product_id || 0}
+													title={product?.title || ""}
+													category_id={product?.category_id || 0}
+													subcategory_id={product?.subcategory_id || 0}
+													city={product?.city.split(",")[0] || ""}
+													postal_code={product?.postal_code.split(",")[0] || ""}
+													description={product?.description || ""}
+													price={product?.price || 0}
+												/>
+											</div>
 
-									{product && (
-										<DeleteButton id={product.product_id} onDelete={handleDelete} />
-									)}
-								</Grid>
-							)
-								:
-								<>
-									<Button sx={{
-										width: 150, height: 50, 
-									}} variant="outlined" onClick={() => handleAddToShoppingCart(product)}>
+											{product && (
+												<DeleteButton id={product.product_id} onDelete={handleDelete} />
+											)}
+										</Grid>
+									)
+										:
+										<>
+											<Button sx={{
+												width: 150, height: 50, 
+											}} variant="outlined" onClick={() => token ? handleAddToShoppingCart(product) : setShowNotLoggedinNotif(true)}>
 											Ostoskoriin
-									</Button>
-								</>
-							}
-							{/* Delete success and error notifications */}
-							{showSuccessDeleteNotification && (
-								<Notification
-									open={showSuccessDeleteNotification}
-									message="Tuote on poistettu onnistuneesti!"
-									type="success"
-									onClose={() => setShowSuccessDeleteNotification(false)}
-									duration={1500}
-								/>
-							)}
-							{showErrorDeleteNotification && (
-								<Notification
-									open={showErrorDeleteNotification}
-									message="Tapahtui virhe poistettaessa."
-									type="error"
-									onClose={() => setShowErrorDeleteNotification(false)}
-									duration={1500}
-								/>
-							)}
-
-						</Grid>
-					</Grid>
-				</Grid>
-				<Grid>
-					<Grid item marginTop={-4}>
-						<ImageList
-							sx={{ width: 385, height: 100 }}
-							cols={10}
-							rowHeight={25}
-						>
-							{itemData.map((item) => (
-								<ButtonBase
-									key={item.img}
-									onClick={() => setSelectedImage(item.img)}
-								>
-									<ImageListItem>
-										<img
-											src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-											srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-											alt={item.title}
-											loading="lazy"
+											</Button>
+										</>
+									}
+									{/* Delete success and error notifications */}
+									{showSuccessDeleteNotification && (
+										<Notification
+											open={showSuccessDeleteNotification}
+											message="Tuote on poistettu onnistuneesti!"
+											type="success"
+											onClose={() => setShowSuccessDeleteNotification(false)}
+											duration={1500}
 										/>
-									</ImageListItem>
-								</ButtonBase>
-							))}
-						</ImageList>
-						<Typography variant="body2" gutterBottom>
+									)}
+									{showErrorDeleteNotification && (
+										<Notification
+											open={showErrorDeleteNotification}
+											message="Tapahtui virhe poistettaessa."
+											type="error"
+											onClose={() => setShowErrorDeleteNotification(false)}
+											duration={1500}
+										/>
+									)}
+
+								</Grid>
+							</Grid>
+						</Grid>
+						<Grid>
+							<Grid item marginTop={-4}>
+								<ImageList
+									sx={{ width: 385, height: 100 }}
+									cols={10}
+									rowHeight={25}
+								>
+									{itemData.map((item) => (
+										<ButtonBase
+											key={item.img}
+											onClick={() => setSelectedImage(item.img)}
+										>
+											<ImageListItem>
+												<img
+													src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
+													srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+													alt={item.title}
+													loading="lazy"
+												/>
+											</ImageListItem>
+										</ButtonBase>
+									))}
+								</ImageList>
+								<Typography variant="body2" gutterBottom>
 							Lisätiedot:
-						</Typography>
-						<Box sx={{ border: 0.1, width: 265, height: 100 }}>{product?.description}</Box>
-					</Grid>
-				</Grid>
+								</Typography>
+								<Box sx={{ border: 0.1, width: 265, height: 100 }}>{product?.description}</Box>
+							</Grid>
+						</Grid>
+					</>)
+					:
+					(
+						<p>Tuote ei ole enää myynnissä.</p>
+					)}
 			</Paper>
 			{showErrorNotification && (
 				<Notification
@@ -309,6 +321,15 @@ export default function Product() {
 					duration={1500}
 				/>
 			)}
-		</div>
+			{showNotLoggedInNotif && (
+				<Notification
+					open={showNotLoggedInNotif}
+					message="Kirjaudu sisään lisätäksesi tuote ostoskoriin."
+					type="error"
+					onClose={() => setShowNotLoggedinNotif(false)}
+					duration={2000}
+				/>
+			)}
+		</>
 	)
 }
