@@ -26,6 +26,7 @@ const breadcrumbMap: Record<string, [string, string][] | BreadcrumbResolver> = {
 	"/products": [["Kaikki tuotteet", "/products"]],
 	"/product/new": [["Uusi tuote", "/products/new"]],
 	"/profile": [["Profiili", "/profile"]],
+	"/checkout": [["Vastaanottajan tiedot", "/checkout"]],
 	"/user/:id": [["Myyjän profiili", ""]],
 	"/search-results":[["Hakutulokset",""]],
 	"/product/:id": async (id) => {

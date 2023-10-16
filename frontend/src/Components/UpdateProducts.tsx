@@ -7,6 +7,7 @@ import Notification from "./Notification"
 function UpdateProductModal({
 	isOpen,
 	onClose,
+	token,
 	productId,
 	title,
 	category_id,
@@ -106,8 +107,8 @@ function UpdateProductModal({
 				description: updatedDescription,
 				price: parseFloat(updatedPrice),
 			}
-			updateProduct(productId, updatedData)
-			setShowSuccessNotification(true)
+			await updateProduct(productId, updatedData, token)
+			setShowSuccessNotification(true) // Show success notification
 			onClose()
 		} catch (error) {
 			console.error("Error updating product", error)

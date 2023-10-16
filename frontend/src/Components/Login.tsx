@@ -12,7 +12,6 @@ const initialState: UserValues = {
 	password: ""
 }
 
-
 function Login() {
 	const [userValues, setUserValues] = useState<UserValues>(initialState)
 	const [open, setOpen] = useState<boolean>(false)

@@ -64,9 +64,9 @@ function NewProduct() {
 	}
 
 	const createNewProduct = async () => {
-		const product = {user_id: user.user_id, title: newTitle, category_id: categoryId, subcategory_id: subcategoryId, postal_code: newPostalCode, city: newCity, description: newDescription, price: newPrice}
+		const product = {user_id: user.user_id, title: newTitle, category_id: categoryId, subcategory_id: subcategoryId, postal_code: newPostalCode, city: newCity, description: newDescription, price: newPrice, listed: true}
 
-		newProduct(product).then((response) => {
+		newProduct(product, token).then((response) => {
 			if (response.status === 201) {
 				console.log("Product creation success")
 				navigate("/profile")
