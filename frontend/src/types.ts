@@ -23,7 +23,7 @@ export interface UserValues {
 export interface ProductType {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	product_id?: any
-	user_id?: number
+	user_id: number
 	title: string
 	category_id: number
 	subcategory_id: number
