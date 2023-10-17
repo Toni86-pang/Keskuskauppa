@@ -17,6 +17,7 @@ export interface Product {
 }
 
 export async function createProduct(product: Product): Promise<void> {
+	product.listed = true
 	const query = `
 	  INSERT INTO Products
 		(user_id, title, category_id, subcategory_id, description, price, product_image, postal_code, city, listed)
@@ -43,6 +44,35 @@ export async function createProduct(product: Product): Promise<void> {
 		throw error
 	}
 }
+// hide product if its in sale transaction
+export const hideProdutsInSale =async (productIds:number[]): Promise<void> => {
+	const query = `
+	UPDATE products	
+	SET listed = false
+	WHERE product_id = ANY($1::int[])
+	`
+	try{
+		await executeQuery(query, [productIds])
+	}catch (error) {
+		console.error("Error hiding products:", error)
+		throw error
+	}
+}
+//relist product if sale doesn't go trough
+export const relistProductsAfterCancellation =async (productIds: number[]):Promise<void> => {
+	const query = `
+	UPDATE Products
+	SET listed = true
+	WHERE prodcut_id = ANY($1::int[])
+	`
+	try {
+		await executeQuery(query, [productIds])
+	}catch (error){
+		console.error("Error re-listing products", error)
+		throw error
+	}
+}
+
 
 export const getProductById = async (product_id: number): Promise<Product | null> => {
 	const query = " SELECT * FROM products WHERE product_id = $1"
