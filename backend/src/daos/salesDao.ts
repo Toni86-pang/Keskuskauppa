@@ -78,6 +78,17 @@ export const updateSaleStatus = async (salesId: number, salesStatus: number, pro
 	}
 }
 
+export const getStatusById = async (statusId: number) => {
+	const params = [statusId]
+	const query = "SELECT sales_status FROM sales_status WHERE status_id = $1"
+
+	try {
+		const result = await executeQuery(query, params)
+		return result.rows[0]
+	} catch (error) {
+		console.error("Error fetching sales status: ", error)
+	}
+}
 
 
 export const fetchOwnSold = async (userId: number): Promise<ProductSale[]>  => {

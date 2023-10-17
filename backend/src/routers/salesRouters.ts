@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { updateSaleStatus, createSale, getSaleById, fetchOwnSold, fetchOwnBought } from "../daos/salesDao"
+import { updateSaleStatus, createSale, getSaleById, fetchOwnSold, fetchOwnBought, getStatusById } from "../daos/salesDao"
 import { authentication } from "../middlewares"
 import { relistProductsAfterCancellation } from "../daos/productsDao"
 
@@ -69,6 +69,19 @@ sales.get("/bought", authentication, async (req: CustomRequest, res: Response) =
 		console.error("Error fetching user's sales: ", error)
 		res.status(500).send("Internal Server Error")
 	}
+})
+
+sales.get("/status/:id", async (req: Request, res: Response) => {
+	const statusId = Number(req.params.id)
+
+	try {
+		const sales_status = await getStatusById(statusId)
+		res.status(200).send(sales_status)
+	} catch(error) {	
+		res.status(500).send()
+	}
+	
+
 })
 
 

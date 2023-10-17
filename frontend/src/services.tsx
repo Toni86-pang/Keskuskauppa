@@ -17,6 +17,18 @@ export const fetchUser = (token: string) => {
 	}).then((response) => response.data)
 }
 
+export const fetchSale = (token: string, id: number) => {
+	return axios.get("/api/sales/" + id, {
+		headers: {
+			"Authorization": `Bearer ${token}`
+		}
+	}).then((response) => response.data)
+}
+
+export const fetchSaleStatus = async (statusId: number) => {
+	return (await axios.get("/api/sales/status" + statusId)).data
+}
+
 
 export const fetchUsernameByUserId = async (id: number) => {
 	try {
@@ -114,6 +126,7 @@ export const newSale = async (sale: Sale, token: string) => {
 		},
 	})
 	return response
+	
 }
 
 export const fetchCategoryName = (id: number) => {

@@ -13,6 +13,7 @@ import Profile from "./Components/Profile.tsx"
 import LandingPage from "./Components/LandingPage.tsx"
 import SearchResultsPage from "./Components/SearchResultpage.tsx"
 import CheckOut from "./Components/CheckOut.tsx"
+import OrderDetails from "./Components/OrderDetails.tsx"
 
 const router = createBrowserRouter([
 	{
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
 				element: <SellerProfile />,
 				loader: sellerLoader,
 			},
+			{
+				path: "/orders",
+				element: <OrderDetails saleId={10} onClose={()=>{return}} isOpen={true} />
+			}
 		],
 	},
 ])

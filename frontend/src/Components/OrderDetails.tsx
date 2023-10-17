@@ -4,14 +4,12 @@ import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
-import { useContext, useState } from "react"
-import { CartContextType, UserTokenContext } from "../App"
-import { newSale } from "../services"
-import { useNavigate, useOutletContext } from "react-router"
+import { useContext, useEffect, useState } from "react"
+import { UserTokenContext } from "../App"
 import { ProductType, Sale } from "../types"
 import CheckoutProductCard from "./CheckoutSummaryProductCard"
-import { Checkbox, FormControl, FormControlLabel, FormGroup, FormHelperText, Stack } from "@mui/material"
 import Notification from "./Notification"
+import { fetchProduct, fetchSale, fetchSaleStatus } from "../services"
 
 interface OrderDetailsProps {
 	saleId: number
@@ -19,57 +17,31 @@ interface OrderDetailsProps {
 	onClose: () => void
 }
 
-export default function OrderDetails (props: OrderDetailsProps) {
-	const { onClose, isOpen } = props
+export default function OrderDetails(props: OrderDetailsProps) {
+	const { saleId, onClose, isOpen } = props
 	const [token] = useContext(UserTokenContext)
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
-	const navigate = useNavigate()
-   
-    
-	const handleNewSale = () => {
-		try {
-			cart?.map(async product => {
-				const sale: Sale = {   
-					product_id: product.product_id,
-					buyer_id: buyerInfo.buyer_id,
-					buyer_name: buyerInfo.buyer_name,
-					buyer_address: buyerInfo.buyer_address,
-					buyer_city: buyerInfo.buyer_city,
-					buyer_postcode: buyerInfo.buyer_postcode,
-					buyer_phone: buyerInfo.buyer_phone,
-					buyer_email: buyerInfo.buyer_email,
-					seller_id: product.user_id,
-					sales_status: 2
-				} 
-				newSale(sale, token)
-				emptyShoppingCart()
-				setShowSuccessNotification(true) // Show success notification
-				await timeout(1500)
-				navigate("/")
-			})
-		} catch (error) {
-			console.error("Error creating a new sale", error)
-			setShowErrorNotification(true) // Show error notification
-		}
-	}
+	const [sale, setSale] = useState<Sale>()
+	const [saleStatus, setSaleStatus] = useState("")
+	const [product, setProduct] = useState<ProductType>()
 
-	function timeout(delay: number) {
-		return new Promise( res => setTimeout(res, delay) )
-	}
+	useEffect(() => {
+		const fetchSaleAndProduct = async () => {
+			const fetchedSale = await fetchSale(token, saleId)
+			const fetchedProduct = await fetchProduct(fetchedSale.product_id)
+			const fetchdSaleStatus = await fetchSaleStatus(fetchedSale.sales_status)
+			setSale(fetchedSale)
+			setProduct(fetchedProduct)
+			setSaleStatus(fetchdSaleStatus)
+		}
+		fetchSaleAndProduct()
+	}, [saleId, token])
 
 	const handleClose = () => {
 		onClose()
 	}
 
-	const { checked } = state
-	const error = [checked].filter((v) => v).length !== 1
-
-	const emptyShoppingCart = () => {
-		sessionStorage.clear()
-		setCart(null)
-	}
-  
 	return (
 		<>
 			<Dialog
@@ -79,52 +51,30 @@ export default function OrderDetails (props: OrderDetailsProps) {
 				aria-describedby="alert-dialog-description"
 			>
 				<DialogTitle id="alert-dialog-title">
-					<h3>Tilausvahvistus</h3>
+					<h3>Tilauksen tiedot</h3>
 				</DialogTitle>
 				<DialogContent>
 					<DialogContentText id="alert-dialog-description">
-                        Tarkista tilauksen tiedot.
-						<h4>Tilattavat tuotteet:</h4> {cart && cart.map((product: ProductType) =>
-							<>
-								<CheckoutProductCard 
-									product={product} 
-									key={product.product_id + product.title}
-								/>
-							</>)}
-						<h4>Summa: {sum} €</h4>
+						{product && <CheckoutProductCard
+							product={product}
+							key={product.product_id + product.title}
+						/>}
 						<h4>Tilaajan tiedot:</h4>
-                        Nimi: {buyerInfo.buyer_name}<br/>
-                        Puhelinnumero: {buyerInfo.buyer_phone}<br/>
-                        Sähköposti: {buyerInfo.buyer_email}<br/>
-                        Katuosoite: {buyerInfo.buyer_address}<br/>
-                        Kaupunki: {buyerInfo.buyer_city}<br/>
-                        Postinumero: {buyerInfo.buyer_postcode}
+						{sale && <>
+							Nimi: {sale.buyer_name}<br />
+							Puhelinnumero: {sale.buyer_phone}<br />
+							Sähköposti: {sale.buyer_email}<br />
+							Katuosoite: {sale.buyer_address}<br />
+							Kaupunki: {sale.buyer_city}<br />
+							Postinumero: {sale.buyer_postcode}
+						</>}
 
-						<FormControl
-							required
-							error={error}
-							component="fieldset"
-							sx={{ m: 3 }}
-							variant="standard"
-						>
-							<Stack direction="row">
-								<FormGroup>
-									<FormControlLabel
-										control={
-											<Checkbox checked={checked} onChange={handleChange} name="checked" />
-										}
-										label="Olen tarkistanut tiedot."
-									/>
-								</FormGroup>
-								<FormHelperText>Tietojen tarkistus on varmistettava.</FormHelperText>
-							</Stack>
-						</FormControl>
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={onClose}>Muuta tietoja</Button>
-					<Button disabled={!checked} onClick={() => handleNewSale()} autoFocus>
-                        Tilaa ja maksa
+					{sale?.sales_status===2&&<Button onClick={onClose}>Lähetetty</Button>}
+					<Button >
+						Peruuta tilaus
 					</Button>
 				</DialogActions>
 			</Dialog>

@@ -61,7 +61,13 @@ export default function Crumbs() {
 			const routePattern = location.pathname.replace(/\/(\d+)$/, "/:id")
 
 			// Gets the breadcrumbData for the current route (value of the breadcrumbMap object for the current routePattern )
-			const breadcrumbData = breadcrumbMap[routePattern]
+			let breadcrumbData
+			if(breadcrumbMap[routePattern]) {
+				breadcrumbData = breadcrumbMap[routePattern]
+			} else {
+				breadcrumbData = [["Default BreadCrumb", ""] ] as [string, string][]
+			}
+			
 
 			let crumbs: [string, string][] = []
 
