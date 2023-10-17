@@ -44,7 +44,7 @@ export default function SaleSummary (props: SummaryProps) {
 					seller_id: product.user_id,
 					sales_status: 2
 				} 
-				newSale(sale, token)
+				await newSale(sale, token)
 				emptyShoppingCart()
 				setShowSuccessNotification(true) // Show success notification
 				await timeout(1500)
@@ -124,7 +124,7 @@ export default function SaleSummary (props: SummaryProps) {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={onClose}>Muuta tietoja</Button>
+					<Button onClick={() => {onClose(), setState({checked: false})}}>Muuta tietoja</Button>
 					<Button disabled={!checked} onClick={() => handleNewSale()} autoFocus>
                         Tilaa ja maksa
 					</Button>

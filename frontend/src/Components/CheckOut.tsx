@@ -101,48 +101,54 @@ export default function CheckOut() {
 						</>)}
 					<h3>Summa: {sum} €</h3>
 					<h3>Vastaanottajan tiedot</h3>
-					<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="description">Nimi</InputLabel>
+					<InputLabel required style={{position: "relative"}} sx={{ mb: 2 }} id="description">Nimi</InputLabel>
 					<TextField
+						required
 						type="text"
 						name="name"
 						value={newName}
 						onChange={handleNameChange}
 						fullWidth
 					/>
-					<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="description">Katuosoite</InputLabel>
+					<InputLabel required style={{position: "relative"}} sx={{ mb: 2 }} id="description">Katuosoite</InputLabel>
 					<TextField
+						required
 						type="text"
 						name="address"
 						value={newAddress}
 						onChange={handleAddressChange}
 						fullWidth
 					/>
-					<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="price">Kaupunki</InputLabel>
+					<InputLabel required style={{position: "relative"}} sx={{ mb: 2 }} id="price">Kaupunki</InputLabel>
 					<TextField
+						required
 						type="text"
 						name="city"
 						value={newCity}
 						onChange={handleCityChange}
 						fullWidth
 					/>
-					<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="price">Postinumero</InputLabel>
+					<InputLabel required style={{position: "relative"}} sx={{ mb: 2 }} id="price">Postinumero</InputLabel>
 					<TextField
+						required
 						type="text"
 						name="postcode"
 						value={newPostCode}
 						onChange={handlePostCodeChange}
 						fullWidth
 					/>
-					<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="price">Puhelinnumero</InputLabel>
+					<InputLabel required style={{position: "relative"}} sx={{ mb: 2 }} id="price">Puhelinnumero</InputLabel>
 					<TextField
+						required
 						type="text"
 						name="phone"
 						value={newPhone}
 						onChange={handlePhoneChange}
 						fullWidth
 					/>
-					<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="price">Sähköposti</InputLabel>
+					<InputLabel required style={{position: "relative"}} sx={{ mb: 2 }} id="price">Sähköposti</InputLabel>
 					<TextField
+						required
 						type="text"
 						name="email"
 						value={newEmail}
