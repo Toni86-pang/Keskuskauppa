@@ -45,6 +45,8 @@ const Navbar = ({cart, setCart}: NavbarProps) => {
 		setToken("")
 		setUser(null) // Reset the user object
 		handleMenuClose()
+		sessionStorage.clear()
+		setCart(null)
 		navigate("/")
 	}
 

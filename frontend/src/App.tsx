@@ -3,10 +3,10 @@ import Navbar from "./Components/Navbar"
 import { Container } from "@mui/material"
 import { Dispatch, createContext, useEffect, useState } from "react"
 import { ProductType } from "./types"
-
-export type CartContextType = [ Dispatch<React.SetStateAction<ProductType[] | null>> ]
 import { Footer } from "./Components/Footer"
 import Box from "@mui/material/Box"
+
+export type CartContextType = [ Dispatch<React.SetStateAction<ProductType[] | null>> ]
 
 function App() {
 	const [token, setToken] = useState("")

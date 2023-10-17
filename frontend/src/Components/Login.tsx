@@ -12,7 +12,6 @@ const initialState: UserValues = {
 	password: ""
 }
 
-
 function Login() {
 	const [userValues, setUserValues] = useState<UserValues>(initialState)
 	const [open, setOpen] = useState<boolean>(false)
@@ -20,6 +19,7 @@ function Login() {
 	const { username, password } = userValues
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
+	
 	const navigate = useNavigate()
 
 	const loginUser = async (username: string, password: string) => {

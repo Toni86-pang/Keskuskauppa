@@ -13,14 +13,16 @@ export interface Product {
 	description: string
 	price: number
 	product_image?: Buffer
+	listed: boolean
 }
 
 export async function createProduct(product: Product): Promise<void> {
+	product.listed = true
 	const query = `
 	  INSERT INTO Products
-		(user_id, title, category_id, subcategory_id, description, price, product_image, postal_code, city)
+		(user_id, title, category_id, subcategory_id, description, price, product_image, postal_code, city, listed)
 	  VALUES
-		($1, $2, $3, $4, $5, $6, $7, $8, $9)
+		($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 	`
 	const values = [
 		product.user_id,
@@ -32,6 +34,7 @@ export async function createProduct(product: Product): Promise<void> {
 		product.product_image,
 		product.postal_code,
 		product.city,
+		product.listed
 	]
 
 	try {
@@ -41,6 +44,35 @@ export async function createProduct(product: Product): Promise<void> {
 		throw error
 	}
 }
+// hide product if its in sale transaction
+export const hideProdutsInSale =async (productIds:number[]): Promise<void> => {
+	const query = `
+	UPDATE products	
+	SET listed = false
+	WHERE product_id = ANY($1::int[])
+	`
+	try{
+		await executeQuery(query, [productIds])
+	}catch (error) {
+		console.error("Error hiding products:", error)
+		throw error
+	}
+}
+//relist product if sale doesn't go trough
+export const relistProductsAfterCancellation =async (productIds: number[]):Promise<void> => {
+	const query = `
+	UPDATE Products
+	SET listed = true
+	WHERE prodcut_id = ANY($1::int[])
+	`
+	try {
+		await executeQuery(query, [productIds])
+	}catch (error){
+		console.error("Error re-listing products", error)
+		throw error
+	}
+}
+
 
 export const getProductById = async (product_id: number): Promise<Product | null> => {
 	const query = " SELECT * FROM products WHERE product_id = $1"
@@ -81,6 +113,28 @@ export const updateProductData = async (
 	const params = [title, category_id, subcategory_id, city,postal_code, description, price, product_id]
 	const query =
 	"UPDATE Products SET title = $1, category_id = $2, subcategory_id = $3, city = $4, postal_code = $5, description = $6, price = $7 WHERE product_id = $8 RETURNING *"
+	const result = await executeQuery(query, params)
+	if (result.rows.length === 0) {
+		return null
+	}
+	return result.rows[0] as Product
+}
+
+// Maaret yritti tässä rakentaa tuotteen statuksen muokkausta muttei onnistunut
+// export const updateProductStatus = async (product_id: number): Promise<Product | null> => {
+// 	const query =
+// 	"UPDATE Products SET listed = $1 WHERE product_id = $2 RETURNING *"
+// 	const params = [false, product_id]
+// 	const result = await executeQuery(query, params)
+// 	if (result.rows.length === 0) {
+// 		return null
+// 	}
+// 	return result.rows[0] as Product
+// }
+
+export const updateProductListed = async (productId: number, isListed: boolean) => {
+	const params = [productId, isListed]
+	const query = "UPDATE Products SET listed = $2 WHERE product_id = $1 RETURNING *"
 	const result = await executeQuery(query, params)
 	if (result.rows.length === 0) {
 		return null

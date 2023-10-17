@@ -7,6 +7,7 @@ import Notification from "./Notification"
 function UpdateProductModal({
 	isOpen,
 	onClose,
+	token,
 	productId,
 	title,
 	category_id,
@@ -14,14 +15,15 @@ function UpdateProductModal({
 	city,
 	postal_code,
 	description,
-	price,
+	
 	
 }: UpdateProductModalProps) {
 	const [updatedTitle, setUpdatedTitle] = useState(title)
 	const [updatedCity, setUpdatedCity] = useState(city)
 	const [updatedPostalCode, setUpdatedPostalCode] = useState(postal_code)
 	const [updatedDescription, setUpdatedDescription] = useState(description)
-	const [updatedPrice, setUpdatedPrice] = useState(price)
+	const [updatedPrice, setUpdatedPrice] = useState("")
+	const [error, setError] = useState("")
 
 	const [categories, setCategories] = useState<Category[]>([])
 	const [subcategories, setSubcategories] = useState<Category[]>([])	
@@ -33,7 +35,7 @@ function UpdateProductModal({
 	useEffect(() => {
 		async function fetchCategoryData() {
 			try {
-				const data = await fetchCategories() // Fetch categories from your API
+				const data = await fetchCategories()
 				setCategories(data)
 			} catch (error) {
 				console.error("Error fetching categories", error)
@@ -42,7 +44,7 @@ function UpdateProductModal({
 	
 		async function fetchSubcategoryData() {
 			try {
-				const data = await fetchSubcategories() // Fetch subcategories from your API
+				const data = await fetchSubcategories() 
 				setSubcategories(data)
 			} catch (error) {
 				console.error("Error fetching subcategories", error)
@@ -52,7 +54,6 @@ function UpdateProductModal({
 		fetchSubcategoryData()
 	}, [])
 	
-
 	const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setUpdatedTitle(event.target.value)
 	}
@@ -77,11 +78,21 @@ function UpdateProductModal({
 	}
 	const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const inputValue = event.target.value
+		if (inputValue === ""){
+			setUpdatedPrice ("")
+			setError("")
+			return
+		}
+
 		const price = parseFloat(inputValue)
-		if (!isNaN(price)) {
-			setUpdatedPrice(price)
+		
+		if (isNaN(price) || price < 0) {
+			setUpdatedPrice("")
+			setError("Invalid price input. Please enter a valid positive number.")
 		} else {
-			console.error("Invalid price input:", inputValue)
+			const formattedPrice = price.toFixed(0)
+			setUpdatedPrice(formattedPrice)
+			setError("")
 		}
 	}
 
@@ -94,14 +105,14 @@ function UpdateProductModal({
 				city: updatedCity,
 				postal_code: updatedPostalCode,
 				description: updatedDescription,
-				price: updatedPrice,
+				price: parseFloat(updatedPrice),
 			}
-			updateProduct(productId, updatedData)
+			await updateProduct(productId, updatedData, token)
 			setShowSuccessNotification(true) // Show success notification
 			onClose()
 		} catch (error) {
 			console.error("Error updating product", error)
-			setShowErrorNotification(true) // Show error notification
+			setShowErrorNotification(true)
 		}
 	}
 
@@ -171,6 +182,7 @@ function UpdateProductModal({
 							value={updatedPrice}
 							onChange={handlePriceChange}
 						/>
+						{error && <div style={{ color: "red" }}>{error}</div>}
 					</div>
 					<div style={{ margin: "16px" }}>
 						<Button variant="outlined" onClick={handleUpdateSubmit}>
