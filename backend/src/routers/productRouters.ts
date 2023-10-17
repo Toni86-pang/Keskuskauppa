@@ -12,12 +12,12 @@ interface CustomRequest extends Request {
 product.post("/", authentication, async (req: CustomRequest, res) => {
 	const user_id = req.id
 	try {
-		const { title, category_id, subcategory_id, description, price, postal_code, city, listed  } = req.body
+		const { title, category_id, subcategory_id, description, price, postal_code, city } = req.body
 		if (!user_id || !title || !category_id || !subcategory_id || !price) {
 			return res.status(400).send("Required information is missing.")
 		}
 		const newProduct = {
-			user_id, title, category_id, subcategory_id, description, price, postal_code, city, listed  , listed: true
+			user_id, title, category_id, subcategory_id, description, price, postal_code, city, listed: true
 		}
 		await createProduct(newProduct)
 		res.status(201).json({ message: "Product created successfully" })
