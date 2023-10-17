@@ -12,7 +12,7 @@ export interface Product {
 	postal_code: string
 	description: string
 	price: number
-	product_image?: Buffer
+	product_image: Buffer
 	listed: boolean
 }
 
