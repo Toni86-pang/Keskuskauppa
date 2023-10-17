@@ -41,8 +41,6 @@ export const fetchUsernameByUserId = async (id: number) => {
 	}
 }
   
-  
-  
 export const fetchUserDetailsByUserId = async (user_id: number) => {
 	const response = await axios.get("/api/users/" + user_id)
 	const data = response.data[0] as User
@@ -155,7 +153,6 @@ export const searchProducts = async (searchQuery:string):Promise<ProductType[]> 
 	return products
 }
   
-
 // export const fetchsearchAllProducts = async (query:string) => {
 // 	const response = await axios.get("/api/product")
 // 	const data = response.data as ProductType[]
