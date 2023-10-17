@@ -1,28 +1,41 @@
 import { useState, useEffect, useContext } from "react"
-// import { useLoaderData } from "react-router-dom"
 import { Grid, Button, } from "@mui/material"
 import Divider from "@mui/material/Divider"
 import VerifyDialog from "./VerifyDialog"
-import { useNavigate  } from "react-router-dom"
+import { useNavigate, redirect } from "react-router-dom"
 import UpdateProfile from "./UpdateProfile"
 import { UserTokenContext } from "../App"
-import { deleteUser, fetchOwnProducts, fetchUser} from "../services"
+import { deleteUser, fetchOwnProducts, fetchUser } from "../services"
 import { ProductType, User, initialState } from "../types"
 import ProductCard from "./ProductCard"
 import Rating from "@mui/material/Rating"
 import Notification from "./Notification"
 
+export async function loader(token:string) {
+	console.log("testi")
+	const user = await fetchUser(token)
+	console.log(user)
+	if(user === null){
+		console.log("ei kirjautunut sisään")
+		return redirect("/")
+	}
+	return null
+} 
+
+
 function Profile() {
 
 	const [user, setUser] = useState<User>(initialState)
-	const [token, setToken] = useContext(UserTokenContext)	
+	const [token, setToken] = useContext(UserTokenContext)
 	const [updateVisible, setUpdateVisible] = useState(false)
 	const [ownProducts, setOwnProducts] = useState<ProductType[]>([])
 	const [verifyOpen, setVerifyOpen] = useState<boolean>(false)
+	//const [loading, setLoading] = useState(true)
 	const navigate = useNavigate()
 
 	const [showSuccessDeleteNotification, setShowSuccessDeleteNotification] = useState(false)
 	const [showErrorDeleteNotification, setShowErrorDeleteNotification] = useState(false)
+	const [showErrorNotification, setShowErrorNotification] = useState(false)
 
 	const joinDate: string | undefined = user?.reg_day
 	let formattedJoinDate: string | undefined = undefined
@@ -33,34 +46,35 @@ function Profile() {
 		formattedJoinDate = `${day}.${month}.${year}`
 	}
 
+
 	const handleVerification = () => {
 		setVerifyOpen(true)
 	}
 
-	
+
 
 	useEffect(() => {
 		const fetchInfo = async () => {
-			if(!token){
+			if (!token) {
 				setUser(initialState)
 				setOwnProducts([])
 				return
 			}
-	
+
 			const user = await fetchUser(token)
-	
+
 			if (user === undefined) {
 				console.error("error fetching user")
 				return
 			}
-			
+
 			const products = await fetchOwnProducts(Number(user.user_id))
-			
-			if(products === undefined) {
+
+			if (products === undefined) {
 				console.error("error fetching products")
 				return
 			}
-			
+
 			setUser(user)
 			setOwnProducts(products)
 		}
@@ -81,7 +95,7 @@ function Profile() {
 		localStorage.removeItem("token")
 		setToken("")
 		console.log("logged out")
-		setTimeout(() => { 
+		setTimeout(() => {
 			navigate("/")
 		}, 2000)
 	}
@@ -93,6 +107,82 @@ function Profile() {
 		setOpen: setVerifyOpen,
 		onAccept: deleteProfile
 	}
+
+	/*
+	useEffect(() => {
+		console.log("Menee useEffectin sisään")
+		const fetchData = async () => {
+			console.log("debug 2")
+			const result = await loader(token)
+			if (result){
+				console.log("debug 3")
+				setTimeout(() => {
+					setShowErrorNotification(true)
+				}, 1500)
+			}
+			console.log("debug 4")
+			setLoading(false)
+		}
+		fetchData()
+	}, [token])
+
+	//------------------------------------------------------------------
+	
+
+	useEffect(() => {
+		if (!token) {
+			setTimeout(() => {
+				navigate("/")
+				console.log("navigointi tehty")
+				setShowErrorNotification(true)
+				console.log("notifikaatio näytetty")
+			}, 1500) 
+			console.log("timeoutin ulkopuolella")
+		}
+		console.log("if-lauseen ulkopuolella")
+	}, [token, navigate, setShowErrorNotification])
+*/
+
+	/*
+	useEffect(() => {
+		(async () => {
+			if (!token) {
+				await navigate("/")
+				console.log("navigointi tehty")
+				setShowErrorNotification(true)
+				console.log("notifikaatio näytetty")
+			}
+		})()
+	}, [token, navigate, setShowErrorNotification])
+
+
+	useEffect(() => {
+		if (!token) {
+			setTimeout(() => {
+				navigate("/")
+				console.log("navigointi tehty")
+			}, 1000)
+
+			setTimeout(() => {
+				setShowErrorNotification(true)
+				console.log("notifikaatio näytetty")
+			}, 2000)
+		}
+		console.log("if-lauseen ulkopuolella")
+	}, [token, navigate, setShowErrorNotification])*/
+	/*
+	useEffect(() => {
+		if (!token) {
+			setTimeout(() => {
+				navigate("/")
+			}, 1000)
+		}
+		
+		setShowErrorNotification(true)
+	}, [token, navigate, setShowErrorNotification])
+
+*/
+
 
 
 	return (
@@ -167,6 +257,15 @@ function Profile() {
 								type="error"
 								onClose={() => setShowErrorDeleteNotification(false)}
 								duration={1500}
+							/>
+						)}
+						{showErrorNotification && (
+							<Notification
+								open={showErrorNotification}
+								message="Kirjaudu sisään nähdäksesi profiilin tiedot"
+								type="error"
+								onClose={() => setShowErrorNotification(false)}
+								duration={5000}
 							/>
 						)}
 

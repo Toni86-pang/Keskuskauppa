@@ -134,6 +134,7 @@ function NewProduct() {
 		setNewPostalCode(user.postal_code)
 	}
 
+	
 	return (
 		<Container sx={{ m: 1 }}>
 			<h3>Uusi tuote</h3>

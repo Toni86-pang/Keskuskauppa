@@ -9,13 +9,34 @@ export const deleteUser = (token: string) => {
 	}).then((response) => response.data)
 }
 
+//Muokkaa tätä
+export const fetchUser = async (token: string) => {
+	try {
+		const response = await axios.get("/api/users/user/", {
+			headers: {
+				"Authorization": `Bearer ${token}`
+			} 
+		})
+		if (response.status === 401) {
+			return null
+		}
+		return response.data	
+	} catch (error) {
+		console.error("Error fetching user:", error)
+		return null
+	}
+}
+
+
+//alkuperäinen
+/*
 export const fetchUser = (token: string) => {
 	return axios.get("/api/users/user/", {
 		headers: {
 			"Authorization": `Bearer ${token}`
 		}
 	}).then((response) => response.data)
-}
+}*/
 
 
 export const fetchUsernameByUserId = async (id: number) => {
