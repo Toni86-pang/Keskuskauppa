@@ -30,7 +30,7 @@ export interface ProductType {
 	city: string
     postal_code: string
     description: string
-	price: number
+	price: string
 	// product_image?: any
 	listed: boolean
 }
@@ -190,7 +190,7 @@ export const initialStateProduct: ProductType = {
 	city: "",
 	postal_code: "",
 	description: "",
-	price: 0,
+	price: "",
 	listed: true
 	// product_image?: any
 	

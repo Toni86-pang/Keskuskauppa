@@ -10,7 +10,7 @@ function NewProduct() {
 	const [user, setUser] = useState<User>(initialState)
 	const [newTitle, setNewTitle] = useState<string>("")
 	const [newDescription, setNewDescription] = useState<string>("")
-	const [newPrice, setNewPrice] = useState<number >(0)
+	const [newPrice, setNewPrice] = useState<string>("")
 	const [, setError] = useState<string>("")
 	const [newCategory, setNewCategory] = useState<string>("")
 	const [categoryId, setCategoryId] = useState<number>(0)
@@ -18,8 +18,9 @@ function NewProduct() {
 	const [subcategoryId, setSubcategoryId] = useState<number>(0)
 	const [categories, setCategories] = useState<Category[]>([])
 	const [subcategories, setSubcategories] = useState<Subcategory[]>([])
-	const [newCity, setNewCity] = useState<string>(user.city)
-	const [newPostalCode, setNewPostalCode] = useState<string>(user.postal_code)
+	const [newCity, setNewCity] = useState<string>("")
+	const [newPostalCode, setNewPostalCode] = useState<string>("")
+	const [productImage, setProductImage] = useState<File | null>(null)	
 	const [hidden, setHidden] = useState<boolean>(false)
 
 	const navigate = useNavigate()
@@ -37,7 +38,9 @@ function NewProduct() {
 				console.error("error fetching user")
 				return
 			}
-			
+			console.log("Fetched user data:", user)
+			setNewCity(user.city)
+			setNewPostalCode(user.postal_code)
 			setUser(user)
 		}
 		fetchInfo()
@@ -64,7 +67,16 @@ function NewProduct() {
 	}
 
 	const createNewProduct = async () => {
-		const product = {user_id: user.user_id, title: newTitle, category_id: categoryId, subcategory_id: subcategoryId, postal_code: newPostalCode, city: newCity, description: newDescription, price: newPrice, listed: true}
+		const product = {
+			user_id: user.user_id, 
+			title: newTitle, 
+			category_id: categoryId, 
+			subcategory_id: subcategoryId, 
+			postal_code: newPostalCode, 
+			city: newCity, 
+			description: newDescription, 
+			price: newPrice,
+			listed: true}
 
 		newProduct(product, token).then((response) => {
 			if (response.status === 201) {
@@ -92,12 +104,11 @@ function NewProduct() {
 		const value = event.target.value
 		setNewDescription(value)
 	}
+
 	const handlePriceChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const inputValue = event.target.value
-	
-		// Treat empty input as 0
 		if (inputValue === "") {
-			setNewPrice(0)
+			setNewPrice("")
 			setError("")
 			return
 		}
@@ -105,15 +116,15 @@ function NewProduct() {
 		const price = parseFloat(inputValue)
 	
 		if (isNaN(price) || price < 0) {
-			setNewPrice(0)
+			setNewPrice("")
 			setError("Invalid price input. Please enter a valid positive number.")
 		} else {
-			setNewPrice(price)
+		// Format the price to remove trailing zeros and unnecessary decimals
+			const formattedPrice = price.toString()
+			setNewPrice(formattedPrice)
 			setError("")
 		}
 	}
-	
-	
 	const handleCityChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const value = (event.target.value)
 		setNewCity(value)
@@ -138,6 +149,7 @@ function NewProduct() {
 		setSubcategoryId(subcategoryId)
 	}
 
+	
 	const handleCancel = () => {
 		navigate("/profile")
 	}
@@ -145,9 +157,9 @@ function NewProduct() {
 	const location = `${user.postal_code} ${user.city}`
 
 	const handleCancelChange = () => {
-		setHidden(false)
 		setNewCity(user.city)
 		setNewPostalCode(user.postal_code)
+		setHidden(false)
 	}
 
 	return (
@@ -173,7 +185,7 @@ function NewProduct() {
 				<FormControl>
 					<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="price">Hinta*</InputLabel>
 					<TextField
-						type="number"
+						type="text"
 						name="price"
 						value={newPrice}
 						onChange={handlePriceChange}
