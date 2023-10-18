@@ -18,9 +18,9 @@ const gridContainerStyle = {
 }
 
 function SoldProductCard({ sold }: SoldCardProps) {
-
 	const navigate = useNavigate()
 
+	// Vaihda toiminta niin, että avautuu tuotteen yksityiskohtien modaali
 	const handleClick = () => {
 		navigate("/")
 	}
@@ -47,6 +47,7 @@ function SoldProductCard({ sold }: SoldCardProps) {
 						<Typography> Ostaja: {sold.buyer} </Typography>
 					</Grid>
 					<Grid item xs={3} style={{ display: "flex", alignItems: "center" }}>
+						{/* Tänne tulis se linkitys sinne modaaliin */}
 						<Button variant="contained" color="primary" onClick={handleClick}>
                             Tilaustiedot
 						</Button>
