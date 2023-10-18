@@ -1,30 +1,50 @@
 import express, { Request, Response } from "express"
 import { createProduct, getAllProducts, getProductById, getProductsByCategory, getProductsBySubcategory, updateProductData, deleteProduct, getProductsByUserId, Product, updateProductListed } from "../daos/productsDao"
-import { authentication, validateCategoryId } from "../middlewares"
+import { authentication, validateCategoryId  } from "../middlewares"
+import multer from "multer"
 
 const product = express.Router()
-
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
 interface CustomRequest extends Request {
 	id?: number
 }
 
 /*  			 Products endpoints 				  */
-product.post("/", authentication, async (req: CustomRequest, res) => {
+product.post("/", authentication, upload.single("product_image"), async (req: CustomRequest, res: Response) => {
 	const user_id = req.id
 	try {
 		const { title, category_id, subcategory_id, description, price, postal_code, city } = req.body
+		let product_image: Buffer | undefined
+
+		if (req.file) {
+			product_image = req.file.buffer
+		}
+
 		if (!user_id || !title || !category_id || !subcategory_id || !price) {
 			return res.status(400).send("Required information is missing.")
 		}
+
 		const newProduct = {
-			user_id, title, category_id, subcategory_id, description, price, postal_code, city, listed: true
+			user_id,
+			title,
+			category_id,
+			subcategory_id,
+			description,
+			price,
+			postal_code,
+			city,
+			product_image,
+			listed: true
 		}
+
 		await createProduct(newProduct)
 		res.status(201).json({ message: "Product created successfully" })
 	} catch (error) {
 		res.status(500).json({ message: "Error creating product" })
 	}
 })
+
 
 product.get("/", async (_req, res) => {
 	try {

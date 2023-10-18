@@ -1,5 +1,5 @@
 import axios from "axios"
-import { Category, ProductType, Sale, UpdatedProduct, UpdatedUser, User } from "./types"
+import { BoughtProps, Category, ProductType, Sale, SoldProps, UpdatedProduct, UpdatedUser, User } from "./types"
 
 export const deleteUser = (token: string) => {
 	return axios.delete("/api/users/delete", {
@@ -40,7 +40,6 @@ export const fetchUser = (token: string) => {
 	}).then((response) => response.data)
 }*/
 
-
 export const fetchUsernameByUserId = async (id: number) => {
 	try {
 		const response = await axios.get(`/api/users/${id}`)
@@ -51,8 +50,6 @@ export const fetchUsernameByUserId = async (id: number) => {
 		return undefined
 	}
 }
-  
-  
   
 export const fetchUserDetailsByUserId = async (user_id: number) => {
 	const response = await axios.get("/api/users/" + user_id)
@@ -87,6 +84,27 @@ export const fetchProduct = async (id: number) => {
 export const fetchAllProducts = async () => {
 	const response = await axios.get("/api/product")
 	const data = response.data as ProductType[]
+	return data
+}
+
+export const fetchOwnSold = async (token: string) => {
+	const response = await axios.get("/api/sales/sold", {
+		headers: {
+			"Authorization": `Bearer ${token}`
+		}
+	})
+	const data = response.data as SoldProps[]
+	return data
+}
+
+export const fetchOwnBought = async (token: string) => {
+	const response = await axios.get("/api/sales/bought", {
+		headers: {
+			"Authorization": `Bearer ${token}`
+		}
+	})
+	const data = response.data as BoughtProps[]
+
 	return data
 }
 
@@ -130,13 +148,18 @@ export const newProduct = async (product: ProductType, token: string) => {
 }
 
 export const newSale = async (sale: Sale, token: string) => {
-	const response = await axios.post("/api/sales/", sale, {
-		headers: {
-			"Content-Type": "application/json",
-			"Authorization": `Bearer ${token}`
-		},
-	})
-	return response
+	try {
+		const response = await axios.post("/api/salse/", sale, {
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": `Bearer ${token}`
+			},
+		})
+		return response
+	} catch (error) {
+		console.error("Error posting", error)
+		return undefined
+	}
 }
 
 export const fetchCategoryName = (id: number) => {
@@ -165,7 +188,6 @@ export const searchProducts = async (searchQuery:string):Promise<ProductType[]> 
 	return products
 }
   
-
 // export const fetchsearchAllProducts = async (query:string) => {
 // 	const response = await axios.get("/api/product")
 // 	const data = response.data as ProductType[]

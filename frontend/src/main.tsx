@@ -13,6 +13,7 @@ import Profile, {loader as profileLoader} from "./Components/Profile.tsx"
 import LandingPage from "./Components/LandingPage.tsx"
 import SearchResultsPage from "./Components/SearchResultpage.tsx"
 import CheckOut from "./Components/CheckOut.tsx"
+import OrderHistory from "./Components/OrderHistory.tsx"
 
 
 const router = createBrowserRouter([
@@ -66,6 +67,10 @@ const router = createBrowserRouter([
 				path: "/user/:id",
 				element: <SellerProfile />,
 				loader: sellerLoader,
+			},
+			{
+				path: "/orderhistory",
+				element: <OrderHistory />
 			},
 		],
 	},
