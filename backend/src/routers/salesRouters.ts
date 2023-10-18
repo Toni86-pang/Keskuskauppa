@@ -41,6 +41,7 @@ sales.post("/", authentication, async (req: CustomRequest, res: Response) => {
 
 sales.get("/sold", authentication, async (req: CustomRequest, res: Response) => {
 	const userId = req.id
+
 	try {
 		if (userId) {
 			const sales: ProductSale[] = await fetchOwnSold(userId)
