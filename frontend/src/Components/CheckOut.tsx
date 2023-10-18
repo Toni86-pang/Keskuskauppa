@@ -2,13 +2,18 @@ import { Container, InputLabel, TextField, Button } from "@mui/material"
 import { useState, useEffect, ChangeEvent } from "react"
 import { BuyerInfo, ProductType, User } from "../types"
 import { fetchUser } from "../services"
-import { useLoaderData, useNavigate } from "react-router-dom"
+import { useLoaderData, useNavigate, redirect } from "react-router-dom"
 import CheckoutProductCard from "./CheckoutSummaryProductCard"
 import SaleSummary from "./SaleSummary"
 
+
+
 export async function loader() {
 	const token = localStorage.getItem("token")
-	if(token){
+	if(!token){
+		return redirect("/")
+	}
+	else{
 		const userData = await fetchUser(token)
 		return userData
 	}
