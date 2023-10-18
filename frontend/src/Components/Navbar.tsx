@@ -127,6 +127,13 @@ const Navbar = ({cart, setCart}: NavbarProps) => {
 										<MenuItem
 											onClick={handleMenuClose}
 											component={Link}
+											to="/orderhistory"
+										>
+										Tilaushistoria
+										</MenuItem>
+										<MenuItem
+											onClick={handleMenuClose}
+											component={Link}
 											to="/product/new"
 										>
 										Lisää uusi tuote
