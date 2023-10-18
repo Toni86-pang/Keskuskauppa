@@ -1,8 +1,8 @@
 import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Button, Container, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material"
+import { Button, Container, FormControl, Input, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material"
 import { UserTokenContext } from "../App"
-import { Category, Subcategory, User, initialState } from "../types"
+import { Category, ProductType, Subcategory, User, initialState } from "../types"
 import { fetchCategories, fetchIndividualSubcategory, fetchUser, newProduct } from "../services"
 
 function NewProduct() {
@@ -38,9 +38,6 @@ function NewProduct() {
 				console.error("error fetching user")
 				return
 			}
-			console.log("Fetched user data:", user)
-			setNewCity(user.city)
-			setNewPostalCode(user.postal_code)
 			setUser(user)
 		}
 		fetchInfo()
@@ -67,17 +64,25 @@ function NewProduct() {
 	}
 
 	const createNewProduct = async () => {
-		const product = {
-			user_id: user.user_id, 
-			title: newTitle, 
-			category_id: categoryId, 
-			subcategory_id: subcategoryId, 
-			postal_code: newPostalCode, 
-			city: newCity, 
-			description: newDescription, 
+		const product: ProductType = {
+			user_id: user.user_id,
+			title: newTitle,
+			category_id: categoryId,
+			subcategory_id: subcategoryId,
+			city: newCity,
+			postal_code: newPostalCode,
+			description: newDescription,
 			price: newPrice,
-			listed: true}
-
+			product_image: productImage, // Ensure product_image is typed as File
+			listed: true,
+		}
+	
+		const formData = new FormData()
+		if (productImage) {
+			formData.append("product_image", productImage)
+		}
+		// Append other product data like title, description, etc.
+	
 		newProduct(product, token).then((response) => {
 			if (response.status === 201) {
 				console.log("Product creation success")
@@ -85,6 +90,8 @@ function NewProduct() {
 			}
 		})
 	}
+	
+	
 
 	const getCategory = (array: Array<{ category_id: number; category_name: string }>, name: string) => {
 		const filtered = array.filter((category) => category.category_name === name)
@@ -125,10 +132,12 @@ function NewProduct() {
 			setError("")
 		}
 	}
+
 	const handleCityChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const value = (event.target.value)
 		setNewCity(value)
 	}
+
 	const handlePostCodeChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const value = (event.target.value)
 		setNewPostalCode(value)
@@ -149,6 +158,12 @@ function NewProduct() {
 		setSubcategoryId(subcategoryId)
 	}
 
+	const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+		const file = event.target.files && event.target.files[0]
+		if (file) {
+			setProductImage(file)
+		}
+	}
 	
 	const handleCancel = () => {
 		navigate("/profile")
@@ -191,6 +206,14 @@ function NewProduct() {
 						onChange={handlePriceChange}
 					/>
 				</FormControl>
+				<FormControl>
+					<InputLabel style={{position: "relative"}} id="Kuvat">Lisää kuva:</InputLabel>
+					<Input
+						type="file"
+						onChange={handleImageChange}
+						inputProps={{ accept: "image/*" }}	
+					/>
+				</FormControl>
 				<FormControl sx={{ mt: 2 }}>
 					<InputLabel id="Katergoria">Kategoria*</InputLabel>
 					<Select
@@ -205,7 +228,7 @@ function NewProduct() {
 							)
 						})}
 					</Select>				</FormControl>
-
+				
 				{newCategory ? (
 					<FormControl sx={{ mt: 2 }}>
 						<InputLabel id="Alakategoria">Alakategoria*</InputLabel>
@@ -222,6 +245,7 @@ function NewProduct() {
 							})}
 						</Select>
 					</FormControl>
+
 				) : (
 					<></>
 				)}

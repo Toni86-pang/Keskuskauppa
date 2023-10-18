@@ -31,7 +31,7 @@ export interface ProductType {
     postal_code: string
     description: string
 	price: string
-	// product_image?: any
+	product_image: File | null
 	listed: boolean
 }
 
@@ -86,7 +86,7 @@ export interface UpdateProductModalProps {
 	city: string
 	postal_code: string
 	description: string
-	price: number
+	price: string
 	
   }
   
@@ -222,9 +222,8 @@ export const initialStateProduct: ProductType = {
 	postal_code: "",
 	description: "",
 	price: "",
-	listed: true
-	// product_image?: any
-	
+	listed: true,
+	product_image: null
 }
 
 export type BreadcrumbResolver = (params: string) => Promise<[string, string][]>

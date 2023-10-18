@@ -236,7 +236,7 @@ export default function Product() {
 													city={product?.city.split(",")[0] || ""}
 													postal_code={product?.postal_code.split(",")[0] || ""}
 													description={product?.description || ""}
-													price={product?.price || 0}
+													price={product?.price || ""}
 												/>
 											</div>
 
