@@ -17,13 +17,15 @@ export const fetchUser = async (token: string) => {
 				"Authorization": `Bearer ${token}`
 			} 
 		})
-		if (response.status === 401) {
-			return null
-		}
 		return response.data	
 	} catch (error) {
-		console.error("Error fetching user:", error)
-		return null
+		if ( axios.isAxiosError(error) && error.response?.status === 401) {
+			return null
+		}
+		else{
+			console.error("Error fetching user:", error)
+			return null
+		}
 	}
 }
 

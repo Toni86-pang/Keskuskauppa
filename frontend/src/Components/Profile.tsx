@@ -11,17 +11,13 @@ import ProductCard from "./ProductCard"
 import Rating from "@mui/material/Rating"
 import Notification from "./Notification"
 
-export async function loader(token:string) {
-	console.log("testi")
-	const user = await fetchUser(token)
-	console.log(user)
-	if(user === null){
-		console.log("ei kirjautunut sisään")
+export async function loader() {
+	const token = localStorage.getItem("token")
+	if(!token){
 		return redirect("/")
 	}
 	return null
-} 
-
+}
 
 function Profile() {
 
@@ -30,7 +26,6 @@ function Profile() {
 	const [updateVisible, setUpdateVisible] = useState(false)
 	const [ownProducts, setOwnProducts] = useState<ProductType[]>([])
 	const [verifyOpen, setVerifyOpen] = useState<boolean>(false)
-	//const [loading, setLoading] = useState(true)
 	const navigate = useNavigate()
 
 	const [showSuccessDeleteNotification, setShowSuccessDeleteNotification] = useState(false)
@@ -107,83 +102,6 @@ function Profile() {
 		setOpen: setVerifyOpen,
 		onAccept: deleteProfile
 	}
-
-	/*
-	useEffect(() => {
-		console.log("Menee useEffectin sisään")
-		const fetchData = async () => {
-			console.log("debug 2")
-			const result = await loader(token)
-			if (result){
-				console.log("debug 3")
-				setTimeout(() => {
-					setShowErrorNotification(true)
-				}, 1500)
-			}
-			console.log("debug 4")
-			setLoading(false)
-		}
-		fetchData()
-	}, [token])
-
-	//------------------------------------------------------------------
-	
-
-	useEffect(() => {
-		if (!token) {
-			setTimeout(() => {
-				navigate("/")
-				console.log("navigointi tehty")
-				setShowErrorNotification(true)
-				console.log("notifikaatio näytetty")
-			}, 1500) 
-			console.log("timeoutin ulkopuolella")
-		}
-		console.log("if-lauseen ulkopuolella")
-	}, [token, navigate, setShowErrorNotification])
-*/
-
-	/*
-	useEffect(() => {
-		(async () => {
-			if (!token) {
-				await navigate("/")
-				console.log("navigointi tehty")
-				setShowErrorNotification(true)
-				console.log("notifikaatio näytetty")
-			}
-		})()
-	}, [token, navigate, setShowErrorNotification])
-
-
-	useEffect(() => {
-		if (!token) {
-			setTimeout(() => {
-				navigate("/")
-				console.log("navigointi tehty")
-			}, 1000)
-
-			setTimeout(() => {
-				setShowErrorNotification(true)
-				console.log("notifikaatio näytetty")
-			}, 2000)
-		}
-		console.log("if-lauseen ulkopuolella")
-	}, [token, navigate, setShowErrorNotification])*/
-	/*
-	useEffect(() => {
-		if (!token) {
-			setTimeout(() => {
-				navigate("/")
-			}, 1000)
-		}
-		
-		setShowErrorNotification(true)
-	}, [token, navigate, setShowErrorNotification])
-
-*/
-
-
 
 	return (
 		<div className="profile">
@@ -266,7 +184,6 @@ function Profile() {
 								duration={5000}
 							/>
 						)}
-
 					</Grid>
 				</Grid>
 			</Grid>
