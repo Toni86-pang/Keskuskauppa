@@ -18,24 +18,47 @@ export interface Product {
 
 export async function createProduct(product: Product): Promise<void> {
 	product.listed = true
-	const query = `
-	  INSERT INTO Products
-		(user_id, title, category_id, subcategory_id, description, price, product_image, postal_code, city, listed)
-	  VALUES
-		($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-	`
-	const values = [
-		product.user_id,
-		product.title,
-		product.category_id,
-		product.subcategory_id,
-		product.description,
-		product.price,
-		product.product_image,
-		product.postal_code,
-		product.city,
-		product.listed
-	]
+	let query
+	let values
+
+	if (product.product_image) {
+		query = `
+            INSERT INTO Products
+                (user_id, title, category_id, subcategory_id, description, price, product_image, postal_code, city, listed)
+            VALUES
+                ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        `
+		values = [
+			product.user_id,
+			product.title,
+			product.category_id,
+			product.subcategory_id,
+			product.description,
+			product.price,
+			product.product_image,
+			product.postal_code,
+			product.city,
+			product.listed
+		]
+	} else {
+		query = `
+            INSERT INTO Products
+                (user_id, title, category_id, subcategory_id, description, price, postal_code, city, listed)
+            VALUES
+                ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        `
+		values = [
+			product.user_id,
+			product.title,
+			product.category_id,
+			product.subcategory_id,
+			product.description,
+			product.price,
+			product.postal_code,
+			product.city,
+			product.listed
+		]
+	}
 
 	try {
 		await executeQuery(query, values)
@@ -44,6 +67,7 @@ export async function createProduct(product: Product): Promise<void> {
 		throw error
 	}
 }
+
 // hide product if its in sale transaction
 export const hideProdutsInSale =async (productIds:number[]): Promise<void> => {
 	const query = `
