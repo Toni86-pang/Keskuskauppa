@@ -14,6 +14,7 @@ import LandingPage from "./Components/LandingPage.tsx"
 import SearchResultsPage from "./Components/SearchResultpage.tsx"
 import CheckOut from "./Components/CheckOut.tsx"
 import OrderDetails from "./Components/OrderDetails.tsx"
+import OrderHistory from "./Components/OrderHistory.tsx"
 
 const router = createBrowserRouter([
 	{
@@ -70,7 +71,11 @@ const router = createBrowserRouter([
 			{
 				path: "/orders",
 				element: <OrderDetails saleId={10} onClose={()=>{return}} isOpen={true} />
-			}
+			},
+			{
+				path: "/orderhistory",
+				element: <OrderHistory />
+			},
 		],
 	},
 ])

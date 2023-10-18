@@ -138,6 +138,37 @@ export interface DisplayProductsProps {
 	productList: ProductType[]
 }
 
+export interface BoughtProps {
+	sales_id: number
+	sales_status: string
+	title: string
+	price: number
+	seller: string
+}
+
+export interface DisplayBoughtProps {
+	bought: BoughtProps[] | null
+}
+
+export interface BoughtCardProps {
+	bought: BoughtProps | null
+}
+export interface SoldCardProps {
+	sold: SoldProps | null
+}
+
+export interface SoldProps {
+	sales_id: number
+	sales_status: string
+	title: string
+	price: number
+	buyer: string
+}
+
+export interface DisplaySoldProps {
+	sold: SoldProps[] | null
+}
+
 export interface SummaryProps {
 	isOpen: boolean
 	onClose: () => void

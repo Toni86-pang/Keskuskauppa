@@ -1,5 +1,5 @@
 import axios from "axios"
-import { Category, ProductType, Sale, UpdatedProduct, UpdatedUser, User } from "./types"
+import { BoughtProps, Category, ProductType, Sale, SoldProps, UpdatedProduct, UpdatedUser, User } from "./types"
 
 export const deleteUser = (token: string) => {
 	return axios.delete("/api/users/delete", {
@@ -78,6 +78,27 @@ export const fetchAllProducts = async () => {
 	return data
 }
 
+export const fetchOwnSold = async (token: string) => {
+	const response = await axios.get("/api/sales/sold", {
+		headers: {
+			"Authorization": `Bearer ${token}`
+		}
+	})
+	const data = response.data as SoldProps[]
+	return data
+}
+
+export const fetchOwnBought = async (token: string) => {
+	const response = await axios.get("/api/sales/bought", {
+		headers: {
+			"Authorization": `Bearer ${token}`
+		}
+	})
+	const data = response.data as BoughtProps[]
+
+	return data
+}
+
 export const updateProduct = async (productId: number, updatedData: UpdatedProduct, token: string) => {
 	await axios.put(`/api/product/update/${productId}`, updatedData,{
 		headers: {
@@ -118,15 +139,19 @@ export const newProduct = async (product: ProductType, token: string) => {
 }
 
 export const newSale = async (sale: Sale, token: string) => {
-	const response = await axios.post("/api/sales/", sale, {
-		headers: {
-			"Content-Type": "application/json",
-			"Authorization": `Bearer ${token}`
-		},
-	})
-	return response	
+	try {
+		const response = await axios.post("/api/sales/", sale, {
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": `Bearer ${token}`
+			},
+		})
+		return response
+	} catch (error) {
+		console.error("Error posting", error)
+		return undefined
+	}
 }
-
 export const setSaleSent = async (saleId: number, token: string) => {
 	const response = await axios.put("/api/sales/update/" + saleId,
 		{
