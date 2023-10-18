@@ -26,7 +26,8 @@ export const fetchSale = (token: string, id: number) => {
 }
 
 export const fetchSaleStatus = async (statusId: number) => {
-	return (await axios.get("/api/sales/status" + statusId)).data
+	const response = await axios.get("/api/sales/status/" + statusId)
+	return response.data
 }
 
 
@@ -123,8 +124,33 @@ export const newSale = async (sale: Sale, token: string) => {
 			"Authorization": `Bearer ${token}`
 		},
 	})
+	return response	
+}
+
+export const setSaleSent = async (saleId: number, token: string) => {
+	const response = await axios.put("/api/sales/update/" + saleId,
+		{
+			"sales_status": 3
+		}, {
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": `Bearer ${token}`
+			}
+		})
 	return response
-	
+}
+
+export const cancelSale = async (saleId: number, token: string) => {
+	const response = await axios.put("/api/sales/update/" + saleId,
+		{
+			"sales_status": 5
+		}, {
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": `Bearer ${token}`
+			}
+		})
+	return response
 }
 
 export const fetchCategoryName = (id: number) => {

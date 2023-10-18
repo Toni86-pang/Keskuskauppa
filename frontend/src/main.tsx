@@ -32,15 +32,16 @@ const router = createBrowserRouter([
 			{
 				path: "/products",
 				element: <Products />,
+				loader: productsLoader
 			},
 			{
 				path: "/products/category/:id",
-				element: <Products category={true}/>,
+				element: <Products />,
 				loader: productsLoader
 			},
 			{
 				path: "/products/subcategory/:id",
-				element: <Products subCategory={true}/>,
+				element: <Products />,
 				loader: productsLoader
 			},
 			{

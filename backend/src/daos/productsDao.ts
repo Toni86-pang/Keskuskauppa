@@ -69,28 +69,28 @@ export async function createProduct(product: Product): Promise<void> {
 }
 
 // hide product if its in sale transaction
-export const hideProdutsInSale =async (productIds:number[]): Promise<void> => {
+export const hideProductInSale = async (productId: number): Promise<void> => {
 	const query = `
 	UPDATE products	
 	SET listed = false
-	WHERE product_id = ANY($1::int[])
+	WHERE product_id = $1)
 	`
 	try{
-		await executeQuery(query, [productIds])
+		await executeQuery(query, [productId])
 	}catch (error) {
 		console.error("Error hiding products:", error)
 		throw error
 	}
 }
 //relist product if sale doesn't go trough
-export const relistProductsAfterCancellation =async (productIds: number[]):Promise<void> => {
+export const relistProductsAfterCancellation =async (productId: number):Promise<void> => {
 	const query = `
 	UPDATE Products
 	SET listed = true
-	WHERE prodcut_id = ANY($1::int[])
+	WHERE product_id = $1)
 	`
 	try {
-		await executeQuery(query, [productIds])
+		await executeQuery(query, [productId])
 	}catch (error){
 		console.error("Error re-listing products", error)
 		throw error
@@ -110,7 +110,7 @@ export const getProductById = async (product_id: number): Promise<Product | null
 }
 
 export const getAllProducts = async (): Promise<Product[]> => {
-	const query = "SELECT * FROM products"
+	const query = "SELECT * FROM products where listed = true"
 	const result = await executeQuery(query)
 
 	return result.rows
@@ -215,7 +215,7 @@ export const getProductsByCategory = async (category_ID: number): Promise<Produc
 	JOIN subcategory ON products.subcategory_id = subcategory.subcategory_id
 	JOIN category ON subcategory.category_id = category.category_id
 	
-	WHERE category.category_id = $1;`
+	WHERE category.category_id = $1 AND listed = true;`
 
 	const result = await executeQuery(query, [category_ID])
 
@@ -236,7 +236,7 @@ export const getProductsBySubcategory = async (subcategory_ID: number): Promise<
 
 	JOIN subcategory ON products.subcategory_id = subcategory.subcategory_id
 
-	WHERE subcategory.subcategory_id = $1;`
+	WHERE subcategory.subcategory_id = $1 AND listed = true;`
 	
 	const result = await executeQuery(query, [subcategory_ID])
 

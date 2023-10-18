@@ -1,5 +1,5 @@
 import { executeQuery } from "../database"
-import { hideProdutsInSale,relistProductsAfterCancellation} from "./productsDao"
+import { hideProductInSale } from "./productsDao"
 
 interface Sale {
 	sales_id?: number
@@ -35,7 +35,7 @@ export const getSaleById = async (saleId: number): Promise<Sale> => {
 	}
 }
 
-export const createSale = async (sale: Sale, productIds: number[]): Promise<Sale> => {
+export const createSale = async (sale: Sale): Promise<Sale> => {
 	const params = [
 		sale.product_id,
 		sale.seller_id,
@@ -46,7 +46,6 @@ export const createSale = async (sale: Sale, productIds: number[]): Promise<Sale
 		sale.buyer_postcode,
 		sale.buyer_phone,
 		sale.buyer_email,
-
 	]
 	const query = `
 	INSERT INTO sales
@@ -56,7 +55,9 @@ export const createSale = async (sale: Sale, productIds: number[]): Promise<Sale
   `
 	try {
 		const result = await executeQuery(query, params)
-		await hideProdutsInSale(productIds)
+		if(sale.product_id) {
+			await hideProductInSale(sale.product_id)
+		}		
 		return result.rows[0]
 	} catch (error) {
 		console.error("Error creating sale:", error)
@@ -65,12 +66,11 @@ export const createSale = async (sale: Sale, productIds: number[]): Promise<Sale
 
 }
 
-export const updateSaleStatus = async (salesId: number, salesStatus: number, productIds: number[]) => {
+export const updateSaleStatus = async (salesId: number, salesStatus: number) => {
 	const params = [salesId, salesStatus]
 	const query = "UPDATE sales SET sales_status = $2 WHERE sales_id = $1 RETURNING *"
 	try{
 		const result = await executeQuery(query, params)
-		await relistProductsAfterCancellation(productIds)
 		return result.rows[0]
 	}catch (error){
 		console.error("Error updating sale status", error)
@@ -84,7 +84,7 @@ export const getStatusById = async (statusId: number) => {
 
 	try {
 		const result = await executeQuery(query, params)
-		return result.rows[0]
+		return result.rows[0].sales_status
 	} catch (error) {
 		console.error("Error fetching sales status: ", error)
 	}

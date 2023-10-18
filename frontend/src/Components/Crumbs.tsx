@@ -65,9 +65,8 @@ export default function Crumbs() {
 			if(breadcrumbMap[routePattern]) {
 				breadcrumbData = breadcrumbMap[routePattern]
 			} else {
-				breadcrumbData = [["Default BreadCrumb", ""] ] as [string, string][]
-			}
-			
+				breadcrumbData = [["Default Breadcrumb", ""] ] as [string, string][]
+			}			
 
 			let crumbs: [string, string][] = []
 

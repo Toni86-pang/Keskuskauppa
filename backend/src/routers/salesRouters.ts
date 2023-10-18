@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express"
 import { updateSaleStatus, createSale, getSaleById, fetchOwnSold, fetchOwnBought, getStatusById } from "../daos/salesDao"
 import { authentication } from "../middlewares"
-import { relistProductsAfterCancellation } from "../daos/productsDao"
 
 const sales = express.Router()
 
@@ -27,12 +26,11 @@ sales.post("/", authentication, async (req: CustomRequest, res: Response) => {
 	const buyer_id = req.id
 	try {
 		const { product_id, seller_id, buyer_name, buyer_address, buyer_city, buyer_postcode, buyer_phone, buyer_email } = req.body
-		const productIds = [product_id]
 		console.log(product_id, seller_id, buyer_id, buyer_name, buyer_address, buyer_city, buyer_postcode, buyer_phone, buyer_email)
 		if (!product_id || !seller_id || !buyer_id || !buyer_name || !buyer_address || !buyer_city || !buyer_postcode || !buyer_phone || !buyer_email) {
 			return res.status(400).send("Required information is missing.")
 		}
-		await createSale({ product_id, seller_id, buyer_id, buyer_name, buyer_address, buyer_city, buyer_postcode, buyer_phone, buyer_email }, productIds)
+		await createSale({ product_id, seller_id, buyer_id, buyer_name, buyer_address, buyer_city, buyer_postcode, buyer_phone, buyer_email })
 		res.status(201).json({ message: "Sale created successfully" })
 	} catch (error) {
 		res.status(500).json({ message: "Error creating product" })
@@ -107,7 +105,8 @@ sales.get("/:id", authentication, async (req: CustomRequest, res: Response) => {
 sales.put("/update/:id", authentication, async (req: CustomRequest, res: Response) => {
 	const userId = req.id
 	const salesId = Number(req.params.id)
-	const newSaleStatus = req.body.sale_status
+	const newSaleStatus = req.body.sales_status
+	console.log(newSaleStatus)
 	try {
 		const sale: Sale = await getSaleById(salesId)
 		const productIds: number[] = []
@@ -117,27 +116,26 @@ sales.put("/update/:id", authentication, async (req: CustomRequest, res: Respons
 		switch (newSaleStatus) {
 			case 3:
 				if (userId === sale.seller_id && sale.sales_status === 2) {
-					await updateSaleStatus(salesId, newSaleStatus, productIds)
+					await updateSaleStatus(salesId, newSaleStatus)
 					return res.status(200).send({ message: "Sale status set to: sent" })
 				}
 				break
 			case 4:
 				if (userId === sale.buyer_id && sale.sales_status === 3) {
-					await updateSaleStatus(salesId, newSaleStatus, productIds)
+					await updateSaleStatus(salesId, newSaleStatus)
 					return res.status(200).send({ message: "Sale statut set to: received" })
 				}
 				break
 			case 5:
-				if (userId === sale.buyer_id && sale.sales_status === 2) {
-					await updateSaleStatus(salesId, newSaleStatus, productIds)
-					await relistProductsAfterCancellation(productIds)
+				if (userId === sale.seller_id && sale.sales_status === 2) {
+					console.log("jou")
+					await updateSaleStatus(salesId, newSaleStatus)
 					return res.status(200).send({ message: "Sale status set to: cancelled" })
 				}
 				break
 			case 6:
 				if (sale.sales_status === 3) {
-					await updateSaleStatus(salesId, newSaleStatus, productIds)
-					await relistProductsAfterCancellation(productIds)
+					await updateSaleStatus(salesId, newSaleStatus)
 					return res.status(200).send({ message: "Sale status se to: received (not confirmed)" })
 				}
 				break
