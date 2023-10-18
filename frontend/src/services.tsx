@@ -9,14 +9,24 @@ export const deleteUser = (token: string) => {
 	}).then((response) => response.data)
 }
 
-export const fetchUser = (token: string) => {
-	return axios.get("/api/users/user/", {
-		headers: {
-			"Authorization": `Bearer ${token}`
+export const fetchUser = async (token: string) => {
+	try {
+		const response = await axios.get("/api/users/user/", {
+			headers: {
+				"Authorization": `Bearer ${token}`
+			} 
+		})
+		return response.data	
+	} catch (error) {
+		if (axios.isAxiosError(error) && error.response?.status === 401) {
+			return null
 		}
-	}).then((response) => response.data)
+		else {
+			console.error("Error fetching user:", error)
+			return null
+		}
+	}
 }
-
 export const fetchUsernameByUserId = async (id: number) => {
 	try {
 		const response = await axios.get(`/api/users/${id}`)

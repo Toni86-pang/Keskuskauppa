@@ -3,8 +3,17 @@ import { BoughtProps, SoldProps } from "../types"
 import { useContext, useEffect, useState } from "react"
 import { UserTokenContext } from "../App"
 import { Button, Container, Stack } from "@mui/material"
+import { redirect } from "react-router-dom"
 import DisplayBought from "./DisplayBought"
 import DisplaySold from "./DisplaySold"
+
+export async function loader() {
+	const token = localStorage.getItem("token")
+	if(!token){
+		return redirect("/")
+	}
+	return null
+}
 
 export default function OrderHistory (){
 	const [sold, setSold] = useState<SoldProps[]>([])
