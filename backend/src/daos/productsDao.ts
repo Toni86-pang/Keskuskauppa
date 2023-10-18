@@ -264,7 +264,7 @@ export const searchProducts =async (searchQuery: string): Promise<Product[]>  =>
 	try {
 		const query = ` 
 		SELECT * FROM products
-		WHERE title ILIKE $1;
+		WHERE title ILIKE $1 AND listed = true;
 		`
 		const result = await executeQuery(query, [`%${searchQuery}%`])
 		return result.rows

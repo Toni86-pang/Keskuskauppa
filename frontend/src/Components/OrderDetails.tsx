@@ -12,13 +12,12 @@ import Notification from "./Notification"
 import { cancelSale, fetchProduct, fetchSale, fetchSaleStatus, setSaleSent } from "../services"
 
 interface OrderDetailsProps {
-	saleId: number
 	isOpen: boolean
+	saleId: number
 	onClose: () => void
 }
 
-export default function OrderDetails(props: OrderDetailsProps) {
-	const { saleId, onClose, isOpen } = props
+export default function OrderDetails({isOpen, onClose, saleId}: OrderDetailsProps) {
 	const [token] = useContext(UserTokenContext)
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
@@ -29,7 +28,8 @@ export default function OrderDetails(props: OrderDetailsProps) {
 
 	useEffect(() => {
 		const fetchSaleAndProduct = async () => {
-			if (!token) return
+			// Don't try to fetch without token or with initial saleId(0)
+			if (!token || saleId === 0) return
 			const fetchedSale = await fetchSale(token, saleId)
 			const fetchedProduct = await fetchProduct(fetchedSale.product_id)
 			const fetchdSaleStatus = await fetchSaleStatus(fetchedSale.sales_status)
@@ -39,10 +39,6 @@ export default function OrderDetails(props: OrderDetailsProps) {
 		}
 		fetchSaleAndProduct()
 	}, [saleId, token, reload])
-
-	const handleClose = () => {
-		onClose()
-	}
 
 	const handleSendProduct = async () => {
 		try {
@@ -59,8 +55,7 @@ export default function OrderDetails(props: OrderDetailsProps) {
 			await cancelSale(saleId, token)
 		}catch (error) {
 			console.error("Failed to update sales_status: ", error)
-		}
-		
+		}		
 		setReload(!reload)
 	}
 
@@ -68,7 +63,7 @@ export default function OrderDetails(props: OrderDetailsProps) {
 		<>
 			<Dialog
 				open={isOpen}
-				onClose={handleClose}
+				onClose={onClose}
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
 			>
@@ -101,6 +96,7 @@ export default function OrderDetails(props: OrderDetailsProps) {
 					{sale?.sales_status === 2 && <Button onClick={ handleSendProduct }>Lähetetty</Button>}
 					{sale?.sales_status === 2 && <Button onClick={ handleCancelSale }>Peruuta tilaus</Button>}
 					{sale?.sales_status === 5 && <Button >Palauta myyntiin</Button>}
+					<Button onClick={onClose}>Sulje</Button>
 				</DialogActions>
 			</Dialog>
 			{/* Success and error notifications */}

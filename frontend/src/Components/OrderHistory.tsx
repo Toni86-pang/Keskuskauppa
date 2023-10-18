@@ -14,10 +14,12 @@ export default function OrderHistory (){
     
 	useEffect(() => {
 		const soldProducts = async () => {
+			if(!token) return
 			const sold = await fetchOwnSold(token)
 			setSold(sold)
 		}
 		const boughtProducts = async () => {
+			if(!token) return
 			const bought = await fetchOwnBought(token)
 			setBought(bought)
 		}
