@@ -8,13 +8,12 @@ import Products, { loader as productsLoader } from "./Components/Products.tsx"
 import Product, { loader as productLoader } from "./Components/Product.tsx"
 import { loader as userLoader } from "./Components/CheckOut.tsx"
 import SellerProfile, { loader as sellerLoader } from "./Components/SellerProfile.tsx"
-import NewProduct from "./Components/NewProduct.tsx"
+import NewProduct, { loader as newProductLoader } from "./Components/NewProduct.tsx"
 import Profile, {loader as profileLoader} from "./Components/Profile.tsx"
 import LandingPage from "./Components/LandingPage.tsx"
 import SearchResultsPage from "./Components/SearchResultpage.tsx"
 import CheckOut from "./Components/CheckOut.tsx"
-import OrderHistory from "./Components/OrderHistory.tsx"
-
+import OrderHistory, { loader as orderHistoryLoader} from "./Components/OrderHistory.tsx"
 
 const router = createBrowserRouter([
 	{
@@ -51,7 +50,8 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "/product/new",
-				element: <NewProduct />
+				element: <NewProduct />,
+				loader: newProductLoader
 			},
 			{
 				path: "/product/:id",
@@ -70,7 +70,8 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "/orderhistory",
-				element: <OrderHistory />
+				element: <OrderHistory />,
+				loader: orderHistoryLoader,
 			},
 		],
 	},

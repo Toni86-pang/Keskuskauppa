@@ -1,9 +1,17 @@
 import { ChangeEvent, useContext, useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, redirect } from "react-router-dom"
 import { Button, Container, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material"
 import { UserTokenContext } from "../App"
 import { Category, Subcategory, User, initialState } from "../types"
 import { fetchCategories, fetchIndividualSubcategory, fetchUser, newProduct } from "../services"
+
+export async function loader() {
+	const token = localStorage.getItem("token")
+	if(!token){
+		return redirect("/")
+	}
+	return null
+}
 
 function NewProduct() {
 	const [token] = useContext(UserTokenContext)
