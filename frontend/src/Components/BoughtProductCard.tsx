@@ -4,8 +4,9 @@ import CardMedia from "@mui/material/CardMedia"
 import Typography from "@mui/material/Typography"
 import Button from "@mui/material/Button"
 import { Grid } from "@mui/material"
-import { useNavigate } from "react-router"
 import { BoughtCardProps } from "../types"
+import { useState } from "react"
+import OrderDetails from "./OrderDetails"
 
 const cardStyle = {
 	marginTop: "10px",
@@ -18,11 +19,12 @@ const gridContainerStyle = {
 }
 
 function BoughtProductCard({ bought }: BoughtCardProps) {
-	const navigate = useNavigate()
+	const [isOpen, setIsopen] = useState(false)
+	const [saleId, setSaleId] = useState<number>(0)
 
-	// Vaihda toiminta niin, että avautuu tuotteen yksityiskohtien modaali
-	const handleClick = () => {
-		navigate("/product/")
+	const handleClick = (currentSaleId: number) => {
+		setSaleId(currentSaleId)
+		setIsopen(true)
 	}
 
 	return (
@@ -48,13 +50,14 @@ function BoughtProductCard({ bought }: BoughtCardProps) {
 					</Grid>
 					<Grid item xs={3} style={{ display: "flex", alignItems: "center" }}>
 						{/* Tänne tulis se linkitys sinne modaaliin */}
-						<Button variant="contained" color="primary" onClick={handleClick}>
+						<Button variant="contained" color="primary" onClick={() => handleClick(bought.sales_id)}>
 							Tilaustiedot
 						</Button>
 					</Grid>
 				</Grid>
 			</CardContent>
 			}
+			<OrderDetails isSeller={false} isOpen={isOpen} saleId={saleId} onClose={() => setIsopen(false)} />
 		</Card>
 	)
 }
