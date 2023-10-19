@@ -141,7 +141,8 @@ export interface BoughtProps {
 	sales_status: string
 	title: string
 	price: number
-	seller: string
+	buyer?: string
+	seller?: string
 }
 
 
@@ -150,20 +151,14 @@ export interface SoldProps {
 	sales_status: string
 	title: string
 	price: number
-	buyer: string
-}
-
-export interface DisplayOrderProps {
-	bought?: BoughtProps[] | null
-	sold?: SoldProps[] | null
-
+	buyer?: string
+	seller?: string
 }
 
 export interface OrderCardProps {
-	bought?: BoughtProps | null
-	sold?: SoldProps | null
-
+	product: BoughtProps | SoldProps
 }
+
 export interface SummaryProps {
 	isOpen: boolean
 	onClose: () => void
