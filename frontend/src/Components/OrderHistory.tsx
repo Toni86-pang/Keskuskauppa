@@ -4,8 +4,7 @@ import { useContext, useEffect, useState } from "react"
 import { UserTokenContext } from "../App"
 import { Button, Container, Stack } from "@mui/material"
 import { redirect } from "react-router-dom"
-import DisplayBought from "./DisplayBought"
-import DisplaySold from "./DisplaySold"
+import DisplayOrder from "./DisplayOrder"
 
 export async function loader() {
 	const token = localStorage.getItem("token")
@@ -42,7 +41,7 @@ export default function OrderHistory (){
 				<div style={{marginTop: "9px"}}>|</div>
 				<Button onClick={() => setWhichList("bought")} variant="text" color={whichList === "bought" ? "secondary" : "primary"}>Omat ostot</Button>
 			</Stack>
-			{whichList === "sold" ? (<DisplaySold sold={sold} />):(<DisplayBought bought={bought}/>)}
+			{whichList === "sold" ? (<DisplayOrder sold={sold} />):(<DisplayOrder bought={bought} />)}
 		</Container>
 	)
 }

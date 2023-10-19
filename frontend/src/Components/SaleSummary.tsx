@@ -31,24 +31,21 @@ export default function SaleSummary (props: SummaryProps) {
     
 	const handleNewSale = async () => {
 		try {
-			if(!cart) return
-			await Promise.all(
-				cart?.map(product => {
-					const sale: Sale = {   
-						product_id: product.product_id,
-						buyer_id: buyerInfo.buyer_id,
-						buyer_name: buyerInfo.buyer_name,
-						buyer_address: buyerInfo.buyer_address,
-						buyer_city: buyerInfo.buyer_city,
-						buyer_postcode: buyerInfo.buyer_postcode,
-						buyer_phone: buyerInfo.buyer_phone,
-						buyer_email: buyerInfo.buyer_email,
-						seller_id: product.user_id,
-						sales_status: 2
-					} 
-					newSale(sale, token)
-				})
-			)
+			cart?.map(product => {
+				const sale: Sale = {   
+					product_id: product.product_id,
+					buyer_id: buyerInfo.buyer_id,
+					buyer_name: buyerInfo.buyer_name,
+					buyer_address: buyerInfo.buyer_address,
+					buyer_city: buyerInfo.buyer_city,
+					buyer_postcode: buyerInfo.buyer_postcode,
+					buyer_phone: buyerInfo.buyer_phone,
+					buyer_email: buyerInfo.buyer_email,
+					seller_id: product.user_id,
+					sales_status: 2
+				} 
+				newSale(sale, token)
+			})
 			emptyShoppingCart()
 			setShowSuccessNotification(true) // Show success notification
 			await timeout(1500)
