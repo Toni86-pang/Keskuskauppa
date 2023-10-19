@@ -6,6 +6,7 @@ import { Button, Container, Stack } from "@mui/material"
 import { redirect } from "react-router-dom"
 import OrderProductCard from "./OrderProductCard"
 
+// eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
 	const token = localStorage.getItem("token")
 	if(!token){
@@ -21,13 +22,19 @@ export default function OrderHistory (){
 	const [token] = useContext(UserTokenContext)
     
 	useEffect(() => {
-		const getProducts = async () => {
+		const soldProducts = async () => {
+			if(!token) return
 			const sold = await fetchOwnSold(token)
-			const bought = await fetchOwnBought(token)
-			setBought(bought)
 			setSold(sold)
 		}
-		getProducts()
+		const boughtProducts = async () => {
+			if(!token) return
+			const bought = await fetchOwnBought(token)
+			setBought(bought)
+		}    
+		soldProducts()
+		boughtProducts()
+    
 	}, [token])
 
 	return(

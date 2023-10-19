@@ -33,6 +33,8 @@ export interface ProductType {
 	price: number
 	// product_image?: any
 	listed: boolean
+	category_name?: string
+	subcategory_name?: string
 }
 
 export interface ProductProps {
@@ -153,6 +155,7 @@ export interface SoldProps {
 	price: number
 	buyer?: string
 	seller?: string
+	listed: boolean
 }
 
 export interface OrderCardProps {
@@ -216,7 +219,12 @@ export const initialStateProduct: ProductType = {
 	price: 0,
 	listed: true
 	// product_image?: any
-	
+}
+
+
+export interface CategoryProducts {
+	categoryHeader: string
+	products: ProductType[]
 }
 
 export type BreadcrumbResolver = (params: string) => Promise<[string, string][]>
