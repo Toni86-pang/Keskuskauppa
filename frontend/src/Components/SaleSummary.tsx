@@ -30,33 +30,32 @@ export default function SaleSummary (props: SummaryProps) {
 	}
     
 	const handleNewSale = async () => {
-		try {
-			if(!cart) return
-			await Promise.all(
-				cart?.map(product => {
-					const sale: Sale = {   
-						product_id: product.product_id,
-						buyer_id: buyerInfo.buyer_id,
-						buyer_name: buyerInfo.buyer_name,
-						buyer_address: buyerInfo.buyer_address,
-						buyer_city: buyerInfo.buyer_city,
-						buyer_postcode: buyerInfo.buyer_postcode,
-						buyer_phone: buyerInfo.buyer_phone,
-						buyer_email: buyerInfo.buyer_email,
-						seller_id: product.user_id,
-						sales_status: 2
-					} 
-					newSale(sale, token)
-				})
-			)
-			emptyShoppingCart()
-			setShowSuccessNotification(true) // Show success notification
-			await timeout(1500)
-			navigate("/")
-		} catch (error) {
-			console.error("Error creating a new sale", error)
-			setShowErrorNotification(true) // Show error notification
-		}
+		if(!cart) return
+		cart?.map(async product => {
+			const sale: Sale = {   
+				product_id: product.product_id,
+				buyer_id: buyerInfo.buyer_id,
+				buyer_name: buyerInfo.buyer_name,
+				buyer_address: buyerInfo.buyer_address,
+				buyer_city: buyerInfo.buyer_city,
+				buyer_postcode: buyerInfo.buyer_postcode,
+				buyer_phone: buyerInfo.buyer_phone,
+				buyer_email: buyerInfo.buyer_email,
+				seller_id: product.user_id,
+				sales_status: 2
+			} 
+			const makingSale = await newSale(sale, token)
+			console.log(makingSale)
+			if(makingSale === undefined){
+				console.log("Error creating a new sale")
+				setShowErrorNotification(true) // Show error notification
+			} else {
+				emptyShoppingCart()
+				setShowSuccessNotification(true) // Show success notification
+				await timeout(1500)
+				navigate("/")
+			}
+		})
 	}
 
 	function timeout(delay: number) {

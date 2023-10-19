@@ -4,8 +4,7 @@ import { useContext, useEffect, useState } from "react"
 import { UserTokenContext } from "../App"
 import { Button, Container, Stack } from "@mui/material"
 import { redirect } from "react-router-dom"
-import DisplayBought from "./DisplayBought"
-import DisplaySold from "./DisplaySold"
+import OrderProductCard from "./OrderProductCard"
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
@@ -19,7 +18,7 @@ export async function loader() {
 export default function OrderHistory (){
 	const [sold, setSold] = useState<SoldProps[]>([])
 	const [bought, setBought] = useState<BoughtProps[]>([])
-	const [whichList, setWhichList] = useState<string>("sold")
+	const [isSoldItem, setIsSoldItem] = useState(true)
 	const [token] = useContext(UserTokenContext)
     
 	useEffect(() => {
@@ -32,20 +31,23 @@ export default function OrderHistory (){
 			if(!token) return
 			const bought = await fetchOwnBought(token)
 			setBought(bought)
-		}
+		}    
 		soldProducts()
 		boughtProducts()
+    
 	}, [token])
 
 	return(
 		<Container>
 			<h2>Tilaushistoria</h2>
 			<Stack spacing={2} direction="row">
-				<Button onClick={() => setWhichList("sold")} variant="text" color={whichList === "sold" ? "secondary" : "primary"}>Omat myynnit</Button>
+				<Button onClick={() => setIsSoldItem(true)} variant="text" color={isSoldItem ? "secondary" : "primary"}>Omat myynnit</Button>
 				<div style={{marginTop: "9px"}}>|</div>
-				<Button onClick={() => setWhichList("bought")} variant="text" color={whichList === "bought" ? "secondary" : "primary"}>Omat ostot</Button>
+				<Button onClick={() => setIsSoldItem(false)} variant="text" color={!isSoldItem ? "secondary" : "primary"}>Omat ostot</Button>
 			</Stack>
-			{whichList === "sold" ? (<DisplaySold sold={sold} />):(<DisplayBought bought={bought}/>)}
+			{(isSoldItem ? sold : bought).map((product, index) => (
+				<OrderProductCard key={"products " + index} product={product} />
+			))}
 		</Container>
 	)
 }

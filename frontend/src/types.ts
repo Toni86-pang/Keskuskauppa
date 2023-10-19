@@ -143,31 +143,23 @@ export interface BoughtProps {
 	sales_status: string
 	title: string
 	price: number
-	seller: string
+	buyer?: string
+	seller?: string
 }
 
-export interface DisplayBoughtProps {
-	bought: BoughtProps[] | null
-}
-
-export interface BoughtCardProps {
-	bought: BoughtProps | null
-}
-export interface SoldCardProps {
-	sold: SoldProps | null
-}
 
 export interface SoldProps {
 	sales_id: number
 	sales_status: string
 	title: string
 	price: number
+	buyer?: string
+	seller?: string
 	listed: boolean
-	buyer: string
 }
 
-export interface DisplaySoldProps {
-	sold: SoldProps[] | null
+export interface OrderCardProps {
+	product: BoughtProps | SoldProps
 }
 
 export interface SummaryProps {
