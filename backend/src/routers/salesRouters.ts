@@ -128,8 +128,7 @@ sales.put("/update/:id", authentication, async (req: CustomRequest, res: Respons
 				}
 				break
 			case 5:
-				if (userId === sale.seller_id && sale.sales_status === 2) {
-					console.log("jou")
+				if ((userId === sale.seller_id || userId === sale.buyer_id) && sale.sales_status === 2) {
 					await updateSaleStatus(salesId, newSaleStatus)
 					return res.status(200).send({ message: "Sale status set to: cancelled" })
 				}

@@ -69,33 +69,33 @@ export async function createProduct(product: Product): Promise<void> {
 }
 
 // hide product if its in sale transaction
-export const hideProductInSale = async (productId: number): Promise<void> => {
-	const query = `
-	UPDATE products	
-	SET listed = false
-	WHERE product_id = $1)
-	`
-	try{
-		await executeQuery(query, [productId])
-	}catch (error) {
-		console.error("Error hiding products:", error)
-		throw error
-	}
-}
+// export const hideProductInSale = async (productId: number): Promise<void> => {
+// 	const query = `
+// 	UPDATE products	
+// 	SET listed = false
+// 	WHERE product_id = $1)
+// 	`
+// 	try{
+// 		await executeQuery(query, [productId])
+// 	}catch (error) {
+// 		console.error("Error hiding products:", error)
+// 		throw error
+// 	}
+// }
 //relist product if sale doesn't go trough
-export const relistProductsAfterCancellation =async (productId: number):Promise<void> => {
-	const query = `
-	UPDATE Products
-	SET listed = true
-	WHERE product_id = $1)
-	`
-	try {
-		await executeQuery(query, [productId])
-	}catch (error){
-		console.error("Error re-listing products", error)
-		throw error
-	}
-}
+// export const relistProduct = async (productId: number):Promise<void> => {
+// 	const query = `
+// 	UPDATE Products
+// 	SET listed = true
+// 	WHERE product_id = $1)
+// 	`
+// 	try {
+// 		await executeQuery(query, [productId])
+// 	}catch (error){
+// 		console.error("Error relisting products", error)
+// 		throw error
+// 	}
+// }
 
 
 export const getProductById = async (product_id: number): Promise<Product | null> => {

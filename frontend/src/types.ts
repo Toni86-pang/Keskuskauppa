@@ -162,6 +162,7 @@ export interface SoldProps {
 	sales_status: string
 	title: string
 	price: number
+	listed: boolean
 	buyer: string
 }
 

@@ -1,5 +1,5 @@
 import { executeQuery } from "../database"
-import { hideProductInSale } from "./productsDao"
+import { updateProductListed } from "./productsDao"
 
 interface Sale {
 	sales_id?: number
@@ -56,7 +56,7 @@ export const createSale = async (sale: Sale): Promise<Sale> => {
 	try {
 		const result = await executeQuery(query, params)
 		if(sale.product_id) {
-			await hideProductInSale(sale.product_id)
+			await updateProductListed(sale.product_id, false)
 		}		
 		return result.rows[0]
 	} catch (error) {
@@ -99,6 +99,7 @@ export const fetchOwnSold = async (userId: number): Promise<ProductSale[]>  => {
 		st.sales_status,
 		p.title AS title,
 		p.price AS price,
+		p.listed AS listed,
 		u.username AS buyer
 	FROM 
 		sales AS s

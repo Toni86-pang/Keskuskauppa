@@ -7,6 +7,7 @@ import { redirect } from "react-router-dom"
 import DisplayBought from "./DisplayBought"
 import DisplaySold from "./DisplaySold"
 
+// eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
 	const token = localStorage.getItem("token")
 	if(!token){

@@ -163,10 +163,24 @@ export const newSale = async (sale: Sale, token: string) => {
 		return undefined
 	}
 }
+
 export const setSaleSent = async (saleId: number, token: string) => {
 	const response = await axios.put("/api/sales/update/" + saleId,
 		{
 			"sales_status": 3
+		}, {
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": `Bearer ${token}`
+			}
+		})
+	return response
+}
+
+export const setSaleReceived = async (saleId: number, token: string) => {
+	const response = await axios.put("/api/sales/update/" + saleId,
+		{
+			"sales_status": 4
 		}, {
 			headers: {
 				"Content-Type": "application/json",
@@ -186,6 +200,20 @@ export const cancelSale = async (saleId: number, token: string) => {
 				"Authorization": `Bearer ${token}`
 			}
 		})
+	return response
+}
+
+export const returnProductToShop = async (saleId: number, token: string) => {
+	const response = await axios.put("/api/product/listed/" + saleId, 
+		{
+			listed: true
+		}, {
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": `Bearer ${token}`
+			}
+		})
+	console.log(response)
 	return response
 }
 
