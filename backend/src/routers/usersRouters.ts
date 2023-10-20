@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express"
 import { getAllUsers, addUser, deleteUser, getUserByUsername, findUserByUSername, findUserByEmail, getUserByUserId, updateProfile, getUserDetailsByUserId } from "../daos/usersDao"
 import { authentication, checkReqBody } from "../middlewares"
+import multer from "multer"
 import argon2 from "argon2"
 import jwt from "jsonwebtoken"
 
@@ -14,6 +15,8 @@ interface Profile {
 
 const secret = process.env.SECRET ?? ""
 const users = express.Router()
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
 
 users.get("/", async (_req: Request, res: Response) => {
 	const result = await getAllUsers()
@@ -38,38 +41,55 @@ users.get("/user", authentication, async (req: CustomRequest, res: Response) => 
 })
 
 // `POST /users` REGISTER a new user
-users.post("/register", async (req: Request, res: Response) => {
-	const { username, name, email, phone, address, city, postal_code, password } = req.body
+users.post("/register", upload.single("user_image"), async (req: Request, res: Response) => {
+	try{
+		const { username, name, email, phone, address, city, postal_code, password } = req.body
+		let user_image: Buffer | undefined
 
-	//Check if username or password are missing
-	if (!username || !name || !email || !phone || !password) {
-		return res.status(400).send("Required information is missing.")
+		if (req.file) {
+			user_image = req.file.buffer
+		}
+
+		//Check if username or password are missing
+		if (!username || !name || !email || !phone || !password) {
+			return res.status(400).send("Required information is missing.")
+		}
+
+		//Check username is not already in use
+		const userExists = await findUserByUSername(username)
+
+		if (userExists.rows.length === 1) {
+			return res.status(401).send("An account with this username already exists.")
+		}
+
+		//Check email is not already in use
+		const emailExists = await findUserByEmail(email)
+
+		if (emailExists.rows.length === 1) {
+			return res.status(401).send("An account with this email already exists.")
+		}
+		
+		//Hash password and add user in database
+		const hashedPassword = await argon2.hash(password)
+		const userId = await addUser({
+			username,
+			name,
+			email,
+			phone,
+			address,
+			city,
+			postal_code,
+			password: hashedPassword,
+			user_image
+		})
+		const token = jwt.sign({ username, id: userId }, secret)
+		return res.status(200).send(token)
+
+	} catch (error) {
+		console.error("Error creating user", error)
+		return res.status(500).send("Internal server error")
 	}
-
-	//Check username is not already in use
-	const userExists = await findUserByUSername(username)
-
-	if (userExists.rows.length === 1) {
-		return res.status(401).send("An account with this username already exists.")
-	}
-
-	//Check email is not already in use
-	const emailExists = await findUserByEmail(email)
-
-	if (emailExists.rows.length === 1) {
-		return res.status(401).send("An account with this email already exists.")
-	}
-
-	//Create token
-	// const token = jwt.sign(username, secret)
-
-	//Hash password and add user in database
-	const hashedPassword = await argon2.hash(password)
-	const userId = await addUser(username, name, email, phone, address, city, postal_code, hashedPassword)
-	const token = jwt.sign({ username, id: userId }, secret)
-	return res.status(200).send(token)
 })
-
 users.delete("/delete", authentication, async (req: CustomRequest, res: Response) => {
 	const user_id = Number(req.id)
 
