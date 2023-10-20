@@ -6,22 +6,15 @@ import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import { useContext, useEffect, useState } from "react"
 import { UserTokenContext } from "../App"
-import { ProductType, Sale, User } from "../types"
+import { OrderDetailsProps, ProductType, Sale, User } from "../types"
 import CheckoutProductCard from "./CheckoutSummaryProductCard"
 import Notification from "./Notification"
 import { cancelSale, fetchProduct, fetchSale, fetchSaleStatus, fetchUserDetailsByUserId, returnProductToShop, setSaleReceived, setSaleSent } from "../services"
 
-interface OrderDetailsProps {
-	isSeller: boolean
-	isOpen: boolean
-	saleId: number
-	onClose: () => void
-}
-
 export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: OrderDetailsProps) {
 	const [token] = useContext(UserTokenContext)
-	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
-	const [showErrorNotification, setShowErrorNotification] = useState(false)
+	const [showRelistErrorNotification, setShowRelistErrorNotification] = useState(false)
+	const [showStatusErrorNotification, setShowStatusErrorNotification] = useState(false)
 	const [sale, setSale] = useState<Sale>()
 	const [seller, setSeller] = useState<User>()
 	const [saleStatus, setSaleStatus] = useState("")
@@ -32,22 +25,29 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 		const fetchSaleAndProduct = async () => {
 			// Don't try to fetch without token or with initial saleId (0)
 			if (!token || saleId === 0) return
-			const fetchedSale: Sale = await fetchSale(token, saleId)
-			const fetchedProduct = await fetchProduct(fetchedSale.product_id)
-			const fetchdSaleStatus = await fetchSaleStatus(fetchedSale.sales_status)
-			const fetchedSeller = await fetchUserDetailsByUserId(fetchedSale.seller_id)
-			setSale(fetchedSale)
-			setProduct(fetchedProduct)
-			setSaleStatus(fetchdSaleStatus)
-			setSeller(fetchedSeller)
+			try {
+				const fetchedSale: Sale = await fetchSale(token, saleId)
+				const fetchedProduct: ProductType = await fetchProduct(fetchedSale.product_id)
+				const fetchdSaleStatus: string = await fetchSaleStatus(fetchedSale.sales_status)
+				if (!isSeller) {
+					const fetchedSeller: User = await fetchUserDetailsByUserId(fetchedSale.seller_id)
+					setSeller(fetchedSeller)
+				}
+				setSale(fetchedSale)
+				setProduct(fetchedProduct)
+				setSaleStatus(fetchdSaleStatus)
+			} catch (error) {
+				console.error("Error fetching order data: ", error)
+			}		
 		}
 		fetchSaleAndProduct()
-	}, [saleId, token, reload])
+	}, [saleId, token, reload, isSeller])
 
 	const handleSendProduct = async () => {
 		try {
 			await setSaleSent(saleId, token)
 		} catch (error) {
+			setShowStatusErrorNotification(true)
 			console.error("Failed to update sales_status: ", error)
 		}
 
@@ -58,9 +58,9 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 		try {
 			await setSaleReceived(saleId, token)
 		} catch (error) {
+			setShowStatusErrorNotification(true)
 			console.error("Failed to update sales_status: ", error)
 		}
-
 		setReload(!reload)
 	}
 
@@ -68,6 +68,7 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 		try {
 			await cancelSale(saleId, token)
 		} catch (error) {
+			setShowStatusErrorNotification(true)
 			console.error("Failed to update sales_status: ", error)
 		}
 		setReload(!reload)
@@ -79,6 +80,7 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 				await returnProductToShop(sale?.product_id, token)
 			}
 		} catch (error) {
+			setShowRelistErrorNotification(true)
 			console.error("Failed to relist product: ", error)
 		}
 		setReload(!reload)
@@ -158,21 +160,21 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 				</DialogActions>
 			</Dialog>
 			{/* Success and error notifications */}
-			{showSuccessNotification && (
+			{showRelistErrorNotification && (
 				<Notification
-					open={showSuccessNotification}
-					message="Tilaus onnistui!"
-					type="success"
-					onClose={() => setShowSuccessNotification(false)}
+					open={showRelistErrorNotification}
+					message="Tuotteen palauttaminen myyntiin epäonnistui."
+					type="error"
+					onClose={() => setShowRelistErrorNotification(false)}
 					duration={1500}
 				/>
 			)}
-			{showErrorNotification && (
+			{showStatusErrorNotification && (
 				<Notification
-					open={showErrorNotification}
-					message="Tilaus epäonnistui."
+					open={showStatusErrorNotification}
+					message="Tilauksen päivittäminen epäonnistui."
 					type="error"
-					onClose={() => setShowErrorNotification(false)}
+					onClose={() => setShowStatusErrorNotification(false)}
 					duration={1500}
 				/>
 			)}
