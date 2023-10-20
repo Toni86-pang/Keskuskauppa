@@ -33,6 +33,8 @@ export interface ProductType {
 	price: number
 	// product_image?: any
 	listed: boolean
+	category_name?: string
+	subcategory_name?: string
 }
 
 export interface ProductProps {
@@ -141,18 +143,15 @@ export interface BoughtProps {
 	sales_status: string
 	title: string
 	price: number
-	seller: string
+	buyer?: string
+	seller?: string
 }
 
-export interface DisplayBoughtProps {
-	bought: BoughtProps[] | null
-}
-
-export interface BoughtCardProps {
-	bought: BoughtProps | null
-}
-export interface SoldCardProps {
-	sold: SoldProps | null
+export interface OrderDetailsProps {
+	isSeller: boolean
+	isOpen: boolean
+	saleId: number
+	onClose: () => void
 }
 
 export interface SoldProps {
@@ -160,11 +159,13 @@ export interface SoldProps {
 	sales_status: string
 	title: string
 	price: number
-	buyer: string
+	buyer?: string
+	seller?: string
+	listed: boolean
 }
 
-export interface DisplaySoldProps {
-	sold: SoldProps[] | null
+export interface OrderCardProps {
+	product: BoughtProps | SoldProps
 }
 
 export interface SummaryProps {
@@ -224,7 +225,12 @@ export const initialStateProduct: ProductType = {
 	price: 0,
 	listed: true
 	// product_image?: any
-	
+}
+
+
+export interface CategoryProducts {
+	categoryHeader: string
+	products: ProductType[]
 }
 
 export type BreadcrumbResolver = (params: string) => Promise<[string, string][]>
