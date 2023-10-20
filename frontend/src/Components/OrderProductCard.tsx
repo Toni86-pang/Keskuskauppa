@@ -19,10 +19,8 @@ const gridContainerStyle = {
 
 function OrderProductCard({ product }: OrderCardProps) {
 	const [isOpen, setIsopen] = useState(false)
-	const [saleId, setSaleId] = useState<number>(0)
 
-	const handleClick = (currentSaleId: number) => {
-		setSaleId(currentSaleId)
+	const handleClick = () => {
 		setIsopen(true)
 	}
 
@@ -53,16 +51,16 @@ function OrderProductCard({ product }: OrderCardProps) {
 						)}
 					</Grid>
 					<Grid item xs={3} style={{ display: "flex", alignItems: "center" }}>
-						<Button variant="contained" color="primary" onClick={() => handleClick(product.sales_id)}>
+						<Button variant="contained" color="primary" onClick={() => handleClick()}>
 							Tilaustiedot
 						</Button>
 					</Grid>
 				</Grid>
 			</CardContent>
 			{product.seller ? (
-				<OrderDetails isSeller={false} isOpen={isOpen} saleId={saleId} onClose={() => setIsopen(false)} />
+				<OrderDetails isSeller={false} isOpen={isOpen} saleId={product.sales_id} onClose={() => setIsopen(false)} />
 			):(
-				<OrderDetails isSeller={true} isOpen={isOpen} saleId={saleId} onClose={() => setIsopen(false)} />
+				<OrderDetails isSeller={true} isOpen={isOpen} saleId={product.sales_id} onClose={() => setIsopen(false)} />
 			)}
 		</Card>
 			}

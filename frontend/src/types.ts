@@ -147,6 +147,12 @@ export interface BoughtProps {
 	seller?: string
 }
 
+export interface OrderDetailsProps {
+	isSeller: boolean
+	isOpen: boolean
+	saleId: number
+	onClose: () => void
+}
 
 export interface SoldProps {
 	sales_id: number
