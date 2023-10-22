@@ -158,6 +158,4 @@ interface ProductSale {
 	buyer: string
 }
 
-
-
 export default sales

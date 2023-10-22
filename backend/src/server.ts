@@ -13,6 +13,7 @@ import users from "./routers/usersRouters"
 import product from "./routers/productRouters"
 import category from "./routers/categoryRouters"
 import sales from "./routers/salesRouters"
+import review from "./routers/reviewRouters"
 import { unknownEndpoint } from "./middlewares"
 import search from "./routers/searchproductRouters"
 
@@ -25,6 +26,7 @@ server.use("/api/product", product)
 server.use("/api/category", category)
 server.use("/api/sales", sales)
 server.use("/api/search", search)
+server.use("/api/review", review)
 server.use("/", express.static("./dist/frontend"))
 server.use("/version", (req: Request, res: Response) => {
 	res.send("1.8")
