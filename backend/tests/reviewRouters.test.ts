@@ -39,7 +39,7 @@ describe("testing POST review", () => {
 		jest.clearAllMocks()
 	})
 
-	it("test post review without token", async () => {
+	it("test post review without token and without content", async () => {
 		const response = await request(server).post("/api/review/")
 			.send({})
 		expect(response.status).toBe(401)

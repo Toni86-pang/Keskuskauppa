@@ -15,15 +15,13 @@ review.post("/", authentication, async (req: CustomRequest, res: Response) => {
 		const { sales_id,
 			seller_id,
 			description,
-			seen,
 			stars } = req.body
 		console.log(sales_id,
 			seller_id,
 			buyer_id,
 			description,
-			seen,
 			stars)
-		if (!sales_id || !seller_id || !buyer_id || !description || !seen || !stars) {
+		if (!sales_id || !seller_id || !buyer_id || !description || !stars) {
 			return res.status(400).send("Required information is missing.")
 		}
 		await createReview({ 
@@ -31,7 +29,6 @@ review.post("/", authentication, async (req: CustomRequest, res: Response) => {
 			seller_id,
 			buyer_id,
 			description,
-			seen: false,
 			stars
 		})
 		res.status(201).json({ message: "Review created successfully" })

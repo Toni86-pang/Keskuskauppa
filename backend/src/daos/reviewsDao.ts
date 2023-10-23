@@ -5,16 +5,16 @@ interface Review {
 	seller_id: number
 	buyer_id: number
 	description: string
-	seen: boolean
+	seen?: boolean
 	stars:number
 }
 
 export async function createReview(review: Review): Promise<Review> {
 	const query = `
             INSERT INTO Reviews
-                (sales_id, seller_id, buyer_id, description, seen, stars)
+                (sales_id, seller_id, buyer_id, description, stars)
             VALUES
-                ($1, $2, $3, $4, $5, $6)
+                ($1, $2, $3, $4, $5)
             RETURNING *
         `
 	const params = [
@@ -22,7 +22,6 @@ export async function createReview(review: Review): Promise<Review> {
 		review.seller_id,
 		review.buyer_id,
 		review.description,
-		review.seen,
 		review.stars
 	]
 
