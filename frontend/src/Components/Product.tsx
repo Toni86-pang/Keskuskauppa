@@ -153,22 +153,18 @@ export default function Product() {
 								>
 									{product?.title}
 								</Typography>
-								<Box
-									sx={{
-										maxHeight: 270,
-										maxWidth: 270,
-										overflow: "hidden",
-										display: "block",
-									}}
-								>
-									{product?.product_image && (
-										<img
-											alt="Product Image"
-											src={`data:image/*;base64,${product.product_image}`}
-											style={{ width: "100%", height: "100%" }}
-										/>
-									)}
-								</Box>
+								{product?.product_image && (
+									<img
+										alt="Product Image"
+										src={`data:image/*;base64,${product.product_image}`}
+										style={{
+											margin: "auto",
+											display: "block",
+											maxWidth: "270px",
+											maxHeight: "270px",
+										}}
+									/>
+								)}
 							</Grid>
 							<Grid item xl={5} sm container>
 								<Grid item xs container direction="column" spacing={4}>
@@ -280,7 +276,7 @@ export default function Product() {
 							</Grid>
 						</Grid>
 						<Grid>
-							<Grid item marginTop={-4}>
+							<Grid item marginTop={4}>
 								{/* <ImageList
 									sx={{ width: 385, height: 100 }}
 									cols={10}

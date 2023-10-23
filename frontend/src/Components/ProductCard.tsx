@@ -24,6 +24,7 @@ function ProductCard({ product }: ProductProps) {
 	const handleClick = () => {
 		navigate(`/product/${product.product_id}`)
 	}
+	const defaultImageUrl = "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e"
 
 	return (
 		<Card style={cardStyle}>
@@ -33,7 +34,8 @@ function ProductCard({ product }: ProductProps) {
 						<CardMedia
 							component="img"
 							height="80"
-							image={"https://images.unsplash.com/photo-1551963831-b3b1ca40c98e"}
+							// Check if product.product_image is not null, if so, use the image from the database. Otherwise, use the default image.
+							image={product.product_image ? `data:image/*;base64,${product.product_image}` : defaultImageUrl}
 							alt={product.title}
 						/>
 					</Grid>
