@@ -1,46 +1,39 @@
-import { useState, useEffect } from "react"
-// import { Link } from "react-router-dom"
 import { useLoaderData } from "react-router-dom"
 import {
 	Container,
 	Typography
 } from "@mui/material"
-import { fetchAllProducts, fetchCategoryName, fetchProductsByCategory, fetchProductsBySubcategory, fetchSubcategoryName } from "../services"
-import { CategoryProps, ProductType } from "../types"
+import { fetchAllProducts, fetchProductsByCategory, fetchProductsBySubcategory} from "../services"
+import { CategoryProducts, ProductType } from "../types"
 import DisplayProducts from "./DisplayProducts"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, react-refresh/only-export-components
-export function loader({ params }: any) {
-	return params.id
+export async function loader({ request, params }: any) {
+	const url = request.url.split("/").slice(-2)
+	let products: ProductType[]
+	let categoryHeader: string
+	let categoryProducts: CategoryProducts
+
+	if (url[0] === "category") {
+		products = await fetchProductsByCategory(Number(params.id))
+		categoryHeader = products[0].category_name??"Kaikki tuotteet"
+		categoryProducts = { categoryHeader, products }
+	} else if (url[0] === "subcategory") {
+		products = await fetchProductsBySubcategory(Number(params.id))
+		categoryHeader = products[0].subcategory_name??"Kaikki tuotteet"
+		categoryProducts = { categoryHeader, products }
+	} else {
+		products = await fetchAllProducts()
+		categoryHeader = "Kaikki tuotteet"
+		categoryProducts = { categoryHeader, products }
+	}
+
+	return categoryProducts
 }
 
-const Products = ({ category, subCategory }: CategoryProps) => {
-	const [products, setProducts] = useState<ProductType[]>([])
-	const [categoryHeader, setCategoryHeader] = useState("")
-	const id = String(useLoaderData())
-
-	useEffect(() => {
-		const fetchProducts = async () => {
-			let fetchedProducts: ProductType[] = []
-			let name = "Kaikki tuotteet"
-			if (!category && !subCategory) {
-				fetchedProducts = await fetchAllProducts()
-			} else if (category) {
-				name = await fetchCategoryName(Number(id))
-				fetchedProducts = await fetchProductsByCategory(Number(id))
-			} else {
-				name = await fetchSubcategoryName(Number(id))
-				fetchedProducts = await fetchProductsBySubcategory(Number(id))
-			}
-			setProducts(fetchedProducts)
-
-			if (id) {
-				setCategoryHeader(name)
-			}
-		}
-
-		fetchProducts()
-	}, [id, category, subCategory])
+const Products = () => {
+	const categoryProducts = useLoaderData() as CategoryProducts
+	const { products, categoryHeader } = categoryProducts
 
 	return (
 

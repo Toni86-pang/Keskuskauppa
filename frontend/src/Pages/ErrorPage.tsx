@@ -12,22 +12,22 @@ function ErrorPage() {
 		return (
 			<Container>
 				<Alert variant="outlined" severity="error">
-					Something went wrong!
+					Jotain meni vikaan!
 				</Alert>
 			</Container>
 		)
 	}
 	if (error.status === 404) return (
 		<Container className='ErrorPage'>
-			<Alert severity="warning">404 - Not Found!</Alert>
-			<Alert severity="warning">The requested is not here</Alert>
-			<Button href='/'>Main Page</Button>
+			<Alert severity="warning">404 - Sivua ei löytynyt</Alert>
+			<Alert severity="warning">Pyyntöä ei voitu toteuttaa</Alert>
+			<Button href='/'>Etusivu</Button>
 		</Container>
 	)
 	return (
 		<Container>
 			<Alert variant="outlined" severity="error">
-				An Unexpected error happened!
+			Tapahtui odottamaton virhe!
 			</Alert>
 			<p>({error.status}) {error.statusText}</p>
 			{error.data?.message && <p>{error.data.message}</p>}
