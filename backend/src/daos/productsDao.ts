@@ -144,18 +144,6 @@ export const updateProductData = async (
 	return result.rows[0] as Product
 }
 
-// Maaret yritti tässä rakentaa tuotteen statuksen muokkausta muttei onnistunut
-// export const updateProductStatus = async (product_id: number): Promise<Product | null> => {
-// 	const query =
-// 	"UPDATE Products SET listed = $1 WHERE product_id = $2 RETURNING *"
-// 	const params = [false, product_id]
-// 	const result = await executeQuery(query, params)
-// 	if (result.rows.length === 0) {
-// 		return null
-// 	}
-// 	return result.rows[0] as Product
-// }
-
 export const updateProductListed = async (productId: number, isListed: boolean) => {
 	const params = [productId, isListed]
 	const query = "UPDATE Products SET listed = $2 WHERE product_id = $1 RETURNING *"
@@ -167,7 +155,7 @@ export const updateProductListed = async (productId: number, isListed: boolean) 
 }
 
 export const getProductsByUserId = async (user_id: number) => {
-	const query = "SELECT * FROM products WHERE user_id = $1"
+	const query = "SELECT * FROM products WHERE user_id = $1 AND listed = true"
 	const params = [user_id]
 	const result = await executeQuery(query, params)
 	return result.rows
