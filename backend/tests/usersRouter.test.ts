@@ -13,3 +13,29 @@ describe("testing route api/users/:id", () => {
 		expect(response.status).toBe(400)
 	})
 })
+//---------------------------------------------
+
+
+describe("POST /register", function () {
+	it("should register a new user", function (done) {
+		const mockUserData = {
+			username: "testuser",
+			name: "Test User",
+			email: "test@example.com",
+			phone: "1234567890",
+			address: "123 Test",
+			city: "Test",
+			postal_code: "12345",
+			password: "testpassword",
+		}
+
+		request(server)
+			.post("/register")
+			.send(mockUserData)
+			.expect(200)
+			.end(function (err) {
+				if (err) return done(err)
+				done()
+			})
+	})
+})

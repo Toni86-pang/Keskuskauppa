@@ -4,14 +4,17 @@ import { authentication, checkReqBody } from "../middlewares"
 import multer from "multer"
 import argon2 from "argon2"
 import jwt from "jsonwebtoken"
+import { User } from "../daos/usersDao"
 
+/*
 interface Profile {
+	user_id:number,
 	email: string
 	phone: string
 	address: string
 	city: string
 	postal_code: string
-}
+}*/
 
 const secret = process.env.SECRET ?? ""
 const users = express.Router()
@@ -42,7 +45,7 @@ users.get("/user", authentication, async (req: CustomRequest, res: Response) => 
 
 // `POST /users` REGISTER a new user
 users.post("/register", upload.single("user_image"), async (req: Request, res: Response) => {
-	try{
+	try {
 		const { username, name, email, phone, address, city, postal_code, password } = req.body
 		let user_image: Buffer | undefined
 
@@ -68,7 +71,7 @@ users.post("/register", upload.single("user_image"), async (req: Request, res: R
 		if (emailExists.rows.length === 1) {
 			return res.status(401).send("An account with this email already exists.")
 		}
-		
+
 		//Hash password and add user in database
 		const hashedPassword = await argon2.hash(password)
 		const userId = await addUser({
@@ -135,26 +138,33 @@ users.post("/login", checkReqBody, async (req: Request, res: Response) => {
 	}
 })
 
-users.put("/update", authentication, async (req: CustomRequest, res: Response) => {
+users.put("/update",  authentication, upload.single("user_image"),async (req: CustomRequest, res: Response) => {
+	let user_image: Buffer | undefined
 
-	if (!req.id) {
-		console.log("no req.id")
+	if (req.file) {
+		user_image = req.file.buffer
+	}
+
+	const userId = req.id
+
+	if (!userId) {
+		console.log("no user id")
 		return res.status(404).send("No user id")
 	}
-	const user_id = req.id
 
-	const updatedProfile: Profile = req.body
+	const updatedUser: User = req.body
+	updatedUser.user_id = userId
+
+	if (user_image !== undefined) {
+		updatedUser.user_image = user_image
+	} else {
+		updatedUser.user_image = undefined
+	}
+
 	try {
-		const result = await updateProfile(
-			user_id,
-			updatedProfile.phone,
-			updatedProfile.address,
-			updatedProfile.city,
-			updatedProfile.postal_code
-		)
-
+		const result = await updateProfile(updatedUser)
 		if (result) {
-			res.status(200).send()
+			res.status(200).send("Updated successfull!")
 		} else {
 			res.status(404).send("Profile not found")
 		}
@@ -181,7 +191,7 @@ users.put("/logout", async (req: Request, res: Response) => {
 */
 
 //GET user details by user_id
-users.get("/:id", async (req:Request, res: Response) => {
+users.get("/:id", async (req: Request, res: Response) => {
 	try {
 		const userId = Number(req.params.id)
 		if (isNaN(userId)) {

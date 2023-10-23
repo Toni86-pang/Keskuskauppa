@@ -1,16 +1,18 @@
 import { executeQuery } from "../database"
 
+
 export interface User {
-	username: string,
-	name: string,
-	email: string,
-	phone: string,
-	address: string,
-	city: string,
-	postal_code: string,
-	password: string,
+	user_id?: number
+	username: string
+	name: string
+	email: string
+	phone: string
+	address: string
+	city: string
+	postal_code: string
+	password: string
 	user_image?: Buffer
-}
+  }
 
 export async function addUser(user: User): Promise<void> {
 	let query
@@ -106,22 +108,53 @@ export const findUserByEmail = async (email: string) => {
 	return executeQuery(query, params)
 }
 
-export const updateProfile = async (
-	user_id: number,
-	phone: string,
-	address: string,
-	city: string,
-	postal_code: string
-) => {
-	const params = [phone, address, city, postal_code, user_id]
-	const query =
-		"UPDATE users SET phone = $1, address = $2, city = $3, postal_code = $4 WHERE user_id = $5 RETURNING user_id, username, name, email, phone, address, city, postal_code"
-	const result = await executeQuery(query, params)
-	if (result.rows.length === 0) {
-		return null
+/* kenttien nimet sulkuihin ja VALUES sisään ainoastaan dollarin merkit*/
+export async function updateProfile( user: User): Promise<User | null>{
+	let query
+	let values
+
+	if(user.user_image){
+		query =
+		`UPDATE users 
+		SET 
+		phone = $1, address = $2, city = $3, postal_code = $4, user_image = $5
+		WHERE user_id = $6
+		RETURNING user_id, username, name, email, phone, address, city, postal_code, user_image`
+	
+		values = [
+			user.phone, 
+			user.address, 
+			user.city,
+			user.postal_code,
+			user.user_image,
+			user.user_id
+		]
+	} else{
+		query =
+		`UPDATE users 
+		SET 
+		phone = $1, address = $2, city = $3, postal_code = $4
+		WHERE user_id = $5
+		RETURNING user_id, username, name, email, phone, address, city, postal_code`
+
+		values = [
+			user.phone, 
+			user.address, 
+			user.city,
+			user.postal_code,
+			user.user_id
+		]
 	}
-	console.log(result.rows[0])
-	return result.rows[0]
+	try{
+		const result = await executeQuery(query, values)
+		if (result.rows.length === 0) {
+			return null
+		}
+		return result.rows[0]
+	} catch (error){
+		console.error("Error updating user profile", error)
+		throw error
+	}
 }
 
 export const getUserDetailsByUserId = async (user_id: number) => {
