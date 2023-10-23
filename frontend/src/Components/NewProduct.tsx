@@ -2,7 +2,7 @@ import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Button, Container, FormControl, Input, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material"
 import { UserTokenContext } from "../App"
-import { Category, ProductType, Subcategory, User, initialState } from "../types"
+import { Category, Subcategory, User, initialState } from "../types"
 import { fetchCategories, fetchIndividualSubcategory, fetchUser, newProduct } from "../services"
 
 function NewProduct() {
@@ -64,35 +64,33 @@ function NewProduct() {
 	}
 
 	const createNewProduct = async () => {
-		const product: ProductType = {
-			user_id: user.user_id,
-			title: newTitle,
-			category_id: categoryId,
-			subcategory_id: subcategoryId,
-			city: newCity,
-			postal_code: newPostalCode,
-			description: newDescription,
-			price: newPrice,
-			product_image: productImage, // Ensure product_image is typed as File
-			listed: true,
-		}
-	
 		const formData = new FormData()
 		if (productImage) {
 			formData.append("product_image", productImage)
 		}
 		// Append other product data like title, description, etc.
+		formData.append("user_id", user.user_id.toString())
+		formData.append("title", newTitle)
+		formData.append("category_id", categoryId.toString())
+		formData.append("subcategory_id", subcategoryId.toString())
+		formData.append("city", newCity)
+		formData.append("postal_code", newPostalCode)
+		formData.append("description", newDescription)
+		formData.append("price", newPrice)
+		formData.append("listed", "true") // assuming listed is always true
 	
-		newProduct(product, token).then((response) => {
+		try {
+			const response = await newProduct(formData, token)
 			if (response.status === 201) {
 				console.log("Product creation success")
 				navigate("/profile")
 			}
-		})
+		} catch (error) {
+		// Handle errors
+			console.error("Product creation error:", error)
+		}
 	}
 	
-	
-
 	const getCategory = (array: Array<{ category_id: number; category_name: string }>, name: string) => {
 		const filtered = array.filter((category) => category.category_name === name)
 		return filtered[0].category_id

@@ -60,13 +60,19 @@ product.get("/:id", async (req, res) => {
 	try {
 		const product_id: number = parseInt(req.params.id, 10)
 		const productDetails: Product | null = await getProductById(product_id)
+  
 		if (productDetails === null) {
-			res.status(404).json({ message: " product not found" })
+			res.status(404).json({ message: "Product not found" })
 		} else {
+		// Convert product_image to a Base64 encoded string
+			if (productDetails.product_image instanceof Buffer) {
+				productDetails.product_image = productDetails.product_image.toString("base64")
+			}
+  
 			res.status(200).json(productDetails)
 		}
 	} catch (error) {
-		res.status(500).json({ message: "why are you still here?" })
+		res.status(500).json({ message: "Internal server error" })
 	}
 })
 
@@ -132,6 +138,7 @@ product.put("/update/:id", authentication, async (req: CustomRequest, res: Respo
 		res.status(500).send("Internal Server Error")
 	}
 })
+
 // update products 'listed' property
 product.put("/listed/:id", authentication, async (req: CustomRequest, res: Response) => {
 	const userId = req.id
@@ -158,7 +165,6 @@ product.put("/listed/:id", authentication, async (req: CustomRequest, res: Respo
 	}
 })
 
-
 //Serve products by category
 product.get("/category/:id", validateCategoryId, async (req, res) => {
 	const categoryId = parseInt(req.params.id)
@@ -169,6 +175,7 @@ product.get("/category/:id", validateCategoryId, async (req, res) => {
 		res.status(500).json({ message: "Product information couldn't be displayed" })
 	}
 })
+
 // Serve products by subcategory
 product.get("/subcategory/:id", validateCategoryId, async (req, res) => {
 	const subcategoryId = parseInt(req.params.id)

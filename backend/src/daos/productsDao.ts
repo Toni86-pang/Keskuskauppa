@@ -12,7 +12,7 @@ export interface Product {
 	postal_code: string
 	description: string
 	price: number
-	product_image?: Buffer
+	product_image?: Buffer | string | null
 	listed: boolean
 }
 
@@ -59,7 +59,6 @@ export async function createProduct(product: Product): Promise<void> {
 			product.listed
 		]
 	}
-
 	try {
 		await executeQuery(query, values)
 	} catch (error) {
@@ -99,15 +98,29 @@ export const relistProductsAfterCancellation =async (productIds: number[]):Promi
 
 
 export const getProductById = async (product_id: number): Promise<Product | null> => {
-	const query = " SELECT * FROM products WHERE product_id = $1"
+	const query = "SELECT * FROM products WHERE product_id = $1"
 	const result = await executeQuery(query, [product_id])
-
+  
 	if (result.rows.length === 0) {
 		return null
 	}
+  
 	const productDetails: Product = result.rows[0]
+  
+	if (productDetails.product_image instanceof Buffer) {
+		// The product_image is already a Buffer, do nothing.
+	} else if (typeof productDetails.product_image === "string") {
+		// Convert the base64 string to a Buffer
+		productDetails.product_image = Buffer.from(productDetails.product_image, "base64")
+	} else {
+		// Handle cases where the product doesn't have an image
+		productDetails.product_image = null
+	}
+  
 	return productDetails
 }
+  
+  
 
 export const getAllProducts = async (): Promise<Product[]> => {
 	const query = "SELECT * FROM products"
