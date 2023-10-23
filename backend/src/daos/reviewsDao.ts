@@ -11,6 +11,10 @@ interface Review {
 	stars: number
 }
 
+interface AverageStars {
+	average_score: number
+}
+
 export const getReviewsByUserId = async (userId: number): Promise<Review[]> => {
 	const query = "SELECT * FROM reviews WHERE seller_id = $1"
 	const result = await executeQuery(query, [userId])
@@ -34,17 +38,10 @@ export const getReviewById = async (reviewId: number): Promise<Review | null> =>
 export const getAverageStarsByUserId = async (userId: number): Promise<number> => {
 	const query = "SELECT AVG(stars) AS average_score FROM reviews 	WHERE seller_id = $1"
 	const result = await executeQuery(query, [userId])
-	return result.rows[0]
+	const averageStars: AverageStars = result.rows[0]
+	return averageStars.average_score
 }
 
-interface Review {
-	sales_id: number
-	seller_id: number
-	buyer_id: number
-	description: string
-	seen?: boolean
-	stars:number
-}
 
 export async function createReview(review: Review): Promise<Review> {
 	const query = `
