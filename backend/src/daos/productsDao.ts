@@ -155,7 +155,7 @@ export const updateProductListed = async (productId: number, isListed: boolean) 
 }
 
 export const getProductsByUserId = async (user_id: number) => {
-	const query = "SELECT * FROM products WHERE user_id = $1"
+	const query = "SELECT * FROM products WHERE user_id = $1 AND listed = true"
 	const params = [user_id]
 	const result = await executeQuery(query, params)
 	return result.rows

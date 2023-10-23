@@ -7,9 +7,9 @@ interface CustomRequest extends Request {
 	id?: number
 }
 
-const reviews = express.Router()
+const review = express.Router()
 
-reviews.get("/user/:id", async (req: Request, res: Response) => {
+review.get("/user/:id", async (req: Request, res: Response) => {
 
 	const userId = Number(req.params.id)
 	try {
@@ -23,19 +23,24 @@ reviews.get("/user/:id", async (req: Request, res: Response) => {
 })
 
 
-reviews.get("/:id", async (req: Request, res: Response) => {
+review.get("/:id", async (req: Request, res: Response) => {
 
 	const reviewId = Number(req.params.id)
 	try {
 		const result = await getReviewById(reviewId)
-		return res.status(200).send(result)
+		if (result) {
+			console.log("Result: ", result)
+			return res.status(200).send(result)
+		} else {
+			return res.status(404).send()
+		}		
 	} catch (error) {
 		console.error("Error fetching review: ", error)
 		res.status(500).send(error)
 	}	
 })
 
-reviews.get("/user/average/:id", async (req: Request, res: Response) => {
+review.get("/user/average/:id", async (req: Request, res: Response) => {
 
 	const userId = Number(req.params.id)
 	try {
@@ -47,7 +52,6 @@ reviews.get("/user/average/:id", async (req: Request, res: Response) => {
 	}	
 })
 
-const review = express.Router()
 
 review.post("/", authentication, async (req: CustomRequest, res: Response) => {
 	const buyer_id = req.id
