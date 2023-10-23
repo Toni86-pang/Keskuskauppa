@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express"
+import { getReviewsByUserId, getReviewById, getAverageStarsByUserId, createReview } from "../daos/reviewsDao"
 import { authentication } from "../middlewares"
-import { createReview } from "../daos/reviewsDao"
 
 
 interface CustomRequest extends Request {
@@ -8,6 +8,50 @@ interface CustomRequest extends Request {
 }
 
 const review = express.Router()
+
+review.get("/user/:id", async (req: Request, res: Response) => {
+
+	const userId = Number(req.params.id)
+	try {
+		const result = await getReviewsByUserId(userId)
+		return res.status(200).send(result)
+	} catch (error) {
+		console.error("Error fetching reviews: ", error)
+		res.status(500).send(error)
+	}
+	
+})
+
+
+review.get("/:id", async (req: Request, res: Response) => {
+
+	const reviewId = Number(req.params.id)
+	try {
+		const result = await getReviewById(reviewId)
+		if (result) {
+			console.log("Result: ", result)
+			return res.status(200).send(result)
+		} else {
+			return res.status(404).send()
+		}		
+	} catch (error) {
+		console.error("Error fetching review: ", error)
+		res.status(500).send(error)
+	}	
+})
+
+review.get("/user/average/:id", async (req: Request, res: Response) => {
+
+	const userId = Number(req.params.id)
+	try {
+		const result = await getAverageStarsByUserId(userId)
+		return res.status(200).send(result)
+	} catch (error) {
+		console.error("Error fetching reviews: ", error)
+		res.status(500).send(error)
+	}	
+})
+
 
 review.post("/", authentication, async (req: CustomRequest, res: Response) => {
 	const buyer_id = req.id
