@@ -4,41 +4,29 @@ import CardMedia from "@mui/material/CardMedia"
 import Typography from "@mui/material/Typography"
 import Button from "@mui/material/Button"
 import { Grid } from "@mui/material"
-import { useNavigate } from "react-router"
-import { ProductProps } from "../types"
+import { OrderCardProps } from "../types"
+import { useState } from "react"
+import OrderDetails from "./OrderDetails"
 
 const cardStyle = {
 	marginTop: "10px",
 	marginBottom: "10px"
-
 }
 
 const gridContainerStyle = {
 	alignItems: "center"
 }
 
-function ProductCard({ product }: ProductProps) {
-
-	const navigate = useNavigate()
+function OrderProductCard({ product }: OrderCardProps) {
+	const [isOpen, setIsopen] = useState(false)
 
 	const handleClick = () => {
-		navigate(`/product/${product.product_id}`)
+		setIsopen(true)
 	}
 
-	let imageSrc = ""
-
-	if (product.product_image && product.product_image instanceof Buffer) {
-	// Convert the Buffer to a Base64 string
-		const base64String = product.product_image.toString("base64")
-		imageSrc = `data:image/*;base64,${base64String}`
-	} else {
-	// Use a default image source or some placeholder
-		imageSrc = "https://example.com/default-image.jpg"
-	}
-
-	// const defaultImageUrl = "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e"
-	console.log("Product image data:", product.product_image)
 	return (
+		<>
+			{product &&
 		<Card style={cardStyle}>
 			<CardContent>
 				<Grid container spacing={2} style={gridContainerStyle}>
@@ -46,7 +34,7 @@ function ProductCard({ product }: ProductProps) {
 						<CardMedia
 							component="img"
 							height="80"
-							image={imageSrc}
+							image={"https://images.unsplash.com/photo-1551963831-b3b1ca40c98e"}
 							alt={product.title}
 						/>
 					</Grid>
@@ -55,16 +43,29 @@ function ProductCard({ product }: ProductProps) {
 							{product.title}
 						</Typography>
 						<Typography>Hinta {product.price} €</Typography>
+						<Typography> {product.sales_status} </Typography>
+						{product.seller ? (
+							<Typography> Myyjä: {product.seller} </Typography>
+						):(
+							<Typography> Ostaja: {product.buyer} </Typography>
+						)}
 					</Grid>
 					<Grid item xs={3} style={{ display: "flex", alignItems: "center" }}>
-						<Button variant="contained" color="primary" onClick={handleClick}>
-              Katso tuote
+						<Button variant="contained" color="primary" onClick={() => handleClick()}>
+							Tilaustiedot
 						</Button>
 					</Grid>
 				</Grid>
 			</CardContent>
+			{product.seller ? (
+				<OrderDetails isSeller={false} isOpen={isOpen} saleId={product.sales_id} onClose={() => setIsopen(false)} />
+			):(
+				<OrderDetails isSeller={true} isOpen={isOpen} saleId={product.sales_id} onClose={() => setIsopen(false)} />
+			)}
 		</Card>
+			}
+		</>
 	)
 }
 
-export default ProductCard
+export default OrderProductCard

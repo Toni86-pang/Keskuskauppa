@@ -29,31 +29,33 @@ export default function SaleSummary (props: SummaryProps) {
 		})
 	}
     
-	const handleNewSale = () => {
-		try {
-			cart?.map(async product => {
-				const sale: Sale = {   
-					product_id: product.product_id,
-					buyer_id: buyerInfo.buyer_id,
-					buyer_name: buyerInfo.buyer_name,
-					buyer_address: buyerInfo.buyer_address,
-					buyer_city: buyerInfo.buyer_city,
-					buyer_postcode: buyerInfo.buyer_postcode,
-					buyer_phone: buyerInfo.buyer_phone,
-					buyer_email: buyerInfo.buyer_email,
-					seller_id: product.user_id,
-					sales_status: 2
-				} 
-				newSale(sale, token)
+	const handleNewSale = async () => {
+		if(!cart) return
+		cart?.map(async product => {
+			const sale: Sale = {   
+				product_id: product.product_id,
+				buyer_id: buyerInfo.buyer_id,
+				buyer_name: buyerInfo.buyer_name,
+				buyer_address: buyerInfo.buyer_address,
+				buyer_city: buyerInfo.buyer_city,
+				buyer_postcode: buyerInfo.buyer_postcode,
+				buyer_phone: buyerInfo.buyer_phone,
+				buyer_email: buyerInfo.buyer_email,
+				seller_id: product.user_id,
+				sales_status: 2
+			} 
+			const makingSale = await newSale(sale, token)
+			console.log(makingSale)
+			if(makingSale === undefined){
+				console.log("Error creating a new sale")
+				setShowErrorNotification(true) // Show error notification
+			} else {
 				emptyShoppingCart()
 				setShowSuccessNotification(true) // Show success notification
 				await timeout(1500)
 				navigate("/")
-			})
-		} catch (error) {
-			console.error("Error creating a new sale", error)
-			setShowErrorNotification(true) // Show error notification
-		}
+			}
+		})
 	}
 
 	function timeout(delay: number) {
@@ -96,11 +98,11 @@ export default function SaleSummary (props: SummaryProps) {
 						<h4>Summa: {sum} €</h4>
 						<h4>Tilaajan tiedot:</h4>
                         Nimi: {buyerInfo.buyer_name}<br/>
-                        Puhelinnumero: {buyerInfo.buyer_phone}<br/>
-                        Sähköposti: {buyerInfo.buyer_email}<br/>
                         Katuosoite: {buyerInfo.buyer_address}<br/>
                         Kaupunki: {buyerInfo.buyer_city}<br/>
-                        Postinumero: {buyerInfo.buyer_postcode}
+                        Postinumero: {buyerInfo.buyer_postcode}<br/>
+                        Puhelinnumero: {buyerInfo.buyer_phone}<br/>
+                        Sähköposti: {buyerInfo.buyer_email}<br/>
 
 						<FormControl
 							required
@@ -109,22 +111,28 @@ export default function SaleSummary (props: SummaryProps) {
 							sx={{ m: 3 }}
 							variant="standard"
 						>
-							<Stack direction="row">
-								<FormGroup>
-									<FormControlLabel
-										control={
-											<Checkbox checked={checked} onChange={handleChange} name="checked" />
-										}
-										label="Olen tarkistanut tiedot."
-									/>
-								</FormGroup>
-								<FormHelperText>Tietojen tarkistus on varmistettava.</FormHelperText>
-							</Stack>
+							{(buyerInfo.buyer_name === "" || buyerInfo.buyer_address === "" || buyerInfo.buyer_city === "" || buyerInfo.buyer_email === "" || buyerInfo.buyer_phone === "" || buyerInfo.buyer_postcode === "") ? (
+							
+								<h5 style={{color: "red"}}>Kaikki tiedot vaaditaan. Vaadittavia tietoja puuttuu.</h5>
+							):(
+								<Stack direction="row">
+									<FormGroup>
+										<FormControlLabel
+											control={
+												<Checkbox checked={checked} onChange={handleChange} name="checked" />
+											}
+											label="Olen tarkistanut tiedot."
+										/>
+									</FormGroup>
+									<FormHelperText>Tietojen tarkistus on varmistettava.</FormHelperText>
+								</Stack>
+							)
+							}
 						</FormControl>
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={onClose}>Muuta tietoja</Button>
+					<Button onClick={() => {onClose(), setState({checked: false})}}>Muuta tietoja</Button>
 					<Button disabled={!checked} onClick={() => handleNewSale()} autoFocus>
                         Tilaa ja maksa
 					</Button>

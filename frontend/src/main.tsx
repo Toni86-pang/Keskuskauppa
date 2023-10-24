@@ -8,11 +8,12 @@ import Products, { loader as productsLoader } from "./Components/Products.tsx"
 import Product, { loader as productLoader } from "./Components/Product.tsx"
 import { loader as userLoader } from "./Components/CheckOut.tsx"
 import SellerProfile, { loader as sellerLoader } from "./Components/SellerProfile.tsx"
-import NewProduct from "./Components/NewProduct.tsx"
-import Profile from "./Components/Profile.tsx"
+import NewProduct, { loader as newProductLoader } from "./Components/NewProduct.tsx"
+import Profile, {loader as profileLoader} from "./Components/Profile.tsx"
 import LandingPage from "./Components/LandingPage.tsx"
 import SearchResultsPage from "./Components/SearchResultpage.tsx"
 import CheckOut from "./Components/CheckOut.tsx"
+import OrderHistory, { loader as orderHistoryLoader} from "./Components/OrderHistory.tsx"
 
 const router = createBrowserRouter([
 	{
@@ -31,24 +32,27 @@ const router = createBrowserRouter([
 			{
 				path: "/products",
 				element: <Products />,
+				loader: productsLoader
 			},
 			{
 				path: "/products/category/:id",
-				element: <Products category={true}/>,
+				element: <Products />,
 				loader: productsLoader
 			},
 			{
 				path: "/products/subcategory/:id",
-				element: <Products subCategory={true}/>,
+				element: <Products />,
 				loader: productsLoader
 			},
 			{
 				path: "/profile",
 				element: <Profile />,
+				loader: profileLoader
 			},
 			{
 				path: "/product/new",
-				element: <NewProduct />
+				element: <NewProduct />,
+				loader: newProductLoader
 			},
 			{
 				path: "/product/:id",
@@ -64,6 +68,11 @@ const router = createBrowserRouter([
 				path: "/user/:id",
 				element: <SellerProfile />,
 				loader: sellerLoader,
+			},
+			{
+				path: "/orderhistory",
+				element: <OrderHistory />,
+				loader: orderHistoryLoader,
 			},
 		],
 	},

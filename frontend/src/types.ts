@@ -30,9 +30,11 @@ export interface ProductType {
 	city: string
     postal_code: string
     description: string
-	price: number
-	// product_image?: any
+	price: string
+	product_image: File | null
 	listed: boolean
+	category_name?: string
+	subcategory_name?: string
 }
 
 export interface ProductProps {
@@ -86,7 +88,7 @@ export interface UpdateProductModalProps {
 	city: string
 	postal_code: string
 	description: string
-	price: number
+	price: string
 	
   }
   
@@ -134,6 +136,36 @@ export interface NavbarProps {
 
 export interface DisplayProductsProps {
 	productList: ProductType[]
+}
+
+export interface BoughtProps {
+	sales_id: number
+	sales_status: string
+	title: string
+	price: number
+	buyer?: string
+	seller?: string
+}
+
+export interface OrderDetailsProps {
+	isSeller: boolean
+	isOpen: boolean
+	saleId: number
+	onClose: () => void
+}
+
+export interface SoldProps {
+	sales_id: number
+	sales_status: string
+	title: string
+	price: number
+	buyer?: string
+	seller?: string
+	listed: boolean
+}
+
+export interface OrderCardProps {
+	product: BoughtProps | SoldProps
 }
 
 export interface SummaryProps {
@@ -190,10 +222,14 @@ export const initialStateProduct: ProductType = {
 	city: "",
 	postal_code: "",
 	description: "",
-	price: 0,
-	listed: true
-	// product_image?: any
-	
+	price: "",
+	listed: true,
+	product_image: null
+}
+
+export interface CategoryProducts {
+    categoryHeader: string
+    products: ProductType[]
 }
 
 export type BreadcrumbResolver = (params: string) => Promise<[string, string][]>

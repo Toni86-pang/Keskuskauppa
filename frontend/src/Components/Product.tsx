@@ -3,11 +3,8 @@ import { useLoaderData, useNavigate, Link, useOutletContext } from "react-router
 import {
 	Paper,
 	Grid,
-	ButtonBase,
 	Typography,
 	Box,
-	ImageList,
-	ImageListItem,
 	Button,
 } from "@mui/material"
 import StarBorderPurple500SharpIcon from "@mui/icons-material/StarBorderPurple500Sharp"
@@ -27,36 +24,36 @@ export async function loader({ params }: any) {
 
 // Imaget testiä varten ////////////////////////
 
-const itemData = [
-	{
-		img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-		title: "Breakfast",
-	},
-	{
-		img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-		title: "Burger",
-	},
-	{
-		img: "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
-		title: "Camera",
-	},
-	{
-		img: "https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c",
-		title: "Coffee",
-	},
-	{
-		img: "https://images.unsplash.com/photo-1533827432537-70133748f5c8",
-		title: "Hats",
-	},
-	{
-		img: "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62",
-		title: "Honey",
-	},
-	{
-		img: "https://images.unsplash.com/photo-1516802273409-68526ee1bdd6",
-		title: "Basketball",
-	},
-]
+// const itemData = [
+// 	{ 	ButtonBase,	ImageList, ImageListItem,
+// 		img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
+// 		title: "Breakfast",
+// 	},
+// 	{
+// 		img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
+// 		title: "Burger",
+// 	},
+// 	{
+// 		img: "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
+// 		title: "Camera",
+// 	},
+// 	{
+// 		img: "https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c",
+// 		title: "Coffee",
+// 	},
+// 	{
+// 		img: "https://images.unsplash.com/photo-1533827432537-70133748f5c8",
+// 		title: "Hats",
+// 	},
+// 	{
+// 		img: "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62",
+// 		title: "Honey",
+// 	},
+// 	{
+// 		img: "https://images.unsplash.com/photo-1516802273409-68526ee1bdd6",
+// 		title: "Basketball",
+// 	},
+// ]
 
 export default function Product() {
 	const [isUpdateModalOpen, setUpdateModalOpen] = useState(false)
@@ -66,7 +63,8 @@ export default function Product() {
 	const [myProduct, setMyProduct] = useState<boolean>(false)
 	const [token] = useContext(UserTokenContext)
 	const [ownerUsername, setOwnerUsername] = useState<string | null>("")
-	const [selectedImage, setSelectedImage] = useState<string | null>(itemData[0].img)
+	// const [image, setImage] = useState<Buffer | null>(null)
+
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
 	const navigate = useNavigate()
 	const product = useLoaderData() as ProductType
@@ -155,10 +153,10 @@ export default function Product() {
 								>
 									{product?.title}
 								</Typography>
-								{selectedImage && (
+								{product?.product_image && (
 									<img
-										alt="Image"
-										src={selectedImage}
+										alt="Product Image"
+										src={`data:image/*;base64,${product.product_image}`}
 										style={{
 											margin: "auto",
 											display: "block",
@@ -236,7 +234,7 @@ export default function Product() {
 													city={product?.city.split(",")[0] || ""}
 													postal_code={product?.postal_code.split(",")[0] || ""}
 													description={product?.description || ""}
-													price={product?.price || 0}
+													price={product?.price || ""}
 												/>
 											</div>
 
@@ -278,8 +276,8 @@ export default function Product() {
 							</Grid>
 						</Grid>
 						<Grid>
-							<Grid item marginTop={-4}>
-								<ImageList
+							<Grid item marginTop={4}>
+								{/* <ImageList
 									sx={{ width: 385, height: 100 }}
 									cols={10}
 									rowHeight={25}
@@ -299,7 +297,7 @@ export default function Product() {
 											</ImageListItem>
 										</ButtonBase>
 									))}
-								</ImageList>
+								</ImageList> */}
 								<Typography variant="body2" gutterBottom>
 							Lisätiedot:
 								</Typography>
