@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { updateSaleStatus, createSale, getSaleById, fetchOwnSold, fetchOwnBought, getStatusById } from "../daos/salesDao"
+import { updateSaleStatus, createSale, getSaleById, fetchOwnSold, fetchOwnBought, getStatusById, updateSaleReviewedStatus } from "../daos/salesDao"
 import { authentication } from "../middlewares"
 
 const sales = express.Router()
@@ -145,6 +145,23 @@ sales.put("/update/:id", authentication, async (req: CustomRequest, res: Respons
 		return res.status(403).send({ error: "Unauthorized status update." })
 	} catch (error) {
 		console.error("Error updating sale status:", error)
+		res.status(500).send("Internal Server Error")
+	}
+
+})
+sales.put("/reviewupdate/:id", authentication, async (req: CustomRequest, res: Response) => {
+	const userId = req.id
+	const salesId = Number(req.params.id)
+	const newReviewStatus = true
+	console.log(newReviewStatus)
+	try {
+		const sale: Sale = await getSaleById(salesId)
+		if (userId === sale.buyer_id) {
+			await updateSaleReviewedStatus(salesId, newReviewStatus)
+			return res.status(200).send({ message: "Sale reviewed status set to true." })
+		}
+	} catch (error) {
+		console.error("Error updating review status on sale:", error)
 		res.status(500).send("Internal Server Error")
 	}
 

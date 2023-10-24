@@ -1,5 +1,5 @@
 import axios from "axios"
-import { BoughtProps, Category, ProductType, Sale, SoldProps, UpdatedProduct, UpdatedUser, User } from "./types"
+import { BoughtProps, Category, ProductType, Review, Sale, SoldProps, UpdatedProduct, UpdatedUser, User } from "./types"
 
 export const deleteUser = (token: string) => {
 	return axios.delete("/api/users/delete", {
@@ -152,6 +152,20 @@ export const newProduct = async (product: ProductType, token: string) => {
 export const newSale = async (sale: Sale, token: string) => {
 	try {
 		const response = await axios.post("/api/sales/", sale, {
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": `Bearer ${token}`
+			},
+		})
+		return response
+	} catch (error) {
+		console.error("Error posting", error)
+		return undefined
+	}
+}
+export const newReview = async (review: Review, token: string) => {
+	try {
+		const response = await axios.post("/api/review/", review, {
 			headers: {
 				"Content-Type": "application/json",
 				"Authorization": `Bearer ${token}`

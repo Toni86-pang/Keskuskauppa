@@ -89,9 +89,27 @@ export interface UpdateProductModalProps {
 	postal_code: string
 	description: string
 	price: number
-	
   }
+
+export interface ReviewModalProps {
+	isOpen: boolean
+	onClose: () => void
+	token: string
+	sale_id: number
+	seller_id?: number
+	sale?: Sale
+	setState: () => void
+  }
+
   
+export interface Review {
+	sales_id: number
+	seller_id?: number
+	buyer_id?: number
+	description?: string
+	seen?: boolean
+	stars?: number
+}
 
 export interface ShoppingCartProps {
     isOpen: boolean
@@ -197,6 +215,7 @@ export interface Sale {
 	buyer_email: string
 	seller_id: number
 	sales_status: number
+	reviewed?: boolean
 }
 
 export const initialState: User = {
