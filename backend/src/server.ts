@@ -27,7 +27,7 @@ server.use("/api/sales", sales)
 server.use("/api/search", search)
 server.use("/", express.static("./dist/frontend"))
 server.use("/version", (req: Request, res: Response) => {
-	res.send("1.8")
+	res.send("1.81")
 })
 
 server.get("*", (_req, res) => {
