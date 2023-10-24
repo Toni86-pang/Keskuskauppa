@@ -148,3 +148,28 @@ describe("testing GET by review_id", () => {
 		expect(response.status).toBe(200)
 	})
 })
+
+describe("testing GET comment by review_id", () => {
+
+	const mockResponse = {
+		rows: [{
+			"comment_id": 1,
+			"review_id": 5,
+			"comment": "Kiitos!"
+		}]
+	}
+
+	beforeAll(() => {
+		initializeMockPool(mockResponse)
+	})
+
+	afterAll(() => {
+		jest.clearAllMocks()
+	})
+
+	it("test get existing review", async () => {
+		const response = await request(server).get("/api/review/5")
+			.send({})
+		expect(response.status).toBe(200)
+	})
+})

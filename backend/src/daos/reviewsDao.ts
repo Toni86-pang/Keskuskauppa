@@ -11,6 +11,12 @@ interface Review {
 	stars: number
 }
 
+interface Comment {
+	comment_id?: number
+	review_id: number
+	comment: string
+}
+
 interface AverageStars {
 	average_score: number
 }
@@ -25,14 +31,14 @@ export const getReviewsByUserId = async (userId: number): Promise<Review[]> => {
 export const getReviewById = async (reviewId: number): Promise<Review | null> => {
 	const query = "SELECT * FROM reviews WHERE review_id = $1"
 	const result = await executeQuery(query, [reviewId])
-	if(result.rows.length === 0) {
-		return null		
+	if (result.rows.length === 0) {
+		return null
 	}
 	else {
 		const review: Review = result.rows[0]
 		return review
 	}
-	
+
 }
 
 export const getAverageStarsByUserId = async (userId: number): Promise<number> => {
@@ -66,4 +72,34 @@ export async function createReview(review: Review): Promise<Review> {
 		console.error("Error creating product:", error)
 		throw error
 	}
+}
+
+export const postComment = async (review_id: number, comment: string) => {
+	const query = `INSERT INTO comment
+				(review_id, comment)
+				VALUES ($1, $2)
+			`
+	const params = [review_id, comment]
+
+	try {
+		const result = await executeQuery(query, params)
+		return result.rows[0]
+
+	} catch (error) {
+		console.error("Error creating comment:", error)
+		throw error
+	}
+}
+
+export const getReviewComment = async (reviewId: number): Promise<Comment | null> => {
+	const query = "SELECT * FROM comment WHERE review_id = $1"
+	const params = [reviewId]
+
+	const result = await executeQuery(query, params)
+	if (result.rowCount > 0) {
+		return result.rows[0]
+	} else {
+		return null
+	}
+
 }
