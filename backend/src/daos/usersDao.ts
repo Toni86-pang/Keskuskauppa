@@ -1,25 +1,66 @@
 import { executeQuery } from "../database"
+export interface User {
+    user_id?: number
+    username: string
+    name: string
+    email: string
+    phone: string
+    address: string
+    city: string
+    postal_code: string
+    password: string
+    user_image?: Buffer
+  }
 
-export const addUser = async (username: string, name: string, email: string, phone: string, address: string, city: string, postal_code: string, password: string) => {
-	const query = 
-	`INSERT INTO 
-	users 
-	(username,name,email,phone,address,city,postal_code,password) 
-	VALUES 
-	($1, $2, $3, $4, $5, $6, $7, $8)
-	returning user_id;`
-	const params = [
-		username,
-		name,
-		email,
-		phone,
-		address,
-		city,
-		postal_code,
-		password
-	]
-	const result = await executeQuery(query, params)
-	return result.rows[0].user_id
+export async function addUser(user: User): Promise<void> {
+	let query
+	let values
+
+	if (user.user_image) {
+		query =
+        `INSERT INTO users
+              (username, name, email, phone, address, city, postal_code, password, user_image)
+        VALUES
+            ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            returning user_id;`
+
+		values = [
+			user.username,
+			user.name,
+			user.email,
+			user.phone,
+			user.address,
+			user.city,
+			user.postal_code,
+			user.password,
+			user.user_image
+		]
+	} else {
+		query = 
+        `INSERT INTO users
+            (username, name, email, phone, address, city, postal_code, password)
+          VALUES
+              ($1, $2, $3, $4, $5, $6, $7, $8)
+              returning user_id;`
+
+		values = [
+			user.username,
+			user.name,
+			user.email,
+			user.phone,
+			user.address,
+			user.city,
+			user.postal_code,
+			user.password
+		]
+	}
+	try {
+		const result = await executeQuery(query, values)
+		return result.rows[0].user_id
+	} catch (error) {
+		console.error("Error creating user:", error)
+		throw error
+	}
 }
 
 export const getAllUsers = async () => {

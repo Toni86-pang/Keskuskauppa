@@ -10,7 +10,7 @@ export interface User {
 	address: string,
 	city: string,
 	postal_code:string,
-	is_Admin?: boolean,
+	product_image: File | null
 	reviews?: number
 	reg_day?: string
 }
@@ -145,6 +145,7 @@ export interface BoughtProps {
 	price: number
 	buyer?: string
 	seller?: string
+	product_image: File | null;
 }
 
 export interface OrderDetailsProps {
@@ -162,6 +163,7 @@ export interface SoldProps {
 	buyer?: string
 	seller?: string
 	listed: boolean
+	product_image: File | null;
 }
 
 export interface OrderCardProps {
@@ -208,8 +210,8 @@ export const initialState: User = {
 	phone: "",
 	address: "",
 	city: "",
+	product_image: null,
 	postal_code: "",
-	is_Admin: false,
 	reviews: 0
 }
 

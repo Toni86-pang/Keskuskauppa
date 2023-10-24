@@ -31,12 +31,21 @@ function OrderProductCard({ product }: OrderCardProps) {
 			<CardContent>
 				<Grid container spacing={2} style={gridContainerStyle}>
 					<Grid item xs={3}>
-						<CardMedia
-							component="img"
-							height="80"
-							image={"https://images.unsplash.com/photo-1551963831-b3b1ca40c98e"}
-							alt={product.title}
-						/>
+						{product.product_image ? (
+							<CardMedia
+								component="img"
+								height="80"
+								image={`data:image/*;base64,${product.product_image}`}
+								alt={product.title}
+							/>
+						) : (
+							<CardMedia
+								component="img"
+								height="80"
+								image={"URL_TO_DEFAULT_IMAGE"}
+								alt="Default Image"
+							/>
+						)}
 					</Grid>
 					<Grid item xs={6}>
 						<Typography variant="h6" component="div">
