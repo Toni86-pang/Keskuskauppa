@@ -1,30 +1,43 @@
-import { useState, useEffect, useContext } from "react"
+import { useState, useContext } from "react"
 import { Grid, Button, } from "@mui/material"
 import Divider from "@mui/material/Divider"
 import VerifyDialog from "./VerifyDialog"
-import { useNavigate, redirect } from "react-router-dom"
+import { useNavigate, redirect, useLoaderData } from "react-router-dom"
 import UpdateProfile from "./UpdateProfile"
 import { UserTokenContext } from "../App"
-import { deleteUser, fetchOwnProducts, fetchUser } from "../services"
-import { ProductType, User, initialState } from "../types"
+import { deleteUser, fetchUsersProducts, fetchStarRating, fetchUser } from "../services"
+import { ProductType, User } from "../types"
 import ProductCard from "./ProductCard"
 import Rating from "@mui/material/Rating"
 import Notification from "./Notification"
 
+interface UserProducts {
+	loadedUser: User
+	stars: number
+	products: ProductType[]
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
 	const token = localStorage.getItem("token")
-	if(!token){
+	let userProducts: UserProducts
+	if(token) {
+		const loadedUser = await fetchUser(token)
+		const products = await fetchUsersProducts(loadedUser.user_id)
+		const stars = await fetchStarRating(loadedUser.user_id)
+		userProducts = {loadedUser, stars, products}
+		return userProducts
+	} else {
 		return redirect("/")
 	}
-	return null
+	
 }
 
 function Profile() {
-
-	const [user, setUser] = useState<User>(initialState)
+	const {loadedUser, stars,  products} = useLoaderData() as UserProducts
+	const [user, setUser] = useState<User>(loadedUser)
 	const [token, setToken] = useContext(UserTokenContext)
 	const [updateVisible, setUpdateVisible] = useState(false)
-	const [ownProducts, setOwnProducts] = useState<ProductType[]>([])
 	const [verifyOpen, setVerifyOpen] = useState<boolean>(false)
 	const navigate = useNavigate()
 
@@ -41,40 +54,9 @@ function Profile() {
 		formattedJoinDate = `${day}.${month}.${year}`
 	}
 
-
 	const handleVerification = () => {
 		setVerifyOpen(true)
 	}
-
-
-
-	useEffect(() => {
-		const fetchInfo = async () => {
-			if (!token) {
-				setUser(initialState)
-				setOwnProducts([])
-				return
-			}
-
-			const user = await fetchUser(token)
-
-			if (user === undefined) {
-				console.error("error fetching user")
-				return
-			}
-
-			const products = await fetchOwnProducts(Number(user.user_id))
-
-			if (products === undefined) {
-				console.error("error fetching products")
-				return
-			}
-
-			setUser(user)
-			setOwnProducts(products)
-		}
-		fetchInfo()
-	}, [token])
 
 	const deleteProfile = async () => {
 		try {
@@ -130,9 +112,9 @@ function Profile() {
 						<div className="userPostalCode">Postinumero: {user?.postal_code}</div>
 						<div className="userEmail">Sähköposti: {user?.email}</div>
 						<div className="userPhone">Puhelinnumero: {user?.phone}</div>
-						<div>Tuotteita myynnissä: {ownProducts?.length}</div>
+						<div>Tuotteita myynnissä: {products?.length}</div>
 						<div>Oma tähtiarvio:
-							<Rating name="read-only" value={3.33} precision={0.1} readOnly />
+							<Rating name="read-only" value={stars} precision={0.1} readOnly />
 						</div>
 					</div>
 				</Grid>}
@@ -190,8 +172,8 @@ function Profile() {
 			<div className="ownProducts">
 				<div style={{ marginBottom: "10px" }}>Omat ilmoitukset:</div>
 				<Divider variant="middle" style={{ marginBottom: "10px" }} />
-				{ownProducts.length > 0 ? (
-					ownProducts && ownProducts?.map((product: ProductType) => {
+				{products.length > 0 ? (
+					products && products?.map((product: ProductType) => {
 						return <ProductCard product={product} key={"own product: " + product.product_id} />
 					}))
 					:

@@ -145,6 +145,7 @@ export interface BoughtProps {
 	price: number
 	buyer?: string
 	seller?: string
+	listed?: boolean
 }
 
 export interface OrderDetailsProps {
