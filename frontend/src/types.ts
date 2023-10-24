@@ -227,6 +227,11 @@ export const initialStateProduct: ProductType = {
 	product_image: null
 }
 
+export interface CategoryProducts {
+    categoryHeader: string
+    products: ProductType[]
+}
+
 export type BreadcrumbResolver = (params: string) => Promise<[string, string][]>
 
 export type categoryMapType = {
