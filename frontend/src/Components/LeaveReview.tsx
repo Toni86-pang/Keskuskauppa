@@ -2,13 +2,13 @@ import { ChangeEvent, SyntheticEvent, useState } from "react"
 import { Dialog, TextField, Button, DialogTitle, Rating, Box } from "@mui/material"
 import StarIcon from "@mui/icons-material/Star"
 import { Review, ReviewModalProps } from "../types"
-import { newReview } from "../services"
+import { newReview, putReviewedTrue } from "../services"
 import Notification from "./Notification"
 // import { useEffect } from "react"
 // import { initialState } from "../types"
 // import { fetchUser } from "../services"
 
-function LeaveReview({ isOpen, onClose, token, sale, sale_id, seller_id, setState }: ReviewModalProps) {
+function LeaveReview({ isOpen, onClose, token, sale, sale_id, seller_id, changeButton }: ReviewModalProps) {
 	const [newDescription, setNewDescription] = useState<string>()
 	const [newStars, setNewStars] = useState<number | null>(3)
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
@@ -46,17 +46,22 @@ function LeaveReview({ isOpen, onClose, token, sale, sale_id, seller_id, setStat
 					buyer_id: sale.buyer_id,
 				}
 				await newReview(review, token)
+				if(sale.sales_id !== undefined){
+					await putReviewedTrue(sale.sales_id, token)
+				}
 				setShowSuccessNotification(true) // Show success notification
-				setState()
+				changeButton()
 				onClose()
 			}
 		} catch (error) {
-			console.error("Error sendin review", error)
+			console.error("Error sending review", error)
 			setShowErrorNotification(true)
 		}
 	}
 
 	const handleCloseModal = () => {
+		setNewDescription("")
+		setNewStars(3)
 		onClose()
 	}
 

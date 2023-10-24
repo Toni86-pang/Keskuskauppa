@@ -149,16 +149,20 @@ sales.put("/update/:id", authentication, async (req: CustomRequest, res: Respons
 	}
 
 })
+
+//update sale reviewed property
 sales.put("/reviewupdate/:id", authentication, async (req: CustomRequest, res: Response) => {
 	const userId = req.id
 	const salesId = Number(req.params.id)
-	const newReviewStatus = true
-	console.log(newReviewStatus)
+	const reviewed = req.body.reviewed
 	try {
 		const sale: Sale = await getSaleById(salesId)
+		console.log(sale)
 		if (userId === sale.buyer_id) {
-			await updateSaleReviewedStatus(salesId, newReviewStatus)
+			await updateSaleReviewedStatus(salesId, reviewed)
 			return res.status(200).send({ message: "Sale reviewed status set to true." })
+		} else {
+			return res.status(401).send({ message: "Not authorised to make a review on this sale." })
 		}
 	} catch (error) {
 		console.error("Error updating review status on sale:", error)

@@ -191,6 +191,19 @@ export const setSaleSent = async (saleId: number, token: string) => {
 	return response
 }
 
+export const putReviewedTrue = async (saleId: number, token: string) => {
+	const response = await axios.put("/api/sales/reviewupdate/" + saleId,
+		{
+			"reviewed": true
+		}, {
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": `Bearer ${token}`
+			}
+		})
+	return response
+}
+
 export const setSaleReceived = async (saleId: number, token: string) => {
 	const response = await axios.put("/api/sales/update/" + saleId,
 		{

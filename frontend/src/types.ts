@@ -98,7 +98,7 @@ export interface ReviewModalProps {
 	sale_id: number
 	seller_id?: number
 	sale?: Sale
-	setState: () => void
+	changeButton: () => void
   }
 
   
@@ -206,6 +206,7 @@ export interface BuyerInfo {
   }
 
 export interface Sale {
+	sales_id?: number
 	product_id: number
 	buyer_id: number
 	buyer_name: string
