@@ -75,3 +75,101 @@ describe("testing POST review", () => {
 	})
 
 })
+
+describe("testing GET reviews by seller_id", () => {
+
+	const mockResponse = {
+		rows: [
+			{
+				"review_id": 1,
+				"sales_id": 66,
+				"seller_id": 1,
+				"buyer_id": 94,
+				"description": "nopea lähetys",
+				"review_date": "2023-10-22T14:34:16.511Z",
+				"seen": false,
+				"stars": 4
+			},
+			{
+				"review_id": 2,
+				"sales_id": 66,
+				"seller_id": 1,
+				"buyer_id": 94,
+				"description": "nopea lähetys",
+				"review_date": "2023-10-22T15:10:51.757Z",
+				"seen": false,
+				"stars": 4
+			}
+		]
+	}
+
+	beforeAll(() => {
+		initializeMockPool(mockResponse)
+	})
+
+	afterAll(() => {
+		jest.clearAllMocks()
+	})
+
+	it("test get reviews by seller_id", async () => {
+		const response = await request(server).get("/api/review/user/1")
+			.send({})
+		expect(response.status).toBe(200)
+	})
+
+})
+
+describe("testing GET by review_id", () => {
+
+	const mockResponse = {
+		rows: [{
+			"review_id": 1,
+			"sales_id": 66,
+			"seller_id": 1,
+			"buyer_id": 94,
+			"description": "nopea lähetys",
+			"review_date": "2023-10-22T14:34:16.511Z",
+			"seen": false,
+			"stars": 4
+		}]
+	}
+
+	beforeAll(() => {
+		initializeMockPool(mockResponse)
+	})
+
+	afterAll(() => {
+		jest.clearAllMocks()
+	})
+
+	it("test get existing review", async () => {
+		const response = await request(server).get("/api/review/1")
+			.send({})
+		expect(response.status).toBe(200)
+	})
+})
+
+describe("testing GET comment by review_id", () => {
+
+	const mockResponse = {
+		rows: [{
+			"comment_id": 1,
+			"review_id": 5,
+			"comment": "Kiitos!"
+		}]
+	}
+
+	beforeAll(() => {
+		initializeMockPool(mockResponse)
+	})
+
+	afterAll(() => {
+		jest.clearAllMocks()
+	})
+
+	it("test get existing review", async () => {
+		const response = await request(server).get("/api/review/5")
+			.send({})
+		expect(response.status).toBe(200)
+	})
+})

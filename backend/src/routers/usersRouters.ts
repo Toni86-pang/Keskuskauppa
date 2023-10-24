@@ -23,9 +23,7 @@ users.get("/", async (_req: Request, res: Response) => {
 // profiilisivu vaati get user by userId.  --Nisu
 
 interface CustomRequest extends Request {
-	username?: string
 	id?: number
-	isAdmin?: boolean
 }
 
 users.get("/user", authentication, async (req: CustomRequest, res: Response) => {
