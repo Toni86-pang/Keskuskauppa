@@ -179,11 +179,38 @@ export const newSale = async (sale: Sale, token: string) => {
 		return undefined
 	}
 }
+export const newReview = async (review: Review, token: string) => {
+	try {
+		const response = await axios.post("/api/review/", review, {
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": `Bearer ${token}`
+			},
+		})
+		return response
+	} catch (error) {
+		console.error("Error posting", error)
+		return undefined
+	}
+}
 
 export const setSaleSent = async (saleId: number, token: string) => {
 	const response = await axios.put("/api/sales/update/" + saleId,
 		{
 			"sales_status": 3
+		}, {
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": `Bearer ${token}`
+			}
+		})
+	return response
+}
+
+export const putReviewedTrue = async (saleId: number, token: string) => {
+	const response = await axios.put("/api/sales/reviewupdate/" + saleId,
+		{
+			"reviewed": true
 		}, {
 			headers: {
 				"Content-Type": "application/json",

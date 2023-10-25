@@ -91,7 +91,29 @@ export interface UpdateProductModalProps {
 	price: string
 	
   }
+
+export interface ReviewModalProps {
+	isOpen: boolean
+	onClose: () => void
+	token: string
+	sale_id: number
+	seller_id?: number
+	sale?: Sale
+	changeButton: () => void
+  }
+
+export interface AverageStars {
+	average_score: number
+}
   
+export interface Review {
+	sales_id: number
+	seller_id?: number
+	buyer_id?: number
+	description?: string
+	seen?: boolean
+	stars?: number
+}
 
 export interface ShoppingCartProps {
     isOpen: boolean
@@ -190,6 +212,7 @@ export interface BuyerInfo {
   }
 
 export interface Sale {
+	sales_id?: number
 	product_id: number
 	buyer_id: number
 	buyer_name: string
@@ -200,6 +223,7 @@ export interface Sale {
 	buyer_email: string
 	seller_id: number
 	sales_status: number
+	reviewed?: boolean
 }
 
 export const initialState: User = {
