@@ -1,9 +1,9 @@
 import { Outlet } from "react-router"
-import Navbar from "./Components/Navbar"
+import Navbar from "./Components/Footer-nav/Navbar"
 import { Container } from "@mui/material"
 import { Dispatch, createContext, useEffect, useState } from "react"
-import { ProductType } from "./types"
-import { Footer } from "./Components/Footer"
+import { ProductType } from "./Services-types/types"
+import { Footer } from "./Components/Footer-nav/Footer"
 import Box from "@mui/material/Box"
 
 export type CartContextType = [ Dispatch<React.SetStateAction<ProductType[] | null>> ]
