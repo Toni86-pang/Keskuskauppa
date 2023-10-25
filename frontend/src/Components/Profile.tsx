@@ -172,7 +172,8 @@ function Profile() {
 				<div style={{ marginTop: "9px" }}>|</div>
 				<Button onClick={() => setShowProducts(false)} variant="text" color={!showProducts ? "secondary" : "primary"}>Omat arvostelut</Button>
 			</Stack>
-			{products ?
+			
+			{showProducts ?
 				<div className="ownProducts">
 					<Divider variant="middle" style={{ marginBottom: "10px" }} />
 					{products.length > 0 ? <DisplayProducts productList={products} /> :

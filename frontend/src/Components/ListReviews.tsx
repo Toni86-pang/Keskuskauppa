@@ -9,7 +9,7 @@ interface ListReviewsProps {
 	isOwn: boolean
 }
 
-const ListReviews = ({sellerId, isOwn}: ListReviewsProps) => {
+const ListReviews = ({ sellerId, isOwn }: ListReviewsProps) => {
 
 	const [reviewList, setReviewList] = useState<Review[]>([])
 
@@ -19,14 +19,19 @@ const ListReviews = ({sellerId, isOwn}: ListReviewsProps) => {
 			setReviewList(userReviews)
 		}
 		fetchReviews()
-	},[sellerId])
+	}, [sellerId])
 
 
 	return (
 		<List>
-			{reviewList.map((review, index) => (
-				<ReviewCard key={"reviews " + index} review={review} isOwn={isOwn} />
-			))}
+			{reviewList.length > 0 ?
+				<>
+					{reviewList.map((review, index) => (
+						<ReviewCard key={"reviews " + index} review={review} isOwn={isOwn} />
+					))}
+				</> :
+				<p>Ei arvosteluja</p>}
+
 		</List>
 	)
 }

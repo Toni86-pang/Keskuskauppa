@@ -35,10 +35,9 @@ function LeaveComment({ isOpen, close, reviewId }: LeaveCommentProps) {
 
 	const [token] = useContext(UserTokenContext)
 	const [comment, setComment] = useState("")
-	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
 
-	const resetForm = () => {		
+	const resetForm = () => {
 		close()
 	}
 
@@ -46,17 +45,22 @@ function LeaveComment({ isOpen, close, reviewId }: LeaveCommentProps) {
 		const newComment = event.target.value
 		if (newComment.length < MAXCOMMENTLENGTH) {
 			setComment(event.target.value)
-		} 		
+		}
+	}
+
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === "Enter") {
+			handleLeaveComment()
+		}
 	}
 
 	const handleLeaveComment = async () => {
 		try {
 			const commentData: ReviewComment = {
 				comment: comment,
-				review_id: reviewId				
+				review_id: reviewId
 			}
 			await leaveComment(commentData, token)
-			setShowSuccessNotification(true)
 			close()
 		} catch (error) {
 			console.error("Error leaving comment", error)
@@ -66,48 +70,43 @@ function LeaveComment({ isOpen, close, reviewId }: LeaveCommentProps) {
 
 	return (
 		<>
-			<Dialog open={isOpen} onClose={resetForm} >
+			<Dialog disableRestoreFocus open={isOpen} onClose={resetForm} >
 				<DialogTitle>Jätä kommentti</DialogTitle>
 				<DialogContent>
 					<div style={styles.section}>
 						<div style={styles.label}>Kommentti:</div>
 						<TextField
+							autoFocus
+							multiline
 							label="Kommentti"
 							value={comment}
 							onChange={handleCommentChange}
+							onKeyDown={handleKeyDown}
 							fullWidth
 						/>
-					</div>				
+					</div>
 
 					<div style={styles.buttonContainer}>
-						<Button variant="outlined" onClick={handleLeaveComment}>
-						Jätä kommentti
+						<Button type="submit" variant="outlined" onClick={handleLeaveComment}>
+							Jätä kommentti
 						</Button>
 						<Button variant="outlined" onClick={resetForm}>
-						Peruuta
+							Peruuta
 						</Button>
 					</div>
 				</DialogContent>
 			</Dialog>
 
-			{/* Success and error notifications */}
-			{showSuccessNotification && (
-				<Notification
-					open={showSuccessNotification}
-					message="Profile updated successfully!"
-					type="success"
-					onClose={() => setShowSuccessNotification(false)}
-					duration={1500}
-				/>
-			)}
+			{/* Error notification */}
+
 			{showErrorNotification && (
 				<Notification
 					open={showErrorNotification}
-					message="Error updating profile."
+					message="Error leaving comment."
 					type="error"
 					onClose={() => setShowErrorNotification(false)}
 					duration={1500}
-				/> 
+				/>
 			)}
 		</>
 	)

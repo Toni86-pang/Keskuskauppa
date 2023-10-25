@@ -71,6 +71,7 @@ export default function Product() {
 	
 	useEffect(() => {
 		const fetchUserDetails = async () => {
+			if(!token) return
 			const user = await fetchUser(token)
 		
 			if (user === undefined) {

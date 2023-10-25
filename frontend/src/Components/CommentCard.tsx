@@ -10,10 +10,11 @@ const cardStyle = {
 function CommentCard({ reviewComment }: CommentCardProps) {
 
 	return (
-		<Card raised style={cardStyle}>
+		<Card style={cardStyle}>
 			<CardContent>
-				<div>Myyjän kommentti:</div>
-				<div >{reviewComment.comment}</div>
+				
+				<p>Myyjän kommentti:</p>
+				<p>{reviewComment.comment}</p>
 			</CardContent>
 		</Card>
 	)

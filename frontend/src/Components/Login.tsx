@@ -60,6 +60,12 @@ function Login() {
 		}))
 	}
 
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === "Enter") {
+			handleLogin()
+		}
+	}
+
 	const handleLogout = () => {
 		localStorage.removeItem("token")
 		setToken("")
@@ -98,6 +104,7 @@ function Login() {
 							name="username"
 							value={username}
 							onChange={handleInputChange}
+							onKeyDown={handleKeyDown}
 						/>
 						<TextField
 							sx={{ m: 1 }}
@@ -106,6 +113,7 @@ function Login() {
 							name="password"
 							value={password}
 							onChange={handleInputChange}
+							onKeyDown={handleKeyDown}
 						/>
 					</DialogContent>
 					<DialogActions>

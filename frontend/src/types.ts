@@ -258,11 +258,11 @@ export interface Review {
 	review_id?: number
 	sales_id: number
 	seller_id?: number
-	buyer_id: number
-	description: string
+	buyer_id?: number
+	description?: string
 	review_date?: string
 	seen?: boolean
-	stars: number
+	stars?: number
 }
 
 export interface AverageStars {
