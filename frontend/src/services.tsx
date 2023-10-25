@@ -1,5 +1,5 @@
 import axios from "axios"
-import { BoughtProps, Category, ProductType, Review, Sale, SoldProps, UpdatedProduct, UpdatedUser, User } from "./types"
+import { AverageStars, BoughtProps, Category, ProductType, Review, Sale, SoldProps, UpdatedProduct, UpdatedUser, User } from "./types"
 
 export const deleteUser = (token: string) => {
 	return axios.delete("/api/users/delete", {
@@ -244,8 +244,10 @@ export const returnProductToShop = async (saleId: number, token: string) => {
 	return response
 }
 
-export const fetchStarRating = (id: number) => {
-	return axios.get(`/api/review/user/average/${id}`).then(res => res.data)
+export const fetchStarRating = async (id: number) => {
+	const response = await axios.get(`/api/review/user/average/${id}`)
+	const stars: AverageStars = response.data
+	return stars.average_score
 }
 
 export const fetchCategoryName = (id: number) => {

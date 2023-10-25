@@ -101,6 +101,9 @@ export interface ReviewModalProps {
 	changeButton: () => void
   }
 
+export interface AverageStars {
+	average_score: number
+}
   
 export interface Review {
 	sales_id: number
