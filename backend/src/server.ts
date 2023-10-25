@@ -29,7 +29,7 @@ server.use("/api/search", search)
 server.use("/api/review", review)
 server.use("/", express.static("./dist/frontend"))
 server.use("/version", (req: Request, res: Response) => {
-	res.send("1.8")
+	res.send("1.81")
 })
 
 server.get("*", (_req, res) => {
