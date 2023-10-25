@@ -85,7 +85,6 @@ function LeaveReview({ isOpen, onClose, token, sale, sale_id, seller_id, changeB
 						value={newStars}
 						precision={0.5}
 						getLabelText={getLabelText}
-						// eslint-disable-next-line @typescript-eslint/no-explicit-any
 						onChange={(_event: SyntheticEvent<Element, Event>, newValue: number | null) => {
 							setNewStars(newValue)
 						}}
