@@ -4,8 +4,10 @@ import { authentication, checkReqBody } from "../middlewares"
 import multer from "multer"
 import argon2 from "argon2"
 import jwt from "jsonwebtoken"
+import multer from "multer"
 import { User } from "../daos/usersDao"
-
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
 const secret = process.env.SECRET ?? ""
 const users = express.Router()
 const storage = multer.memoryStorage()
@@ -30,6 +32,7 @@ users.get("/user", authentication, async (req: CustomRequest, res: Response) => 
 	const result = await getUserByUserId(user_id)
 	return res.status(200).send(result)
 })
+
 
 // `POST /users` REGISTER a new user
 users.post("/register", upload.single("user_image"), async (req: Request, res: Response) => {

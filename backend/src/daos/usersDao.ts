@@ -1,17 +1,15 @@
 import { executeQuery } from "../database"
-
-
 export interface User {
-	user_id?: number
-	username: string
-	name: string
-	email: string
-	phone: string
-	address: string
-	city: string
-	postal_code: string
-	password: string
-	user_image?: Buffer
+    user_id?: number
+    username: string
+    name: string
+    email: string
+    phone: string
+    address: string
+    city: string
+    postal_code: string
+    password: string
+    user_image?: Buffer
   }
 
 export async function addUser(user: User): Promise<void> {
@@ -20,11 +18,11 @@ export async function addUser(user: User): Promise<void> {
 
 	if (user.user_image) {
 		query =
-		`INSERT INTO users
-	  		(username, name, email, phone, address, city, postal_code, password, user_image)
-		VALUES
-			($1, $2, $3, $4, $5, $6, $7, $8, $9)
-			returning user_id;`
+        `INSERT INTO users
+              (username, name, email, phone, address, city, postal_code, password, user_image)
+        VALUES
+            ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            returning user_id;`
 
 		values = [
 			user.username,
@@ -39,11 +37,11 @@ export async function addUser(user: User): Promise<void> {
 		]
 	} else {
 		query = 
-		`INSERT INTO users
-			(username, name, email, phone, address, city, postal_code, password)
-  		VALUES
-	  		($1, $2, $3, $4, $5, $6, $7, $8)
-	  		returning user_id;`
+        `INSERT INTO users
+            (username, name, email, phone, address, city, postal_code, password)
+          VALUES
+              ($1, $2, $3, $4, $5, $6, $7, $8)
+              returning user_id;`
 
 		values = [
 			user.username,
