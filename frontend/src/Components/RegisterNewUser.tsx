@@ -1,11 +1,12 @@
 import { ChangeEvent, useState, useContext } from "react"
 import { UserTokenContext } from "../App"
-import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
+import { Button, Container, FormControl, Input, InputLabel, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
 import VerifyDialog from "./VerifyDialog"
 import { User, initialState } from "../types"
 // import { registerUser } from "../services"
 import Notification from "./Notification"
-import axios, { AxiosError } from "axios"
+import { AxiosError } from "axios"
+import { registerUser } from "../services"
 
 function RegisterNewUser() {
 
@@ -14,23 +15,52 @@ function RegisterNewUser() {
 	const [confirmPassword, setConfirmPassword] = useState<string>("")
 	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true)
 	const [verifyOpen, setVerifyOpen] = useState(false)
+	const [userImage, setUserImage] = useState<File | null>(null)	
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
 	const [showErrorNotificationTwo, setShowErrorNotificationTwo] = useState(false)
 	const [showErrorNotificationThree, setShowErrorNotificationThree] = useState(false)
 
+	
+
 	const [dialogOpen, setDialogOpen] = useState(false)
 
 	const { name, email, username, phone, address, city, postal_code } = newUser
 
+	// const formData = new FormData()
+	// if (userImage) {
+	// 	console.log("Debug 3")
+	// 	formData.append("user_image", userImage)
+	// 	console.log("Debug 4")
+
+	// }
+	// console.log("Debug 5")
+	// formData.append("name", newUser.name)
+	// formData.append("email", newUser.email)
+	// formData.append("username", newUser.username)
+	// formData.append("phone", newUser.phone)
+	// formData.append("address", newUser.address)
+	// formData.append("city", newUser.city)
+	// formData.append("postal_code", newUser.postal_code)
+
 	const register = async () => {
 		try {
-			const response = await axios.post("/api/users/register", newUser, {
-				headers: {
-					"Content-Type": "application/json",
-				},
-			})
-
+			const formData = new FormData()
+			formData.append("name", name)
+			formData.append("email", email)
+			formData.append("username", username)
+			formData.append("phone", phone)
+			formData.append("address", address)
+			formData.append("city", city)
+			formData.append("postal_code", postal_code)
+			if (userImage) {
+				formData.append("user_image", userImage)
+			}
+	
+			const response = await registerUser(formData) // Call the service function
+	
+			console.log("formData:", formData)
+	
 			if (response.status === 200) {
 				setShowSuccessNotification(true)
 				handleLogin(response.data)
@@ -104,6 +134,13 @@ function RegisterNewUser() {
 
 	const handleDialogClose = () => {
 		setDialogOpen(false)
+	}
+
+	const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+		const file = event.target.files && event.target.files[0]
+		if (file) {
+			setUserImage(file)
+		}
 	}
 
 	return (
@@ -191,6 +228,14 @@ function RegisterNewUser() {
 							error={!passwordsMatch}
 							helperText={!passwordsMatch ? "Salasanat ovat erilaiset." : ""}
 						/>
+						<FormControl>
+							<InputLabel style={{position: "relative"}} id="Kuvat">Lisää kuva:</InputLabel>
+							<Input
+								type="file"
+								onChange={handleImageChange}
+								inputProps={{ accept: "image/*" }}	
+							/>
+						</FormControl>
 
 					</DialogContent>
 					<DialogActions>

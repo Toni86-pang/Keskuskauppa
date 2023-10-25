@@ -10,7 +10,7 @@ export interface User {
 	address: string,
 	city: string,
 	postal_code:string,
-	is_Admin?: boolean,
+	product_image: File | null
 	reviews?: number
 	reg_day?: string
 }
@@ -30,8 +30,8 @@ export interface ProductType {
 	city: string
     postal_code: string
     description: string
-	price: number
-	// product_image?: any
+	price: string
+	product_image: File | null
 	listed: boolean
 	category_name?: string
 	subcategory_name?: string
@@ -88,7 +88,7 @@ export interface UpdateProductModalProps {
 	city: string
 	postal_code: string
 	description: string
-	price: number
+	price: string
 	
   }
   
@@ -146,6 +146,7 @@ export interface BoughtProps {
 	buyer?: string
 	seller?: string
 	listed?: boolean
+	product_image: File | null;
 }
 
 export interface OrderDetailsProps {
@@ -163,6 +164,7 @@ export interface SoldProps {
 	buyer?: string
 	seller?: string
 	listed: boolean
+	product_image: File | null;
 }
 
 export interface OrderCardProps {
@@ -209,8 +211,8 @@ export const initialState: User = {
 	phone: "",
 	address: "",
 	city: "",
+	product_image: null,
 	postal_code: "",
-	is_Admin: false,
 	reviews: 0
 }
 
@@ -223,9 +225,9 @@ export const initialStateProduct: ProductType = {
 	city: "",
 	postal_code: "",
 	description: "",
-	price: 0,
-	listed: true
-	// product_image?: any
+	price: "",
+	listed: true,
+	product_image: null
 }
 
 export interface Review {
@@ -249,8 +251,8 @@ export interface ReviewComment {
 }
 
 export interface CategoryProducts {
-	categoryHeader: string
-	products: ProductType[]
+    categoryHeader: string
+    products: ProductType[]
 }
 
 export type BreadcrumbResolver = (params: string) => Promise<[string, string][]>

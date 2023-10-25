@@ -140,14 +140,30 @@ export const fetchIndividualSubcategory = async (categoryId: number) => {
 	return data
 }
 
-export const newProduct = async (product: ProductType, token: string) => {
+export const newProduct = async (product: FormData, token: string) => {
 	const response = await axios.post("/api/product/", product, {
 		headers: {
-			"Authorization": `Bearer ${token}`
+			"Authorization": `Bearer ${token}`,
+			"Content-Type": "multipart/form-data", // Important for multer
 		}
 	})
 	return response
 }
+
+export const registerUser = async (user: FormData) => {
+	try {
+		const response = await axios.post("/api/users/register", user, {
+			headers: {
+				"Content-Type": "multipart/form-data",
+			},
+		})
+		return response
+	} catch (error) {
+		console.error("Error in registerUser:", error)
+		throw error
+	}
+}
+  
 
 export const newSale = async (sale: Sale, token: string) => {
 	try {
