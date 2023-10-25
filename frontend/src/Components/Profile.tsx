@@ -1,40 +1,37 @@
 import { useState, useContext } from "react"
-import { Grid, Button, } from "@mui/material"
+import { Grid, Button, Stack, } from "@mui/material"
 import Divider from "@mui/material/Divider"
 import VerifyDialog from "./VerifyDialog"
 import { useNavigate, redirect, useLoaderData } from "react-router-dom"
 import UpdateProfile from "./UpdateProfile"
 import { UserTokenContext } from "../App"
 import { deleteUser, fetchUsersProducts, fetchStarRating, fetchUser } from "../services"
-import { ProductType, User } from "../types"
-import ProductCard from "./ProductCard"
+import { User, UserProducts } from "../types"
 import Rating from "@mui/material/Rating"
 import Notification from "./Notification"
+import DisplayProducts from "./DisplayProducts"
+import ListReviews from "./ListReviews"
 
-interface UserProducts {
-	loadedUser: User
-	stars: number
-	products: ProductType[]
-}
+
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
 	const token = localStorage.getItem("token")
 	let userProducts: UserProducts
-	if(token) {
+	if (token) {
 		const loadedUser = await fetchUser(token)
 		const products = await fetchUsersProducts(loadedUser.user_id)
 		const stars = await fetchStarRating(loadedUser.user_id)
-		userProducts = {loadedUser, stars, products}
+		userProducts = { loadedUser, stars, products }
 		return userProducts
 	} else {
 		return redirect("/")
 	}
-	
+
 }
 
 function Profile() {
-	const {loadedUser, stars,  products} = useLoaderData() as UserProducts
+	const { loadedUser, stars, products } = useLoaderData() as UserProducts
 	const [user, setUser] = useState<User>(loadedUser)
 	const [token, setToken] = useContext(UserTokenContext)
 	const [updateVisible, setUpdateVisible] = useState(false)
@@ -44,6 +41,7 @@ function Profile() {
 	const [showSuccessDeleteNotification, setShowSuccessDeleteNotification] = useState(false)
 	const [showErrorDeleteNotification, setShowErrorDeleteNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
+	const [showProducts, setShowProducts] = useState(true)
 
 	const joinDate: string | undefined = user?.reg_day
 	let formattedJoinDate: string | undefined = undefined
@@ -169,19 +167,23 @@ function Profile() {
 					</Grid>
 				</Grid>
 			</Grid>
-			<div className="ownProducts">
-				<div style={{ marginBottom: "10px" }}>Omat ilmoitukset:</div>
-				<Divider variant="middle" style={{ marginBottom: "10px" }} />
-				{products.length > 0 ? (
-					products && products?.map((product: ProductType) => {
-						return <ProductCard product={product} key={"own product: " + product.product_id} />
-					}))
-					:
-					(
-						<p>Ei omia tuotteita. Kun lisäät tuotteen myyntiin, näet sen täällä.</p>
-					)
-				}
-			</div>
+			<Stack spacing={2} direction="row">
+				<Button onClick={() => setShowProducts(true)} variant="text" color={showProducts ? "secondary" : "primary"}>Omat ilmoitukset</Button>
+				<div style={{ marginTop: "9px" }}>|</div>
+				<Button onClick={() => setShowProducts(false)} variant="text" color={!showProducts ? "secondary" : "primary"}>Omat arvostelut</Button>
+			</Stack>
+			{products ?
+				<div className="ownProducts">
+					<Divider variant="middle" style={{ marginBottom: "10px" }} />
+					{products.length > 0 ? <DisplayProducts productList={products} /> :
+						(
+							<p>Ei omia tuotteita. Kun lisäät tuotteen myyntiin, näet sen täällä.</p>
+						)}
+				</div> :
+				<div className="ownReviews">
+					<Divider variant="middle" style={{ marginBottom: "10px" }} />
+					{<ListReviews sellerId={user.user_id} isOwn={true} /> }
+				</div>}
 		</div>
 	)
 }

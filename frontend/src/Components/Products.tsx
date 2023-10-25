@@ -3,7 +3,7 @@ import {
 	Container,
 	Typography
 } from "@mui/material"
-import { fetchAllProducts, fetchProductsByCategory, fetchProductsBySubcategory} from "../services"
+import { fetchAllProducts, fetchCategoryName, fetchProductsByCategory, fetchProductsBySubcategory, fetchSubcategoryName} from "../services"
 import { CategoryProducts, ProductType } from "../types"
 import DisplayProducts from "./DisplayProducts"
 
@@ -16,11 +16,20 @@ export async function loader({ request, params }: any) {
 
 	if (url[0] === "category") {
 		products = await fetchProductsByCategory(Number(params.id))
-		categoryHeader = products[0].category_name??"Kaikki tuotteet"
+		if(products.length === 0) {
+			categoryHeader = await fetchCategoryName(Number(params.id))
+		} else {
+			categoryHeader = products[0].category_name??"Kaikki tuotteet"
+		}
+		
 		categoryProducts = { categoryHeader, products }
 	} else if (url[0] === "subcategory") {
 		products = await fetchProductsBySubcategory(Number(params.id))
-		categoryHeader = products[0].subcategory_name??"Kaikki tuotteet"
+		if(products.length === 0) {
+			categoryHeader = await fetchSubcategoryName(Number(params.id))
+		} else {
+			categoryHeader = products[0].subcategory_name??"Kaikki tuotteet"
+		}		
 		categoryProducts = { categoryHeader, products }
 	} else {
 		products = await fetchAllProducts()
