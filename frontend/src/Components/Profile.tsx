@@ -170,7 +170,7 @@ function Profile() {
 				</Grid>
 			</Grid>
 			<div className="ownProducts">
-				<div style={{ marginBottom: "10px" }}>Omat ilmoitukset:</div>
+				<div style={{ marginBottom: "10px" }}>Omat aktiiviset ilmoitukset:</div>
 				<Divider variant="middle" style={{ marginBottom: "10px" }} />
 				{products.length > 0 ? (
 					products && products?.map((product: ProductType) => {

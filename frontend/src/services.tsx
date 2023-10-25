@@ -1,5 +1,5 @@
 import axios from "axios"
-import { BoughtProps, Category, ProductType, Sale, SoldProps, UpdatedProduct, UpdatedUser, User } from "./types"
+import { AverageStars, BoughtProps, Category, ProductType, Review, Sale, SoldProps, UpdatedProduct, UpdatedUser, User } from "./types"
 
 export const deleteUser = (token: string) => {
 	return axios.delete("/api/users/delete", {
@@ -179,11 +179,38 @@ export const newSale = async (sale: Sale, token: string) => {
 		return undefined
 	}
 }
+export const newReview = async (review: Review, token: string) => {
+	try {
+		const response = await axios.post("/api/review/", review, {
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": `Bearer ${token}`
+			},
+		})
+		return response
+	} catch (error) {
+		console.error("Error posting", error)
+		return undefined
+	}
+}
 
 export const setSaleSent = async (saleId: number, token: string) => {
 	const response = await axios.put("/api/sales/update/" + saleId,
 		{
 			"sales_status": 3
+		}, {
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": `Bearer ${token}`
+			}
+		})
+	return response
+}
+
+export const putReviewedTrue = async (saleId: number, token: string) => {
+	const response = await axios.put("/api/sales/reviewupdate/" + saleId,
+		{
+			"reviewed": true
 		}, {
 			headers: {
 				"Content-Type": "application/json",
@@ -233,8 +260,10 @@ export const returnProductToShop = async (saleId: number, token: string) => {
 	return response
 }
 
-export const fetchStarRating = (id: number) => {
-	return axios.get(`/api/review/user/average/${id}`).then(res => res.data)
+export const fetchStarRating = async (id: number) => {
+	const response = await axios.get(`/api/review/user/average/${id}`)
+	const stars: AverageStars = response.data
+	return stars.average_score
 }
 
 export const fetchCategoryName = (id: number) => {

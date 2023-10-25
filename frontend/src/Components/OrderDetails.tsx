@@ -10,6 +10,7 @@ import { OrderDetailsProps, ProductType, Sale, User } from "../types"
 import CheckoutProductCard from "./CheckoutSummaryProductCard"
 import Notification from "./Notification"
 import { cancelSale, fetchProduct, fetchSale, fetchSaleStatus, fetchUserDetailsByUserId, returnProductToShop, setSaleReceived, setSaleSent } from "../services"
+import LeaveReview from "./LeaveReview"
 
 export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: OrderDetailsProps) {
 	const [token] = useContext(UserTokenContext)
@@ -20,6 +21,8 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 	const [saleStatus, setSaleStatus] = useState("")
 	const [product, setProduct] = useState<ProductType>()
 	const [reload, setReload] = useState(false)
+	const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
+	const [seeReviewButton, setSeeReviewButton] = useState(false)
 
 	useEffect(() => {
 		const fetchSaleAndProduct = async () => {
@@ -41,7 +44,7 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 			}		
 		}
 		fetchSaleAndProduct()
-	}, [saleId, token, reload, isSeller])
+	}, [saleId, token, reload, isSeller, sale?.sales_status, sale?.reviewed])
 
 	const handleSendProduct = async () => {
 		try {
@@ -109,16 +112,24 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 
 	const renderSellerDetails = () => {
 		return (
-			sale &&
-			<>
+			sale && sale.reviewed ? (
+				<>
 				Käyttäjänimi: {seller?.username}<br />
 				Kaupunki: {seller?.city}<br />
 				Postinumero: {seller?.postal_code}<br />
-				Tilauksen tila: {saleStatus}
-			</>
+				Tilauksen tila: {saleStatus}<br />
+				Arvosteltu: Kyllä
+				</>
+			):(
+				<>
+				Käyttäjänimi: {seller?.username}<br />
+				Kaupunki: {seller?.city}<br />
+				Postinumero: {seller?.postal_code}<br />
+				Tilauksen tila: {saleStatus}<br />
+				</>
+			)
 		)
 	}
-
 
 	return (
 		<>
@@ -153,9 +164,21 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 							{(sale?.sales_status === 5 && product?.listed === false) && <Button onClick={handleReturnToShop}>Palauta myyntiin</Button>}
 						</> :
 						<>
-							{sale?.sales_status === 3 && <Button onClick={handleReceivedProduct}>Vastaanotettu</Button>}
+							{sale?.sales_status === 3 && <Button onClick={() => {handleReceivedProduct(), setSeeReviewButton(true)}}>Vastaanotettu</Button>}
+							{((sale?.sales_status === 3 || sale?.sales_status === 4) && !sale.reviewed) && <><Button disabled={!seeReviewButton} onClick={() => {setIsReviewModalOpen(true)}}>Jätä arvostelu</Button>
+								<h5>Voit jättää arvostelun myyjälle vastaanotettuasi tuotteen.</h5></>}
+							<LeaveReview
+								isOpen={isReviewModalOpen}
+								onClose={() => setIsReviewModalOpen(false)}
+								token={token}
+								sale_id={saleId}
+								seller_id={sale?.seller_id}
+								sale={sale}
+								changeButton={() => setSeeReviewButton(false)}
+							/>
 							{sale?.sales_status === 2 && <Button onClick={handleCancelSale}>Peruuta tilaus</Button>}
 						</>}
+
 					<Button onClick={onClose}>Sulje</Button>
 				</DialogActions>
 			</Dialog>

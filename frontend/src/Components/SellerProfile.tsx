@@ -7,7 +7,7 @@ import ProductCard from "./ProductCard"
 import { fetchUserDetailsByUserId, fetchUsersProducts } from "../services"
 import { useLoaderData } from "react-router-dom"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, react-refresh/only-export-components
 export async function loader({ params }: any) {
 	const userData = await fetchUserDetailsByUserId(params.id)
 	return userData

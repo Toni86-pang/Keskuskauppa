@@ -6,8 +6,7 @@ import { useLoaderData, useNavigate, redirect } from "react-router-dom"
 import CheckoutProductCard from "./CheckoutSummaryProductCard"
 import SaleSummary from "./SaleSummary"
 
-
-
+// eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
 	const token = localStorage.getItem("token")
 	if(!token){
