@@ -190,11 +190,12 @@ export default function Product() {
 													variant="body2"
 													color="text.secondary"
 												>
-													<Box style={{ marginBottom: "8px" }}>
-														<Link to={`/user/${product.user_id}`} style={{ color: "#6096ba", textDecoration: "underline" }}>
+													{/* Box tuotti ongelmia, vaihdettiin br:ään */}
+													{/* <Box style={{ marginBottom: "8px" }}> */}
+													<Link to={`/user/${product.user_id}`} style={{ color: "#6096ba", textDecoration: "underline" }}>
 													Katso profiili
-														</Link>
-													</Box>
+													</Link>
+													{/* </Box> */}<br />
 													<Rating name="read-only" value={stars} precision={0.1} readOnly />
 												</Typography>
 											</>
@@ -216,7 +217,7 @@ export default function Product() {
 									</Grid>
 									{myProduct ? (
 										<Grid item>
-											<div>
+											<>
 												<Button variant="outlined" onClick={() => { 
 													setUpdateModalOpen(true) 
 												}}>
@@ -235,7 +236,7 @@ export default function Product() {
 													description={product?.description || ""}
 													price={product?.price || ""}
 												/>
-											</div>
+											</>
 
 											{product && (
 												<DeleteButton id={product.product_id} onDelete={handleDelete} />
