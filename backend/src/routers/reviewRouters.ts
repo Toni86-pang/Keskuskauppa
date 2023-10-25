@@ -18,7 +18,7 @@ interface Review {
 	stars: number
 }
 
-interface Comment {
+interface ReviewComment {
 	comment_id?: number
 	review_id: number
 	comment: string
@@ -101,7 +101,7 @@ review.post("/", authentication, async (req: CustomRequest, res: Response) => {
 
 review.post("/comment/", authentication, async (req: CustomRequest, res: Response) => {
 	const sellerId = req.id
-	const { review_id, comment}: Comment = req.body
+	const { review_id, comment}: ReviewComment = req.body
 	try {
 		const review = await getReviewById(review_id)
 		const existingComment = await getReviewComment(review_id)
@@ -124,12 +124,8 @@ review.get("/comment/:reviewId", async (req: Request, res: Response) => {
 	const reviewId = Number(req.params.reviewId)
 
 	try {
-		const comment: Comment | null = await getReviewComment(reviewId)
-		if(comment) {
-			return res.status(200).send(comment)
-		}
-
-		return res.status(404).send()
+		const comment: ReviewComment | null = await getReviewComment(reviewId)
+		return res.status(200).send(comment)
 				
 	} catch (error) {
 		console.error("Error fetching comment: ", error)

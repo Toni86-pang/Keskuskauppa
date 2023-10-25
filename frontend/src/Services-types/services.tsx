@@ -1,5 +1,5 @@
 import axios from "axios"
-import { AverageStars, BoughtProps, Category, ProductType, Review, Sale, SoldProps, UpdatedProduct, UpdatedUser, User } from "./types"
+import { AverageStars, BoughtProps, Category, ProductType, Review, ReviewComment, Sale, SoldProps, UpdatedProduct, UpdatedUser, User } from "./types"
 
 export const deleteUser = (token: string) => {
 	return axios.delete("/api/users/delete", {
@@ -263,7 +263,12 @@ export const returnProductToShop = async (saleId: number, token: string) => {
 export const fetchStarRating = async (id: number) => {
 	const response = await axios.get(`/api/review/user/average/${id}`)
 	const stars: AverageStars = response.data
-	return stars.average_score
+	return stars.average_score	
+}
+
+export const fetchReviewComment = async (reviewId: number) => {
+	const response = await axios.get(`/api/review/comment/${reviewId}`)
+	return response.data
 }
 
 export const fetchCategoryName = (id: number) => {
@@ -290,6 +295,22 @@ export const searchProducts = async (searchQuery:string):Promise<ProductType[]> 
 	}
 	const products = await response.json()
 	return products
+}
+
+export const fetchReviewsForSeller = async (sellerId: number) => {
+	const response = await axios.get("/api/review/user/" + sellerId)
+	const reviews: Review[] = response.data
+	return reviews
+}
+
+export const leaveComment = async (commentData: ReviewComment, token: string) => {
+	const response = await axios.post("/api/review/comment", commentData,  {
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization": `Bearer ${token}`
+		},
+	})
+	return response
 }
   
 // export const fetchsearchAllProducts = async (query:string) => {
