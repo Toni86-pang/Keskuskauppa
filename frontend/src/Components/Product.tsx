@@ -63,7 +63,7 @@ export default function Product() {
 	const [token] = useContext(UserTokenContext)
 	const [sellerUsername, setSellerUsername] = useState<string | null>("")
 	const [stars, setStars] = useState(0)
-	const [selectedImage, setSelectedImage] = useState<string | null>(itemData[0].img)
+	// const [selectedImage, setSelectedImage] = useState<string | null>(itemData[0].img)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
 	const navigate = useNavigate()
 	const product = useLoaderData() as ProductType
