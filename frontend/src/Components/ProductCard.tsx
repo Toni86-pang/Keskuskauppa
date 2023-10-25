@@ -25,17 +25,39 @@ function ProductCard({ product }: ProductProps) {
 		navigate(`/product/${product.product_id}`)
 	}
 
+	// let imageSrc = ""
+
+	// if (product.product_image && product.product_image instanceof Buffer) {
+	// // Convert the Buffer to a Base64 string
+	// 	const base64String = product.product_image.toString("base64")
+	// 	imageSrc = `data:image/*;base64,${base64String}`
+	// } else {
+	// // Use a default image source or some placeholder
+	// 	imageSrc = "https://example.com/default-image.jpg"
+	// }
+
+	// const defaultImageUrl = ""
+	console.log("Product image data:", product.product_image)
 	return (
 		<Card style={cardStyle}>
 			<CardContent>
 				<Grid container spacing={2} style={gridContainerStyle}>
 					<Grid item xs={3}>
-						<CardMedia
-							component="img"
-							height="80"
-							image={"https://images.unsplash.com/photo-1551963831-b3b1ca40c98e"}
-							alt={product.title}
-						/>
+						{product.product_image ? ( // Check if product_image is not null
+							<CardMedia
+								component="img"
+								height="80"
+								image={`data:image/*;base64,${product.product_image}`}
+								alt={product.title}
+							/>
+						) : (
+							<CardMedia
+								component="img"
+								height="80"
+								image="https://images.unsplash.com/photo-1551963831-b3b1ca40c98e" // Replace with the URL of your default image
+								alt={product.title}
+							/>
+						)}
 					</Grid>
 					<Grid item xs={6}>
 						<Typography variant="h6" component="div">

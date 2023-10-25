@@ -16,7 +16,7 @@ export default function ShoppingCart ({isOpen, onClose, cart, setCart}: Shopping
 	const [verifyOpen, setVerifyOpen] = useState(false)
 	const navigate = useNavigate()
 	let sum = 0
-	cart?.forEach((product) => {sum = sum + product.price})
+	cart?.forEach((product) => {sum = sum + parseInt(product.price, 10)})
   
 	const descriptionElementRef = React.useRef<HTMLElement>(null)
 	useEffect(() => {
