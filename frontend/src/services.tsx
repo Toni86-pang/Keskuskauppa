@@ -8,6 +8,17 @@ export const deleteUser = (token: string) => {
 		}
 	}).then((response) => response.data)
 }
+// export const registerUser = async (newUser: FormData) => {
+// 	console.log("Debug 1")
+// 	const response = await axios.post("/api/users/register", newUser, {
+		
+// 		headers: {
+// 			"Content-Type": "multipart/form-data"
+// 		}
+// 	})
+// 	console.log("response:", response)
+// 	return response
+// }
 
 export const fetchUser = async (token: string) => {
 	try {
@@ -140,14 +151,16 @@ export const fetchIndividualSubcategory = async (categoryId: number) => {
 	return data
 }
 
-export const newProduct = async (product: ProductType, token: string) => {
+export const newProduct = async (product: FormData, token: string) => {
 	const response = await axios.post("/api/product/", product, {
 		headers: {
-			"Authorization": `Bearer ${token}`
+			"Authorization": `Bearer ${token}`,
+			"Content-Type": "multipart/form-data", // Important for multer
 		}
 	})
 	return response
 }
+  
 
 export const newSale = async (sale: Sale, token: string) => {
 	try {

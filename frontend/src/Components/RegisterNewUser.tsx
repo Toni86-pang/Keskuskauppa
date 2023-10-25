@@ -1,6 +1,6 @@
 import { ChangeEvent, useState, useContext } from "react"
 import { UserTokenContext } from "../App"
-import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
+import { Button, Container, FormControl, Input, InputLabel, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
 import VerifyDialog from "./VerifyDialog"
 import { User, initialState } from "../types"
 // import { registerUser } from "../services"
@@ -14,22 +14,32 @@ function RegisterNewUser() {
 	const [confirmPassword, setConfirmPassword] = useState<string>("")
 	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true)
 	const [verifyOpen, setVerifyOpen] = useState(false)
+	const [userImage, setUserImage] = useState<File | null>(null)
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
 	const [showErrorNotificationTwo, setShowErrorNotificationTwo] = useState(false)
 	const [showErrorNotificationThree, setShowErrorNotificationThree] = useState(false)
 
+
+
 	const [dialogOpen, setDialogOpen] = useState(false)
 
 	const { name, email, username, phone, address, city, postal_code } = newUser
 
-	const register = async () => {
+
+	const register = async (user: FormData) => {
+		console.log("newUser:", newUser)
 		try {
-			const response = await axios.post("/api/users/register", newUser, {
+		
+
+		
+			const response = await axios.post("/api/users/register", user, {
 				headers: {
-					"Content-Type": "application/json",
+					"Content-Type": "multipart/form-data",
 				},
+
 			})
+			console.log(":",)
 
 			if (response.status === 200) {
 				setShowSuccessNotification(true)
@@ -71,7 +81,25 @@ function RegisterNewUser() {
 		preformattedText: `Nimi: ${name}\nSähköposti: ${email}\nKäyttäjänimi: ${username}\nOsoite: ${address}\nKaupunki: ${city}\nPostinumero: ${postal_code}`,
 		isOpen: verifyOpen,
 		setOpen: setVerifyOpen,
-		onAccept: register
+		onAccept: () => {
+
+			const formData = new FormData()
+			if (userImage) {
+				formData.append("user_image", userImage)
+				newUser.user_image = userImage
+				console.log("kuva",userImage)
+			}
+			
+			formData.append("name", newUser.name)
+			formData.append("email", newUser.email)
+			formData.append("username", newUser.username)
+			formData.append("phone", newUser.phone)
+			formData.append("address", newUser.address)
+			formData.append("city", newUser.city)
+			formData.append("postal_code", newUser.postal_code)
+			register(formData)
+			console.log("newUser:", newUser)
+		},
 	}
 
 	const handleVerification = () => {
@@ -104,6 +132,13 @@ function RegisterNewUser() {
 
 	const handleDialogClose = () => {
 		setDialogOpen(false)
+	}
+
+	const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+		const file = event.target.files && event.target.files[0]
+		if (file) {
+			setUserImage(file)
+		}
 	}
 
 	return (
@@ -191,6 +226,14 @@ function RegisterNewUser() {
 							error={!passwordsMatch}
 							helperText={!passwordsMatch ? "Salasanat ovat erilaiset." : ""}
 						/>
+						<FormControl>
+							<InputLabel style={{ position: "relative" }} id="Kuvat">Lisää kuva:</InputLabel>
+							<Input
+								type="file"
+								onChange={handleImageChange}
+								inputProps={{ accept: "image/*" }}
+							/>
+						</FormControl>
 
 					</DialogContent>
 					<DialogActions>

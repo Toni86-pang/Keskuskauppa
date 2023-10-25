@@ -13,6 +13,7 @@ export interface User {
 	is_Admin?: boolean,
 	reviews?: number
 	reg_day?: string
+	user_image?: File | null
 }
 
 export interface UserValues {
@@ -31,10 +32,11 @@ export interface ProductType {
     postal_code: string
     description: string
 	price: number
-	// product_image?: any
+	product_image: File | null
 	listed: boolean
 	category_name?: string
 	subcategory_name?: string
+
 }
 
 export interface ProductProps {
@@ -210,7 +212,8 @@ export const initialState: User = {
 	city: "",
 	postal_code: "",
 	is_Admin: false,
-	reviews: 0
+	reviews: 0,
+	user_image: null
 }
 
 
@@ -223,8 +226,9 @@ export const initialStateProduct: ProductType = {
 	postal_code: "",
 	description: "",
 	price: 0,
-	listed: true
-	// product_image?: any
+	listed: true,
+	product_image: null
+
 }
 
 
