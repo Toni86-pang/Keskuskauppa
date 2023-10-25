@@ -78,9 +78,9 @@ export const updateUser = async (updatedData: UpdatedUser, token: string) => {
 	})
 }
 
-export const fetchOwnProducts = (id: number) => {
-	return axios.get("/api/product/user/" + id).then((response) => response.data)
-}
+// export const fetchOwnProducts = (id: number) => {
+// 	return axios.get("/api/product/user/" + id).then((response) => response.data)
+// }
 
 export const fetchUsersProducts = async (id: number) => {
 	const response = await axios.get("/api/product/user/" + id)
@@ -228,6 +228,10 @@ export const returnProductToShop = async (saleId: number, token: string) => {
 		})
 	console.log(response)
 	return response
+}
+
+export const fetchStarRating = (id: number) => {
+	return axios.get(`/api/review/user/average/${id}`).then(res => res.data)
 }
 
 export const fetchCategoryName = (id: number) => {

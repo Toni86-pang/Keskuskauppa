@@ -9,13 +9,12 @@ import {
 	ImageList,
 	ImageListItem,
 	Button,
+	Rating,
 } from "@mui/material"
-import StarBorderPurple500SharpIcon from "@mui/icons-material/StarBorderPurple500Sharp"
-import StarPurple500SharpIcon from "@mui/icons-material/StarPurple500Sharp"
 import DeleteButton from "./DeleteButton"
 import UpdateProductModal from "./UpdateProducts"
-import { ProductType } from "../types"
-import { deleteProduct, fetchProduct,  fetchUser, fetchUsernameByUserId } from "../services"
+import { ProductType, User} from "../types"
+import { deleteProduct, fetchProduct,  fetchStarRating,  fetchUser, fetchUserDetailsByUserId } from "../services"
 import Notification from "./Notification"
 import { CartContextType, UserTokenContext } from "../App"
 
@@ -65,7 +64,8 @@ export default function Product() {
 	const [showNotLoggedInNotif, setShowNotLoggedinNotif] = useState(false)
 	const [myProduct, setMyProduct] = useState<boolean>(false)
 	const [token] = useContext(UserTokenContext)
-	const [ownerUsername, setOwnerUsername] = useState<string | null>("")
+	const [sellerUsername, setSellerUsername] = useState<string | null>("")
+	const [stars, setStars] = useState(0)
 	const [selectedImage, setSelectedImage] = useState<string | null>(itemData[0].img)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
 	const navigate = useNavigate()
@@ -101,25 +101,29 @@ export default function Product() {
 
 	
 	useEffect(() => {
-		const fetchUsernameForDisplay = async () => {
+		const fetchSellerUsernameAndStars = async () => {
 			try {
-				let username
 				if(product.user_id) 
 				{
-					username = await fetchUsernameByUserId(product.user_id)
+					const seller: User = await fetchUserDetailsByUserId(product.user_id)
+					const averageStars = await fetchStarRating(product.user_id)
+					if(averageStars) {
+						setStars(averageStars)
+					}
+					if (seller.username!== undefined) {
+						setSellerUsername(seller.username)
+					} else {
+						console.error("Error fetching owner user data")
+						setSellerUsername("N/A")
+					}
 				}
-				if (username !== undefined) {
-					setOwnerUsername(username)
-				} else {
-					console.error("Error fetching owner user data")
-					setOwnerUsername("N/A")
-				}
+				
 			} catch (error) {
 				console.error("Error fetching owner user data:", error)
-				setOwnerUsername("N/A")
+				setSellerUsername("N/A")
 			}
 		}
-		fetchUsernameForDisplay()
+		fetchSellerUsernameAndStars()
 	}, [product.user_id])
 
 	const handleAddToShoppingCart = (product: ProductType) => {
@@ -179,7 +183,7 @@ export default function Product() {
 												{!myProduct ? (
 													<>
 														<Typography variant="body2" gutterBottom>
-											Myyjän nimi: {ownerUsername}
+											Myyjän nimi: {sellerUsername}
 														</Typography>
 													</>
 												) : (
@@ -194,11 +198,7 @@ export default function Product() {
 													Katso profiili
 														</Link>
 													</Box>
-													<StarPurple500SharpIcon />
-													<StarPurple500SharpIcon />
-													<StarPurple500SharpIcon />
-													<StarBorderPurple500SharpIcon />
-													<StarBorderPurple500SharpIcon />
+													<Rating name="read-only" value={stars} precision={0.1} readOnly />
 												</Typography>
 											</>
 										) : (

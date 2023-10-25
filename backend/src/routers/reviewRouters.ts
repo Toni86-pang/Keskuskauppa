@@ -1,10 +1,27 @@
 import express, { Request, Response } from "express"
-import { getReviewsByUserId, getReviewById, getAverageStarsByUserId, createReview } from "../daos/reviewsDao"
+import { getReviewsByUserId, getReviewById, getAverageStarsByUserId, createReview, postComment, getReviewComment } from "../daos/reviewsDao"
 import { authentication } from "../middlewares"
 
 
 interface CustomRequest extends Request {
 	id?: number
+}
+
+interface Review {
+	review_id?: number
+	sales_id: number
+	seller_id: number
+	buyer_id: number
+	description: string
+	review_date?: string
+	seen?: boolean
+	stars: number
+}
+
+interface Comment {
+	comment_id?: number
+	review_id: number
+	comment: string
 }
 
 const review = express.Router()
@@ -13,7 +30,7 @@ review.get("/user/:id", async (req: Request, res: Response) => {
 
 	const userId = Number(req.params.id)
 	try {
-		const result = await getReviewsByUserId(userId)
+		const result: Review[] = await getReviewsByUserId(userId)
 		return res.status(200).send(result)
 	} catch (error) {
 		console.error("Error fetching reviews: ", error)
@@ -27,7 +44,7 @@ review.get("/:id", async (req: Request, res: Response) => {
 
 	const reviewId = Number(req.params.id)
 	try {
-		const result = await getReviewById(reviewId)
+		const result: Review | null = await getReviewById(reviewId)
 		if (result) {
 			console.log("Result: ", result)
 			return res.status(200).send(result)
@@ -78,6 +95,45 @@ review.post("/", authentication, async (req: CustomRequest, res: Response) => {
 		res.status(201).json({ message: "Review created successfully" })
 	} catch (error) {
 		res.status(500).json({ message: "Error creating review" })
+	}
+})
+
+
+review.post("/comment/", authentication, async (req: CustomRequest, res: Response) => {
+	const sellerId = req.id
+	const { review_id, comment}: Comment = req.body
+	try {
+		const review = await getReviewById(review_id)
+		const existingComment = await getReviewComment(review_id)
+		
+		if (review?.seller_id !== sellerId) {
+			return res.status(403).send("Not the seller.")
+		}
+
+		if (existingComment) {
+			return res.status(403).send("Only one comment allowed.")
+		}		
+		await postComment(review_id, comment)
+		res.status(201).send()
+	} catch (error){
+		res.status(500).send("Error posting message: " + error)
+	}
+})
+
+review.get("/comment/:reviewId", async (req: Request, res: Response) => {
+	const reviewId = Number(req.params.reviewId)
+
+	try {
+		const comment: Comment | null = await getReviewComment(reviewId)
+		if(comment) {
+			return res.status(200).send(comment)
+		}
+
+		return res.status(404).send()
+				
+	} catch (error) {
+		console.error("Error fetching comment: ", error)
+		res.status(500).send("Error fetching comment: " + error)
 	}
 })
 
