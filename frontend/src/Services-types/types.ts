@@ -254,6 +254,26 @@ export const initialStateProduct: ProductType = {
 	product_image: null
 }
 
+export interface Review {
+	review_id?: number
+	sales_id: number
+	seller_id?: number
+	buyer_id?: number
+	description?: string
+	review_date?: string
+	seen?: boolean
+	stars?: number
+}
+
+export interface AverageStars {
+	average_score: number
+}
+export interface ReviewComment {
+	comment_id?: number
+	review_id: number
+	comment: string
+}
+
 export interface CategoryProducts {
     categoryHeader: string
     products: ProductType[]
@@ -264,3 +284,19 @@ export type BreadcrumbResolver = (params: string) => Promise<[string, string][]>
 export type categoryMapType = {
 	[key: string]: [string, number] 
 }	
+
+export interface UserProducts {
+	loadedUser: User
+	stars: number
+	products: ProductType[]
+}
+
+export interface ReviewCardProps {
+	isOwn: boolean
+	review: Review
+	reviewComment?: ReviewComment
+}
+
+export interface CommentCardProps {
+	reviewComment: ReviewComment
+}
