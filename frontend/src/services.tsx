@@ -8,28 +8,16 @@ export const deleteUser = (token: string) => {
 		}
 	}).then((response) => response.data)
 }
-// export const registerUser = async (newUser: FormData) => {
-// 	console.log("Debug 1")
-// 	const response = await axios.post("/api/users/register", newUser, {
-		
-// 		headers: {
-// 			"Content-Type": "multipart/form-data"
-// 		}
-// 	})
-// 	console.log("response:", response)
-// 	return response
-// }
-
-export const fetchUser = async (token: string) => {
+export const registerUser = async (user: FormData) => {
 	try {
-		const response = await axios.get("/api/users/user/", {
+		const response = await axios.post("/api/users/register", user, {
 			headers: {
-				"Authorization": `Bearer ${token}`
-			} 
+				"Content-Type": "multipart/form-data"
+			},
 		})
-		return response.data	
+		return response
 	} catch (error) {
-		if (axios.isAxiosError(error) && error.response?.status === 401) {
+		if (axios.isAxiosError(error) && error.response?.status === 400) {
 			return null
 		}
 		else {
@@ -38,6 +26,24 @@ export const fetchUser = async (token: string) => {
 		}
 	}
 }
+// export const fetchUser = async (token: string) => {
+// 	try {
+// 		const response = await axios.get("/api/users/user/", {
+// 			headers: {
+// 				"Authorization": `Bearer ${token}`
+// 			} 
+// 		})
+// 		return response.data	
+// 	} catch (error) {
+// 		if (axios.isAxiosError(error) && error.response?.status === 401) {
+// 			return null
+// 		}
+// 		else {
+// 			console.error("Error fetching user:", error)
+// 			return null
+// 		}
+// 	}
+//}
 
 export const fetchSale = (token: string, id: number) => {
 	return axios.get("/api/sales/" + id, {

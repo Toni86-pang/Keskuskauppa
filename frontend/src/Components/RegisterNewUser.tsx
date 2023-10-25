@@ -27,19 +27,32 @@ function RegisterNewUser() {
 	const { name, email, username, phone, address, city, postal_code } = newUser
 
 
-	const register = async (user: FormData) => {
-		console.log("newUser:", newUser)
-		try {
+	const register = async () => {
+		try{
+			
 		
-
+			const formData = new FormData()
+			formData.append("name", name)
+			formData.append("email", email)
+			formData.append("username", username)
+			formData.append("phone", phone)
+			formData.append("address", address)
+			formData.append("city", city)
+			formData.append("postal_code", postal_code)
 		
+			if (userImage) {
+				formData.append("user_image", userImage)
+				console.log("userImage appended to formData:", formData)
+				//newUser.user_image = userImage
+			}
+			
 			const response = await axios.post("/api/users/register", user, {
 				headers: {
 					"Content-Type": "multipart/form-data",
 				},
 
 			})
-			console.log(":",)
+			console.log("formData:", formData)
 
 			if (response.status === 200) {
 				setShowSuccessNotification(true)
@@ -81,25 +94,7 @@ function RegisterNewUser() {
 		preformattedText: `Nimi: ${name}\nSähköposti: ${email}\nKäyttäjänimi: ${username}\nOsoite: ${address}\nKaupunki: ${city}\nPostinumero: ${postal_code}`,
 		isOpen: verifyOpen,
 		setOpen: setVerifyOpen,
-		onAccept: () => {
-
-			const formData = new FormData()
-			if (userImage) {
-				formData.append("user_image", userImage)
-				newUser.user_image = userImage
-				console.log("kuva",userImage)
-			}
-			
-			formData.append("name", newUser.name)
-			formData.append("email", newUser.email)
-			formData.append("username", newUser.username)
-			formData.append("phone", newUser.phone)
-			formData.append("address", newUser.address)
-			formData.append("city", newUser.city)
-			formData.append("postal_code", newUser.postal_code)
-			register(formData)
-			console.log("newUser:", newUser)
-		},
+		onAccept: register
 	}
 
 	const handleVerification = () => {

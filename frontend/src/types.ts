@@ -212,7 +212,6 @@ export const initialState: User = {
 	address: "",
 	city: "",
 	postal_code: "",
-	is_Admin: false,
 	reviews: 0,
 	user_image: null
 }
