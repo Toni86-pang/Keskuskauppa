@@ -54,7 +54,7 @@ function SalesProductCard({ product, onClose, setCart }: ProductProps) {
 							<CardMedia
 								component="img"
 								height="80"
-								image={"https://images.unsplash.com/photo-1551963831-b3b1ca40c98e"}
+								image={product.product_image ? `data:image/png;base64,${product.product_image}` : "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e"}
 								alt={product.title}
 							/>
 						</Grid>

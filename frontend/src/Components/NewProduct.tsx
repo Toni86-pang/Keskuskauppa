@@ -1,6 +1,6 @@
 import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { useNavigate, redirect } from "react-router-dom"
-import { Button, Container, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material"
+import { Button, Container, FormControl, Input, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material"
 import { UserTokenContext } from "../App"
 import { Category, Subcategory, User, initialState } from "../types"
 import { fetchCategories, fetchIndividualSubcategory, fetchUser, newProduct } from "../services"
@@ -18,7 +18,7 @@ function NewProduct() {
 	const [user, setUser] = useState<User>(initialState)
 	const [newTitle, setNewTitle] = useState<string>("")
 	const [newDescription, setNewDescription] = useState<string>("")
-	const [newPrice, setNewPrice] = useState<number >(0)
+	const [newPrice, setNewPrice] = useState<string>("")
 	const [, setError] = useState<string>("")
 	const [newCategory, setNewCategory] = useState<string>("")
 	const [categoryId, setCategoryId] = useState<number>(0)
@@ -26,8 +26,9 @@ function NewProduct() {
 	const [subcategoryId, setSubcategoryId] = useState<number>(0)
 	const [categories, setCategories] = useState<Category[]>([])
 	const [subcategories, setSubcategories] = useState<Subcategory[]>([])
-	const [newCity, setNewCity] = useState<string>(user.city)
-	const [newPostalCode, setNewPostalCode] = useState<string>(user.postal_code)
+	const [newCity, setNewCity] = useState<string>("")
+	const [newPostalCode, setNewPostalCode] = useState<string>("")
+	const [productImage, setProductImage] = useState<File | null>(null)	
 	const [hidden, setHidden] = useState<boolean>(false)
 
 	const navigate = useNavigate()
@@ -45,7 +46,6 @@ function NewProduct() {
 				console.error("error fetching user")
 				return
 			}
-			
 			setUser(user)
 		}
 		fetchInfo()
@@ -72,16 +72,33 @@ function NewProduct() {
 	}
 
 	const createNewProduct = async () => {
-		const product = {user_id: user.user_id, title: newTitle, category_id: categoryId, subcategory_id: subcategoryId, postal_code: newPostalCode, city: newCity, description: newDescription, price: newPrice, listed: true}
-
-		newProduct(product, token).then((response) => {
+		const formData = new FormData()
+		if (productImage) {
+			formData.append("product_image", productImage)
+		}
+		// Append other product data like title, description, etc.
+		formData.append("user_id", user.user_id.toString())
+		formData.append("title", newTitle)
+		formData.append("category_id", categoryId.toString())
+		formData.append("subcategory_id", subcategoryId.toString())
+		formData.append("city", newCity)
+		formData.append("postal_code", newPostalCode)
+		formData.append("description", newDescription)
+		formData.append("price", newPrice)
+		formData.append("listed", "true") // assuming listed is always true
+	
+		try {
+			const response = await newProduct(formData, token)
 			if (response.status === 201) {
 				console.log("Product creation success")
 				navigate("/profile")
 			}
-		})
+		} catch (error) {
+		// Handle errors
+			console.error("Product creation error:", error)
+		}
 	}
-
+	
 	const getCategory = (array: Array<{ category_id: number; category_name: string }>, name: string) => {
 		const filtered = array.filter((category) => category.category_name === name)
 		return filtered[0].category_id
@@ -100,12 +117,11 @@ function NewProduct() {
 		const value = event.target.value
 		setNewDescription(value)
 	}
+
 	const handlePriceChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const inputValue = event.target.value
-	
-		// Treat empty input as 0
 		if (inputValue === "") {
-			setNewPrice(0)
+			setNewPrice("")
 			setError("")
 			return
 		}
@@ -113,19 +129,21 @@ function NewProduct() {
 		const price = parseFloat(inputValue)
 	
 		if (isNaN(price) || price < 0) {
-			setNewPrice(0)
+			setNewPrice("")
 			setError("Invalid price input. Please enter a valid positive number.")
 		} else {
-			setNewPrice(price)
+		// Format the price to remove trailing zeros and unnecessary decimals
+			const formattedPrice = price.toString()
+			setNewPrice(formattedPrice)
 			setError("")
 		}
 	}
-	
-	
+
 	const handleCityChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const value = (event.target.value)
 		setNewCity(value)
 	}
+
 	const handlePostCodeChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const value = (event.target.value)
 		setNewPostalCode(value)
@@ -146,6 +164,13 @@ function NewProduct() {
 		setSubcategoryId(subcategoryId)
 	}
 
+	const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+		const file = event.target.files && event.target.files[0]
+		if (file) {
+			setProductImage(file)
+		}
+	}
+	
 	const handleCancel = () => {
 		navigate("/profile")
 	}
@@ -153,9 +178,9 @@ function NewProduct() {
 	const location = `${user.postal_code} ${user.city}`
 
 	const handleCancelChange = () => {
-		setHidden(false)
 		setNewCity(user.city)
 		setNewPostalCode(user.postal_code)
+		setHidden(false)
 	}
 
 	
@@ -182,10 +207,18 @@ function NewProduct() {
 				<FormControl>
 					<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="price">Hinta*</InputLabel>
 					<TextField
-						type="number"
+						type="text"
 						name="price"
 						value={newPrice}
 						onChange={handlePriceChange}
+					/>
+				</FormControl>
+				<FormControl>
+					<InputLabel style={{position: "relative"}} id="Kuvat">Lisää kuva:</InputLabel>
+					<Input
+						type="file"
+						onChange={handleImageChange}
+						inputProps={{ accept: "image/*" }}	
 					/>
 				</FormControl>
 				<FormControl sx={{ mt: 2 }}>
@@ -202,7 +235,7 @@ function NewProduct() {
 							)
 						})}
 					</Select>				</FormControl>
-
+				
 				{newCategory ? (
 					<FormControl sx={{ mt: 2 }}>
 						<InputLabel id="Alakategoria">Alakategoria*</InputLabel>
@@ -219,6 +252,7 @@ function NewProduct() {
 							})}
 						</Select>
 					</FormControl>
+
 				) : (
 					<></>
 				)}

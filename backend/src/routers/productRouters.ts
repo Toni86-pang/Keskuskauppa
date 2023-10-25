@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express"
 import { createProduct, getAllProducts, getProductById, getProductsByCategory, getProductsBySubcategory, updateProductData, deleteProduct, getProductsByUserId, Product, updateProductListed } from "../daos/productsDao"
-import { authentication, validateCategoryId  } from "../middlewares"
+import { authentication, validateCategoryId } from "../middlewares"
 import multer from "multer"
 
 const product = express.Router()
@@ -48,25 +48,42 @@ product.post("/", authentication, upload.single("product_image"), async (req: Cu
 
 product.get("/", async (_req, res) => {
 	try {
-		const product: Product[] = await getAllProducts()
-		res.status(200).json(product)
+		const products: Product[] = await getAllProducts()
+  
+		// Convert product_image to Base64 encoded string for products with images
+		products.forEach(product => {
+			if (product.product_image instanceof Buffer) {
+				product.product_image = product.product_image.toString("base64")
+			}
+		})
+  
+		res.status(200).json(products)
 	} catch (error) {
-		res.status(500).json({ message: "you shouldn't even be here?" })
+		res.status(500).json({ message: "Internal server error" })
 	}
 })
+  
+  
+
 
 
 product.get("/:id", async (req, res) => {
 	try {
 		const product_id: number = parseInt(req.params.id, 10)
 		const productDetails: Product | null = await getProductById(product_id)
+
 		if (productDetails === null) {
-			res.status(404).json({ message: " product not found" })
+			res.status(404).json({ message: "Product not found" })
 		} else {
+			// Convert product_image to a Base64 encoded string
+			if (productDetails.product_image instanceof Buffer) {
+				productDetails.product_image = productDetails.product_image.toString("base64")
+			}
+
 			res.status(200).json(productDetails)
 		}
 	} catch (error) {
-		res.status(500).json({ message: "why are you still here?" })
+		res.status(500).json({ message: "Internal server error" })
 	}
 })
 
@@ -105,11 +122,11 @@ product.put("/update/:id", authentication, async (req: CustomRequest, res: Respo
 	const updatedProductData = req.body
 	try {
 		const product: Product | null = await getProductById(product_Id)
-		if(!product) {
+		if (!product) {
 			return res.send(404).send()
 		}
 		// Can only update own products.
-		if(product.user_id !== userId) {
+		if (product.user_id !== userId) {
 			return res.send(403).send()
 		}
 		const updateProduct: Product | null = await updateProductData(
@@ -132,6 +149,7 @@ product.put("/update/:id", authentication, async (req: CustomRequest, res: Respo
 		res.status(500).send("Internal Server Error")
 	}
 })
+
 // update products 'listed' property
 product.put("/listed/:id", authentication, async (req: CustomRequest, res: Response) => {
 	const userId = req.id
@@ -139,11 +157,11 @@ product.put("/listed/:id", authentication, async (req: CustomRequest, res: Respo
 	const listed = req.body.listed
 	try {
 		const product: Product | null = await getProductById(productId)
-		if(!product) {
+		if (!product) {
 			return res.send(404).send()
 		}
 		// Can only update own products.
-		if(product.user_id !== userId) {
+		if (product.user_id !== userId) {
 			return res.send(403).send()
 		}
 		const updatedProduct: Product | null = await updateProductListed(productId, listed)
@@ -158,7 +176,6 @@ product.put("/listed/:id", authentication, async (req: CustomRequest, res: Respo
 	}
 })
 
-
 //Serve products by category
 product.get("/category/:id", validateCategoryId, async (req, res) => {
 	const categoryId = parseInt(req.params.id)
@@ -169,6 +186,7 @@ product.get("/category/:id", validateCategoryId, async (req, res) => {
 		res.status(500).json({ message: "Product information couldn't be displayed" })
 	}
 })
+
 // Serve products by subcategory
 product.get("/subcategory/:id", validateCategoryId, async (req, res) => {
 	const subcategoryId = parseInt(req.params.id)
