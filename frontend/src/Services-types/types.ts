@@ -22,7 +22,7 @@ export interface User {
 	address: string,
 	city: string,
 	postal_code:string,
-	product_image: File | null
+	user_image: File | null
 	reviews?: number
 	reg_day?: string
 }
@@ -54,11 +54,10 @@ export const initialState: User = {
 	phone: "",
 	address: "",
 	city: "",
-	product_image: null,
+	user_image: null,
 	postal_code: "",
 	reviews: 0
 }
-
 //------------------------------------------- PRODUCTS ------------------------------------------------------
 
 export interface ProductType {

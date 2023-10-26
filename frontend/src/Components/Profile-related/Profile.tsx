@@ -5,14 +5,12 @@ import { useNavigate, redirect, useLoaderData } from "react-router-dom"
 import UpdateProfile from "./UpdateProfile"
 import { UserTokenContext } from "../../App"
 import Rating from "@mui/material/Rating"
-import ListReviews from "../Purchase-order-history/Order-history/ListReviews"
 import { User, UserProducts } from "../../Services-types/types"
 import { deleteUser, fetchStarRating, fetchUser, fetchUsersProducts } from "../../Services-types/services"
 import Notification from "../Verify-notification/Notification"
 import VerifyDialog from "../Verify-notification/VerifyDialog"
 import DisplayProducts from "../Product-related/DisplayProducts"
-
-
+import ListReviews from "../Purchase-order-history/Order-history/ListReviews"
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
@@ -92,12 +90,26 @@ function Profile() {
 				alignItems="center"
 			>
 				<Grid item xs={4}>
-					<div><img src="https://images.unsplash.com/photo-1551963831-b3b1ca40c98e" style={{
+					<div>{user?.user_image && (
+						<img
+							alt="User Image"
+							src={`data:image/*;base64,${user.user_image}`}
+							style={{
+								margin: "auto",
+								display: "block",
+								maxWidth: "270px",
+								maxHeight: "270px",
+							}}
+						/>
+					)}
+
+					{/* <img src="https://images.unsplash.com/photo-1551963831-b3b1ca40c98e" style={{
 						margin: "auto",
 						display: "block",
 						maxWidth: "220px",
 						maxHeight: "220px",
-					}} /></div>
+					}} /> */}
+					</div>
 				</Grid>
 				{user && <Grid item xs={5}>
 					<div className="user">
@@ -171,7 +183,7 @@ function Profile() {
 				<div style={{ marginTop: "9px" }}>|</div>
 				<Button onClick={() => setShowProducts(false)} variant="text" color={!showProducts ? "secondary" : "primary"}>Omat arvostelut</Button>
 			</Stack>
-			
+
 			{showProducts ?
 				<div className="ownProducts">
 					<Divider variant="middle" style={{ marginBottom: "10px" }} />
@@ -182,7 +194,7 @@ function Profile() {
 				</div> :
 				<div className="ownReviews">
 					<Divider variant="middle" style={{ marginBottom: "10px" }} />
-					{<ListReviews sellerId={user.user_id} isOwn={true} /> }
+					{<ListReviews sellerId={user.user_id} isOwn={true} />}
 				</div>}
 		</div>
 	)

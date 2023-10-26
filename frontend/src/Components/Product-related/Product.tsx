@@ -10,8 +10,8 @@ import {
 } from "@mui/material"
 import DeleteButton from "./DeleteButton"
 import UpdateProductModal from "./UpdateProducts"
-import { ProductType, User} from "../../Services-types/types"
-import { deleteProduct, fetchProduct,  fetchStarRating,  fetchUser, fetchUserDetailsByUserId } from "../../Services-types/services"
+import { ProductType, User } from "../../Services-types/types"
+import { deleteProduct, fetchProduct, fetchStarRating, fetchUser, fetchUserDetailsByUserId } from "../../Services-types/services"
 import Notification from "../Verify-notification/Notification"
 import { CartContextType, UserTokenContext } from "../../App"
 
@@ -67,21 +67,21 @@ export default function Product() {
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
 	const navigate = useNavigate()
 	const product = useLoaderData() as ProductType
-	const [ setCart ] = useOutletContext<CartContextType>()
-	
+	const [setCart] = useOutletContext<CartContextType>()
+
 	useEffect(() => {
 		const fetchUserDetails = async () => {
-			if(!token) return
+			if (!token) return
 			const user = await fetchUser(token)
-		
+
 			if (user === undefined) {
 				console.error("error fetching user")
 				return
-			}		   
+			}
 			user.user_id !== 0 && product.user_id === user.user_id ? setMyProduct(true) : setMyProduct(false)
 		}
 		fetchUserDetails()
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [token])
 
 	const handleDelete = async () => {
@@ -97,25 +97,24 @@ export default function Product() {
 		}
 	}
 
-	
+
 	useEffect(() => {
 		const fetchSellerUsernameAndStars = async () => {
 			try {
-				if(product.user_id) 
-				{
+				if (product.user_id) {
 					const seller: User = await fetchUserDetailsByUserId(product.user_id)
 					const averageStars = await fetchStarRating(product.user_id)
-					if(averageStars) {
+					if (averageStars) {
 						setStars(averageStars)
 					}
-					if (seller.username!== undefined) {
+					if (seller.username !== undefined) {
 						setSellerUsername(seller.username)
 					} else {
 						console.error("Error fetching owner user data")
 						setSellerUsername("N/A")
 					}
 				}
-				
+
 			} catch (error) {
 				console.error("Error fetching owner user data:", error)
 				setSellerUsername("N/A")
@@ -127,12 +126,12 @@ export default function Product() {
 	const handleAddToShoppingCart = (product: ProductType) => {
 		const storageItem = sessionStorage.getItem("myCart")
 		const tempCart: ProductType[] = storageItem !== null ? JSON.parse(storageItem) : []
-		const alreadyInCart = tempCart.find(tempProduct => { return (tempProduct.product_id === product.product_id)})
-		if(!alreadyInCart){
+		const alreadyInCart = tempCart.find(tempProduct => { return (tempProduct.product_id === product.product_id) })
+		if (!alreadyInCart) {
 			tempCart.push(product),
 			sessionStorage.setItem("myCart", JSON.stringify(tempCart)),
 			setCart(tempCart)
-		} else {setShowErrorNotification(true)}
+		} else { setShowErrorNotification(true) }
 	}
 
 	return (
@@ -173,20 +172,14 @@ export default function Product() {
 							<Grid item xl={5} sm container>
 								<Grid item xs container direction="column" spacing={4}>
 									<Grid item xs sx={{ margin: 4 }}>
+										<Typography variant="body2" gutterBottom>
+											Hinta:	{product?.price} €
+										</Typography>
 										{!myProduct ? (
-											<>
+											<>												
 												<Typography variant="body2" gutterBottom>
-									Hinta:	{product?.price} €
+													Myyjän nimi: {sellerUsername}
 												</Typography>
-												{!myProduct ? (
-													<>
-														<Typography variant="body2" gutterBottom>
-											Myyjän nimi: {sellerUsername}
-														</Typography>
-													</>
-												) : (
-													<></>
-												)}
 												<Typography
 													variant="body2"
 													color="text.secondary"
@@ -207,13 +200,13 @@ export default function Product() {
 											variant="body2"
 											color="text.secondary"
 										>
-								Kaupunki:	{product?.city}
+											Kaupunki:	{product?.city}
 										</Typography>
 										<Typography
 											variant="body2"
 											color="text.secondary"
 										>
-								Postinumero:	{product?.postal_code}
+											Postinumero:	{product?.postal_code}
 										</Typography>
 									</Grid>
 									{myProduct ? (
@@ -222,20 +215,20 @@ export default function Product() {
 												<Button variant="outlined" onClick={() => { 
 													setUpdateModalOpen(true) 
 												}}>
-										Päivitä tuote
+													Päivitä tuote
 												</Button>
 												<UpdateProductModal
 													isOpen={isUpdateModalOpen}
 													onClose={() => setUpdateModalOpen(false)}
 													token={token}
-													productId={product?.product_id || 0}
-													title={product?.title || ""}
-													category_id={product?.category_id || 0}
-													subcategory_id={product?.subcategory_id || 0}
-													city={product?.city.split(",")[0] || ""}
-													postal_code={product?.postal_code.split(",")[0] || ""}
-													description={product?.description || ""}
-													price={product?.price || ""}
+													productId={product?.product_id}
+													title={product?.title}
+													category_id={product?.category_id}
+													subcategory_id={product?.subcategory_id}
+													city={product?.city.split(",")[0]}
+													postal_code={product?.postal_code.split(",")[0]}
+													description={product?.description}
+													price={product?.price.toString()}
 												/>
 											</>
 
@@ -247,9 +240,9 @@ export default function Product() {
 										:
 										<>
 											<Button sx={{
-												width: 150, height: 50, 
+												width: 150, height: 50,
 											}} variant="outlined" onClick={() => token ? handleAddToShoppingCart(product) : setShowNotLoggedinNotif(true)}>
-											Ostoskoriin
+												Ostoskoriin
 											</Button>
 										</>
 									}
@@ -300,7 +293,7 @@ export default function Product() {
 									))}
 								</ImageList> */}
 								<Typography variant="body2" gutterBottom>
-							Lisätiedot:
+									Lisätiedot:
 								</Typography>
 								<Box sx={{ border: 0.1, width: 265, height: 100 }}>{product?.description}</Box>
 							</Grid>

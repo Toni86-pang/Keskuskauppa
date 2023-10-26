@@ -5,6 +5,7 @@ import { UserTokenContext } from "../../App"
 import { Category, Subcategory, User, initialState } from "../../Services-types/types"
 import { fetchCategories, fetchIndividualSubcategory, fetchUser, newProduct } from "../../Services-types/services"
 
+// eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
 	const token = localStorage.getItem("token")
 	if(!token){
@@ -41,7 +42,8 @@ function NewProduct() {
 			}
 	
 			const user = await fetchUser(token)
-	
+			setNewCity(user.city)
+			setNewPostalCode(user.postal_code)
 			if (user === undefined) {
 				console.error("error fetching user")
 				return

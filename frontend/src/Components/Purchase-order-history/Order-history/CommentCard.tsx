@@ -11,8 +11,7 @@ function CommentCard({ reviewComment }: CommentCardProps) {
 
 	return (
 		<Card style={cardStyle}>
-			<CardContent>
-				
+			<CardContent>				
 				<p>Myyjän kommentti:</p>
 				<p>{reviewComment.comment}</p>
 			</CardContent>
