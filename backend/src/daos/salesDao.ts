@@ -126,7 +126,6 @@ export const fetchOwnSold = async (userId: number): Promise<ProductSale[]>  => {
     	s.seller_id = $1`
 	
 	const result = await executeQuery(query, params)
-	console.log(result.rows[0])
 	return result.rows
 }
 
