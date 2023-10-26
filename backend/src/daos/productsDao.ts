@@ -206,6 +206,7 @@ export const getProductsByCategory = async (category_ID: number): Promise<Produc
     products.product_id,
     products.title,
 	products.price,
+	products.product_image,
     category.category_id,
     category.category_name,
     subcategory.subcategory_id,
@@ -229,6 +230,7 @@ export const getProductsBySubcategory = async (subcategory_ID: number): Promise<
 	products.product_id,
 	products.title,
 	products.price,
+	products.product_image,
 	subcategory.subcategory_id,
 	subcategory.subcategory_name,
 	subcategory.category_id

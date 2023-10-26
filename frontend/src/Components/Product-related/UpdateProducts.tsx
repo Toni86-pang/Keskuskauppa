@@ -15,6 +15,7 @@ function UpdateProductModal({
 	city,
 	postal_code,
 	description,
+	price
 	
 	
 }: UpdateProductModalProps) {
@@ -22,7 +23,7 @@ function UpdateProductModal({
 	const [updatedCity, setUpdatedCity] = useState(city)
 	const [updatedPostalCode, setUpdatedPostalCode] = useState(postal_code)
 	const [updatedDescription, setUpdatedDescription] = useState(description)
-	const [updatedPrice, setUpdatedPrice] = useState("")
+	const [updatedPrice, setUpdatedPrice] = useState(price)
 	const [error, setError] = useState("")
 
 	const [categories, setCategories] = useState<Category[]>([])
