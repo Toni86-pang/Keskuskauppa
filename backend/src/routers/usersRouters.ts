@@ -1,10 +1,10 @@
 import express, { Request, Response } from "express"
-import { getAllUsers, addUser, deleteUser, getUserByUsername, findUserByUSername, findUserByEmail, getUserByUserId, updateProfile, getUserDetailsByUserId } from "../daos/usersDao"
+import { addUser, deleteUser, getUserByUsername, findUserByUSername, findUserByEmail, getUserByUserId, updateProfile, getUserDetailsByUserId } from "../daos/usersDao"
 import { authentication, checkReqBody } from "../middlewares"
 import argon2 from "argon2"
 import jwt from "jsonwebtoken"
 import multer from "multer"
-
+import { User } from "../daos/usersDao"
 interface Profile {
 	email: string
 	phone: string
@@ -17,13 +17,6 @@ const upload = multer({ storage: storage })
 const secret = process.env.SECRET ?? ""
 const users = express.Router()
 
-users.get("/", async (_req: Request, res: Response) => {
-	const result = await getAllUsers()
-	return res.status(200).send(result.rows)
-})
-
-// profiilisivu vaati get user by userId.  --Nisu
-
 interface CustomRequest extends Request {
 	id?: number
 }
@@ -33,8 +26,13 @@ users.get("/user", authentication, async (req: CustomRequest, res: Response) => 
 		return res.status(404).send("No such user")
 	}
 	const user_id = req.id
-	const result = await getUserByUserId(user_id)
-	return res.status(200).send(result)
+	const user: User = await getUserByUserId(user_id)
+	
+	if (user.user_image instanceof Buffer) {
+		user.user_image = user.user_image.toString("base64")
+	}
+
+	return res.status(200).send(user)
 })
 
 
