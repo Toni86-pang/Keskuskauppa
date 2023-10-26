@@ -150,19 +150,24 @@ export const newProduct = async (product: FormData, token: string) => {
 	return response
 }
 
-export const registerUser = async (user: FormData) => {
-	try {
-		const response = await axios.post("/api/users/register", user, {
-			headers: {
-				"Content-Type": "multipart/form-data",
-			},
-		})
-		return response
-	} catch (error) {
-		console.error("Error in registerUser:", error)
-		throw error
-	}
-}
+// export const registerUser = async (user: FormData) => {
+// 	try {
+// 		const response = await axios.post("/api/users/register", user, {
+// 			headers: {
+// 				"Content-Type": "multipart/form-data",
+// 			},
+// 		})
+// 		return response
+// 	} catch (error) {
+// 		if(axios.isAxiosError(error)&& error.response?.status === 400){
+// 			return null
+// 		}
+// 		else{
+// 			console.error("Error in registerUser:", error)
+// 			throw error
+// 		}
+// 	}
+// }
   
 
 export const newSale = async (sale: Sale, token: string) => {

@@ -5,28 +5,29 @@ import VerifyDialog from "./VerifyDialog"
 import { User, initialState } from "../types"
 // import { registerUser } from "../services"
 import Notification from "./Notification"
-import { AxiosError } from "axios"
-import { registerUser } from "../services"
+import axios, { AxiosError } from "axios"
+// import { registerUser } from "../services"
 
 function RegisterNewUser() {
 
 	const [newUser, setNewUser] = useState<User>(initialState)
-	const [, setToken] = useContext(UserTokenContext)
 	const [confirmPassword, setConfirmPassword] = useState<string>("")
 	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true)
-	const [verifyOpen, setVerifyOpen] = useState(false)
 	const [userImage, setUserImage] = useState<File | null>(null)	
+	
+	const [verifyOpen, setVerifyOpen] = useState(false)
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
 	const [showErrorNotificationTwo, setShowErrorNotificationTwo] = useState(false)
 	const [showErrorNotificationThree, setShowErrorNotificationThree] = useState(false)
+	const [, setToken] = useContext(UserTokenContext)
 
 	
 
 	const [dialogOpen, setDialogOpen] = useState(false)
 
 	const { name, email, username, phone, address, city, postal_code } = newUser
-
+	username, name, email, phone, address, city, postal_code, password, user_image
 	// const formData = new FormData()
 	// if (userImage) {
 	// 	console.log("Debug 3")
@@ -56,10 +57,21 @@ function RegisterNewUser() {
 			if (userImage) {
 				formData.append("user_image", userImage)
 			}
-	
-			const response = await registerUser(formData) // Call the service function
-	
+
+			console.log("FormData entries:", Object.fromEntries(formData.entries()))
+
+			const config = {
+				method: "POST",
+				url: "/api/users/register",
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+				data: formData,
+			}
+			
+			console.log("Axios Request Configuration:", config)
 			console.log("formData:", formData)
+			const response = await axios.post("api/users/register", formData, config ) 
 	
 			if (response.status === 200) {
 				setShowSuccessNotification(true)
@@ -74,7 +86,7 @@ function RegisterNewUser() {
 			if (error instanceof AxiosError && error.response) {
 				console.error(error)
 				if (error.response) {
-					if (error.response.status === 401) {
+					if (error.response.status === 400) {
 						setShowErrorNotification(true)
 					} else {
 						setNewUser(initialState)
