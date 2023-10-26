@@ -13,6 +13,7 @@ interface Sale {
 	buyer_phone?: string
 	buyer_email?: string
 	sales_status?: number
+	reviewed?: boolean
 }
 interface ProductSale {
 	sales_id: number
@@ -69,6 +70,18 @@ export const createSale = async (sale: Sale): Promise<Sale> => {
 export const updateSaleStatus = async (salesId: number, salesStatus: number) => {
 	const params = [salesId, salesStatus]
 	const query = "UPDATE sales SET sales_status = $2 WHERE sales_id = $1 RETURNING *"
+	try{
+		const result = await executeQuery(query, params)
+		return result.rows[0]
+	}catch (error){
+		console.error("Error updating sale status", error)
+		throw error
+	}
+}
+
+export const updateSaleReviewedStatus = async (salesId: number, newValue: boolean) => {
+	const params = [salesId, newValue]
+	const query = "UPDATE sales SET reviewed = $2 WHERE sales_id = $1 RETURNING *"
 	try{
 		const result = await executeQuery(query, params)
 		return result.rows[0]
