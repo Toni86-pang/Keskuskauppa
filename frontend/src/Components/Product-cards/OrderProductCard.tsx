@@ -48,7 +48,7 @@ function OrderProductCard({ product }: OrderCardProps) {
 								)}
 							</Grid>
 							<Grid item xs={6}>
-								<Typography variant="h6" component="div">
+								<Typography variant="h6" component="span">
 									{product.title}
 								</Typography>
 								<Typography>Hinta {product.price} €</Typography>
