@@ -25,7 +25,6 @@ export async function loader() {
 	} else {
 		return redirect("/")
 	}
-
 }
 
 function Profile() {
@@ -74,7 +73,7 @@ function Profile() {
 	}
 
 	const verifyDialogProps = {
-		messageText: "Haluatko varmasti poistaa profiilisi?",
+		messageText: "Haluatko varmasti poistaa profiilisi pysyvästi?",
 		acceptButtonText: "Poista",
 		isOpen: verifyOpen,
 		setOpen: setVerifyOpen,
@@ -170,7 +169,7 @@ function Profile() {
 						{showErrorNotification && (
 							<Notification
 								open={showErrorNotification}
-								message="Kirjaudu sisään nähdäksesi profiilin tiedot"
+								message="Kirjaudu sisään nähdäksesi profiilin tiedot."
 								type="error"
 								onClose={() => setShowErrorNotification(false)}
 								duration={5000}

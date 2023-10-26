@@ -5,6 +5,8 @@ import { fetchUser } from "../../Services-types/services"
 import { useLoaderData, useNavigate, redirect } from "react-router-dom"
 import CheckoutProductCard from "../Product-cards/CheckoutSummaryProductCard"
 import SaleSummary from "./SaleSummary"
+import { genUniqueId } from "../../Services-types/UniqueIDGenerator"
+import React from "react"
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
@@ -96,13 +98,15 @@ export default function CheckOut() {
 			{cart !== null ? (
 				<Container sx={{ m: 1 }}>
 					{cart && cart.map((product: ProductType) =>
-						<>
-							<CheckoutProductCard 
-								product={product} 
-								key={product.product_id}
-								setCart={setCart}	
-							/>
-						</>)}
+						<React.Fragment key={genUniqueId()}>
+							<>
+								<CheckoutProductCard 
+									product={product} 
+									setCart={setCart}	
+								/>
+							</>
+						</React.Fragment>
+					)}
 					<h3>Summa: {sum} €</h3>
 					<h3>Vastaanottajan tiedot</h3>
 					<InputLabel required style={{position: "relative"}} sx={{ mb: 2 }} id="description">Nimi</InputLabel>

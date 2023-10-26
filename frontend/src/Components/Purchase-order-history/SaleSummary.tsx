@@ -4,7 +4,7 @@ import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
-import { useContext, useState } from "react"
+import React, { useContext, useState } from "react"
 import { CartContextType, UserTokenContext } from "../../App"
 import { newSale } from "../../Services-types/services"
 import { useNavigate, useOutletContext } from "react-router"
@@ -12,6 +12,7 @@ import { ProductType, Sale, SummaryProps } from "../../Services-types/types"
 import CheckoutProductCard from "../Product-cards/CheckoutSummaryProductCard"
 import { Checkbox, FormControl, FormControlLabel, FormGroup, FormHelperText, Stack } from "@mui/material"
 import Notification from "../Verify-notification/Notification"
+import { genUniqueId } from "../../Services-types/UniqueIDGenerator"
 
 export default function SaleSummary (props: SummaryProps) {
 	const { onClose, isOpen, buyerInfo, sum, cart } = props
@@ -45,7 +46,6 @@ export default function SaleSummary (props: SummaryProps) {
 				sales_status: 2
 			} 
 			const makingSale = await newSale(sale, token)
-			console.log(makingSale)
 			if(makingSale === undefined){
 				console.log("Error creating a new sale")
 				setShowErrorNotification(true) // Show error notification
@@ -82,27 +82,31 @@ export default function SaleSummary (props: SummaryProps) {
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
 			>
-				<DialogTitle id="alert-dialog-title">
+				<DialogTitle id="alert-dialog-title" component={"span"}>
 					<h3>Tilausvahvistus</h3>
 				</DialogTitle>
 				<DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<DialogContentText id="alert-dialog-description" component={"span"}>
                         Tarkista tilauksen tiedot.
 						<h4>Tilattavat tuotteet:</h4> {cart && cart.map((product: ProductType) =>
-							<>
-								<CheckoutProductCard 
-									product={product} 
-									key={product.product_id + product.title}
-								/>
-							</>)}
-						<h4>Summa: {sum} €</h4>
-						<h4>Tilaajan tiedot:</h4>
-                        Nimi: {buyerInfo.buyer_name}<br/>
-                        Katuosoite: {buyerInfo.buyer_address}<br/>
-                        Kaupunki: {buyerInfo.buyer_city}<br/>
-                        Postinumero: {buyerInfo.buyer_postcode}<br/>
-                        Puhelinnumero: {buyerInfo.buyer_phone}<br/>
-                        Sähköposti: {buyerInfo.buyer_email}<br/>
+							<React.Fragment key={genUniqueId()}>
+								<>
+									<CheckoutProductCard 
+										product={product} 
+									/>
+								</>
+							</React.Fragment>
+						)}
+						<div>
+							<h4>Summa: {sum} €</h4>
+							<h4>Tilaajan tiedot:</h4>
+							Nimi: {buyerInfo.buyer_name}<br/>
+							Katuosoite: {buyerInfo.buyer_address}<br/>
+							Kaupunki: {buyerInfo.buyer_city}<br/>
+							Postinumero: {buyerInfo.buyer_postcode}<br/>
+							Puhelinnumero: {buyerInfo.buyer_phone}<br/>
+							Sähköposti: {buyerInfo.buyer_email}<br/>
+						</div>
 
 						<FormControl
 							required
@@ -112,8 +116,9 @@ export default function SaleSummary (props: SummaryProps) {
 							variant="standard"
 						>
 							{(buyerInfo.buyer_name === "" || buyerInfo.buyer_address === "" || buyerInfo.buyer_city === "" || buyerInfo.buyer_email === "" || buyerInfo.buyer_phone === "" || buyerInfo.buyer_postcode === "") ? (
-							
-								<h5 style={{color: "red"}}>Kaikki tiedot vaaditaan. Vaadittavia tietoja puuttuu.</h5>
+								<div>
+									<h5 style={{color: "red"}}>Kaikki tiedot vaaditaan. Vaadittavia tietoja puuttuu.</h5>
+								</div>
 							):(
 								<Stack direction="row">
 									<FormGroup>
