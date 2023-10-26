@@ -9,7 +9,7 @@ export interface User {
     city: string
     postal_code: string
     password: string
-    user_image?: Buffer
+    user_image?: Buffer |string
   }
 
 export async function addUser(user: User): Promise<void> {
@@ -61,12 +61,6 @@ export async function addUser(user: User): Promise<void> {
 		console.error("Error creating user:", error)
 		throw error
 	}
-}
-
-export const getAllUsers = async () => {
-	const query = "SELECT * FROM users"
-	const result = await executeQuery(query)
-	return result
 }
 
 export const getUserByUsername = async (username: string) => {

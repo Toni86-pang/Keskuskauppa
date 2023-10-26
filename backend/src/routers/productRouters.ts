@@ -49,21 +49,21 @@ product.post("/", authentication, upload.single("product_image"), async (req: Cu
 product.get("/", async (_req, res) => {
 	try {
 		const products: Product[] = await getAllProducts()
-  
+
 		// Convert product_image to Base64 encoded string for products with images
 		products.forEach(product => {
 			if (product.product_image instanceof Buffer) {
 				product.product_image = product.product_image.toString("base64")
 			}
 		})
-  
+
 		res.status(200).json(products)
 	} catch (error) {
 		res.status(500).json({ message: "Internal server error" })
 	}
 })
-  
-  
+
+
 
 
 
@@ -181,6 +181,12 @@ product.get("/category/:id", validateCategoryId, async (req, res) => {
 	const categoryId = parseInt(req.params.id)
 	try {
 		const products: Product[] = await getProductsByCategory(categoryId)
+		// Convert product_image to Base64 encoded string for products with images
+		products.forEach(product => {
+			if (product.product_image instanceof Buffer) {
+				product.product_image = product.product_image.toString("base64")
+			}
+		})
 		res.status(200).json(products)
 	} catch (error) {
 		res.status(500).json({ message: "Product information couldn't be displayed" })
@@ -192,6 +198,12 @@ product.get("/subcategory/:id", validateCategoryId, async (req, res) => {
 	const subcategoryId = parseInt(req.params.id)
 	try {
 		const products: Product[] = await getProductsBySubcategory(subcategoryId)
+		// Convert product_image to Base64 encoded string for products with images
+		products.forEach(product => {
+			if (product.product_image instanceof Buffer) {
+				product.product_image = product.product_image.toString("base64")
+			}
+		})
 		res.status(200).json(products)
 	} catch (error) {
 		res.status(500).json({ message: "The product information of the subcategory couldn't be displayed" })
