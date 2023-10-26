@@ -22,7 +22,7 @@ interface AverageStars {
 }
 
 export const getReviewsByUserId = async (userId: number): Promise<Review[]> => {
-	const query = "SELECT * FROM reviews WHERE seller_id = $1"
+	const query = "SELECT * FROM reviews WHERE seller_id = $1 ORDER BY review_date DESC"
 	const result = await executeQuery(query, [userId])
 	const reviews: Review[] = result.rows
 	return reviews

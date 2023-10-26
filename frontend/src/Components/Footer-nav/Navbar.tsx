@@ -11,13 +11,14 @@ import {
 	Menu,
 	IconButton,
 	MenuItem,
+	Badge,
 } from "@mui/material"
 import CategoryMenu from "../Product-related/CategoryMenu"
 import Login from "../Register-login/Login"
 import RegisterNewUser from "../Register-login/RegisterNewUser"
 import { UserTokenContext } from "../../App"
-import { fetchUser } from "../../Services-types/services"
-import { NavbarProps, User } from "../../Services-types/types"
+import { fetchOwnBought, fetchOwnSold, fetchUser } from "../../Services-types/services"
+import { BoughtProps, NavbarProps, SoldProps, User } from "../../Services-types/types"
 import ShoppingCart from "../Purchase-order-history/ShoppingCart"
 import "./Navbar.css"
 import Crumbs from "../Crumbs/Crumbs"
@@ -30,6 +31,9 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 	const [user, setUser] = useState<User | null>(null)
 	const [isShoppingCartOpen, setShoppingCartOpen] = useState(false)
 	const navigate = useNavigate()
+	const [unSent, setUnsent] = useState(0)
+	const [notReceived, setNotReceived] = useState(0)
+	const [inSales, setInSales] = useState(true)
 
 	const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget)
@@ -51,24 +55,53 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 	}
 
 	useEffect(() => {
-		// Fetch the user's information when the component mounts
-		if (token) {
-			fetchUser(token) // Use the fetchUser API call from your services
-				.then((fetchedUser) => {
+		const fetchUserData = async () => {
+			if (token) {
+				try {
+					const fetchedUser = await fetchUser(token) // Use the fetchUser API call from your services
 					if (fetchedUser) {
 						setUser(fetchedUser)
 					} else {
 						console.error("Error fetching user")
 					}
-				})
-				.catch((error) => {
+				} catch (error) {
 					console.error("Error fetching user:", error)
-				})
+				}
+			}
 		}
+
+		fetchUserData()
 	}, [token])
+
+	useEffect(() => {
+		const getSalesNeedingAttention = async () => {
+			if (!token) return
+			try {
+				const sold: SoldProps[] = await fetchOwnSold(token)
+				const needSending = sold.filter((sale) => sale.sales_status === "Odottaa lähetystä").length
+				setUnsent(needSending)
+
+				const bought: BoughtProps[] = await fetchOwnBought(token)
+				const waitingReceiving = bought.filter((sale) => sale.sales_status === "Lähetetty").length
+				setNotReceived(waitingReceiving)
+			} catch (error) {
+				console.error("Failed to get sales for notification badge: ", error)
+			}
+
+		}
+		getSalesNeedingAttention()
+
+	}, [token, inSales])
+
+	if (location.pathname !== "/orderhistory" && inSales === true) {
+		setInSales(false)
+	} else if (location.pathname === "/orderhistory" && inSales === false) {
+		setInSales(true)
+	}
+
 	return (
 		<>
-			{/* <Box sx={{ flexGrow: 1 }}> */ /* Box causes unnecessary empty space under navbar on some situation */} 
+			{/* <Box sx={{ flexGrow: 1 }}> */ /* Box causes unnecessary empty space under navbar on some situation */}
 			<AppBar position="static" sx={{ bgcolor: "#6096ba" }}>
 				<Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
 					{/* Left side (store name and category menu) */}
@@ -94,9 +127,14 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 									aria-haspopup="true"
 								>
 									<AccountCircleIcon />
+
+
 									<Typography variant="body1" sx={{ mt: 1 }}>
-										{user?.name} {/* Access the user's name */}
+										<Badge badgeContent={unSent + notReceived} color="error" >
+											{user?.name} {/* Access the user's name */}
+										</Badge>
 									</Typography>
+
 									<ArrowDropDownIcon />
 								</IconButton>
 								<IconButton
@@ -129,7 +167,9 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 										component={Link}
 										to="/orderhistory"
 									>
-										Tilaushistoria
+										<Badge badgeContent={unSent + notReceived} color="error" >
+											Tilaushistoria
+										</Badge>
 									</MenuItem>
 									<MenuItem
 										onClick={handleMenuClose}
