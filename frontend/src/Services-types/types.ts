@@ -32,6 +32,19 @@ export interface UserValues {
 	password: ""
 }
 
+export interface ChangePasswordInputs {
+	currentPassword: string
+	newPassword: string
+	confirmPassword: string
+}
+
+
+export interface ChangePasswordProps {
+	username: string
+	open: boolean
+	onClose: () => void
+}
+
 export interface UpdateProfileProps {
 	isOpen: boolean
 	close: (updatedUser: User) => void

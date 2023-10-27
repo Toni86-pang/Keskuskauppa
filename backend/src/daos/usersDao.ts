@@ -63,6 +63,21 @@ export async function addUser(user: User): Promise<void> {
 	}
 }
 
+export const changePassword = async (
+	user_id: number,
+	hashedPassword: string
+) => {
+	const params = [user_id, hashedPassword]
+	const query =
+		"UPDATE users SET password = $2 WHERE user_id = $1 RETURNING user_id"
+	const result = await executeQuery(query, params)
+
+	if (result.rows.length === 0) {
+		return null
+	}
+	return result.rows[0]
+}
+
 export const getUserByUsername = async (username: string) => {
 	const query = "SELECT * FROM users WHERE username = $1"
 	const params = [username]
@@ -117,6 +132,7 @@ export const updateProfile = async (
 	console.log(result.rows[0])
 	return result.rows[0]
 }
+
 
 export const getUserDetailsByUserId = async (user_id: number) => {
 	const query = `
