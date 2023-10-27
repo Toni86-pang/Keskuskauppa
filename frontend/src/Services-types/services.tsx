@@ -1,5 +1,5 @@
 import axios from "axios"
-import { AverageStars, BoughtProps, Category, ProductType, Review, ReviewComment, Sale, SoldProps, UpdatedProduct, UpdatedUser, User } from "./types"
+import { AverageStars, BoughtProps, Category, ProductType, Review, ReviewComment, Sale, SoldProps, UpdatedUser, User } from "./types"
 
 export const deleteUser = (token: string) => {
 	return axios.delete("/api/users/delete", {
@@ -110,10 +110,11 @@ export const fetchOwnBought = async (token: string) => {
 	return data
 }
 
-export const updateProduct = async (productId: number, updatedData: UpdatedProduct, token: string) => {
+export const updateProduct = async (productId: number, updatedData: FormData, token: string) => {
 	await axios.put(`/api/product/update/${productId}`, updatedData,{
 		headers: {
-			"Authorization": `Bearer ${token}`
+			"Authorization": `Bearer ${token}`,
+			"Content-Type": "multipart/form-data",
 		}
 	})
 }

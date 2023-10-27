@@ -15,6 +15,20 @@ export interface User {
 	reg_day?: string
 }
 
+export const initialState: User = {
+	user_id: 0,
+	username: "",
+	password: "",
+	name: "",
+	email: "",
+	phone: "",
+	address: "",
+	city: "",
+	user_image: null,
+	postal_code: "",
+	reviews: 0
+}
+
 export interface UserValues {
 	username: "",
 	password: ""
@@ -35,6 +49,19 @@ export interface ProductType {
 	listed: boolean
 	category_name?: string
 	subcategory_name?: string
+}
+
+export const initialStateProduct: ProductType = {
+	user_id: 0,
+	title: "",
+	category_id: 0,
+	subcategory_id: 0,
+	city: "",
+	postal_code: "",
+	description: "",
+	price: "",
+	listed: true,
+	product_image: null
 }
 
 export interface ProductProps {
@@ -76,7 +103,17 @@ export interface VerifyProps {
 	declineButtonText?: string
 	preformattedText?: string
 }
-
+/* update types*/
+export interface UpdatedProduct {
+    title: string,
+    category_id: number,
+    subcategory_id: number,
+    city: string,
+    postal_code: string,
+    description: string,
+    price: number,
+	product_image: File | null
+}
 export interface UpdateProductModalProps {
 	isOpen: boolean
 	onClose: () => void
@@ -89,7 +126,7 @@ export interface UpdateProductModalProps {
 	postal_code: string
 	description: string
 	price: string
-	
+	product_image: File | null
   }
 
 export interface ReviewModalProps {
@@ -134,15 +171,7 @@ export interface DeleteButtonprops {
 	onDelete: () => void
 }
 
-export interface UpdatedProduct {
-    title: string,
-    category_id: number,
-    subcategory_id: number,
-    city: string,
-    postal_code: string,
-    description: string,
-    price: number
-}
+
 
 export interface UpdatedUser {
     address: string,
@@ -226,33 +255,7 @@ export interface Sale {
 	reviewed?: boolean
 }
 
-export const initialState: User = {
-	user_id: 0,
-	username: "",
-	password: "",
-	name: "",
-	email: "",
-	phone: "",
-	address: "",
-	city: "",
-	user_image: null,
-	postal_code: "",
-	reviews: 0
-}
 
-
-export const initialStateProduct: ProductType = {
-	user_id: 0,
-	title: "",
-	category_id: 0,
-	subcategory_id: 0,
-	city: "",
-	postal_code: "",
-	description: "",
-	price: "",
-	listed: true,
-	product_image: null
-}
 
 export interface Review {
 	review_id?: number
