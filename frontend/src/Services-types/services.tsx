@@ -79,6 +79,18 @@ export const registerUser = async (user: FormData) => {
 	}
 }
 
+export const changePassword = async (currentPassword: string,  newPassword: string, token: string ) => {
+	await axios.put("/api/users/password", {
+		currentPassword,
+		newPassword
+	}, {
+		headers: {
+			"Authorization": `Bearer ${token}`
+		}
+	})
+}
+
+
 // ------------------------------------------- PRODUCTS ----------------------------------------------
 
 export const newProduct = async (product: FormData, token: string) => {
