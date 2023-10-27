@@ -11,6 +11,7 @@ import CheckoutProductCard from "../../Product-cards/CheckoutSummaryProductCard"
 import Notification from "../../Verify-notification/Notification"
 import { cancelSale, fetchProduct, fetchSale, fetchSaleStatus, fetchUserDetailsByUserId, returnProductToShop, setSaleReceived, setSaleSent } from "../../../Services-types/services"
 import LeaveReview from "./LeaveReview"
+import { useNavigate } from "react-router"
 
 export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: OrderDetailsProps) {
 	const [token] = useContext(UserTokenContext)
@@ -23,6 +24,8 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 	const [reload, setReload] = useState(false)
 	const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
 	const [seeReviewButton, setSeeReviewButton] = useState(false)
+	const navigate = useNavigate()
+
 
 	useEffect(() => {
 		const fetchSaleAndProduct = async () => {
@@ -109,12 +112,16 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 			</>
 		)
 	}
+	
+	const handleClick = () => {
+		navigate(`/user/${seller?.user_id}`)
+	}
 
 	const renderSellerDetails = () => {
 		return (
 			sale && sale.reviewed ? (
 				<>
-				Käyttäjänimi: {seller?.username}<br />
+				Käyttäjänimi: <Button onClick={handleClick}>{seller?.username}</Button><br />
 				Kaupunki: {seller?.city}<br />
 				Postinumero: {seller?.postal_code}<br />
 				Tilauksen tila: {saleStatus}<br />
@@ -122,7 +129,7 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 				</>
 			):(
 				<>
-				Käyttäjänimi: {seller?.username}<br />
+				Käyttäjänimi: <Button onClick={handleClick}>{seller?.username}</Button><br />
 				Kaupunki: {seller?.city}<br />
 				Postinumero: {seller?.postal_code}<br />
 				Tilauksen tila: {saleStatus}<br />

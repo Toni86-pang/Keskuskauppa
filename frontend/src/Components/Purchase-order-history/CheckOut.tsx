@@ -93,6 +93,10 @@ export default function CheckOut() {
 		setIsSummaryOpen(false)
 	}
     
+	const handleClick = () => {
+		navigate(`/product/${product.product_id}`)
+	}
+
 	return(
 		<>
 			{cart !== null ? (
