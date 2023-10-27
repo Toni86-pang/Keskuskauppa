@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
-import { Dialog, TextField, Button, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from "@mui/material"
+import { Dialog, TextField, Button, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Box, Input, Card, CardMedia, Grid } from "@mui/material"
 import { Category, UpdateProductModalProps } from "../../Services-types/types"
 import { fetchCategories, fetchSubcategories, updateProduct } from "../../Services-types/services"
 import Notification from "../Verify-notification/Notification"
+import { useNavigate } from "react-router-dom"
 
 function UpdateProductModal({
 	isOpen,
@@ -17,14 +18,14 @@ function UpdateProductModal({
 	description,
 	price
 	
-	
 }: UpdateProductModalProps) {
 	const [updatedTitle, setUpdatedTitle] = useState(title)
 	const [updatedCity, setUpdatedCity] = useState(city)
 	const [updatedPostalCode, setUpdatedPostalCode] = useState(postal_code)
 	const [updatedDescription, setUpdatedDescription] = useState(description)
 	const [updatedPrice, setUpdatedPrice] = useState(price)
-	const [error, setError] = useState("")
+	const [selectedImage, setSelectedImage] = useState<File | null>(null)
+	const [imagePreview, setImagePreview] = useState<string | null>(null)
 
 	const [categories, setCategories] = useState<Category[]>([])
 	const [subcategories, setSubcategories] = useState<Category[]>([])	
@@ -32,6 +33,9 @@ function UpdateProductModal({
 	const [selectedSubcategoryId, setSelectedSubcategoryId] = useState(subcategory_id)
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
+	const [error, setError] = useState("")
+	
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		async function fetchCategoryData() {
@@ -54,7 +58,7 @@ function UpdateProductModal({
 		fetchCategoryData()
 		fetchSubcategoryData()
 	}, [])
-	
+
 	const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setUpdatedTitle(event.target.value)
 	}
@@ -97,23 +101,46 @@ function UpdateProductModal({
 		}
 	}
 
+	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const fileInput = event.target
+		if (fileInput && fileInput.files && fileInput.files.length > 0) {
+			const file = fileInput.files[0]
+			setSelectedImage(file)
+		
+			const reader = new FileReader()
+			reader.onload = (e) => {
+				setImagePreview(e.target?.result as string)
+			}
+			reader.readAsDataURL(file)
+		} else {
+			setError("Invalid image file. Please select a valid image.")
+			setSelectedImage(null)
+			setImagePreview(null)
+		}
+	}
+	
+
 	const handleUpdateSubmit = async () => {
 		try {
-			const updatedData = {
-				title: updatedTitle,
-				category_id: selectedCategoryId,
-				subcategory_id: selectedSubcategoryId,
-				city: updatedCity,
-				postal_code: updatedPostalCode,
-				description: updatedDescription,
-				price: parseFloat(updatedPrice),
+			const formData = new FormData()
+			formData.append("title", updatedTitle)
+			formData.append("category_id", String(selectedCategoryId))
+			formData.append("subcategory_id", String(selectedSubcategoryId))
+			formData.append("city", updatedCity)
+			formData.append("postal_code", updatedPostalCode)
+			formData.append("description", updatedDescription)
+			formData.append("price", String(updatedPrice))
+			if (selectedImage) {
+				formData.append("product_image", selectedImage) // Append the image to FormData
 			}
-			await updateProduct(productId, updatedData, token)
-			setShowSuccessNotification(true) // Show success notification
+	
+			await updateProduct(productId, formData, token)
+			setShowSuccessNotification(true) 
 			onClose()
+			navigate("/profile")
 		} catch (error) {
-			console.error("Error updating product", error)
-			setShowErrorNotification(true)
+			console.error("Error updating product:", error)
+			setShowErrorNotification(true) 
 		}
 	}
 
@@ -124,43 +151,79 @@ function UpdateProductModal({
 	return (
 		<>
 			<Dialog open={isOpen} onClose={onClose} maxWidth="md" fullWidth>
-				<div style={{ maxHeight: "80vh", overflowY: "auto", padding: "16px" }}>
-					<div style={{ margin: "16px" }}>
+				<Box sx={{ maxHeight: "80vh", overflowY: "auto", p: 2 }}>
+					<Grid container spacing={2}>
+						<Grid item xs={6}>
+							<FormControl fullWidth>
+								<InputLabel>Kategoria</InputLabel>
+								<Select
+									value={selectedCategoryId}
+									onChange={handleCategoryChange}
+								>
+									{categories.map(category => (
+										<MenuItem key={category.category_id} value={category.category_id}>
+											{category.category_name}
+										</MenuItem>
+									))}
+								</Select>
+								<Grid item xs={6}>
+									<FormControl fullWidth>
+										<InputLabel>Alakategoria</InputLabel>
+										<Select
+											value={selectedSubcategoryId}
+											onChange={handleSubCategoryChange}
+										>
+											{subcategories
+												.filter(subcategory => subcategory.category_id === selectedCategoryId)
+												.map(subcategory => (
+													<MenuItem key={subcategory.subcategory_id} value={subcategory.subcategory_id}>
+														{subcategory.subcategory_name}
+													</MenuItem>
+												))}
+										</Select>
+									</FormControl>
+								</Grid>
+							</FormControl>
+						</Grid>
+						<Grid item xs={6}>
+							<FormControl fullWidth>
+								<InputLabel htmlFor="product_image">Lisää kuva</InputLabel>
+								<Input
+									type="file"
+									name="product_image"
+									onChange={handleImageChange}
+									inputProps={{ accept: "image/*" }}
+								/>
+								
+								{selectedImage && (
+									<Card sx={{ maxWidth: 345 }}>
+										<CardMedia
+											component="img"
+											height="140"
+											src={imagePreview || ""}
+											alt="Selected Image"
+										/>
+									</Card>
+								)}
+							</FormControl>
+						</Grid>
+					</Grid>
+				</Box>
+				<FormControl sx={{ margin: 2 }}>
+					<FormControl style={{ margin: "16px" }}>
 						<TextField
 							label="Nimi"
 							value={updatedTitle}
 							onChange={handleTitleChange}
 						/>
-						<FormControl>
-							<InputLabel>Kategoria</InputLabel>
-							<Select
-								value={selectedCategoryId}
-								onChange={handleCategoryChange}
-							>
-								{categories.map(category => (
-									<MenuItem key={category.category_id} value={category.category_id}>
-										{category.category_name}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-						<FormControl>
-							<InputLabel>Alakategoria</InputLabel>
-							<Select
-								value={selectedSubcategoryId}
-								onChange={handleSubCategoryChange}
-							>
-								{subcategories
-									.filter(subcategory => subcategory.category_id === selectedCategoryId)
-									.map(subcategory => (
-										<MenuItem key={subcategory.subcategory_id} value={subcategory.subcategory_id}>
-											{subcategory.subcategory_name}
-										</MenuItem>
-									))}
-							</Select>
-						</FormControl>
-					</div>
-					<div style={{ margin: "16px" }}>
+						<TextField
+							label="Kuvailu"
+							value={updatedDescription}
+							onChange={handleDescriptionChange}
+						/>
+					</FormControl>
+
+					<FormControl style={{ margin: "16px" }}>
 						<TextField
 							label="Kaupunki"
 							value={updatedCity}
@@ -172,28 +235,22 @@ function UpdateProductModal({
 							onChange={handlePostalCodeChange}
 						/>
 						<TextField
-							label="Kuvailu"
-							value={updatedDescription}
-							onChange={handleDescriptionChange}
-						/>
-					</div>
-					<div style={{ margin: "16px" }}>
-						<TextField
 							label="Hinta"
 							value={updatedPrice}
 							onChange={handlePriceChange}
 						/>
 						{error && <div style={{ color: "red" }}>{error}</div>}
-					</div>
-					<div style={{ margin: "16px" }}>
+					</FormControl>
+
+					<FormControl style={{ margin: "16px" }}>
 						<Button variant="outlined" onClick={handleUpdateSubmit}>
 							Päivitä
 						</Button>
 						<Button variant="outlined" onClick={handleCloseModal}>
 							Peruuta
 						</Button>
-					</div>
-				</div>
+					</FormControl>
+				</FormControl>
 			</Dialog>
 			{/* Success and error notifications */}
 			{showSuccessNotification && (
@@ -202,7 +259,7 @@ function UpdateProductModal({
 					message="Tuote päivitetty!"
 					type="success"
 					onClose={() => setShowSuccessNotification(false)}
-					duration={1500}
+					duration={1000}
 				/>
 			)}
 			{showErrorNotification && (
@@ -211,7 +268,7 @@ function UpdateProductModal({
 					message="Tuotteen päivitys ei onnistunut."
 					type="error"
 					onClose={() => setShowErrorNotification(false)}
-					duration={1500}
+					duration={1000}
 				/>
 			)}
 		</>

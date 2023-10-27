@@ -14,6 +14,7 @@ function RegisterNewUser() {
 	const [, setToken] = useContext(UserTokenContext)
 	const [confirmPassword, setConfirmPassword] = useState<string>("")
 	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(false)
+	const [isTouched, setIsTouched] = useState(false)
 	const [verifyOpen, setVerifyOpen] = useState(false)
 	const [userImage, setUserImage] = useState<File | null>(null)	
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
@@ -98,10 +99,12 @@ function RegisterNewUser() {
 		}))
 	}
 
-	const handleConfirmPasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
-		const newConfirmPassword = event.target.value
-		setConfirmPassword(newConfirmPassword)
-		setPasswordsMatch(newUser.password === newConfirmPassword)
+	const handleConfirmPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const newPassword = event.target.value
+		const isMatch = newPassword === newUser.password
+		setIsTouched(true)
+		setConfirmPassword(newPassword)
+		setPasswordsMatch(isMatch)
 	}
 
 	const handleCancel = () => {
@@ -208,8 +211,8 @@ function RegisterNewUser() {
 							name="confirmPassword"
 							value={confirmPassword}
 							onChange={handleConfirmPasswordChange}
-							error={!passwordsMatch}
-							helperText={!passwordsMatch ? "Salasanat ovat erilaiset." : ""}
+							error={!passwordsMatch && isTouched}
+							helperText={!passwordsMatch && isTouched ? "Salasanat ovat erilaiset." : ""}
 						/>
 						<FormControl>
 							<InputLabel style={{position: "relative"}} id="Kuvat">Lisää kuva:</InputLabel>
