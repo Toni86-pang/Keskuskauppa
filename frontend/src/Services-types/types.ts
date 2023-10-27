@@ -134,11 +134,7 @@ export interface Subcategory {
 	category_id: number
 }
 
-export interface UpdateProfileProps {
-	isOpen: boolean
-	close: (updatedUser: User) => void
-	user: User
-}
+
 
 export interface VerifyProps {
 	titleText?: string
@@ -220,13 +216,6 @@ export interface DeleteButtonprops {
 }
 
 
-
-export interface UpdatedUser {
-    address: string,
-    city: string,
-    postal_code: string,
-    phone: string
-}
 
 export interface NavbarProps {
 	cart: ProductType[] | null
