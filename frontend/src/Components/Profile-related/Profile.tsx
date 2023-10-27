@@ -11,6 +11,7 @@ import Notification from "../Verify-notification/Notification"
 import VerifyDialog from "../Verify-notification/VerifyDialog"
 import DisplayProducts from "../Product-related/DisplayProducts"
 import ListReviews from "../Purchase-order-history/Order-history/ListReviews"
+import ChangePassword from "../Register-login/ChangePassword"
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
@@ -25,13 +26,13 @@ export async function loader() {
 	} else {
 		return redirect("/")
 	}
-
 }
 
 function Profile() {
 	const { loadedUser, stars, products } = useLoaderData() as UserProducts
 	const [user, setUser] = useState<User>(loadedUser)
 	const [token, setToken] = useContext(UserTokenContext)
+	const [changePasswordVisible, setChangePasswordVisible] = useState(false)
 	const [updateVisible, setUpdateVisible] = useState(false)
 	const [verifyOpen, setVerifyOpen] = useState<boolean>(false)
 	const navigate = useNavigate()
@@ -74,7 +75,7 @@ function Profile() {
 	}
 
 	const verifyDialogProps = {
-		messageText: "Haluatko varmasti poistaa profiilisi?",
+		messageText: "Haluatko varmasti poistaa profiilisi pysyvästi?",
 		acceptButtonText: "Poista",
 		isOpen: verifyOpen,
 		setOpen: setVerifyOpen,
@@ -143,7 +144,10 @@ function Profile() {
 								user={user}
 							/>}
 						</Grid>
-						<Grid item><Button variant="contained">Vaihda salasana</Button></Grid>
+						<Grid item>
+							<Button variant="contained" onClick={() => setChangePasswordVisible(true)}>Vaihda salasana</Button>
+							<ChangePassword username={user.username} open={changePasswordVisible} onClose={() => setChangePasswordVisible(false)} />
+						</Grid>
 						<Grid item>
 							<Button variant="contained" onClick={handleVerification} >Poista profiili</Button>
 							<VerifyDialog {...verifyDialogProps} />
@@ -170,7 +174,7 @@ function Profile() {
 						{showErrorNotification && (
 							<Notification
 								open={showErrorNotification}
-								message="Kirjaudu sisään nähdäksesi profiilin tiedot"
+								message="Kirjaudu sisään nähdäksesi profiilin tiedot."
 								type="error"
 								onClose={() => setShowErrorNotification(false)}
 								duration={5000}
@@ -200,4 +204,5 @@ function Profile() {
 		</div>
 	)
 }
+
 export default Profile

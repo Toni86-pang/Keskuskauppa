@@ -33,6 +33,7 @@ export default function Product() {
 	const [stars, setStars] = useState(0)
 	// const [selectedImage, setSelectedImage] = useState<string | null>(itemData[0].img)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
+	const [showSuccessfulAddNotification, setShowSuccessfulAddNotification] = useState(false)
 	const navigate = useNavigate()
 	const product = useLoaderData() as ProductType
 	const [setCart] = useOutletContext<CartContextType>()
@@ -99,6 +100,7 @@ export default function Product() {
 			tempCart.push(product),
 			sessionStorage.setItem("myCart", JSON.stringify(tempCart)),
 			setCart(tempCart)
+			setShowSuccessfulAddNotification(true)
 		} else { setShowErrorNotification(true) }
 	}
 
@@ -152,11 +154,12 @@ export default function Product() {
 													variant="body2"
 													color="text.secondary"
 												>
-													<Box style={{ marginBottom: "8px" }}>
-														<Link to={`/user/${product.user_id}`} style={{ color: "#6096ba", textDecoration: "underline" }}>
-															Katso profiili
-														</Link>
-													</Box>
+													{/* Box tuotti ongelmia, vaihdettiin br:ään */}
+													{/* <Box style={{ marginBottom: "8px" }}> */}
+													<Link to={`/user/${product.user_id}`} style={{ color: "#6096ba", textDecoration: "underline" }}>
+													Katso profiili
+													</Link>
+													{/* </Box> */}<br />
 													<Rating name="read-only" value={stars} precision={0.1} readOnly />
 												</Typography>
 											</>
@@ -277,6 +280,15 @@ export default function Product() {
 					message="Tuote on jo ostoskorissa."
 					type="error"
 					onClose={() => setShowErrorNotification(false)}
+					duration={1500}
+				/>
+			)}
+			{showSuccessfulAddNotification && (
+				<Notification
+					open={showSuccessfulAddNotification}
+					message="Tuote lisätty ostoskoriin."
+					type="success"
+					onClose={() => setShowSuccessfulAddNotification(false)}
 					duration={1500}
 				/>
 			)}

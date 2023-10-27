@@ -1,5 +1,17 @@
 import { Dispatch } from "react"
 
+//You will find types and interfaces in the following order:
+//USERS
+//PRODUCTS
+//CATEGORIES
+//SALES
+//REVIEWS & COMMENTS
+//NAVBAR
+//CRUMBS
+//VERIFY
+
+//------------------------------------------- USERS ------------------------------------------------------
+
 export interface User {
 	user_id: number,
     username: string,
@@ -33,6 +45,34 @@ export interface UserValues {
 	username: "",
 	password: ""
 }
+
+export interface ChangePasswordInputs {
+	currentPassword: string
+	newPassword: string
+	confirmPassword: string
+}
+
+
+export interface ChangePasswordProps {
+	username: string
+	open: boolean
+	onClose: () => void
+}
+
+export interface UpdateProfileProps {
+	isOpen: boolean
+	close: (updatedUser: User) => void
+	user: User
+}
+
+export interface UpdatedUser {
+    address: string,
+    city: string,
+    postal_code: string,
+    phone: string
+}
+
+//------------------------------------------- PRODUCTS ------------------------------------------------------
 
 export interface ProductType {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -185,10 +225,6 @@ export interface NavbarProps {
 	setCart: Dispatch<React.SetStateAction<ProductType[] | null>>
 }
 
-export interface DisplayProductsProps {
-	productList: ProductType[]
-}
-
 export interface BoughtProps {
 	sales_id: number
 	sales_status: string
@@ -256,6 +292,23 @@ export interface Sale {
 }
 
 
+// ------------------------------------------ REVIEWS & COMMENTS -----------------------------------------------
+
+export interface ReviewModalProps {
+	isOpen: boolean
+	onClose: () => void
+	token: string
+	sale_id: number
+	seller_id?: number
+	sale?: Sale
+	changeButton: () => void
+  }
+
+export interface AverageStars {
+	average_score: number
+}
+  
+
 
 export interface Review {
 	review_id?: number
@@ -277,23 +330,6 @@ export interface ReviewComment {
 	comment: string
 }
 
-export interface CategoryProducts {
-    categoryHeader: string
-    products: ProductType[]
-}
-
-export type BreadcrumbResolver = (params: string) => Promise<[string, string][]>
-
-export type categoryMapType = {
-	[key: string]: [string, number] 
-}	
-
-export interface UserProducts {
-	loadedUser: User
-	stars: number
-	products: ProductType[]
-}
-
 export interface ReviewCardProps {
 	isOwn: boolean
 	review: Review
@@ -302,4 +338,30 @@ export interface ReviewCardProps {
 
 export interface CommentCardProps {
 	reviewComment: ReviewComment
+}
+
+// --------------------------------------------- NAVBAR -----------------------------------------------
+
+
+export interface NavbarProps {
+	cart: ProductType[] | null
+	setCart: Dispatch<React.SetStateAction<ProductType[] | null>>
+}
+
+// --------------------------------------------- CRUMBS -----------------------------------------------
+
+export type BreadcrumbResolver = (params: string) => Promise<[string, string][]>
+
+// --------------------------------------------- VERIFY -----------------------------------------------
+
+export interface VerifyProps {
+	titleText?: string
+	messageText: string
+	isOpen: boolean
+	setOpen: (open:boolean) => void
+	onAccept: () => void
+	onDecline?: () => void
+	acceptButtonText?: string
+	declineButtonText?: string
+	preformattedText?: string
 }

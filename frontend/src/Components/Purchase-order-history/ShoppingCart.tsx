@@ -7,9 +7,10 @@ import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import { ProductType, ShoppingCartProps } from "../../Services-types/types"
 import { useEffect, useState } from "react"
-import SalesProductCard from "../Product-cards/SalesProductCard"
+import ShoppingCartProductCard from "../Product-cards/ShoppingCartProductCard"
 import VerifyDialog from "../Verify-notification/VerifyDialog"
 import { useNavigate } from "react-router-dom"
+import { genUniqueId } from "../../Services-types/UniqueIDGenerator"
 
 export default function ShoppingCart ({isOpen, onClose, cart, setCart}: ShoppingCartProps){
 	const [scroll] = useState<DialogProps["scroll"]>("paper")
@@ -50,45 +51,34 @@ export default function ShoppingCart ({isOpen, onClose, cart, setCart}: Shopping
 		setVerifyOpen(true)
 	}
 
-	function genUniqueId(): string {
-		const dateStr = Date
-			.now()
-			.toString(36) // convert num to base 36 and stringify
-	
-		const randomStr = Math
-			.random()
-			.toString(36)
-			.substring(2, 8) // start at index 2 to skip decimal point
-	
-		return `${dateStr}-${randomStr}`
-	}
-
 	return (
-		<div>
+		<>
 			<Dialog
 				open={isOpen}
 				onClose={onClose}
 				scroll={scroll}
 				aria-labelledby="scroll-dialog-title"
 				aria-describedby="scroll-dialog-description"
+				component="div"
 			>
 				<DialogTitle id="scroll-dialog-title">Ostoskori</DialogTitle>
 				<DialogContent dividers={scroll === "paper"}>
 					<DialogContentText
+						component={"span"}
 						id="scroll-dialog-description"
 						ref={descriptionElementRef}
 						tabIndex={-1}
 					>
 						{cart !== null ?
 							cart.map((product: ProductType) =>
-								<>
-									<SalesProductCard 
+								<React.Fragment key={genUniqueId()}>
+									<ShoppingCartProductCard 
 										product={product} 
-										key={genUniqueId()} 
 										onClose={onClose}
 										setCart={setCart}	
 									/>
-								</>)
+								</React.Fragment>
+							)
 							: <>Ostoskorissa ei vielä tuotteita. Kun lisäät tuotteita ostoskoriin, ne näkyvät tässä.</>
 						}
 						<p>Summa: {sum} €</p>
@@ -105,6 +95,6 @@ export default function ShoppingCart ({isOpen, onClose, cart, setCart}: Shopping
 				</DialogActions>)}
 				<VerifyDialog {...verifyDialogProps} />
 			</Dialog>
-		</div>
+		</>
 	)
 }

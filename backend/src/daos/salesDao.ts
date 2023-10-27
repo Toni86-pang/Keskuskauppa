@@ -126,7 +126,6 @@ export const fetchOwnSold = async (userId: number): Promise<ProductSale[]>  => {
     	s.seller_id = $1`
 	
 	const result = await executeQuery(query, params)
-	console.log(result.rows[0])
 	return result.rows
 }
 
@@ -151,7 +150,6 @@ export const fetchOwnBought = async (userId: number): Promise<ProductSale[]>  =>
     	s.buyer_id = $1`
 	try{
 		const result = await executeQuery(query, params)
-		console.log(result.rows[0])
 		return result.rows
 	}catch (error){
 		console.error("Error updating sale status", error)
