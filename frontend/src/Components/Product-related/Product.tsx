@@ -199,6 +199,7 @@ export default function Product() {
 													postal_code={product?.postal_code.split(",")[0]}
 													description={product?.description}
 													price={product?.price.toString()}
+													product_image={product?.product_image}
 												/>
 											</Box>
 

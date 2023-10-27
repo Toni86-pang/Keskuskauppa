@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Dialog, TextField, Button, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Box, Input, Card, CardMedia } from "@mui/material"
+import { Dialog, TextField, Button, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Box, Input, Card, CardMedia, Grid } from "@mui/material"
 import { Category, UpdateProductModalProps } from "../../Services-types/types"
 import { fetchCategories, fetchSubcategories, updateProduct } from "../../Services-types/services"
 import Notification from "../Verify-notification/Notification"
@@ -25,7 +25,7 @@ function UpdateProductModal({
 	const [updatedDescription, setUpdatedDescription] = useState(description)
 	const [updatedPrice, setUpdatedPrice] = useState(price)
 	const [selectedImage, setSelectedImage] = useState<File | null>(null)
-	const [, setImagePreview] = useState<string | null>(null)
+	const [imagePreview, setImagePreview] = useState<string | null>(null)
 
 	const [categories, setCategories] = useState<Category[]>([])
 	const [subcategories, setSubcategories] = useState<Category[]>([])	
@@ -102,23 +102,23 @@ function UpdateProductModal({
 	}
 
 	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files && event.target.files[0]
-	
-		if (file) {
-			if (file.type.startsWith("image/")) {
-				setSelectedImage(file)
-	
-				// Display a preview of the selected image
-				const reader = new FileReader()
-				reader.onload = (e) => {
-					setImagePreview(e.target!.result as string)
-				}
-				reader.readAsDataURL(file)
-			} else {
-				setError("Invalid image file. Please select a valid image.")
+		const fileInput = event.target
+		if (fileInput && fileInput.files && fileInput.files.length > 0) {
+			const file = fileInput.files[0]
+			setSelectedImage(file)
+		
+			const reader = new FileReader()
+			reader.onload = (e) => {
+				setImagePreview(e.target?.result as string)
 			}
+			reader.readAsDataURL(file)
+		} else {
+			setError("Invalid image file. Please select a valid image.")
+			setSelectedImage(null)
+			setImagePreview(null)
 		}
 	}
+	
 
 	const handleUpdateSubmit = async () => {
 		try {
@@ -152,51 +152,62 @@ function UpdateProductModal({
 		<>
 			<Dialog open={isOpen} onClose={onClose} maxWidth="md" fullWidth>
 				<Box sx={{ maxHeight: "80vh", overflowY: "auto", p: 2 }}>
-					<FormControl sx={{ margin: 2 }}>
-						<InputLabel>Kategoria</InputLabel>
-						<Select
-							value={selectedCategoryId}
-							onChange={handleCategoryChange}
-						>
-							{categories.map(category => (
-								<MenuItem key={category.category_id} value={category.category_id}>
-									{category.category_name}
-								</MenuItem>
-							))}
-						</Select>
-						<InputLabel>Alakategoria</InputLabel>
-						<Select
-							value={selectedSubcategoryId}
-							onChange={handleSubCategoryChange}
-						>
-							{subcategories
-								.filter(subcategory => subcategory.category_id === selectedCategoryId)
-								.map(subcategory => (
-									<MenuItem key={subcategory.subcategory_id} value={subcategory.subcategory_id}>
-										{subcategory.subcategory_name}
-									</MenuItem>
-								))}
-						</Select>
-						<FormControl sx={{ margin: 2 }}>
-							<InputLabel htmlFor="product_image">Lisää kuva</InputLabel>
-							<Input
-								type="file"
-								name="product_image"
-								onChange={handleImageChange}
-								inputProps={{ accept: "image/*" }}
-							/>
-						</FormControl>
-						{selectedImage && (
-							<Card sx={{ maxWidth: 345 }}>
-								<CardMedia
-									component="img"
-									height="140"
-									image={URL.createObjectURL(selectedImage)}
-									alt="Selected Image"
+					<Grid container spacing={2}>
+						<Grid item xs={6}>
+							<FormControl fullWidth>
+								<InputLabel>Kategoria</InputLabel>
+								<Select
+									value={selectedCategoryId}
+									onChange={handleCategoryChange}
+								>
+									{categories.map(category => (
+										<MenuItem key={category.category_id} value={category.category_id}>
+											{category.category_name}
+										</MenuItem>
+									))}
+								</Select>
+								<Grid item xs={6}>
+									<FormControl fullWidth>
+										<InputLabel>Alakategoria</InputLabel>
+										<Select
+											value={selectedSubcategoryId}
+											onChange={handleSubCategoryChange}
+										>
+											{subcategories
+												.filter(subcategory => subcategory.category_id === selectedCategoryId)
+												.map(subcategory => (
+													<MenuItem key={subcategory.subcategory_id} value={subcategory.subcategory_id}>
+														{subcategory.subcategory_name}
+													</MenuItem>
+												))}
+										</Select>
+									</FormControl>
+								</Grid>
+							</FormControl>
+						</Grid>
+						<Grid item xs={6}>
+							<FormControl fullWidth>
+								<InputLabel htmlFor="product_image">Lisää kuva</InputLabel>
+								<Input
+									type="file"
+									name="product_image"
+									onChange={handleImageChange}
+									inputProps={{ accept: "image/*" }}
 								/>
-							</Card>
-						)}
-					</FormControl>
+								
+								{selectedImage && (
+									<Card sx={{ maxWidth: 345 }}>
+										<CardMedia
+											component="img"
+											height="140"
+											src={imagePreview || ""}
+											alt="Selected Image"
+										/>
+									</Card>
+								)}
+							</FormControl>
+						</Grid>
+					</Grid>
 				</Box>
 				<FormControl sx={{ margin: 2 }}>
 					<FormControl style={{ margin: "16px" }}>
@@ -248,7 +259,7 @@ function UpdateProductModal({
 					message="Tuote päivitetty!"
 					type="success"
 					onClose={() => setShowSuccessNotification(false)}
-					duration={1500}
+					duration={1000}
 				/>
 			)}
 			{showErrorNotification && (
@@ -257,7 +268,7 @@ function UpdateProductModal({
 					message="Tuotteen päivitys ei onnistunut."
 					type="error"
 					onClose={() => setShowErrorNotification(false)}
-					duration={1500}
+					duration={1000}
 				/>
 			)}
 		</>
