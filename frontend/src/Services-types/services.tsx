@@ -1,5 +1,5 @@
 import axios from "axios"
-import { AverageStars, BoughtProps, Category, ProductType, Review, ReviewComment, Sale, SoldProps, UpdatedUser, User } from "./types"
+import { AverageStars, BoughtProps, Category, ProductType, Review, ReviewComment, Sale, SoldProps, User } from "./types"
 
 
 //Löydät APIt tässä järjestyksessä:
@@ -20,7 +20,25 @@ export const deleteUser = (token: string) => {
 		}
 	}).then((response) => response.data)
 }
-
+/*
+export const registerUser = async (user: FormData) => {
+	try {
+		const response = await axios.post("/api/users/register", user, {
+			headers: {
+				"Content-Type": "multipart/form-data"
+			},
+		})
+		return response
+	} catch (error) {
+		if (axios.isAxiosError(error) && error.response?.status === 400) {
+			return null
+		}
+		else {
+			console.error("Error fetching user:", error)
+			return null
+		}
+	}
+}*/
 export const fetchUser = async (token: string) => {
 	try {
 		const response = await axios.get("/api/users/user/", {
@@ -57,10 +75,11 @@ export const fetchUserDetailsByUserId = async (user_id: number) => {
 	return data
 }
 
-export const updateUser = async (updatedData: UpdatedUser, token: string) => {
+export const updateUser = async (updatedData: FormData, token: string) => {
 	await axios.put("/api/users/update", updatedData, {
 		headers: {
-			"Authorization": `Bearer ${token}`
+			"Authorization": `Bearer ${token}`,
+			"Content-Type": "multipart/form-data"
 		}
 	})
 }
@@ -85,7 +104,9 @@ export const changePassword = async (currentPassword: string,  newPassword: stri
 		newPassword
 	}, {
 		headers: {
-			"Authorization": `Bearer ${token}`
+			"Authorization": `Bearer ${token}`,
+			"Content-Type": "multipart/form-data"
+			
 		}
 	})
 }

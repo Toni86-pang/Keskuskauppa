@@ -22,8 +22,6 @@ function RegisterNewUser() {
 	const [showErrorNotificationTwo, setShowErrorNotificationTwo] = useState(false)
 	const [showErrorNotificationThree, setShowErrorNotificationThree] = useState(false)
 
-	
-
 	const [dialogOpen, setDialogOpen] = useState(false)
 
 	const { name, email, username, phone, address, city, postal_code, password } = newUser

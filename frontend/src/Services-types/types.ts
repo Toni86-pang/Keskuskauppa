@@ -69,7 +69,15 @@ export interface UpdatedUser {
     address: string,
     city: string,
     postal_code: string,
-    phone: string
+    phone: string,
+	user_image?: File | null
+}
+
+export interface UserProducts {
+	loadedUser: User
+	stars: number
+	products: ProductType[]
+	
 }
 
 //------------------------------------------- PRODUCTS ------------------------------------------------------

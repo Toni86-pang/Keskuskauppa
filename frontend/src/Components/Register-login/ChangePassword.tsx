@@ -1,28 +1,33 @@
 import { ChangeEvent, useContext, useState } from "react"
-import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
+import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputAdornment, TextField } from "@mui/material"
 import { UserTokenContext } from "../../App"
 import Notification from "../Verify-notification/Notification"
 import { changePassword } from "../../Services-types/services"
 import { Form } from "react-router-dom"
 import { ChangePasswordInputs, ChangePasswordProps } from "../../Services-types/types"
+import { Visibility, VisibilityOff } from "@mui/icons-material"
 
 function ChangePassword({ username, open, onClose }: ChangePasswordProps) {
-	const [changePasswordInputs, setChangePasswordInputs] = useState<ChangePasswordInputs>({currentPassword:"", newPassword:"", confirmPassword:""})
+	const [changePasswordInputs, setChangePasswordInputs] = useState<ChangePasswordInputs>({ currentPassword: "", newPassword: "", confirmPassword: "" })
 	const [token] = useContext(UserTokenContext)
 	const { currentPassword, newPassword, confirmPassword } = changePasswordInputs
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
+	const [showPassword, setShowPassword] = useState(false)
 
 
-	const handleChangePassword = async () => {
+	const handleChangePassword = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault()
 		try {
 			await changePassword(currentPassword, newPassword, token)
-			setShowSuccessNotification(true)
+			setShowSuccessNotification(true)	
+			setChangePasswordInputs({ currentPassword: "", newPassword: "", confirmPassword: "" })
 			onClose()
 		} catch (error) {
 			console.error("Error changing password:", error)
 			setShowErrorNotification(true)
-		}
+		}		
+				
 	}
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -33,26 +38,33 @@ function ChangePassword({ username, open, onClose }: ChangePasswordProps) {
 
 	}
 
-	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-		if (event.key === "Enter") {
-			handleChangePassword()
-		}
-	}
-
 	return (
 		<>
 			<Container sx={{ m: 1 }}>
 				<Dialog open={open} onClose={onClose}>
 					<DialogTitle>Vaihda salasana</DialogTitle>
-					<Form>
+					<Form autoComplete="off" onSubmit={handleChangePassword}>
 						<DialogContent>
-							<input hidden readOnly name="username" value={username} />
+							<input hidden readOnly autoComplete="username" name="username" value={username} />
 
 							<TextField
 								sx={{ m: 1 }}
-								type="password"
+								type={showPassword ? "text" : "password"}
 								label="Nykyinen salasana"
 								name="currentPassword"
+								autoComplete="current-password"
+								InputProps={{ // <-- This is where the toggle button is added.
+									endAdornment: (
+										<InputAdornment position="end">
+											<IconButton
+												aria-label="toggle password visibility"
+												onMouseDown={() => setShowPassword(true)}
+												onMouseUp={() => setShowPassword(false)}>
+												{showPassword ? <Visibility /> : <VisibilityOff />}
+											</IconButton>
+										</InputAdornment>
+									)
+								}}
 								value={currentPassword}
 								onChange={handleInputChange}
 							/>
@@ -62,6 +74,7 @@ function ChangePassword({ username, open, onClose }: ChangePasswordProps) {
 								type="password"
 								label="Uusi salasana"
 								name="newPassword"
+								autoComplete="new-password"
 								value={newPassword}
 								onChange={handleInputChange}
 							/>
@@ -70,15 +83,15 @@ function ChangePassword({ username, open, onClose }: ChangePasswordProps) {
 								type="password"
 								label="Varmista salasana"
 								name="confirmPassword"
+								autoComplete="new-password"
 								value={confirmPassword}
 								onChange={handleInputChange}
-								onKeyDown={handleKeyDown}
 								error={newPassword !== confirmPassword}
 								helperText={newPassword !== confirmPassword ? "Salasanat ovat erilaiset." : ""}
 							/>
 						</DialogContent>
 						<DialogActions>
-							<Button type="submit" disabled={newPassword !== confirmPassword} onClick={handleChangePassword}>Vaihda salasana</Button>
+							<Button type="submit" disabled={newPassword !== confirmPassword}>Vaihda salasana</Button>
 							<Button onClick={onClose}>Peruuta</Button>
 						</DialogActions>
 					</Form>

@@ -1,17 +1,11 @@
 import express, { Request, Response } from "express"
 import { addUser, deleteUser, getUserByUsername, findUserByUSername, findUserByEmail, getUserByUserId, updateProfile, getUserDetailsByUserId, changePassword } from "../daos/usersDao"
 import { authentication, checkReqBody } from "../middlewares"
+import multer from "multer"
 import argon2 from "argon2"
 import jwt from "jsonwebtoken"
-import multer from "multer"
 import { User } from "../daos/usersDao"
-interface Profile {
-	email: string
-	phone: string
-	address: string
-	city: string
-	postal_code: string
-}
+
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 const secret = process.env.SECRET ?? ""
@@ -27,7 +21,7 @@ users.get("/user", authentication, async (req: CustomRequest, res: Response) => 
 	}
 	const user_id = req.id
 	const user: User = await getUserByUserId(user_id)
-	
+
 	if (user.user_image instanceof Buffer) {
 		user.user_image = user.user_image.toString("base64")
 	}
@@ -86,7 +80,6 @@ users.post("/register", upload.single("user_image"), async (req: Request, res: R
 		return res.status(500).send("Internal server error")
 	}
 })
-
 users.delete("/delete", authentication, async (req: CustomRequest, res: Response) => {
 	const user_id = Number(req.id)
 
@@ -132,26 +125,33 @@ users.post("/login", checkReqBody, async (req: Request, res: Response) => {
 	}
 })
 
-users.put("/update", authentication, async (req: CustomRequest, res: Response) => {
+users.put("/update", authentication, upload.single("user_image"), async (req: CustomRequest, res: Response) => {
+	let user_image: Buffer | undefined
 
-	if (!req.id) {
-		console.log("no req.id")
+	if (req.file) {
+		user_image = req.file.buffer
+	}
+
+	const userId = req.id
+
+	if (!userId) {
+		console.log("no user id")
 		return res.status(404).send("No user id")
 	}
-	const user_id = req.id
 
-	const updatedProfile: Profile = req.body
+	const updatedUser: User = req.body
+	updatedUser.user_id = userId
+
+	if (user_image !== undefined) {
+		updatedUser.user_image = user_image
+	} else {
+		updatedUser.user_image = undefined
+	}
+
 	try {
-		const result = await updateProfile(
-			user_id,
-			updatedProfile.phone,
-			updatedProfile.address,
-			updatedProfile.city,
-			updatedProfile.postal_code
-		)
-
+		const result = await updateProfile(updatedUser)
 		if (result) {
-			res.status(200).send()
+			res.status(200).send("Updated successfull!")
 		} else {
 			res.status(404).send("Profile not found")
 		}
@@ -202,13 +202,24 @@ users.put("/password", authentication, async (req: CustomRequest, res: Response)
 })
 
 //GET user details by user_id
-users.get("/:id", async (req:Request, res: Response) => {
+users.get("/:id", async (req: Request, res: Response) => {
 	try {
 		const userId = Number(req.params.id)
 		if (isNaN(userId)) {
 			return res.status(400).json({ message: "Invalid user id provided" })
 		}
-		const result = await getUserDetailsByUserId(userId)
+		const result: User[] = await getUserDetailsByUserId(userId)
+
+		if (result.length === 0) {
+			return res.status(404).json({ message: "User not found" })
+		}
+		const user: User = result[0]
+		
+		if (user.user_image instanceof Buffer) {
+			user.user_image = user.user_image.toString("base64")
+		}
+
+
 		return res.status(200).send(result)
 	} catch (error) {
 		res.status(500).json({ message: "User information couldn't be displayed" })
