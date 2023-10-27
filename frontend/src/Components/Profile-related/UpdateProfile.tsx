@@ -4,11 +4,12 @@ import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
 import DialogContent from "@mui/material/DialogContent"
 import DialogTitle from "@mui/material/DialogTitle"
-import { UpdateProfileProps, UpdatedUser } from "../../Services-types/types"
+import { UpdateProfileProps } from "../../Services-types/types"
 import { UserTokenContext } from "../../App"
 import { updateUser } from "../../Services-types/services"
 import Notification from "../Verify-notification/Notification"
 import { FormControl, Input, InputLabel } from "@mui/material"
+
 
 const styles = {
 	section: {
@@ -53,16 +54,7 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 		const file = event.target.files && event.target.files[0]
 		if (file) {
 			setNewUserImage(file)
-			//	console.log("user image:",user.user_image)
 
-			if (file.type.startsWith("image/")) {
-				// Kuvan muoto on oikein, jatka näyttämistä.
-				console.log("oikea kuvan muoto")
-			} else {
-				console.error("Virheellinen kuvan muoto: " + file.type)
-				// Voit myös keskeyttää kuvan lataamisen ja näyttämisen.
-				// Palauta virheviesti tai tee tarvittavat käsittelyt.
-			}
 		}
 	}
 	const resetForm = () => {
@@ -86,7 +78,6 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 
 	const handleUpdateSubmit = async () => {
 		try {
-			console.log("Image:", newUserImage)
 			const formData = new FormData()
 			formData.append("name", newAddress)
 			formData.append("city", newCity)
@@ -97,14 +88,8 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 				formData.append("user_image", newUserImage)
 
 			}
-			const updatedUser: UpdatedUser = {
-				address: newAddress,
-				city: newCity,
-				postal_code: newPostalCode,
-				phone: newPhone,
-				user_image: newUserImage
-			}
-			await updateUser(updatedUser, token)
+			
+			await updateUser(formData, token)
 			setShowSuccessNotification(true)
 			close({ ...user, address: newAddress, phone: newPhone, city: newCity, postal_code: newPostalCode, user_image: newUserImage })
 		} catch (error) {

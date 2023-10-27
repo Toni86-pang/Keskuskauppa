@@ -1,5 +1,5 @@
 import axios from "axios"
-import { AverageStars, BoughtProps, Category, ProductType, Review, ReviewComment, Sale, SoldProps, UpdatedProduct, UpdatedUser, User } from "./types"
+import { AverageStars, BoughtProps, Category, ProductType, Review, ReviewComment, Sale, SoldProps, UpdatedProduct, User } from "./types"
 
 
 //Löydät APIt tässä järjestyksessä:
@@ -20,6 +20,7 @@ export const deleteUser = (token: string) => {
 		}
 	}).then((response) => response.data)
 }
+/*
 export const registerUser = async (user: FormData) => {
 	try {
 		const response = await axios.post("/api/users/register", user, {
@@ -37,7 +38,7 @@ export const registerUser = async (user: FormData) => {
 			return null
 		}
 	}
-}
+}*/
 export const fetchUser = async (token: string) => {
 	try {
 		const response = await axios.get("/api/users/user/", {
@@ -74,16 +75,15 @@ export const fetchUserDetailsByUserId = async (user_id: number) => {
 	return data
 }
 
-export const updateUser = async (updatedData: UpdatedUser, token: string) => {
+export const updateUser = async (updatedData: FormData, token: string) => {
 	await axios.put("/api/users/update", updatedData, {
 		headers: {
 			"Authorization": `Bearer ${token}`,
 			"Content-Type": "multipart/form-data"
-			
 		}
 	})
 }
-/*
+
 export const registerUser = async (user: FormData) => {
 	try {
 		const response = await axios.post("/api/users/register", user, {
@@ -96,7 +96,7 @@ export const registerUser = async (user: FormData) => {
 		console.error("Error in registerUser:", error)
 		throw error
 	}
-}*/
+}
 
 export const changePassword = async (currentPassword: string,  newPassword: string, token: string ) => {
 	await axios.put("/api/users/password", {

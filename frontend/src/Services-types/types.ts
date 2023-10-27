@@ -147,6 +147,7 @@ export interface UserProducts {
 	loadedUser: User
 	stars: number
 	products: ProductType[]
+	image: File | null
 }
 
 //------------------------------------------- CATEGORIES ------------------------------------------------------
