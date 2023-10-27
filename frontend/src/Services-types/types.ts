@@ -1,5 +1,17 @@
 import { Dispatch } from "react"
 
+//You will find types and interfaces in the following order:
+//USERS
+//PRODUCTS
+//CATEGORIES
+//SALES
+//REVIEWS & COMMENTS
+//NAVBAR
+//CRUMBS
+//VERIFY
+
+//------------------------------------------- USERS ------------------------------------------------------
+
 export interface User {
 	user_id: number,
     username: string,
@@ -19,6 +31,48 @@ export interface UserValues {
 	username: "",
 	password: ""
 }
+
+export interface ChangePasswordInputs {
+	currentPassword: string
+	newPassword: string
+	confirmPassword: string
+}
+
+
+export interface ChangePasswordProps {
+	username: string
+	open: boolean
+	onClose: () => void
+}
+
+export interface UpdateProfileProps {
+	isOpen: boolean
+	close: (updatedUser: User) => void
+	user: User
+}
+
+export interface UpdatedUser {
+    address: string,
+    city: string,
+    postal_code: string,
+    phone: string,
+	user_image?: File | null
+}
+
+export const initialState: User = {
+	user_id: 0,
+	username: "",
+	password: "",
+	name: "",
+	email: "",
+	phone: "",
+	address: "",
+	city: "",
+	user_image: null,
+	postal_code: "",
+	reviews: 0
+}
+//------------------------------------------- PRODUCTS ------------------------------------------------------
 
 export interface ProductType {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,40 +95,6 @@ export interface ProductProps {
     product: ProductType
 	onClose?: () => void
 	setCart?: Dispatch<React.SetStateAction<ProductType[] | null>>
-  }
-
-export interface CategoryProps {
-	category?: boolean
-	subCategory?: boolean
-  }
-
-export interface Category {
-	category_name: string
-	category_id: number
-}
-
-export interface Subcategory {
-	subcategory_id: number
-	subcategory_name: string
-	category_id: number
-}
-
-export interface UpdateProfileProps {
-	isOpen: boolean
-	close: (updatedUser: User) => void
-	user: User
-}
-
-export interface VerifyProps {
-	titleText?: string
-	messageText: string
-	isOpen: boolean
-	setOpen: (open:boolean) => void
-	onAccept: () => void
-	onDecline?: () => void
-	acceptButtonText?: string
-	declineButtonText?: string
-	preformattedText?: string
 }
 
 export interface UpdateProductModalProps {
@@ -89,44 +109,6 @@ export interface UpdateProductModalProps {
 	postal_code: string
 	description: string
 	price: string
-	
-  }
-
-export interface ReviewModalProps {
-	isOpen: boolean
-	onClose: () => void
-	token: string
-	sale_id: number
-	seller_id?: number
-	sale?: Sale
-	changeButton: () => void
-  }
-
-export interface AverageStars {
-	average_score: number
-}
-  
-export interface Review {
-	sales_id: number
-	seller_id?: number
-	buyer_id?: number
-	description?: string
-	seen?: boolean
-	stars?: number
-}
-
-export interface ShoppingCartProps {
-    isOpen: boolean
-    onClose: () => void
-	cart: ProductType[] | null
-	setCart: Dispatch<React.SetStateAction<ProductType[] | null>>
-  }
-
-export interface Category {
-	category_id: number
-	category_name: string
-	subcategory_id: number
-	subcategory_name: string
 }
 
 export interface DeleteButtonprops {
@@ -144,21 +126,70 @@ export interface UpdatedProduct {
     price: number
 }
 
-export interface UpdatedUser {
-    address: string,
-    city: string,
-    postal_code: string,
-    phone: string,
-	user_image?: File | null
-}
-
-export interface NavbarProps {
-	cart: ProductType[] | null
-	setCart: Dispatch<React.SetStateAction<ProductType[] | null>>
-}
-
 export interface DisplayProductsProps {
 	productList: ProductType[]
+}
+
+export const initialStateProduct: ProductType = {
+	user_id: 0,
+	title: "",
+	category_id: 0,
+	subcategory_id: 0,
+	city: "",
+	postal_code: "",
+	description: "",
+	price: "",
+	listed: true,
+	product_image: null
+}
+
+export interface UserProducts {
+	loadedUser: User
+	stars: number
+	products: ProductType[]
+}
+
+//------------------------------------------- CATEGORIES ------------------------------------------------------
+
+export interface CategoryProps {
+	category?: boolean
+	subCategory?: boolean
+  }
+
+export interface Category {
+	category_name: string
+	category_id: number
+}
+
+export interface Subcategory {
+	subcategory_id: number
+	subcategory_name: string
+	category_id: number
+}
+
+export interface Category {
+	category_id: number
+	category_name: string
+	subcategory_id: number
+	subcategory_name: string
+}
+
+export type categoryMapType = {
+	[key: string]: [string, number] 
+}	
+
+export interface CategoryProducts {
+    categoryHeader: string
+    products: ProductType[]
+}
+
+// --------------------------------------------- SALES -----------------------------------------------
+
+export interface ShoppingCartProps {
+    isOpen: boolean
+    onClose: () => void
+	cart: ProductType[] | null
+	setCart: Dispatch<React.SetStateAction<ProductType[] | null>>
 }
 
 export interface BoughtProps {
@@ -227,33 +258,31 @@ export interface Sale {
 	reviewed?: boolean
 }
 
-export const initialState: User = {
-	user_id: 0,
-	username: "",
-	password: "",
-	name: "",
-	email: "",
-	phone: "",
-	address: "",
-	city: "",
-	user_image: null,
-	postal_code: "",
-	reviews: 0
+// ------------------------------------------ REVIEWS & COMMENTS -----------------------------------------------
+
+export interface ReviewModalProps {
+	isOpen: boolean
+	onClose: () => void
+	token: string
+	sale_id: number
+	seller_id?: number
+	sale?: Sale
+	changeButton: () => void
+  }
+
+export interface AverageStars {
+	average_score: number
+}
+  
+export interface Review {
+	sales_id: number
+	seller_id?: number
+	buyer_id?: number
+	description?: string
+	seen?: boolean
+	stars?: number
 }
 
-
-export const initialStateProduct: ProductType = {
-	user_id: 0,
-	title: "",
-	category_id: 0,
-	subcategory_id: 0,
-	city: "",
-	postal_code: "",
-	description: "",
-	price: "",
-	listed: true,
-	product_image: null
-}
 
 export interface Review {
 	review_id?: number
@@ -275,23 +304,6 @@ export interface ReviewComment {
 	comment: string
 }
 
-export interface CategoryProducts {
-    categoryHeader: string
-    products: ProductType[]
-}
-
-export type BreadcrumbResolver = (params: string) => Promise<[string, string][]>
-
-export type categoryMapType = {
-	[key: string]: [string, number] 
-}	
-
-export interface UserProducts {
-	loadedUser: User
-	stars: number
-	products: ProductType[]
-}
-
 export interface ReviewCardProps {
 	isOwn: boolean
 	review: Review
@@ -300,4 +312,30 @@ export interface ReviewCardProps {
 
 export interface CommentCardProps {
 	reviewComment: ReviewComment
+}
+
+// --------------------------------------------- NAVBAR -----------------------------------------------
+
+
+export interface NavbarProps {
+	cart: ProductType[] | null
+	setCart: Dispatch<React.SetStateAction<ProductType[] | null>>
+}
+
+// --------------------------------------------- CRUMBS -----------------------------------------------
+
+export type BreadcrumbResolver = (params: string) => Promise<[string, string][]>
+
+// --------------------------------------------- VERIFY -----------------------------------------------
+
+export interface VerifyProps {
+	titleText?: string
+	messageText: string
+	isOpen: boolean
+	setOpen: (open:boolean) => void
+	onAccept: () => void
+	onDecline?: () => void
+	acceptButtonText?: string
+	declineButtonText?: string
+	preformattedText?: string
 }

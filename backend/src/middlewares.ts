@@ -25,6 +25,7 @@ const secret = process.env.SECRET ?? ""
 export const authentication = (req: CustomRequest, res: Response, next: NextFunction) => {
 	const auth = req.get("Authorization")
 	if (!auth?.startsWith("Bearer ")) {
+		console.error("Invalid token")
 		return res.status(401).send("Invalid token")
 	}
 	const token = auth.substring(7)
@@ -37,9 +38,11 @@ export const authentication = (req: CustomRequest, res: Response, next: NextFunc
 			req.id = decodedToken.id
 			next()
 		} else {
+			console.log("Insufficient permissions")
 			return res.status(401).send("Insufficient permissions")
 		}
 	} catch (error) {
+		console.log("Token error")
 		return res.status(401).send("Invalid token")
 	}
 }

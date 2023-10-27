@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { addUser, deleteUser, getUserByUsername, findUserByUSername, findUserByEmail, getUserByUserId, updateProfile, getUserDetailsByUserId } from "../daos/usersDao"
+import { addUser, deleteUser, getUserByUsername, findUserByUSername, findUserByEmail, getUserByUserId, updateProfile, getUserDetailsByUserId, changePassword } from "../daos/usersDao"
 import { authentication, checkReqBody } from "../middlewares"
 import multer from "multer"
 import argon2 from "argon2"
@@ -162,20 +162,44 @@ users.put("/update", authentication, upload.single("user_image"), async (req: Cu
 	}
 })
 
-/*
-users.put("/logout", async (req: Request, res: Response) => {
-  const authHeader = req.headers["authorization"]
-  if (authHeader === undefined) return res.status(401).send("You are not logged in")
+users.put("/password", authentication, async (req: CustomRequest, res: Response) => {
 
-  jwt.sign(authHeader, '', { expiresIn: 1 }, (logout, err) => {
-	if (logout) {
-	  res.send("Succeed! Logged out")
-	} else {
-	  res.send("Something gone wrong")
+	if (!req.id) {
+		console.log("no req.id")
+		return res.status(404).send("No user id")
 	}
-  })
+	const userId = req.id
+	const { currentPassword, newPassword } = req.body
+
+	if(!currentPassword) {
+		res.status(400).send("Password can't be empty!")
+	}
+
+	try {
+		const user: User = await getUserByUserId(userId)
+		const isPasswordCorrect = await argon2.verify(user.password, currentPassword)
+
+		if(!isPasswordCorrect) {
+			console.error("Wrong old password.")
+			return res.status(401).send("Incorrect password.")
+		}
+		const hashedPassword = await argon2.hash(newPassword)
+		const result = await changePassword(
+			userId,
+			hashedPassword
+		)
+
+		if (result) {
+			res.status(200).send()
+		} else {
+			res.status(404).send("Profile not found")
+		}
+
+	} catch (error) {
+		console.error("Error changing password:", error)
+		res.status(500).send("Internal Server Error")
+	}
 })
-*/
 
 //GET user details by user_id
 users.get("/:id", async (req: Request, res: Response) => {
