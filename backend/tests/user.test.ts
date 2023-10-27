@@ -73,7 +73,7 @@ describe("testing POST /users/login", () => {
 })
 
 describe("testing PUT /users/update", () => {
-
+	const smallImageData = "image-binary-variable"
 	const mockResponse = {
 		rows: [
 			{
@@ -116,4 +116,24 @@ describe("testing PUT /users/update", () => {
 			})
 		expect(response.status).toBe(200)
 	})
+
+	it("test update image", async () => {
+		const token =
+			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pc3VsaSIsImlkIjo1NCwiaWF0IjoxNjkzOTk4NjkzfQ.dXwnNmaSGRVh6F5PxUHGLkdJ-YLMJgA6Al85PjsGWTI"
+		const response = await request(server).put("/api/users/update")
+			.set("Authorization", `Bearer ${token}`)
+			.send({ image: smallImageData })
+
+		expect(response.status).toBe(200)
+
+	})
+	it("test update image without token", async () => {
+		const token = ""
+		const response = await request(server).put("/api/users/update")
+			.set("Authorization", `Bearer ${token}`)
+			.send({ image: smallImageData })
+
+		expect(response.status).toBe(401)
+	})
+
 })

@@ -55,7 +55,8 @@ export interface UpdatedUser {
     address: string,
     city: string,
     postal_code: string,
-    phone: string
+    phone: string,
+	user_image?: File | null
 }
 
 export const initialState: User = {
@@ -146,6 +147,7 @@ export interface UserProducts {
 	loadedUser: User
 	stars: number
 	products: ProductType[]
+	image: File | null
 }
 
 //------------------------------------------- CATEGORIES ------------------------------------------------------

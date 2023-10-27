@@ -1,5 +1,5 @@
 import { useState, useContext } from "react"
-import { Grid, Button, Stack, } from "@mui/material"
+import { Grid, Button, Stack, CardMedia, } from "@mui/material"
 import Divider from "@mui/material/Divider"
 import { useNavigate, redirect, useLoaderData } from "react-router-dom"
 import UpdateProfile from "./UpdateProfile"
@@ -21,7 +21,8 @@ export async function loader() {
 		const loadedUser = await fetchUser(token)
 		const products = await fetchUsersProducts(loadedUser.user_id)
 		const stars = await fetchStarRating(loadedUser.user_id)
-		userProducts = { loadedUser, stars, products }
+		const image = await fetchUser(loadedUser.user_image)
+		userProducts = { loadedUser, stars, products, image }
 		return userProducts
 	} else {
 		return redirect("/")
@@ -92,26 +93,19 @@ function Profile() {
 				alignItems="center"
 			>
 				<Grid item xs={4}>
-					<div>{user?.user_image && (
-						<img
-							alt="User Image"
-							src={`data:image/*;base64,${user.user_image}`}
-							style={{
-								margin: "auto",
-								display: "block",
-								maxWidth: "270px",
-								maxHeight: "270px",
-							}}
-						/>
-					)}
+					<CardMedia
+						component="img"
+						image={`data:image/*;base64,${user.user_image}`}
+						alt="Image"
+						sx ={{
+							margin: "auto",
+							display: "block",
+							maxWidth: "270px",
+							maxHeight: "270px",
+						}}
+					/>
+								
 
-					{/* <img src="https://images.unsplash.com/photo-1551963831-b3b1ca40c98e" style={{
-						margin: "auto",
-						display: "block",
-						maxWidth: "220px",
-						maxHeight: "220px",
-					}} /> */}
-					</div>
 				</Grid>
 				{user && <Grid item xs={5}>
 					<div className="user">
