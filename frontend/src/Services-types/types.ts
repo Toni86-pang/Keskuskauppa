@@ -45,13 +45,22 @@ export interface UserValues {
 	username: "",
 	password: ""
 }
+export type categoryMapType = {
+    [key: string]: [string, number] 
+}
 
+export interface DisplayProductsProps {
+    productList: ProductType[]
+}
 export interface ChangePasswordInputs {
 	currentPassword: string
 	newPassword: string
 	confirmPassword: string
 }
-
+export interface CategoryProducts {
+    categoryHeader: string
+    products: ProductType[]
+}
 
 export interface ChangePasswordProps {
 	username: string
