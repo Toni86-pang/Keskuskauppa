@@ -21,8 +21,7 @@ export async function loader() {
 		const loadedUser = await fetchUser(token)
 		const products = await fetchUsersProducts(loadedUser.user_id)
 		const stars = await fetchStarRating(loadedUser.user_id)
-		const image = await fetchUser(loadedUser.user_image)
-		userProducts = { loadedUser, stars, products, image }
+		userProducts = { loadedUser, stars, products }
 		return userProducts
 	} else {
 		return redirect("/")
