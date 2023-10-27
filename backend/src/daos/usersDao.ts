@@ -9,8 +9,10 @@ export interface User {
     city: string
     postal_code: string
     password: string
-    user_image?: Buffer |string
-  }
+    user_image?: Buffer | string
+ }
+
+ 
 
 export async function addUser(user: User): Promise<void> {
 	let query
@@ -100,7 +102,6 @@ export const findUserByEmail = async (email: string) => {
 	return executeQuery(query, params)
 }
 
-/* kenttien nimet sulkuihin ja VALUES sisään ainoastaan dollarin merkit*/
 export async function updateProfile( user: User): Promise<User | null>{
 	let query
 	let values
@@ -149,14 +150,15 @@ export async function updateProfile( user: User): Promise<User | null>{
 	}
 }
 
-export const getUserDetailsByUserId = async (user_id: number) => {
+export const getUserDetailsByUserId = async(user_id: number): Promise<User[]> => {
 	const query = `
 	SELECT
 		users.username,
 		users.city,
 		users.postal_code,
 		users.reg_day,
-		users.user_id
+		users.user_id,
+		users.user_image
 	FROM
 		users
   	WHERE 

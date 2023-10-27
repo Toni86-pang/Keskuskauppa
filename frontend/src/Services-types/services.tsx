@@ -26,24 +26,24 @@ export const registerUser = async (user: FormData) => {
 		}
 	}
 }
-// export const fetchUser = async (token: string) => {
-// 	try {
-// 		const response = await axios.get("/api/users/user/", {
-// 			headers: {
-// 				"Authorization": `Bearer ${token}`
-// 			} 
-// 		})
-// 		return response.data	
-// 	} catch (error) {
-// 		if (axios.isAxiosError(error) && error.response?.status === 401) {
-// 			return null
-// 		}
-// 		else {
-// 			console.error("Error fetching user:", error)
-// 			return null
-// 		}
-// 	}
-//}
+export const fetchUser = async (token: string) => {
+	try {
+		const response = await axios.get("/api/users/user/", {
+			headers: {
+				"Authorization": `Bearer ${token}`
+			} 
+		})
+		return response.data	
+	} catch (error) {
+		if (axios.isAxiosError(error) && error.response?.status === 401) {
+			return null
+		}
+		else {
+			console.error("Error fetching user:", error)
+			return null
+		}
+	}
+}
 
 export const fetchSale = (token: string, id: number) => {
 	return axios.get("/api/sales/" + id, {
@@ -79,7 +79,9 @@ export const fetchUserDetailsByUserId = async (user_id: number) => {
 export const updateUser = async (updatedData: UpdatedUser, token: string) => {
 	await axios.put("/api/users/update", updatedData, {
 		headers: {
-			"Authorization": `Bearer ${token}`
+			"Authorization": `Bearer ${token}`,
+			"Content-Type": "multipart/form-data"
+			
 		}
 	})
 }
@@ -168,19 +170,19 @@ export const newProduct = async (product: FormData, token: string) => {
 }
   
 
-export const registerUser = async (user: FormData) => {
-	try {
-		const response = await axios.post("/api/users/register", user, {
-			headers: {
-				"Content-Type": "multipart/form-data",
-			},
-		})
-		return response
-	} catch (error) {
-		console.error("Error in registerUser:", error)
-		throw error
-	}
-}
+// export const registerUser = async (user: FormData) => {
+// 	try {
+// 		const response = await axios.post("/api/users/register", user, {
+// 			headers: {
+// 				"Content-Type": "multipart/form-data",
+// 			},
+// 		})
+// 		return response
+// 	} catch (error) {
+// 		console.error("Error in registerUser:", error)
+// 		throw error
+// 	}
+// }
   
 
 export const newSale = async (sale: Sale, token: string) => {

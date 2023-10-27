@@ -4,15 +4,8 @@ import { authentication, checkReqBody } from "../middlewares"
 import multer from "multer"
 import argon2 from "argon2"
 import jwt from "jsonwebtoken"
-import multer from "multer"
 import { User } from "../daos/usersDao"
-interface Profile {
-	email: string
-	phone: string
-	address: string
-	city: string
-	postal_code: string
-}
+
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 const secret = process.env.SECRET ?? ""
@@ -28,7 +21,7 @@ users.get("/user", authentication, async (req: CustomRequest, res: Response) => 
 	}
 	const user_id = req.id
 	const user: User = await getUserByUserId(user_id)
-	
+
 	if (user.user_image instanceof Buffer) {
 		user.user_image = user.user_image.toString("base64")
 	}
@@ -132,7 +125,7 @@ users.post("/login", checkReqBody, async (req: Request, res: Response) => {
 	}
 })
 
-users.put("/update",  authentication, upload.single("user_image"),async (req: CustomRequest, res: Response) => {
+users.put("/update", authentication, upload.single("user_image"), async (req: CustomRequest, res: Response) => {
 	let user_image: Buffer | undefined
 
 	if (req.file) {
@@ -191,7 +184,18 @@ users.get("/:id", async (req: Request, res: Response) => {
 		if (isNaN(userId)) {
 			return res.status(400).json({ message: "Invalid user id provided" })
 		}
-		const result = await getUserDetailsByUserId(userId)
+		const result: User[] = await getUserDetailsByUserId(userId)
+
+		if (result.length === 0) {
+			return res.status(404).json({ message: "User not found" })
+		}
+		const user: User = result[0]
+		
+		if (user.user_image instanceof Buffer) {
+			user.user_image = user.user_image.toString("base64")
+		}
+
+
 		return res.status(200).send(result)
 	} catch (error) {
 		res.status(500).json({ message: "User information couldn't be displayed" })
