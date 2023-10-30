@@ -213,16 +213,15 @@ product.get("/category/:id", validateCategoryId, async (req, res) => {
 	try {
 		const products: ProductBackend[] = await getProductsByCategory(categoryId)
 		// Convert product_image to Base64 encoded string for products with images
-		products.forEach(product => {
+		const updatedProducts = products.map((product) => {
 			if (product.product_image instanceof Buffer) {
 				const tempUserImage = "data:image/*;base64," + product.product_image.toString("base64")
-
-				product = { ...product, product_image: tempUserImage }
+				return { ...product, product_image: tempUserImage }
 			} else {
-				product = { ...product, product_image: "" }
+				return { ...product, product_image: "" }
 			}
 		})
-		res.status(200).json(products)
+		res.status(200).json(updatedProducts)
 	} catch (error) {
 		res.status(500).json({ message: "Product information couldn't be displayed" })
 	}
