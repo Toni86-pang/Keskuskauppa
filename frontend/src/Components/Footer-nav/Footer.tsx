@@ -14,7 +14,7 @@ export const Footer = () => {
 
 				<div style={{ flex: 1, textAlign: "center" }}>
 					<h4> Yhteystiedot</h4>
-					<p> Osoite: Testikatu 11, 01234 Teskikaupunki</p>
+					<p> Osoite: Testikatu 11, 01234 Testikaupunki</p>
 					<p>Puh: 040 123456</p>
 					<p> Email:keskuskauppa(at)keskuskauppa.fi</p>
 				</div>

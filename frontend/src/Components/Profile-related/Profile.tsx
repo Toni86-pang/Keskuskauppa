@@ -1,18 +1,17 @@
 import { useState, useContext } from "react"
-import { Grid, Button, Stack, } from "@mui/material"
+import { Grid, Button, Stack, CardMedia, } from "@mui/material"
 import Divider from "@mui/material/Divider"
 import { useNavigate, redirect, useLoaderData } from "react-router-dom"
 import UpdateProfile from "./UpdateProfile"
 import { UserTokenContext } from "../../App"
 import Rating from "@mui/material/Rating"
-import ListReviews from "../Purchase-order-history/Order-history/ListReviews"
 import { User, UserProducts } from "../../Services-types/types"
 import { deleteUser, fetchStarRating, fetchUser, fetchUsersProducts } from "../../Services-types/services"
 import Notification from "../Verify-notification/Notification"
 import VerifyDialog from "../Verify-notification/VerifyDialog"
 import DisplayProducts from "../Product-related/DisplayProducts"
-
-
+import ListReviews from "../Purchase-order-history/Order-history/ListReviews"
+import ChangePassword from "../Register-login/ChangePassword"
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
@@ -27,13 +26,13 @@ export async function loader() {
 	} else {
 		return redirect("/")
 	}
-
 }
 
 function Profile() {
 	const { loadedUser, stars, products } = useLoaderData() as UserProducts
 	const [user, setUser] = useState<User>(loadedUser)
 	const [token, setToken] = useContext(UserTokenContext)
+	const [changePasswordVisible, setChangePasswordVisible] = useState(false)
 	const [updateVisible, setUpdateVisible] = useState(false)
 	const [verifyOpen, setVerifyOpen] = useState<boolean>(false)
 	const navigate = useNavigate()
@@ -76,7 +75,7 @@ function Profile() {
 	}
 
 	const verifyDialogProps = {
-		messageText: "Haluatko varmasti poistaa profiilisi?",
+		messageText: "Haluatko varmasti poistaa profiilisi pysyvästi?",
 		acceptButtonText: "Poista",
 		isOpen: verifyOpen,
 		setOpen: setVerifyOpen,
@@ -93,12 +92,19 @@ function Profile() {
 				alignItems="center"
 			>
 				<Grid item xs={4}>
-					<div><img src="https://images.unsplash.com/photo-1551963831-b3b1ca40c98e" style={{
-						margin: "auto",
-						display: "block",
-						maxWidth: "220px",
-						maxHeight: "220px",
-					}} /></div>
+					<CardMedia
+						component="img"
+						image={`data:image/*;base64,${user.user_image}`}
+						alt="Image"
+						sx ={{
+							margin: "auto",
+							display: "block",
+							maxWidth: "270px",
+							maxHeight: "270px",
+						}}
+					/>
+								
+
 				</Grid>
 				{user && <Grid item xs={5}>
 					<div className="user">
@@ -131,7 +137,10 @@ function Profile() {
 								user={user}
 							/>}
 						</Grid>
-						<Grid item><Button variant="contained">Vaihda salasana</Button></Grid>
+						<Grid item>
+							<Button variant="contained" onClick={() => setChangePasswordVisible(true)}>Vaihda salasana</Button>
+							<ChangePassword username={user.username} open={changePasswordVisible} onClose={() => setChangePasswordVisible(false)} />
+						</Grid>
 						<Grid item>
 							<Button variant="contained" onClick={handleVerification} >Poista profiili</Button>
 							<VerifyDialog {...verifyDialogProps} />
@@ -158,7 +167,7 @@ function Profile() {
 						{showErrorNotification && (
 							<Notification
 								open={showErrorNotification}
-								message="Kirjaudu sisään nähdäksesi profiilin tiedot"
+								message="Kirjaudu sisään nähdäksesi profiilin tiedot."
 								type="error"
 								onClose={() => setShowErrorNotification(false)}
 								duration={5000}
@@ -172,7 +181,7 @@ function Profile() {
 				<div style={{ marginTop: "9px" }}>|</div>
 				<Button onClick={() => setShowProducts(false)} variant="text" color={!showProducts ? "secondary" : "primary"}>Omat arvostelut</Button>
 			</Stack>
-			
+
 			{showProducts ?
 				<div className="ownProducts">
 					<Divider variant="middle" style={{ marginBottom: "10px" }} />
@@ -183,9 +192,10 @@ function Profile() {
 				</div> :
 				<div className="ownReviews">
 					<Divider variant="middle" style={{ marginBottom: "10px" }} />
-					{<ListReviews sellerId={user.user_id} isOwn={true} /> }
+					{<ListReviews sellerId={user.user_id} isOwn={true} />}
 				</div>}
 		</div>
 	)
 }
+
 export default Profile

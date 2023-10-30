@@ -1,4 +1,4 @@
-import request  from "supertest"
+import request from "supertest"
 import server from "../src/server"
 
 describe("testing route api/users/:id", () => {
@@ -13,3 +13,4 @@ describe("testing route api/users/:id", () => {
 		expect(response.status).toBe(400)
 	})
 })
+

@@ -42,12 +42,19 @@ function SellerProfile() {
 				alignItems="center"
 			>
 				<Grid item xs={4}>
-					<div><img src="https://images.unsplash.com/photo-1551963831-b3b1ca40c98e" style={{
-						margin: "auto",
-						display: "block",
-						maxWidth: "220px",
-						maxHeight: "220px",
-					}} /></div>
+					<div>{user?.user_image && (
+						<img
+							alt="Seller Image"
+							src={`data:image/*;base64,${user.user_image}`}
+							style={{
+								margin: "auto",
+								display: "block",
+								maxWidth: "270px",
+								maxHeight: "270px",
+							}}
+						/>
+					)}
+					</div>
 				</Grid>
 				{user && <Grid item xs={5}>
 					<div className="user">

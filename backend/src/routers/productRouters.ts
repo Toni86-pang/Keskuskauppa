@@ -49,21 +49,21 @@ product.post("/", authentication, upload.single("product_image"), async (req: Cu
 product.get("/", async (_req, res) => {
 	try {
 		const products: Product[] = await getAllProducts()
-  
+
 		// Convert product_image to Base64 encoded string for products with images
 		products.forEach(product => {
 			if (product.product_image instanceof Buffer) {
 				product.product_image = product.product_image.toString("base64")
 			}
 		})
-  
+
 		res.status(200).json(products)
 	} catch (error) {
 		res.status(500).json({ message: "Internal server error" })
 	}
 })
-  
-  
+
+
 
 
 
@@ -91,6 +91,11 @@ product.get("/user/:id", async (req, res) => {
 	const userId = Number(req.params.id)
 	try {
 		const product: Product[] = await getProductsByUserId(userId)
+		product.forEach(product => {
+			if (product.product_image instanceof Buffer) {
+				product.product_image = product.product_image.toString("base64")
+			}
+		})
 		res.status(200).json(product)
 	} catch (error) {
 		res.status(500).json({ message: "So much fail" })
@@ -116,10 +121,12 @@ product.delete("/:id", async (req: Request, res: Response) => {
 	}
 })
 
-product.put("/update/:id", authentication, async (req: CustomRequest, res: Response) => {
+product.put("/update/:id", authentication, upload.single("product_image"),  async (req: CustomRequest, res: Response) => {
 	const product_Id = parseInt(req.params.id, 10)
 	const userId = req.id
 	const updatedProductData = req.body
+	const productImage = req.file ? req.file.buffer : null
+	console.log("Request Body:", req.body)
 	try {
 		const product: Product | null = await getProductById(product_Id)
 		if (!product) {
@@ -137,7 +144,8 @@ product.put("/update/:id", authentication, async (req: CustomRequest, res: Respo
 			updatedProductData.city,
 			updatedProductData.postal_code,
 			updatedProductData.description,
-			updatedProductData.price
+			updatedProductData.price,
+			productImage
 		)
 		if (updateProduct) {
 			res.status(200).json({ message: "product update is complete", updateProduct })
@@ -181,6 +189,12 @@ product.get("/category/:id", validateCategoryId, async (req, res) => {
 	const categoryId = parseInt(req.params.id)
 	try {
 		const products: Product[] = await getProductsByCategory(categoryId)
+		// Convert product_image to Base64 encoded string for products with images
+		products.forEach(product => {
+			if (product.product_image instanceof Buffer) {
+				product.product_image = product.product_image.toString("base64")
+			}
+		})
 		res.status(200).json(products)
 	} catch (error) {
 		res.status(500).json({ message: "Product information couldn't be displayed" })
@@ -192,6 +206,12 @@ product.get("/subcategory/:id", validateCategoryId, async (req, res) => {
 	const subcategoryId = parseInt(req.params.id)
 	try {
 		const products: Product[] = await getProductsBySubcategory(subcategoryId)
+		// Convert product_image to Base64 encoded string for products with images
+		products.forEach(product => {
+			if (product.product_image instanceof Buffer) {
+				product.product_image = product.product_image.toString("base64")
+			}
+		})
 		res.status(200).json(products)
 	} catch (error) {
 		res.status(500).json({ message: "The product information of the subcategory couldn't be displayed" })

@@ -42,7 +42,7 @@ function CheckoutProductCard({ product }: ProductProps) {
 							)}
 						</Grid>
 						<Grid item xs={6} md={4} sx={{ position: "relative" , left: 10, top: 5 }}>
-							<Typography variant="h6" component="div">
+							<Typography variant="h6" component="span">
 								{product.title}
 							</Typography>
 							<Typography>Hinta {product.price} €</Typography>

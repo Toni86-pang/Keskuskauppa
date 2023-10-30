@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { ChangeEvent, useContext, useEffect, useState } from "react"
 import Dialog from "@mui/material/Dialog"
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
@@ -8,6 +8,8 @@ import { UpdateProfileProps } from "../../Services-types/types"
 import { UserTokenContext } from "../../App"
 import { updateUser } from "../../Services-types/services"
 import Notification from "../Verify-notification/Notification"
+import { FormControl, Input, InputLabel } from "@mui/material"
+
 
 const styles = {
 	section: {
@@ -25,11 +27,12 @@ const styles = {
 
 function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 
-	const [token] = useContext(UserTokenContext)	
+	const [token] = useContext(UserTokenContext)
 	const [newAddress, setNewAddress] = useState(user.address)
 	const [newPhone, setNewPhone] = useState(user.phone)
 	const [newCity, setNewCity] = useState(user.city)
 	const [newPostalCode, setNewPostalCode] = useState(user.postal_code)
+	const [newUserImage, setNewUserImage] = useState<File | null>(null)
 
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
@@ -47,11 +50,19 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 		setNewPostalCode(event.target.value)
 	}
 
+	const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+		const file = event.target.files && event.target.files[0]
+		if (file) {
+			setNewUserImage(file)
+
+		}
+	}
 	const resetForm = () => {
 		setNewAddress(user.address)
 		setNewPhone(user.phone)
 		setNewCity(user.city)
 		setNewPostalCode(user.postal_code)
+		setNewUserImage(user.user_image)
 		// calls profile page's close function when closing the modal. 
 		close(user)
 	}
@@ -61,25 +72,32 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 		setNewCity(user.city)
 		setNewPostalCode(user.postal_code)
 		setNewPhone(user.phone)
+		setNewUserImage(user.user_image)
 	}, [user])
 
 
 	const handleUpdateSubmit = async () => {
 		try {
-			const updatedData = {
-				address: newAddress,
-				city: newCity,
-				postal_code: newPostalCode,
-				phone: newPhone
+			const formData = new FormData()
+			formData.append("name", newAddress)
+			formData.append("city", newCity)
+			formData.append("postal_code", newPostalCode)
+			formData.append("phone", newPhone)
+
+			if (newUserImage) {
+				formData.append("user_image", newUserImage)
+
 			}
-			await updateUser(updatedData, token)
+			
+			await updateUser(formData, token)
 			setShowSuccessNotification(true)
-			close({ ...user, address: newAddress, phone: newPhone, city: newCity, postal_code: newPostalCode })
+			close({ ...user, address: newAddress, phone: newPhone, city: newCity, postal_code: newPostalCode, user_image: newUserImage })
 		} catch (error) {
 			console.error("error updating profile", error)
 			setShowErrorNotification(true)
 		}
 	}
+
 
 	return (
 		<>
@@ -106,7 +124,7 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 						<div style={styles.section}>
 							<TextField
 								label="Kaupunki"
-								value= {newCity}
+								value={newCity}
 								onChange={handleCityChange}
 								fullWidth
 							/>
@@ -129,14 +147,22 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 							onChange={handlePhoneChange}
 							fullWidth
 						/>
-					</div>				
+					</div>
+					<FormControl>
+						<InputLabel style={{ position: "relative" }} id="Kuvat">Muokkaa kuvaa:</InputLabel>
+						<Input
+							type="file"
+							onChange={handleImageChange}
+							inputProps={{ accept: "image/*" }}
+						/>
+					</FormControl>
 
 					<div style={styles.buttonContainer}>
 						<Button variant="outlined" onClick={handleUpdateSubmit}>
-						Päivitä
+							Päivitä
 						</Button>
 						<Button variant="outlined" onClick={resetForm}>
-						Peruuta
+							Peruuta
 						</Button>
 					</div>
 				</DialogContent>
@@ -146,7 +172,7 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 			{showSuccessNotification && (
 				<Notification
 					open={showSuccessNotification}
-					message="Profile updated successfully!"
+					message="Profiili päivitetty!"
 					type="success"
 					onClose={() => setShowSuccessNotification(false)}
 					duration={1500}
@@ -155,11 +181,11 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 			{showErrorNotification && (
 				<Notification
 					open={showErrorNotification}
-					message="Error updating profile."
+					message="Profiilin päivityksessä tapahtui virhe."
 					type="error"
 					onClose={() => setShowErrorNotification(false)}
 					duration={1500}
-				/> 
+				/>
 			)}
 		</>
 	)

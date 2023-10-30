@@ -36,21 +36,23 @@ function SalesProductCard({ product, onClose, setCart }: ProductProps) {
 	}
 
 	return (
-		<Card style={cardStyle}>
+		<Card style={cardStyle} component="div">
 			<CardContent>
 				<Grid 
 					container spacing={2} 
 					style={gridContainerStyle} 
+					component={"div"}
 				>
 					<Grid
 						sx={{ cursor: "pointer", m: "15px" }}
+						component="div"
 						onClick={() => {
 							if(onClose !== undefined){
 								navigate(`/product/${product.product_id}`)
 								onClose()
 							}
 						}}>
-						<Grid sx={{ position: "relative" , left: 10, top: 5 }}>
+						<Grid sx={{ position: "relative" , left: 10, top: 5 }} component="div">
 							<CardMedia
 								component="img"
 								height="80"
@@ -58,14 +60,14 @@ function SalesProductCard({ product, onClose, setCart }: ProductProps) {
 								alt={product.title}
 							/>
 						</Grid>
-						<Grid item xs={6} sx={{ position: "relative" , left: 10, top: 5 }}>
+						<Grid item xs={6} sx={{ position: "relative" , left: 10, top: 5 }} component="div">
 							<Typography variant="h6" component="div">
 								{product.title}
 							</Typography>
-							<Typography>Hinta {product.price} €</Typography>
+							<Typography component="div">Hinta {product.price} €</Typography>
 						</Grid>
 					</Grid>
-					<Grid sx={{ position: "relative" , left: "15%" }}>
+					<Grid sx={{ position: "relative" , left: "15%" }} component="div">
 						<Button variant="contained" color="primary" onClick={() => {
 							handleRemoveFromCart(product.product_id)
 						}}

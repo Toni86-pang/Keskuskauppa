@@ -12,7 +12,9 @@ function RegisterNewUser() {
 
 	const [newUser, setNewUser] = useState<User>(initialState)
 	const [confirmPassword, setConfirmPassword] = useState<string>("")
-	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true)
+	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(false)
+	const [isTouched, setIsTouched] = useState(false)
+	const [verifyOpen, setVerifyOpen] = useState(false)
 	const [userImage, setUserImage] = useState<File | null>(null)	
 	
 	const [verifyOpen, setVerifyOpen] = useState(false)
@@ -20,29 +22,10 @@ function RegisterNewUser() {
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
 	const [showErrorNotificationTwo, setShowErrorNotificationTwo] = useState(false)
 	const [showErrorNotificationThree, setShowErrorNotificationThree] = useState(false)
-	const [, setToken] = useContext(UserTokenContext)
-
-	
 
 	const [dialogOpen, setDialogOpen] = useState(false)
 
-	const { name, email, username, phone, address, city, postal_code } = newUser
-	
-	// const formData = new FormData()
-	// if (userImage) {
-	// 	console.log("Debug 3")
-	// 	formData.append("user_image", userImage)
-	// 	console.log("Debug 4")
-
-	// }
-	// console.log("Debug 5")
-	// formData.append("name", newUser.name)
-	// formData.append("email", newUser.email)
-	// formData.append("username", newUser.username)
-	// formData.append("phone", newUser.phone)
-	// formData.append("address", newUser.address)
-	// formData.append("city", newUser.city)
-	// formData.append("postal_code", newUser.postal_code)
+	const { name, email, username, phone, address, city, postal_code, password } = newUser
 
 	const register = async () => {
 		try {
@@ -54,6 +37,7 @@ function RegisterNewUser() {
 			formData.append("address", address)
 			formData.append("city", city)
 			formData.append("postal_code", postal_code)
+			formData.append("password", password)
 			if (userImage) {
 				formData.append("user_image", userImage)
 			}
@@ -127,10 +111,12 @@ function RegisterNewUser() {
 		}))
 	}
 
-	const handleConfirmPasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
-		const newConfirmPassword = event.target.value
-		setConfirmPassword(newConfirmPassword)
-		setPasswordsMatch(newUser.password === newConfirmPassword)
+	const handleConfirmPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const newPassword = event.target.value
+		const isMatch = newPassword === newUser.password
+		setIsTouched(true)
+		setConfirmPassword(newPassword)
+		setPasswordsMatch(isMatch)
 	}
 
 	const handleCancel = () => {
@@ -237,8 +223,8 @@ function RegisterNewUser() {
 							name="confirmPassword"
 							value={confirmPassword}
 							onChange={handleConfirmPasswordChange}
-							error={!passwordsMatch}
-							helperText={!passwordsMatch ? "Salasanat ovat erilaiset." : ""}
+							error={!passwordsMatch && isTouched}
+							helperText={!passwordsMatch && isTouched ? "Salasanat ovat erilaiset." : ""}
 						/>
 						<FormControl>
 							<InputLabel style={{position: "relative"}} id="Kuvat">Lisää kuva:</InputLabel>
@@ -251,7 +237,7 @@ function RegisterNewUser() {
 
 					</DialogContent>
 					<DialogActions>
-						<Button onClick={handleVerification}>Rekisteröidy</Button>
+						<Button disabled={!passwordsMatch} onClick={handleVerification}>Rekisteröidy</Button>
 						<Button onClick={handleCancel}>Peruuta</Button>
 					</DialogActions>
 				</Dialog>

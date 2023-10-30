@@ -145,11 +145,27 @@ export const updateProductData = async (
 	city: string,
 	postal_code: string,
 	description: string,
-	price: number
+	price: number,
+	product_image: Buffer | null
 ): Promise<Product | null> => {
-	const params = [title, category_id, subcategory_id, city,postal_code, description, price, product_id]
-	const query =
-	"UPDATE Products SET title = $1, category_id = $2, subcategory_id = $3, city = $4, postal_code = $5, description = $6, price = $7 WHERE product_id = $8 RETURNING *"
+	let query
+	let params
+	
+	if (product_image) {
+		query = `UPDATE Products
+                 SET title = $1, category_id = $2, subcategory_id = $3, city = $4,
+                     postal_code = $5, description = $6, price = $7, product_image = $8
+                 WHERE product_id = $9
+                 RETURNING *`
+		params = [title, category_id, subcategory_id, city, postal_code, description, price, product_image, product_id]
+	} else {
+		query = `UPDATE Products
+                 SET title = $1, category_id = $2, subcategory_id = $3, city = $4,
+                     postal_code = $5, description = $6, price = $7
+                 WHERE product_id = $8
+                 RETURNING *`
+		params = [title, category_id, subcategory_id, city, postal_code, description, price, product_id]
+	}
 	const result = await executeQuery(query, params)
 	if (result.rows.length === 0) {
 		return null
@@ -206,6 +222,7 @@ export const getProductsByCategory = async (category_ID: number): Promise<Produc
     products.product_id,
     products.title,
 	products.price,
+	products.product_image,
     category.category_id,
     category.category_name,
     subcategory.subcategory_id,
@@ -229,6 +246,7 @@ export const getProductsBySubcategory = async (subcategory_ID: number): Promise<
 	products.product_id,
 	products.title,
 	products.price,
+	products.product_image,
 	subcategory.subcategory_id,
 	subcategory.subcategory_name,
 	subcategory.category_id

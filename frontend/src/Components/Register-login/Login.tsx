@@ -100,7 +100,7 @@ function Login() {
 						<TextField
 							sx={{ m: 1 }}
 							type="text"
-							placeholder="Käyttäjänimi"
+							label="Käyttäjänimi"
 							name="username"
 							value={username}
 							onChange={handleInputChange}
@@ -109,7 +109,7 @@ function Login() {
 						<TextField
 							sx={{ m: 1 }}
 							type="password"
-							placeholder="Salasana"
+							label="Salasana"
 							name="password"
 							value={password}
 							onChange={handleInputChange}
