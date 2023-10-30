@@ -152,8 +152,8 @@ function UpdateProductModal({
 		<>
 			<Dialog open={isOpen} onClose={onClose} maxWidth="md" fullWidth>
 				<Box sx={{ maxHeight: "80vh", overflowY: "auto", p: 2 }}>
-					<Grid container spacing={2}>
-						<Grid item xs={6}>
+					<Grid container spacing={4}>
+						<Grid item xs={4}>
 							<FormControl fullWidth>
 								<InputLabel>Kategoria</InputLabel>
 								<Select
@@ -209,8 +209,8 @@ function UpdateProductModal({
 						</Grid>
 					</Grid>
 				</Box>
-				<FormControl sx={{ margin: 2 }}>
-					<FormControl style={{ margin: "16px" }}>
+				<FormControl >
+					<FormControl style={{ margin: "6px" }}>
 						<TextField
 							label="Nimi"
 							value={updatedTitle}
@@ -223,7 +223,7 @@ function UpdateProductModal({
 						/>
 					</FormControl>
 
-					<FormControl style={{ margin: "16px" }}>
+					<FormControl style={{ margin: "6px" }}>
 						<TextField
 							label="Kaupunki"
 							value={updatedCity}
@@ -242,7 +242,7 @@ function UpdateProductModal({
 						{error && <div style={{ color: "red" }}>{error}</div>}
 					</FormControl>
 
-					<FormControl style={{ margin: "16px" }}>
+					<FormControl style={{ margin: "6px" }}>
 						<Button variant="outlined" onClick={handleUpdateSubmit}>
 							Päivitä
 						</Button>

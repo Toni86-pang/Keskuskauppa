@@ -21,7 +21,7 @@ export interface User {
 	phone: string,
 	address: string,
 	city: string,
-	postal_code: string,
+	postal_code:string,
 	user_image: File | null
 	reviews?: number
 	reg_day?: string
