@@ -51,7 +51,10 @@ users.get("/user", authentication, async (req: CustomRequest, res: Response) => 
 
 // `POST /users` REGISTER a new user
 users.post("/register", upload.single("user_image"), async (req: Request, res: Response) => {
+	
 	try {
+		console.log("Request Body:", req.body)
+		console.log("Request File:", req.file)	
 		const { username, name, email, phone, address, city, postal_code, password } = req.body
 		let user_image: Buffer | undefined
 
