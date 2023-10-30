@@ -15,12 +15,13 @@ interface Sale {
 	sales_status?: number
 	reviewed?: boolean
 }
-interface ProductSale {
+interface ProductSaleBackend {
 	sales_id: number
 	sales_status: string
 	title: string
 	price: number
 	buyer: string
+	product_image: Buffer
 }
 
 export const getSaleById = async (saleId: number): Promise<Sale> => {
@@ -104,7 +105,7 @@ export const getStatusById = async (statusId: number) => {
 }
 
 
-export const fetchOwnSold = async (userId: number): Promise<ProductSale[]>  => {
+export const fetchOwnSold = async (userId: number): Promise<ProductSaleBackend[]>  => {
 	const params = [userId]
 	const query = `
 	SELECT
@@ -123,13 +124,14 @@ export const fetchOwnSold = async (userId: number): Promise<ProductSale[]>  => {
 	JOIN
 		sales_status AS st on s.sales_status = st.status_id
 	WHERE
-    	s.seller_id = $1`
+    	s.seller_id = $1
+	ORDER BY s.created_at DESC`
 	
 	const result = await executeQuery(query, params)
 	return result.rows
 }
 
-export const fetchOwnBought = async (userId: number): Promise<ProductSale[]>  => {
+export const fetchOwnBought = async (userId: number): Promise<ProductSaleBackend[]>  => {
 	const params = [userId]
 	const query = `
 	SELECT
@@ -137,6 +139,7 @@ export const fetchOwnBought = async (userId: number): Promise<ProductSale[]>  =>
 		st.sales_status,
 		p.title AS title,
 		p.price AS price,
+		p.product_image as product_image,
 		u.username AS seller
 	FROM 
 		sales AS s
@@ -147,7 +150,8 @@ export const fetchOwnBought = async (userId: number): Promise<ProductSale[]>  =>
 	JOIN
 		sales_status AS st on s.sales_status = st.status_id
 	WHERE
-    	s.buyer_id = $1`
+    	s.buyer_id = $1
+	ORDER BY s.created_at DESC`
 	try{
 		const result = await executeQuery(query, params)
 		return result.rows

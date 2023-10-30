@@ -7,6 +7,8 @@ import { Grid } from "@mui/material"
 import { useNavigate } from "react-router"
 import { ProductProps } from "../../Services-types/types"
 
+const URL_TO_DEFAULT_IMAGE = "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e" 
+
 const cardStyle = {
 	marginTop: "10px",
 	marginBottom: "10px"
@@ -33,15 +35,15 @@ function ProductCard({ product }: ProductProps) {
 						{product.product_image ? ( // Check if product_image is not null
 							<CardMedia
 								component="img"
-								height="80"
-								image={`data:image/*;base64,${product.product_image}`}
+								height="120"
+								image={product.product_image} 
 								alt={product.title}
 							/>
 						) : (
 							<CardMedia
 								component="img"
-								height="80"
-								image="https://images.unsplash.com/photo-1551963831-b3b1ca40c98e" 
+								height="120"
+								image={URL_TO_DEFAULT_IMAGE} 
 								alt={product.title}
 							/>
 						)}

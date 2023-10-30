@@ -22,7 +22,7 @@ export interface User {
 	address: string,
 	city: string,
 	postal_code: string,
-	user_image: File | null
+	user_image: string
 	reviews?: number
 	reg_day?: string
 }
@@ -36,7 +36,7 @@ export const initialState: User = {
 	phone: "",
 	address: "",
 	city: "",
-	user_image: null,
+	user_image: "",
 	postal_code: "",
 	reviews: 0
 }
@@ -79,7 +79,7 @@ export interface UpdatedUser {
     city: string,
     postal_code: string,
     phone: string,
-	user_image?: File | null
+	user_image?: string
 }
 
 export interface UserProducts {
@@ -102,7 +102,7 @@ export interface ProductType {
     postal_code: string
     description: string
 	price: string
-	product_image: File | null
+	product_image: string
 	listed: boolean
 	category_name?: string
 	subcategory_name?: string
@@ -118,7 +118,7 @@ export const initialStateProduct: ProductType = {
 	description: "",
 	price: "",
 	listed: true,
-	product_image: null
+	product_image: ""
 }
 
 export interface ProductProps {
@@ -165,21 +165,13 @@ export interface UpdatedProduct {
     postal_code: string,
     description: string,
     price: number,
-	product_image: File | null
+	product_image: string
 }
 export interface UpdateProductModalProps {
 	isOpen: boolean
-	onClose: () => void
+	onClose: (updatedProduct: ProductType) => void
 	token: string
-	productId: number
-	title: string
-	category_id: number
-	subcategory_id: number
-	city: string
-	postal_code: string
-	description: string
-	price: string
-	product_image: File | null
+	product: ProductType
   }
 
 export interface ReviewModalProps {
@@ -239,7 +231,7 @@ export interface BoughtProps {
 	buyer?: string
 	seller?: string
 	listed?: boolean
-	product_image: File | null;
+	product_image: string
 }
 
 export interface OrderDetailsProps {
@@ -257,7 +249,7 @@ export interface SoldProps {
 	buyer?: string
 	seller?: string
 	listed: boolean
-	product_image: File | null;
+	product_image: string
 }
 
 export interface OrderCardProps {

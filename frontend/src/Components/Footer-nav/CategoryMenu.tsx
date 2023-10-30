@@ -86,9 +86,9 @@ const CategoryMenu = () => {
 				</MenuItem>
 				{categories.map((category, index) => (
 					<div key={"category " + index.toString()}>
-						<MenuItem onClick={(e) => handleSubMenuOpen(e, index)}>
+						<MenuItem >
 							<Button href={`/products/category/${category.category_id}`} sx={{ "&:hover": { textDecoration: "underline" } }} >{category.category_name}</Button>
-							<ArrowDropDownIcon sx={{ transform: "rotate(-90deg)", marginLeft: "auto" }} />
+							<Button onClick={(e) => handleSubMenuOpen(e, index)} sx={{ transform: "rotate(-90deg)", marginLeft: "auto" }}><ArrowDropDownIcon /></Button>
 						</MenuItem>
 
 						{/* SubMenus */}

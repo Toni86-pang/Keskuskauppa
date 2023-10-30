@@ -1,6 +1,6 @@
 import { executeQuery } from "../database"
 
-export interface Product {
+export interface ProductBackend {
 	product_id?: number
 	user_id: number
 	title: string
@@ -12,11 +12,11 @@ export interface Product {
 	postal_code: string
 	description: string
 	price: number
-	product_image?: Buffer | string | null
+	product_image?: Buffer | null | string
 	listed: boolean
 }
 
-export async function createProduct(product: Product): Promise<void> {
+export async function createProduct(product: ProductBackend): Promise<void> {
 	product.listed = true
 	let query
 	let values
@@ -67,37 +67,8 @@ export async function createProduct(product: Product): Promise<void> {
 	}
 }
 
-// hide product if its in sale transaction
-// export const hideProductInSale = async (productId: number): Promise<void> => {
-// 	const query = `
-// 	UPDATE products	
-// 	SET listed = false
-// 	WHERE product_id = $1)
-// 	`
-// 	try{
-// 		await executeQuery(query, [productId])
-// 	}catch (error) {
-// 		console.error("Error hiding products:", error)
-// 		throw error
-// 	}
-// }
-//relist product if sale doesn't go trough
-// export const relistProduct = async (productId: number):Promise<void> => {
-// 	const query = `
-// 	UPDATE Products
-// 	SET listed = true
-// 	WHERE product_id = $1)
-// 	`
-// 	try {
-// 		await executeQuery(query, [productId])
-// 	}catch (error){
-// 		console.error("Error relisting products", error)
-// 		throw error
-// 	}
-// }
 
-
-export const getProductById = async (product_id: number): Promise<Product | null> => {
+export const getProductById = async (product_id: number): Promise<ProductBackend | null> => {
 	const query = "SELECT * FROM products WHERE product_id = $1"
 	const result = await executeQuery(query, [product_id])
   
@@ -105,14 +76,19 @@ export const getProductById = async (product_id: number): Promise<Product | null
 		return null
 	}
   
-	const productDetails: Product = result.rows[0]
+	const productDetails: ProductBackend = result.rows[0]
   
-	if (productDetails.product_image instanceof Buffer) {
-		// The product_image is already a Buffer, do nothing.
-	} else if (typeof productDetails.product_image === "string") {
-		// Convert the base64 string to a Buffer
-		productDetails.product_image = Buffer.from(productDetails.product_image, "base64")
-	} else {
+	// if (productDetails.product_image instanceof Buffer) {
+	// 	// The product_image is already a Buffer, do nothing.
+	// } else if (typeof productDetails.product_image === "string") {
+	// 	// Convert the base64 string to a Buffer
+	// 	productDetails.product_image = Buffer.from(productDetails.product_image, "base64")
+	// } else {
+	// 	// Handle cases where the product doesn't have an image
+	// 	productDetails.product_image = null
+	// }
+
+	if (!(productDetails.product_image instanceof Buffer)) {
 		// Handle cases where the product doesn't have an image
 		productDetails.product_image = null
 	}
@@ -122,9 +98,24 @@ export const getProductById = async (product_id: number): Promise<Product | null
   
   
 
-export const getAllProducts = async (): Promise<Product[]> => {
+export const getAllProducts = async (): Promise<ProductBackend[]> => {
 	const query = "SELECT * FROM products where listed = true"
 	const result = await executeQuery(query)
+
+	return result.rows
+
+}
+
+export const getLatestProducts = async (amount: number): Promise<ProductBackend[]> => {
+
+	const query = `SELECT * FROM products 
+				WHERE listed = true AND product_image IS NOT NULL
+				ORDER BY created_at DESC
+				LIMIT $1`
+	
+	const params = [amount]
+
+	const result = await executeQuery(query, params)
 
 	return result.rows
 
@@ -147,7 +138,7 @@ export const updateProductData = async (
 	description: string,
 	price: number,
 	product_image: Buffer | null
-): Promise<Product | null> => {
+): Promise<ProductBackend | null> => {
 	let query
 	let params
 	
@@ -170,7 +161,7 @@ export const updateProductData = async (
 	if (result.rows.length === 0) {
 		return null
 	}
-	return result.rows[0] as Product
+	return result.rows[0] as ProductBackend
 }
 
 export const updateProductListed = async (productId: number, isListed: boolean) => {
@@ -180,7 +171,7 @@ export const updateProductListed = async (productId: number, isListed: boolean) 
 	if (result.rows.length === 0) {
 		return null
 	}
-	return result.rows[0] as Product
+	return result.rows[0] as ProductBackend
 }
 
 export const getProductsByUserId = async (user_id: number) => {
@@ -191,7 +182,7 @@ export const getProductsByUserId = async (user_id: number) => {
 }
 
 //GET all categories
-export const getAllCategories = async (): Promise<Product[]> => {
+export const getAllCategories = async (): Promise<ProductBackend[]> => {
 	const query = "SELECT * FROM Category"
 	const result = await executeQuery(query)
 
@@ -199,7 +190,7 @@ export const getAllCategories = async (): Promise<Product[]> => {
 }
 
 //GET all subcategories
-export const getAllSubcategories = async (): Promise<Product[]> => {
+export const getAllSubcategories = async (): Promise<ProductBackend[]> => {
 	const query = "SELECT * FROM Subcategory"
 	const result = await executeQuery(query)
 
@@ -207,7 +198,7 @@ export const getAllSubcategories = async (): Promise<Product[]> => {
 }
 
 //GET individual subcategory
-export const getIndividualSubcategory = async (category_id: number): Promise<Product[]> => {
+export const getIndividualSubcategory = async (category_id: number): Promise<ProductBackend[]> => {
 	const query = "SELECT * FROM subcategory WHERE category_id = $1"
 	const params = [category_id]
 	const result = await executeQuery(query, params)
@@ -216,7 +207,7 @@ export const getIndividualSubcategory = async (category_id: number): Promise<Pro
 }
 
 // GET products by category
-export const getProductsByCategory = async (category_ID: number): Promise<Product[]> => {
+export const getProductsByCategory = async (category_ID: number): Promise<ProductBackend[]> => {
 	const query = `
 	SELECT
     products.product_id,
@@ -240,7 +231,7 @@ export const getProductsByCategory = async (category_ID: number): Promise<Produc
 	return result.rows
 }
 // GET products by subcategory
-export const getProductsBySubcategory = async (subcategory_ID: number): Promise<Product[]> => {
+export const getProductsBySubcategory = async (subcategory_ID: number): Promise<ProductBackend[]> => {
 	const query = `
 	SELECT
 	products.product_id,
@@ -279,7 +270,7 @@ export const getSubcategoryName = async (subcategoryId: number) => {
 }
 
 // GET search products
-export const searchProducts =async (searchQuery: string): Promise<Product[]>  => {
+export const searchProducts =async (searchQuery: string): Promise<ProductBackend[]>  => {
 	try {
 		const query = ` 
 		SELECT * FROM products

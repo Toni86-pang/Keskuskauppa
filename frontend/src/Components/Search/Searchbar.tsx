@@ -1,16 +1,15 @@
 import { useState, useEffect } from "react"
 import {
 	TextField,
-	Typography,
 	styled,
 	alpha,
 	Button,
 } from "@mui/material"
 import "./Searchbar.css"
 import { ProductType } from "../../Services-types/types"
-import { searchProducts } from "../../Services-types/services"
-import ProductCard from "../Product-cards/ProductCard"
+import { fetchAllProducts } from "../../Services-types/services"
 import { useNavigate, useLocation } from "react-router-dom"
+import DisplayProducts from "../Product-related/DisplayProducts"
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -31,80 +30,85 @@ const initialMaxResultsToShow = 3
 
 const ProductSearch = () => {
 	const [searchQuery, setSearchQuery] = useState("")
+	const [searchProducts, setSearchProducts] = useState<ProductType[]>([])
 	const [searchResults, setSearchResults] = useState<ProductType[]>([])
-	const [error, setError] = useState<string | null>(null)
 	const [maxResultsToShow, setMaxResultsToShow] = useState(initialMaxResultsToShow)
-	const [modalOpen, setModalOpen] = useState(false) 
+	const [modalOpen, setModalOpen] = useState(false)
 	const navigate = useNavigate()
 	const location = useLocation()
 
+	// close the modal if user clicks outside the search field or search results
 	useEffect(() => {
-		const performSearch = async () => {
-			try {
-				const products = await searchProducts(searchQuery)
-				setSearchResults(products)
-				setError(null)
-				setModalOpen(true) 
-			} catch (error) {
-				console.error("Error performing search:", error)
-				setError("An error occurred while searching.")
-				setSearchResults([])
-				setModalOpen(false) 
+		const handleClick = (e: MouseEvent) => {
+			if (!e.target) return
+			if (modalOpen && !(e.target as Element).closest(".search-results") && !(e.target as Element).closest("#search-field")) {
+				setModalOpen(false)
+				setSearchProducts([])
 			}
 		}
+		document.addEventListener("click", handleClick)
 
-		if (searchQuery) {
-			performSearch()
-		} else {
-			setSearchResults([])
-			setError(null)
-			setModalOpen(false)
+		return () => {
+			document.removeEventListener("click", handleClick)
 		}
-	}, [searchQuery])
+	}, [modalOpen])
+
+	useEffect(() => {
+		setSearchQuery("")
+	}, [location])
+
+	useEffect(() => {
+		const performSearch = () => {
+			const matchingProducts = searchProducts.filter((product) => product.title.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase()))
+			setSearchResults(matchingProducts)
+		}
+		performSearch()
+	}, [searchProducts, searchQuery])
+
+	const handleOnFocus = async () => {
+		if (searchProducts.length === 0) {
+			const loadedProducts = await fetchAllProducts()
+			setSearchProducts(loadedProducts)
+		}
+		setModalOpen(true)
+	}
 
 	const handleShowMore = () => {
 		setMaxResultsToShow(maxResultsToShow + 3)
 	}
 
-	const handleShowAllResults = () => {
-		setModalOpen(false)
+	const handleShowAllResults = async () => {
 		navigate(`/search-results?query=${encodeURIComponent(searchQuery)}`)
+		setModalOpen(false)
+		setSearchQuery("")		
+		await handleOnFocus()		
 	}
 
-
-	useEffect(() => {
-		if (location.pathname.startsWith("/product/") || location.pathname.startsWith("/search-results")) {
-			setSearchQuery("") 
+	// goes to all results page with enter
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === "Enter") {
+			handleShowAllResults()
 		}
-	}, [location.pathname])
+	}
 
 	return (
 		<div>
 
 			<Search>
-				<TextField
+				<TextField id="search-field"
 					label="Etsi tuotteita..."
 					variant="outlined"
 					value={searchQuery}
+					onKeyDown={handleKeyDown}
+					onFocus={handleOnFocus}
 					onChange={(e) => setSearchQuery(e.target.value)}
 				/>
 			</Search>
 
-			{error && (
-				<Typography variant="body2" color="error" gutterBottom>
-					{error}
-				</Typography>
-			)}
-
 			{modalOpen && searchQuery && searchResults.length > 0 && (
 				<div className="search-results">
 					<ul>
-						{searchResults.slice(0, maxResultsToShow).map((product) => (
-							<ProductCard 
-								key={product.product_id} 
-								product={product} 
-							/>
-						))}
+						<DisplayProducts productList={searchResults.slice(0, maxResultsToShow)} />
 
 						{searchResults.length > maxResultsToShow && (
 							<Button
@@ -113,7 +117,7 @@ const ProductSearch = () => {
 								color="primary"
 								sx={{ marginTop: 2 }}
 							>
-                Näytä lisää tuloksia
+								Näytä lisää tuloksia
 							</Button>
 						)}
 
@@ -123,7 +127,7 @@ const ProductSearch = () => {
 							color="primary"
 							sx={{ marginTop: 2 }}
 						>
-              Näytä kaikki tulokset
+							Näytä kaikki tulokset
 						</Button>
 					</ul>
 				</div>

@@ -1,12 +1,12 @@
 import express from "express"
-import { Product, getAllCategories, getAllSubcategories, getIndividualSubcategory, getCategoryName, getSubcategoryName } from "../daos/productsDao"
+import { ProductBackend, getAllCategories, getAllSubcategories, getIndividualSubcategory, getCategoryName, getSubcategoryName } from "../daos/productsDao"
 
 const category = express.Router()
 
 //Get all categories
 category.get("/", async (_req, res) => {
 	try {
-		const category: Product[] = await getAllCategories()
+		const category: ProductBackend[] = await getAllCategories()
 		res.status(200).json(category)
 	} catch (error) {
 		res.status(500).json({ message: "Category information couldn't be displayed" })
@@ -16,7 +16,7 @@ category.get("/", async (_req, res) => {
 //Get all subcategories
 category.get("/subcategory", async (_req, res) => {
 	try {
-		const category: Product[] = await getAllSubcategories()
+		const category: ProductBackend[] = await getAllSubcategories()
 		res.status(200).json(category)
 	} catch (error) {
 		res.status(500).json({ message: "Subcategory information couldn't be displayed" })
@@ -27,7 +27,7 @@ category.get("/subcategory", async (_req, res) => {
 category.get("/subcategory/:category_id", async (req, res) => {
 	const category_id = parseInt(req.params.category_id)
 	try {
-		const subcategories: Product[] = await await getIndividualSubcategory(category_id)
+		const subcategories: ProductBackend[] = await await getIndividualSubcategory(category_id)
 		res.status(200).json(subcategories)
 	} catch (error) {
 		res.status(500).json({ message: "Subcategory information couldn't be displayed" })
