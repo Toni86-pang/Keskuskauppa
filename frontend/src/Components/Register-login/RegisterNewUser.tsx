@@ -17,12 +17,12 @@ function RegisterNewUser() {
 	const [verifyOpen, setVerifyOpen] = useState(false)
 	const [userImage, setUserImage] = useState<File | null>(null)	
 	
-	const [verifyOpen, setVerifyOpen] = useState(false)
+
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
 	const [showErrorNotificationTwo, setShowErrorNotificationTwo] = useState(false)
 	const [showErrorNotificationThree, setShowErrorNotificationThree] = useState(false)
-
+	const [, setToken] = useContext(UserTokenContext)
 	const [dialogOpen, setDialogOpen] = useState(false)
 
 	const { name, email, username, phone, address, city, postal_code, password } = newUser
