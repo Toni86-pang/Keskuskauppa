@@ -1,6 +1,6 @@
 import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { useNavigate, redirect } from "react-router-dom"
-import { Button, Container, FormControl, Input, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material"
+import { Button, Card, CardMedia, Container, FormControl, Input, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material"
 import { UserTokenContext } from "../../App"
 import { Category, Subcategory, User, initialState } from "../../Services-types/types"
 import { fetchCategories, fetchIndividualSubcategory, fetchUser, newProduct } from "../../Services-types/services"
@@ -31,6 +31,7 @@ function NewProduct() {
 	const [newPostalCode, setNewPostalCode] = useState<string>("")
 	const [productImage, setProductImage] = useState<File | null>(null)	
 	const [hidden, setHidden] = useState<boolean>(false)
+	const [imagePreview, setImagePreview] = useState<string | null>(null)
 
 	const navigate = useNavigate()
 
@@ -166,10 +167,21 @@ function NewProduct() {
 		setSubcategoryId(subcategoryId)
 	}
 
-	const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files && event.target.files[0]
-		if (file) {
+	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const fileInput = event.target
+		if (fileInput && fileInput.files && fileInput.files.length > 0) {
+			const file = fileInput.files[0]
 			setProductImage(file)
+		
+			const reader = new FileReader()
+			reader.onload = (e) => {
+				setImagePreview(e.target?.result as string)
+			}
+			reader.readAsDataURL(file)
+		} else {
+			setError("Invalid image file. Please select a valid image.")
+			setProductImage(null)
+			setImagePreview(null)
 		}
 	}
 	
@@ -222,6 +234,16 @@ function NewProduct() {
 						onChange={handleImageChange}
 						inputProps={{ accept: "image/*" }}	
 					/>
+					{productImage && (
+						<Card sx={{ maxWidth: 345 }}>
+							<CardMedia
+								component="img"
+								height="140"
+								src={imagePreview || ""}
+								alt="Selected Image"
+							/>
+						</Card>
+					)}
 				</FormControl>
 				<FormControl sx={{ mt: 2 }}>
 					<InputLabel id="Katergoria">Kategoria*</InputLabel>
