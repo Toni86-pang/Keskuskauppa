@@ -42,10 +42,20 @@ sales.get("/sold", authentication, async (req: CustomRequest, res: Response) => 
 
 	try {
 		if (userId) {
-			const sales: ProductSale[] = await fetchOwnSold(userId)
-			return res.status(200).send(sales)
+			const sales: ProductSaleBackend[] = await fetchOwnSold(userId)
+
+			const updatedSales = sales.map((sale) => {
+				if (sale.product_image instanceof Buffer) {
+					const tempProductImage = "data:image/*;base64," + sale.product_image.toString("base64")
+					return { ...sale, product_image: tempProductImage }
+				} else {
+					return { ...sale, product_image: "" }
+				}
+			})
+
+			return res.status(200).send(updatedSales)
 		}
-		
+
 		return res.status(401).send()
 
 	} catch (error) {
@@ -58,10 +68,20 @@ sales.get("/bought", authentication, async (req: CustomRequest, res: Response) =
 	const userId = req.id
 	try {
 		if (userId) {
-			const sales: ProductSale[] = await fetchOwnBought(userId)
-			return res.status(200).send(sales)
+			const sales: ProductSaleBackend[] = await fetchOwnBought(userId)
+
+			const updatedSales = sales.map((sale) => {
+				if (sale.product_image instanceof Buffer) {
+					const tempProductImage = "data:image/*;base64," + sale.product_image.toString("base64")
+					return { ...sale, product_image: tempProductImage }
+				} else {
+					return { ...sale, product_image: "" }
+				}
+			})
+
+			return res.status(200).send(updatedSales)
 		}
-		
+
 		return res.status(401).send()
 
 	} catch (error) {
@@ -76,10 +96,10 @@ sales.get("/status/:id", async (req: Request, res: Response) => {
 	try {
 		const sales_status = await getStatusById(statusId)
 		res.status(200).send(sales_status)
-	} catch(error) {	
+	} catch (error) {
 		res.status(500).send()
 	}
-	
+
 
 })
 
@@ -157,7 +177,6 @@ sales.put("/reviewupdate/:id", authentication, async (req: CustomRequest, res: R
 	const reviewed = req.body.reviewed
 	try {
 		const sale: Sale = await getSaleById(salesId)
-		console.log(sale)
 		if (userId === sale.buyer_id) {
 			await updateSaleReviewedStatus(salesId, reviewed)
 			return res.status(200).send({ message: "Sale reviewed status set to true." })
@@ -171,12 +190,13 @@ sales.put("/reviewupdate/:id", authentication, async (req: CustomRequest, res: R
 
 })
 
-interface ProductSale {
+interface ProductSaleBackend {
 	sales_id: number
 	sales_status: string
 	title: string
 	price: number
 	buyer: string
+	product_image: Buffer | string
 }
 
 export default sales

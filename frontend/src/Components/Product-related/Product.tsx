@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react"
-import { useLoaderData, useNavigate, Link, useOutletContext } from "react-router-dom"
+import { useLoaderData, useNavigate, Link, useOutletContext, useLocation } from "react-router-dom"
 import {
 	Paper,
 	Grid,
@@ -31,12 +31,18 @@ export default function Product() {
 	const [token] = useContext(UserTokenContext)
 	const [sellerUsername, setSellerUsername] = useState<string | null>("")
 	const [stars, setStars] = useState(0)
-	// const [selectedImage, setSelectedImage] = useState<string | null>(itemData[0].img)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
 	const [showSuccessfulAddNotification, setShowSuccessfulAddNotification] = useState(false)
 	const navigate = useNavigate()
-	const product = useLoaderData() as ProductType
+	const loadedProduct = useLoaderData() as ProductType
+	const [product, setProduct] = useState(loadedProduct)
 	const [setCart] = useOutletContext<CartContextType>()
+	const location = useLocation()
+
+	// set product when page changes. Needed to if switching between products from search results.
+	useEffect(() => {
+		setProduct(loadedProduct)
+	},[location, loadedProduct])
 
 	useEffect(() => {
 		const fetchUserDetails = async () => {
@@ -50,8 +56,8 @@ export default function Product() {
 			user.user_id !== 0 && product.user_id === user.user_id ? setMyProduct(true) : setMyProduct(false)
 		}
 		fetchUserDetails()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [token])
+
+	}, [token, product])
 
 	const handleDelete = async () => {
 		try {
@@ -129,12 +135,12 @@ export default function Product() {
 								{product?.product_image && (
 									<img
 										alt="Product Image"
-										src={`data:image/*;base64,${product.product_image}`}
+										src={product.product_image}
 										style={{
 											margin: "auto",
 											display: "block",
-											maxWidth: "270px",
-											maxHeight: "270px",
+											maxWidth: "300px",
+											maxHeight: "300px",
 										}}
 									/>
 								)}
@@ -146,7 +152,7 @@ export default function Product() {
 											Hinta:	{product?.price} €
 										</Typography>
 										{!myProduct ? (
-											<>												
+											<>
 												<Typography variant="body2" gutterBottom>
 													Myyjän nimi: {sellerUsername}
 												</Typography>
@@ -157,7 +163,7 @@ export default function Product() {
 													{/* Box tuotti ongelmia, vaihdettiin br:ään */}
 													{/* <Box style={{ marginBottom: "8px" }}> */}
 													<Link to={`/user/${product.user_id}`} style={{ color: "#6096ba", textDecoration: "underline" }}>
-													Katso profiili
+														Katso profiili
 													</Link>
 													{/* </Box> */}<br />
 													<Rating name="read-only" value={stars} precision={0.1} readOnly />
@@ -188,18 +194,13 @@ export default function Product() {
 													Päivitä tuote
 												</Button>
 												<UpdateProductModal
+													product={product}
 													isOpen={isUpdateModalOpen}
-													onClose={() => setUpdateModalOpen(false)}
+													onClose={(updatedProduct: ProductType) => {
+														setProduct(updatedProduct)
+														setUpdateModalOpen(false)
+													}}
 													token={token}
-													productId={product?.product_id}
-													title={product?.title}
-													category_id={product?.category_id}
-													subcategory_id={product?.subcategory_id}
-													city={product?.city.split(",")[0]}
-													postal_code={product?.postal_code.split(",")[0]}
-													description={product?.description}
-													price={product?.price.toString()}
-													product_image={product?.product_image}
 												/>
 											</Box>
 

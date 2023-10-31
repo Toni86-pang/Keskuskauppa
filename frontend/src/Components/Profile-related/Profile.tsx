@@ -94,16 +94,16 @@ function Profile() {
 				<Grid item xs={4}>
 					<CardMedia
 						component="img"
-						image={`data:image/*;base64,${user.user_image}`}
+						image = {user.user_image as string}
 						alt="Image"
-						sx ={{
+						sx={{
 							margin: "auto",
 							display: "block",
 							maxWidth: "270px",
 							maxHeight: "270px",
 						}}
 					/>
-								
+
 
 				</Grid>
 				{user && <Grid item xs={5}>

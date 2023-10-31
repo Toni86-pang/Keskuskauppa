@@ -8,6 +8,8 @@ import { OrderCardProps } from "../../Services-types/types"
 import { useState } from "react"
 import OrderDetails from "../Purchase-order-history/Order-history/OrderDetails"
 
+const URL_TO_DEFAULT_IMAGE = "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e" 
+
 const cardStyle = {
 	marginTop: "10px",
 	marginBottom: "10px"
@@ -31,18 +33,18 @@ function OrderProductCard({ product }: OrderCardProps) {
 					<CardContent>
 						<Grid container spacing={2} style={gridContainerStyle}>
 							<Grid item xs={3}>
-								{product.product_image ? (
+								{product.product_image !== "" ? (
 									<CardMedia
 										component="img"
 										height="80"
-										image={`data:image/*;base64,${product.product_image}`}
+										image={product.product_image}
 										alt={product.title}
 									/>
 								) : (
 									<CardMedia
 										component="img"
 										height="80"
-										image={"URL_TO_DEFAULT_IMAGE"}
+										image={URL_TO_DEFAULT_IMAGE}
 										alt="Default Image"
 									/>
 								)}

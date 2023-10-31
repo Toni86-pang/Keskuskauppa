@@ -4,11 +4,13 @@ import Container from "@mui/material/Container"
 import Button from "@mui/material/Button"
 import Login from "../Register-login/Login"
 import "./LandingPage.css"
-import { User } from "../../Services-types/types"
-import { fetchUser } from "../../Services-types/services"
+import { ProductType, User } from "../../Services-types/types"
+import { fetchLatestProducts, fetchUser } from "../../Services-types/services"
 import { UserTokenContext } from "../../App"
 import CustomCarousel from "./Carousel/Carousel"
 import RegisterNewUser from "../Register-login/RegisterNewUser"
+
+const NUMBER_OF_PRODUCTS = 7
 
 const LandingPage = () => {
 	const [token] = useContext(UserTokenContext)
@@ -32,10 +34,21 @@ const LandingPage = () => {
 		fetchUserDetails()
 	}, [token])
 
+	const [products, setProducts] = useState<ProductType[]>([])
+
+	useEffect(() => {
+		const loadCarouselProducts = async () => {
+			const loadedCarouselProducts = await fetchLatestProducts(NUMBER_OF_PRODUCTS)
+			setProducts(loadedCarouselProducts)
+		}
+		loadCarouselProducts()
+	}, [])
+
+
 	return (
 		<Box>
 			<Container className="custom-carousel">
-				<CustomCarousel />
+				{products.length > 0 && <CustomCarousel carouselProducts={products} />}
 			</Container>
 			<Box className="custom-container-one" display="flex">
 				<Box className="custom-container-two">

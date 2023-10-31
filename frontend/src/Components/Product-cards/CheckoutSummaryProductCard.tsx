@@ -5,6 +5,8 @@ import Typography from "@mui/material/Typography"
 import { Grid } from "@mui/material"
 import { ProductProps } from "../../Services-types/types"
 
+const URL_TO_DEFAULT_IMAGE = "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e" 
+
 const cardStyle = {
 	marginTop: "10px",
 	marginBottom: "10px"
@@ -29,14 +31,14 @@ function CheckoutProductCard({ product }: ProductProps) {
 								<CardMedia
 									component="img"
 									height="80"
-									image={`data:image/*;base64,${product.product_image}`}
+									image={product.product_image}
 									alt={product.title}
 								/>
 							) : (
 								<CardMedia
 									component="img"
 									height="80"
-									image={"URL_TO_DEFAULT_IMAGE"}
+									image={URL_TO_DEFAULT_IMAGE}
 									alt="Default Image"
 								/>
 							)}

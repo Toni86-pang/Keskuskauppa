@@ -3,39 +3,24 @@ import { Dialog, TextField, Button, FormControl, InputLabel, Select, MenuItem, S
 import { Category, UpdateProductModalProps } from "../../Services-types/types"
 import { fetchCategories, fetchSubcategories, updateProduct } from "../../Services-types/services"
 import Notification from "../Verify-notification/Notification"
-import { useNavigate } from "react-router-dom"
 
-function UpdateProductModal({
-	isOpen,
-	onClose,
-	token,
-	productId,
-	title,
-	category_id,
-	subcategory_id,
-	city,
-	postal_code,
-	description,
-	price
-	
-}: UpdateProductModalProps) {
-	const [updatedTitle, setUpdatedTitle] = useState(title)
-	const [updatedCity, setUpdatedCity] = useState(city)
-	const [updatedPostalCode, setUpdatedPostalCode] = useState(postal_code)
-	const [updatedDescription, setUpdatedDescription] = useState(description)
-	const [updatedPrice, setUpdatedPrice] = useState(price)
+function UpdateProductModal({isOpen, onClose, token, product }: UpdateProductModalProps) {
+	const [updatedTitle, setUpdatedTitle] = useState(product.title)
+	const [updatedCity, setUpdatedCity] = useState(product.city)
+	const [updatedPostalCode, setUpdatedPostalCode] = useState(product.postal_code)
+	const [updatedDescription, setUpdatedDescription] = useState(product.description)
+	const [updatedPrice, setUpdatedPrice] = useState(product.price)
 	const [selectedImage, setSelectedImage] = useState<File | null>(null)
 	const [imagePreview, setImagePreview] = useState<string | null>(null)
 
 	const [categories, setCategories] = useState<Category[]>([])
 	const [subcategories, setSubcategories] = useState<Category[]>([])	
-	const [selectedCategoryId, setSelectedCategoryId] = useState(category_id)
-	const [selectedSubcategoryId, setSelectedSubcategoryId] = useState(subcategory_id)
+	const [selectedCategoryId, setSelectedCategoryId] = useState(product.category_id)
+	const [selectedSubcategoryId, setSelectedSubcategoryId] = useState(product.subcategory_id)
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
 	const [error, setError] = useState("")
 	
-	const navigate = useNavigate()
 
 	useEffect(() => {
 		async function fetchCategoryData() {
@@ -130,14 +115,47 @@ function UpdateProductModal({
 			formData.append("postal_code", updatedPostalCode)
 			formData.append("description", updatedDescription)
 			formData.append("price", String(updatedPrice))
+
 			if (selectedImage) {
 				formData.append("product_image", selectedImage) // Append the image to FormData
 			}
-	
-			await updateProduct(productId, formData, token)
-			setShowSuccessNotification(true) 
-			onClose()
-			navigate("/profile")
+			// update product database
+			await updateProduct(product.product_id, formData, token)
+
+			// if no new product image, update the product page with new product data without image
+			if(!selectedImage) {
+				setShowSuccessNotification(true)
+				onClose({ ...product, title: updatedTitle, 
+					category_id: selectedCategoryId, 
+					subcategory_id: selectedSubcategoryId, 
+					city: updatedCity, 
+					postal_code: updatedPostalCode, 
+					description: updatedDescription,
+					price: updatedPrice })
+			} else { 	
+				// Create a Filereader to read new image asynchronously
+				const reader = new FileReader()	
+
+				// This function is called when the image is loaded below
+				reader.onload = (event) => {
+					// encode the file into base64 string
+					const imageDataURL = event.target?.result as string
+
+					setShowSuccessNotification(true)
+
+					onClose({ ...product, title: updatedTitle, 
+						category_id: selectedCategoryId, 
+						subcategory_id: selectedSubcategoryId, 
+						city: updatedCity, 
+						postal_code: updatedPostalCode, 
+						description: updatedDescription,
+						price: updatedPrice,  
+						product_image: imageDataURL })				
+				}
+				// read the file
+				reader.readAsDataURL(selectedImage as File)
+			}
+			
 		} catch (error) {
 			console.error("Error updating product:", error)
 			setShowErrorNotification(true) 
@@ -145,12 +163,12 @@ function UpdateProductModal({
 	}
 
 	const handleCloseModal = () => {
-		onClose()
+		onClose(product)
 	}
 
 	return (
 		<>
-			<Dialog open={isOpen} onClose={onClose} maxWidth="md" fullWidth>
+			<Dialog open={isOpen} onClose={handleCloseModal} maxWidth="md" fullWidth>
 				<Box sx={{ maxHeight: "80vh", overflowY: "auto", p: 2 }}>
 					<Grid container spacing={4}>
 						<Grid item xs={4}>

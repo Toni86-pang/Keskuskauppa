@@ -4,7 +4,7 @@ import { authentication, checkReqBody } from "../middlewares"
 import multer from "multer"
 import argon2 from "argon2"
 import jwt from "jsonwebtoken"
-import { User } from "../daos/usersDao"
+import { UserBackend } from "../daos/usersDao"
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
@@ -15,18 +15,37 @@ interface CustomRequest extends Request {
 	id?: number
 }
 
+interface UserFrontend {
+	user_id?: number
+	username: string
+	name: string
+	email: string
+	phone: string
+	address: string
+	city: string
+	postal_code: string
+	password: string
+	user_image?: string
+}
+
+
 users.get("/user", authentication, async (req: CustomRequest, res: Response) => {
 	if (!req.id) {
 		return res.status(404).send("No such user")
 	}
 	const user_id = req.id
-	const user: User = await getUserByUserId(user_id)
+	const userBackend: UserBackend = await getUserByUserId(user_id)
+	let tempUserImage: string = ""
 
-	if (user.user_image instanceof Buffer) {
-		user.user_image = user.user_image.toString("base64")
+	if (userBackend.user_image) {
+		tempUserImage = "data:image/*;base64," + userBackend.user_image.toString("base64")
 	}
 
-	return res.status(200).send(user)
+	const userFrontend: UserFrontend = { ...userBackend, user_image: tempUserImage }
+
+
+
+	return res.status(200).send(userFrontend)
 })
 
 
@@ -142,7 +161,7 @@ users.put("/update", authentication, upload.single("user_image"), async (req: Cu
 		return res.status(404).send("No user id")
 	}
 
-	const updatedUser: User = req.body
+	const updatedUser: UserBackend = req.body
 	updatedUser.user_id = userId
 
 	if (user_image !== undefined) {
@@ -174,15 +193,15 @@ users.put("/password", authentication, async (req: CustomRequest, res: Response)
 	const userId = req.id
 	const { currentPassword, newPassword } = req.body
 
-	if(!currentPassword) {
+	if (!currentPassword) {
 		res.status(400).send("Password can't be empty!")
 	}
 
 	try {
-		const user: User = await getUserByUserId(userId)
+		const user: UserBackend = await getUserByUserId(userId)
 		const isPasswordCorrect = await argon2.verify(user.password, currentPassword)
 
-		if(!isPasswordCorrect) {
+		if (!isPasswordCorrect) {
 			console.error("Wrong old password.")
 			return res.status(401).send("Incorrect password.")
 		}
@@ -211,19 +230,23 @@ users.get("/:id", async (req: Request, res: Response) => {
 		if (isNaN(userId)) {
 			return res.status(400).json({ message: "Invalid user id provided" })
 		}
-		const result: User[] = await getUserDetailsByUserId(userId)
+
+		const result: UserBackend[] = await getUserDetailsByUserId(userId)
 
 		if (result.length === 0) {
 			return res.status(404).json({ message: "User not found" })
 		}
-		const user: User = result[0]
-		
-		if (user.user_image instanceof Buffer) {
-			user.user_image = user.user_image.toString("base64")
+		const userBackend: UserBackend = result[0]
+		let tempUserImage: string = ""
+
+		if (userBackend.user_image) {
+			tempUserImage = "data:image/*;base64," + userBackend.user_image.toString("base64")
 		}
 
+		const userFrontend: UserFrontend = { ...userBackend, user_image: tempUserImage }
 
-		return res.status(200).send(result)
+		return res.status(200).send(userFrontend)
+
 	} catch (error) {
 		res.status(500).json({ message: "User information couldn't be displayed" })
 	}
