@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import AccountCircleIcon from "@mui/icons-material/AccountCircle"
+// import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
 import {
@@ -24,6 +24,7 @@ import "./Navbar.css"
 import Crumbs from "../Crumbs/Crumbs"
 import ProductSearch from "../Search/Searchbar"
 import { useBadgeContext } from "../BadgeContext"
+import Avatar from "@mui/material/Avatar"
 
 
 const Navbar = ({ cart, setCart }: NavbarProps) => {
@@ -61,8 +62,6 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 					const fetchedUser = await fetchUser(token) // Use the fetchUser API call from your services
 					if (fetchedUser) {
 						setUser(fetchedUser)
-					} else {
-						console.error("Error fetching user")
 					}
 				} catch (error) {
 					console.error("Error fetching user:", error)
@@ -102,8 +101,13 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 									aria-controls="user-menu"
 									aria-haspopup="true"
 								>
-									<AccountCircleIcon />
+									<Avatar src={typeof user?.user_image === "string" ? user.user_image : undefined}
+										alt={user?.name}
+										sx={{
+											width: "25",
+											height: "25"
 
+										}} />
 
 									<Typography variant="body1" sx={{ mt: 1 }}>
 										<Badge badgeContent={badgeCount} color="error" >
@@ -179,3 +183,6 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 }
 
 export default Navbar
+
+
+
