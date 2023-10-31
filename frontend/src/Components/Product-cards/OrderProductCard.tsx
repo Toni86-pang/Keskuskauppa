@@ -18,8 +18,8 @@ const cardStyle = {
 const gridContainerStyle = {
 	alignItems: "center"
 }
-
-function OrderProductCard({ product }: OrderCardProps) {
+// setRefresh toggles refresh state variable that is used in order history useEffect to reload sales
+function OrderProductCard({ product, setRefresh }: OrderCardProps) {
 	const [isOpen, setIsopen] = useState(false)
 
 	const handleClick = () => {
@@ -75,9 +75,9 @@ function OrderProductCard({ product }: OrderCardProps) {
 						</Grid>
 					</CardContent>
 					{product.seller ? (
-						<OrderDetails isSeller={false} isOpen={isOpen} saleId={product.sales_id} onClose={() => setIsopen(false)} />
+						<OrderDetails isSeller={false} isOpen={isOpen} saleId={product.sales_id} onClose={() =>{ setIsopen(false); setRefresh()}} />
 					) : (
-						<OrderDetails isSeller={true} isOpen={isOpen} saleId={product.sales_id} onClose={() => setIsopen(false)} />
+						<OrderDetails isSeller={true} isOpen={isOpen} saleId={product.sales_id} onClose={() =>{ setIsopen(false); setRefresh()}} />
 					)}
 				</Card>
 			}
