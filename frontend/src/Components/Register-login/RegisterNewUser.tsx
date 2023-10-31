@@ -1,6 +1,6 @@
 import { ChangeEvent, useState, useContext } from "react"
 import { UserTokenContext } from "../../App"
-import { Button, Container, FormControl, Input, InputLabel, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
+import { Button, Container, FormControl, Input, InputLabel, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Card, CardMedia } from "@mui/material"
 import VerifyDialog from "../Verify-notification/VerifyDialog"
 import { User, initialState } from "../../Services-types/types"
 // import { registerUser } from "../services"
@@ -16,7 +16,8 @@ function RegisterNewUser() {
 	const [isTouched, setIsTouched] = useState(false)
 	const [verifyOpen, setVerifyOpen] = useState(false)
 	const [userImage, setUserImage] = useState<File | null>(null)	
-	
+	const [imagePreview, setImagePreview] = useState<string | null>(null)
+	const [, setError] = useState<string>("")
 
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
@@ -134,10 +135,21 @@ function RegisterNewUser() {
 		setDialogOpen(false)
 	}
 
-	const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files && event.target.files[0]
-		if (file) {
+	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const fileInput = event.target
+		if (fileInput && fileInput.files && fileInput.files.length > 0) {
+			const file = fileInput.files[0]
 			setUserImage(file)
+		
+			const reader = new FileReader()
+			reader.onload = (e) => {
+				setImagePreview(e.target?.result as string)
+			}
+			reader.readAsDataURL(file)
+		} else {
+			setError("Invalid image file. Please select a valid image.")
+			setUserImage(null)
+			setImagePreview(null)
 		}
 	}
 
@@ -233,6 +245,16 @@ function RegisterNewUser() {
 								onChange={handleImageChange}
 								inputProps={{ accept: "image/*" }}	
 							/>
+							{userImage && (
+								<Card sx={{ maxWidth: 345 }}>
+									<CardMedia
+										component="img"
+										height="140"
+										src={imagePreview || ""}
+										alt="Selected Image"
+									/>
+								</Card>
+							)}
 						</FormControl>
 
 					</DialogContent>
