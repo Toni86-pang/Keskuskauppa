@@ -3,10 +3,8 @@ import { UserTokenContext } from "../../App"
 import { Button, Container, FormControl, Input, InputLabel, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Card, CardMedia } from "@mui/material"
 import VerifyDialog from "../Verify-notification/VerifyDialog"
 import { User, initialState } from "../../Services-types/types"
-// import { registerUser } from "../services"
 import Notification from "../Verify-notification/Notification"
 import axios, { AxiosError } from "axios"
-// import { registerUser } from "../services"
 
 function RegisterNewUser() {
 
@@ -307,6 +305,5 @@ function RegisterNewUser() {
 		</>
 	)
 }
-
 
 export default RegisterNewUser
