@@ -5,6 +5,7 @@ import { UserTokenContext } from "../../../App"
 import { Button, Container, Stack } from "@mui/material"
 import { redirect } from "react-router-dom"
 import OrderProductCard from "../../Product-cards/OrderProductCard"
+import { useBadgeContext } from "../../BadgeContext"
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
@@ -26,6 +27,7 @@ export default function OrderHistory() {
 	const [boughtCancelled, setBoughtCancelled] = useState<BoughtProps[]>([])
 	const [boughtReceived, setBoughtReceived] = useState<BoughtProps[]>([])
 	const [token] = useContext(UserTokenContext)
+	const { setBadgeCount } = useBadgeContext()
 
 	useEffect(() => {
 		if (!token) return
@@ -50,7 +52,8 @@ export default function OrderHistory() {
 		}
 
 		fetchData()
-	}, [token])
+		setBadgeCount(soldWaiting.length + boughtSent.length)
+	}, [token, boughtSent, soldWaiting, setBadgeCount])
 
 
 	const renderSold = (saleStatus: string, soldProducts: SoldProps[]) => {
