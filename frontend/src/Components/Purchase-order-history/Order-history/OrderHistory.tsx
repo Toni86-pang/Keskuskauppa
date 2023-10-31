@@ -26,6 +26,7 @@ export default function OrderHistory() {
 	const [boughtSent, setBoughtSent] = useState<BoughtProps[]>([])
 	const [boughtCancelled, setBoughtCancelled] = useState<BoughtProps[]>([])
 	const [boughtReceived, setBoughtReceived] = useState<BoughtProps[]>([])
+	const [refresh, setRefresh] = useState(false)
 	const [token] = useContext(UserTokenContext)
 	const { setBadgeCount } = useBadgeContext()
 
@@ -52,8 +53,12 @@ export default function OrderHistory() {
 		}
 
 		fetchData()
+		
+	}, [token, refresh])
+
+	useEffect(() => {
 		setBadgeCount(soldWaiting.length + boughtSent.length)
-	}, [token, boughtSent, soldWaiting, setBadgeCount])
+	},[soldWaiting, boughtSent, setBadgeCount])
 
 
 	const renderSold = (saleStatus: string, soldProducts: SoldProps[]) => {
@@ -62,7 +67,7 @@ export default function OrderHistory() {
 				<h3>{saleStatus}</h3>
 				{
 					soldProducts.map((product, index) => {
-						return <OrderProductCard key={saleStatus + index} product={product} />
+						return <OrderProductCard key={saleStatus + index + product.title} product={product} setRefresh={()=>setRefresh(!refresh)} />
 					})
 				}
 			</>)
@@ -74,7 +79,7 @@ export default function OrderHistory() {
 				<h3>{saleStatus}</h3>
 				{
 					boughtProducts.map((product, index) => {
-						return <OrderProductCard key={saleStatus + index} product={product} />
+						return <OrderProductCard key={saleStatus + index + product.title} product={product} setRefresh={()=>setRefresh(!refresh)} />
 					})
 				}
 			</>)
