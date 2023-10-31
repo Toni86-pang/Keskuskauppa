@@ -1,4 +1,4 @@
-import { ChangeEvent, useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import Dialog from "@mui/material/Dialog"
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
@@ -8,7 +8,7 @@ import { UpdateProfileProps } from "../../Services-types/types"
 import { UserTokenContext } from "../../App"
 import { updateUser } from "../../Services-types/services"
 import Notification from "../Verify-notification/Notification"
-import { Box, FormControl, Input, InputLabel } from "@mui/material"
+import { Box, Card, CardMedia, FormControl, Input, InputLabel } from "@mui/material"
 
 
 const styles = {
@@ -33,6 +33,8 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 	const [newCity, setNewCity] = useState(user.city)
 	const [newPostalCode, setNewPostalCode] = useState(user.postal_code)
 	const [newUserImage, setNewUserImage] = useState<File | null>(null)
+	const [imagePreview, setImagePreview] = useState<string | null>(null)
+	const [, setError] = useState<string>("")
 
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
@@ -50,10 +52,21 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 		setNewPostalCode(event.target.value)
 	}
 
-	const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files && event.target.files[0]
-		if (file) {
+	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const fileInput = event.target
+		if (fileInput && fileInput.files && fileInput.files.length > 0) {
+			const file = fileInput.files[0]
 			setNewUserImage(file)
+		
+			const reader = new FileReader()
+			reader.onload = (e) => {
+				setImagePreview(e.target?.result as string)
+			}
+			reader.readAsDataURL(file)
+		} else {
+			setError("Invalid image file. Please select a valid image.")
+			setNewUserImage(null)
+			setImagePreview(null)
 		}
 	}
 	const resetForm = () => {
@@ -163,6 +176,16 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 							Muokkaa kuvaa:
 						</InputLabel>
 						<Input type="file" onChange={handleImageChange} inputProps={{ accept: "image/*" }} />
+						{newUserImage && (
+							<Card sx={{ maxWidth: 345 }}>
+								<CardMedia
+									component="img"
+									height="140"
+									src={imagePreview || ""}
+									alt="Selected Image"
+								/>
+							</Card>
+						)}
 					</FormControl>
 
 					<Box style={styles.buttonContainer}>
