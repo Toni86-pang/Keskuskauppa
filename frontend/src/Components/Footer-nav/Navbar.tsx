@@ -125,7 +125,6 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 									aria-controls="user-menu"
 									aria-haspopup="true"
 								>
-									{/* /<AccountCircleIcon /> */}
 									<Avatar src={typeof user?.user_image === "string" ? user.user_image : undefined}
 										alt={user?.name}
 										sx={{
