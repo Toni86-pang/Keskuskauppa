@@ -66,8 +66,6 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 					}
 					if (fetchedUser.user_image) {
 						setAvatarImage(fetchedUser.user_image)
-						console.log("userImage:", fetchedUser.user_image)
-						console.error("Error fetching user")
 					}
 				} catch (error) {
 					console.error("Error fetching user:", error)
@@ -132,18 +130,13 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 									aria-haspopup="true"
 								>
 									{/* /<AccountCircleIcon /> */}
-									<Avatar src={typeof user?.user_image === "string" ? user.user_image : "oletuskuva.jpg"} alt={user?.name}
+									<Avatar src={typeof user?.user_image === "string" ? user.user_image : undefined} alt={user?.name}
 										sx={{
-											width: "50px",
-											height: "50px"
+											width: "25",
+											height: "25"
 
 										}} />
 								
-
-
-
-
-
 									<Typography variant="body1" sx={{ mt: 1 }}>
 										<Badge badgeContent={unSent + notReceived} color="error" >
 											{user?.name} {/* Access the user's name */}
