@@ -1,6 +1,6 @@
 import Card from "@mui/material/Card"
 import CardContent from "@mui/material/CardContent"
-import { Button, Grid, Rating } from "@mui/material"
+import { Box, Button, Grid, Rating } from "@mui/material"
 import { useEffect, useState } from "react"
 import CommentCard from "./CommentCard"
 import LeaveComment from "./LeaveComment"
@@ -54,15 +54,15 @@ function ReviewCard({ review, isOwn }: ReviewCardProps) {
 		<>
 			<Card style={cardStyle}>
 				<CardContent>
-					<div>{review.description}</div>
 					<Grid container spacing={2} style={gridContainerStyle} >
-						<Grid item xs={2} >{reviewer}</Grid>
-						<Grid item xs={2} >{formattedReviewDate}</Grid>
-						<Grid item xs={5} ><Rating value={review.stars} /></Grid>
+						<Grid item xs={3} >Arvostelija: {reviewer}</Grid>
+						<Grid item xs={4} >Arvio annettu: {formattedReviewDate}</Grid>
+						<Grid item xs={4} >Annetut tähdet: <Rating value={review.stars} /></Grid>
 						<Grid item xs={3} >
 							{isOwn && !reviewComment && <Button variant="contained" color="primary" onClick={()=>setLeaveCommentOpen(true)}>Jätä kommentti</Button>}
 						</Grid>
 					</Grid>
+					<Box mb={3} >{review.description}</Box>
 					{reviewComment && <CommentCard reviewComment={reviewComment} />}
 				</CardContent>
 			</Card>
