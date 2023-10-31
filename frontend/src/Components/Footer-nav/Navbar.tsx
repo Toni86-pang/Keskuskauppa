@@ -35,7 +35,6 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 	const [unSent, setUnsent] = useState(0)
 	const [notReceived, setNotReceived] = useState(0)
 	const [inSales, setInSales] = useState(true)
-	const [, setAvatarImage] = useState<File | null>(null)
 
 	const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget)
@@ -63,9 +62,6 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 					const fetchedUser = await fetchUser(token) // Use the fetchUser API call from your services
 					if (fetchedUser) {
 						setUser(fetchedUser)
-					}
-					if (fetchedUser.user_image) {
-						setAvatarImage(fetchedUser.user_image)
 					}
 				} catch (error) {
 					console.error("Error fetching user:", error)
@@ -130,13 +126,14 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 									aria-haspopup="true"
 								>
 									{/* /<AccountCircleIcon /> */}
-									<Avatar src={typeof user?.user_image === "string" ? user.user_image : undefined} alt={user?.name}
+									<Avatar src={typeof user?.user_image === "string" ? user.user_image : undefined}
+										alt={user?.name}
 										sx={{
 											width: "25",
 											height: "25"
 
 										}} />
-								
+
 									<Typography variant="body1" sx={{ mt: 1 }}>
 										<Badge badgeContent={unSent + notReceived} color="error" >
 											{user?.name} {/* Access the user's name */}
