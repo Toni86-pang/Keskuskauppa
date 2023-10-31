@@ -36,7 +36,6 @@ function ReviewCard({ review, isOwn }: ReviewCardProps) {
 			if (comment) {
 				setReviewComment(comment)
 			}
-			
 			const fetchedReviewer = await fetchUsernameByUserId(review.buyer_id)
 			if (fetchedReviewer) {
 				setReviewer(fetchedReviewer)

@@ -61,7 +61,7 @@ export const fetchUser = async (token: string) => {
 export const fetchUsernameByUserId = async (id: number) => {
 	try {
 		const response = await axios.get(`/api/users/${id}`)
-		const data = response.data[0] as User // Extract the first user object from the array
+		const data = response.data as User // Extract the first user object from the array
 		return data.username
 	} catch (error) {
 		console.error("Error fetching username by user ID:", error)
@@ -71,7 +71,7 @@ export const fetchUsernameByUserId = async (id: number) => {
   
 export const fetchUserDetailsByUserId = async (user_id: number) => {
 	const response = await axios.get("/api/users/" + user_id)
-	const data = response.data[0] as User
+	const data = response.data as User
 	return data
 }
 
@@ -138,6 +138,12 @@ export const fetchProduct = async (id: number) => {
 
 export const fetchAllProducts = async () => {
 	const response = await axios.get("/api/product")
+	const data = response.data as ProductType[]
+	return data
+}
+
+export const fetchLatestProducts = async (amount: number) => {
+	const response = await axios.get("/api/product/latest/" + amount)
 	const data = response.data as ProductType[]
 	return data
 }
@@ -291,7 +297,6 @@ export const returnProductToShop = async (saleId: number, token: string) => {
 				"Authorization": `Bearer ${token}`
 			}
 		})
-	console.log(response)
 	return response
 }
 

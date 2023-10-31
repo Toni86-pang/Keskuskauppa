@@ -11,6 +11,7 @@ import DisplayProducts from "../Product-related/DisplayProducts"
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, react-refresh/only-export-components
 export async function loader({ params }: any) {
 	const loadedUser = await fetchUserDetailsByUserId(params.id)
+	console.log(loadedUser)
 	const products = await fetchUsersProducts(loadedUser.user_id)
 	const stars = await fetchStarRating(loadedUser.user_id)
 	const userProducts: UserProducts = { loadedUser, stars, products }
@@ -45,7 +46,8 @@ function SellerProfile() {
 					<div>{user?.user_image && (
 						<img
 							alt="Seller Image"
-							src={`data:image/*;base64,${user.user_image}`}
+							// src={`data:image/*;base64,${user.user_image}`}
+							src={user.user_image as string}
 							style={{
 								margin: "auto",
 								display: "block",

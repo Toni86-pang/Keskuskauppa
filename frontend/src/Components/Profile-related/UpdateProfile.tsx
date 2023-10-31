@@ -8,7 +8,7 @@ import { UpdateProfileProps } from "../../Services-types/types"
 import { UserTokenContext } from "../../App"
 import { updateUser } from "../../Services-types/services"
 import Notification from "../Verify-notification/Notification"
-import { FormControl, Input, InputLabel } from "@mui/material"
+import { Box, FormControl, Input, InputLabel } from "@mui/material"
 
 
 const styles = {
@@ -54,7 +54,6 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 		const file = event.target.files && event.target.files[0]
 		if (file) {
 			setNewUserImage(file)
-
 		}
 	}
 	const resetForm = () => {
@@ -62,7 +61,6 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 		setNewPhone(user.phone)
 		setNewCity(user.city)
 		setNewPostalCode(user.postal_code)
-		setNewUserImage(user.user_image)
 		// calls profile page's close function when closing the modal. 
 		close(user)
 	}
@@ -72,26 +70,36 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 		setNewCity(user.city)
 		setNewPostalCode(user.postal_code)
 		setNewPhone(user.phone)
-		setNewUserImage(user.user_image)
 	}, [user])
 
 
 	const handleUpdateSubmit = async () => {
 		try {
 			const formData = new FormData()
-			formData.append("name", newAddress)
+			formData.append("address", newAddress)
 			formData.append("city", newCity)
 			formData.append("postal_code", newPostalCode)
 			formData.append("phone", newPhone)
 
 			if (newUserImage) {
 				formData.append("user_image", newUserImage)
-
 			}
-			
+
 			await updateUser(formData, token)
-			setShowSuccessNotification(true)
-			close({ ...user, address: newAddress, phone: newPhone, city: newCity, postal_code: newPostalCode, user_image: newUserImage })
+
+			if (!newUserImage) {
+				setShowSuccessNotification(true)
+				close({ ...user, address: newAddress, phone: newPhone, city: newCity, postal_code: newPostalCode })
+			} else {
+				const reader = new FileReader()
+				reader.onload = (event) => {
+					const imageDataURL = event.target?.result as string
+					setShowSuccessNotification(true)
+					close({ ...user, address: newAddress, phone: newPhone, city: newCity, postal_code: newPostalCode, user_image: imageDataURL })
+				}
+				reader.readAsDataURL(newUserImage as File)
+			}			
+
 		} catch (error) {
 			console.error("error updating profile", error)
 			setShowErrorNotification(true)
@@ -101,72 +109,73 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 
 	return (
 		<>
-			<Dialog open={isOpen} onClose={resetForm} >
+			<Dialog open={isOpen} onClose={resetForm}>
 				<DialogTitle>Muokkaa profiilia</DialogTitle>
 				<DialogContent>
-					<div>
-						<div>Nimi: {user.name}</div>
-						<div>Käyttäjänimi: {user.username}</div>
-						<div>Sähköposti: {user.email}</div>
-					</div>
+					<Box>
+						<Box>Nimi: {user.name}</Box>
+						<Box>Käyttäjänimi: {user.username}</Box>
+						<Box>Sähköposti: {user.email}</Box>
+					</Box>
 
-					<div style={styles.section}>
-						<div style={styles.label}>Osoite:</div>
-						<div style={styles.section}>
+					<Box style={styles.section}>
+						<Box style={styles.label}>Osoite:</Box>
+						<Box style={styles.section}>
 							<TextField
 								label="Katuosoite"
 								value={newAddress}
 								onChange={handleAddressChange}
 								fullWidth
 							/>
-						</div>
+						</Box>
 
-						<div style={styles.section}>
+						<Box style={styles.section}>
 							<TextField
 								label="Kaupunki"
 								value={newCity}
 								onChange={handleCityChange}
 								fullWidth
 							/>
-						</div>
+						</Box>
 
-						<div style={styles.section}>
+						<Box style={styles.section}>
 							<TextField
 								label="Postinumero"
 								value={newPostalCode}
 								onChange={handlePostalCodeChange}
 								fullWidth
 							/>
-						</div>
-					</div>
-					<div style={styles.section}>
-						<div style={styles.label}>Puhelinnumero:</div>
+						</Box>
+					</Box>
+
+					<Box style={styles.section}>
+						<Box style={styles.label}>Puhelinnumero:</Box>
 						<TextField
 							label="Puhelinnumero"
 							value={newPhone}
 							onChange={handlePhoneChange}
 							fullWidth
 						/>
-					</div>
+					</Box>
+
 					<FormControl>
-						<InputLabel style={{ position: "relative" }} id="Kuvat">Muokkaa kuvaa:</InputLabel>
-						<Input
-							type="file"
-							onChange={handleImageChange}
-							inputProps={{ accept: "image/*" }}
-						/>
+						<InputLabel style={{ position: "relative" }} id="Kuvat">
+							Muokkaa kuvaa:
+						</InputLabel>
+						<Input type="file" onChange={handleImageChange} inputProps={{ accept: "image/*" }} />
 					</FormControl>
 
-					<div style={styles.buttonContainer}>
+					<Box style={styles.buttonContainer}>
 						<Button variant="outlined" onClick={handleUpdateSubmit}>
 							Päivitä
 						</Button>
 						<Button variant="outlined" onClick={resetForm}>
 							Peruuta
 						</Button>
-					</div>
+					</Box>
 				</DialogContent>
 			</Dialog>
+
 
 			{/* Success and error notifications */}
 			{showSuccessNotification && (

@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express"
-import { createProduct, getAllProducts, getProductById, getProductsByCategory, getProductsBySubcategory, updateProductData, deleteProduct, getProductsByUserId, Product, updateProductListed } from "../daos/productsDao"
+import { createProduct, getAllProducts, getProductById, getProductsByCategory, getProductsBySubcategory, updateProductData, deleteProduct, getProductsByUserId, updateProductListed, ProductBackend, getLatestProducts } from "../daos/productsDao"
 import { authentication, validateCategoryId } from "../middlewares"
 import multer from "multer"
 
@@ -45,39 +45,59 @@ product.post("/", authentication, upload.single("product_image"), async (req: Cu
 	}
 })
 
-
 product.get("/", async (_req, res) => {
 	try {
-		const products: Product[] = await getAllProducts()
+		const products: ProductBackend[] = await getAllProducts()
 
 		// Convert product_image to Base64 encoded string for products with images
-		products.forEach(product => {
+		const updatedProducts = products.map((product) => {
 			if (product.product_image instanceof Buffer) {
-				product.product_image = product.product_image.toString("base64")
+				const tempUserImage = "data:image/*;base64," + product.product_image.toString("base64")
+				return { ...product, product_image: tempUserImage }
+			} else {
+				return { ...product, product_image: "" }
 			}
 		})
-
-		res.status(200).json(products)
+		res.status(200).json(updatedProducts)
 	} catch (error) {
 		res.status(500).json({ message: "Internal server error" })
 	}
 })
 
+product.get("/latest/:amount", async (req, res) => {
+	const amount: number = Number(req.params.amount)
 
+	try {
+		const products: ProductBackend[] = await getLatestProducts(amount)
 
-
+		// Convert product_image to Base64 encoded string for products with images
+		const updatedProducts = products.map((product) => {
+			if (product.product_image instanceof Buffer) {
+				const tempUserImage = "data:image/*;base64," + product.product_image.toString("base64")
+				return { ...product, product_image: tempUserImage }
+			} else {
+				return { ...product, product_image: "" }
+			}
+		})
+		res.status(200).json(updatedProducts)
+	} catch (error) {
+		res.status(500).json({ message: "Internal server error" })
+	}
+})
 
 product.get("/:id", async (req, res) => {
 	try {
 		const product_id: number = parseInt(req.params.id, 10)
-		const productDetails: Product | null = await getProductById(product_id)
+		const productDetails: ProductBackend | null = await getProductById(product_id)
 
 		if (productDetails === null) {
 			res.status(404).json({ message: "Product not found" })
 		} else {
 			// Convert product_image to a Base64 encoded string
 			if (productDetails.product_image instanceof Buffer) {
-				productDetails.product_image = productDetails.product_image.toString("base64")
+
+				const tempUserImage = "data:image/*;base64," + productDetails.product_image.toString("base64")
+				productDetails.product_image = tempUserImage
 			}
 
 			res.status(200).json(productDetails)
@@ -90,13 +110,17 @@ product.get("/:id", async (req, res) => {
 product.get("/user/:id", async (req, res) => {
 	const userId = Number(req.params.id)
 	try {
-		const product: Product[] = await getProductsByUserId(userId)
-		product.forEach(product => {
+		const products: ProductBackend[] = await getProductsByUserId(userId)
+
+		const updatedProducts = products.map((product) => {
 			if (product.product_image instanceof Buffer) {
-				product.product_image = product.product_image.toString("base64")
+				const tempUserImage = "data:image/*;base64," + product.product_image.toString("base64")
+				return { ...product, product_image: tempUserImage }
+			} else {
+				return { ...product, product_image: "" }
 			}
 		})
-		res.status(200).json(product)
+		res.status(200).json(updatedProducts)
 	} catch (error) {
 		res.status(500).json({ message: "So much fail" })
 	}
@@ -109,7 +133,6 @@ product.delete("/:id", async (req: Request, res: Response) => {
 
 	try {
 		const result = await deleteProduct(product_id)
-		console.log(result)
 		if (result.rowCount > 0) {
 			return res.status(200).send("Deleted")
 		} else {
@@ -121,14 +144,14 @@ product.delete("/:id", async (req: Request, res: Response) => {
 	}
 })
 
-product.put("/update/:id", authentication, upload.single("product_image"),  async (req: CustomRequest, res: Response) => {
+product.put("/update/:id", authentication, upload.single("product_image"), async (req: CustomRequest, res: Response) => {
 	const product_Id = parseInt(req.params.id, 10)
 	const userId = req.id
 	const updatedProductData = req.body
 	const productImage = req.file ? req.file.buffer : null
 	console.log("Request Body:", req.body)
 	try {
-		const product: Product | null = await getProductById(product_Id)
+		const product: ProductBackend | null = await getProductById(product_Id)
 		if (!product) {
 			return res.send(404).send()
 		}
@@ -136,7 +159,7 @@ product.put("/update/:id", authentication, upload.single("product_image"),  asyn
 		if (product.user_id !== userId) {
 			return res.send(403).send()
 		}
-		const updateProduct: Product | null = await updateProductData(
+		const updateProduct: ProductBackend | null = await updateProductData(
 			product_Id,
 			updatedProductData.title,
 			updatedProductData.category_id,
@@ -164,7 +187,7 @@ product.put("/listed/:id", authentication, async (req: CustomRequest, res: Respo
 	const productId = Number(req.params.id)
 	const listed = req.body.listed
 	try {
-		const product: Product | null = await getProductById(productId)
+		const product: ProductBackend | null = await getProductById(productId)
 		if (!product) {
 			return res.send(404).send()
 		}
@@ -172,7 +195,7 @@ product.put("/listed/:id", authentication, async (req: CustomRequest, res: Respo
 		if (product.user_id !== userId) {
 			return res.send(403).send()
 		}
-		const updatedProduct: Product | null = await updateProductListed(productId, listed)
+		const updatedProduct: ProductBackend | null = await updateProductListed(productId, listed)
 		if (updatedProduct) {
 			res.status(200).send(updatedProduct)
 		} else {
@@ -188,14 +211,17 @@ product.put("/listed/:id", authentication, async (req: CustomRequest, res: Respo
 product.get("/category/:id", validateCategoryId, async (req, res) => {
 	const categoryId = parseInt(req.params.id)
 	try {
-		const products: Product[] = await getProductsByCategory(categoryId)
+		const products: ProductBackend[] = await getProductsByCategory(categoryId)
 		// Convert product_image to Base64 encoded string for products with images
-		products.forEach(product => {
+		const updatedProducts = products.map((product) => {
 			if (product.product_image instanceof Buffer) {
-				product.product_image = product.product_image.toString("base64")
+				const tempUserImage = "data:image/*;base64," + product.product_image.toString("base64")
+				return { ...product, product_image: tempUserImage }
+			} else {
+				return { ...product, product_image: "" }
 			}
 		})
-		res.status(200).json(products)
+		res.status(200).json(updatedProducts)
 	} catch (error) {
 		res.status(500).json({ message: "Product information couldn't be displayed" })
 	}
@@ -205,14 +231,17 @@ product.get("/category/:id", validateCategoryId, async (req, res) => {
 product.get("/subcategory/:id", validateCategoryId, async (req, res) => {
 	const subcategoryId = parseInt(req.params.id)
 	try {
-		const products: Product[] = await getProductsBySubcategory(subcategoryId)
+		const products: ProductBackend[] = await getProductsBySubcategory(subcategoryId)
 		// Convert product_image to Base64 encoded string for products with images
-		products.forEach(product => {
+		const updatedProducts = products.map((product) => {
 			if (product.product_image instanceof Buffer) {
-				product.product_image = product.product_image.toString("base64")
+				const tempUserImage = "data:image/*;base64," + product.product_image.toString("base64")
+				return { ...product, product_image: tempUserImage }
+			} else {
+				return { ...product, product_image: "" }
 			}
 		})
-		res.status(200).json(products)
+		res.status(200).json(updatedProducts)
 	} catch (error) {
 		res.status(500).json({ message: "The product information of the subcategory couldn't be displayed" })
 	}

@@ -13,7 +13,7 @@ import {
 	MenuItem,
 	Badge,
 } from "@mui/material"
-import CategoryMenu from "../Product-related/CategoryMenu"
+import CategoryMenu from "./CategoryMenu"
 import Login from "../Register-login/Login"
 import RegisterNewUser from "../Register-login/RegisterNewUser"
 import { UserTokenContext } from "../../App"

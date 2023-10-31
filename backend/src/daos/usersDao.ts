@@ -1,5 +1,5 @@
 import { executeQuery } from "../database"
-export interface User {
+export interface UserBackend {
     user_id?: number
     username: string
     name: string
@@ -9,12 +9,10 @@ export interface User {
     city: string
     postal_code: string
     password: string
-    user_image?: Buffer | string
+    user_image?: Buffer
  }
 
- 
-
-export async function addUser(user: User): Promise<void> {
+export async function addUser(user: UserBackend): Promise<void> {
 	let query
 	let values
 
@@ -117,7 +115,7 @@ export const findUserByEmail = async (email: string) => {
 	return executeQuery(query, params)
 }
 
-export async function updateProfile( user: User): Promise<User | null>{
+export async function updateProfile( user: UserBackend): Promise<UserBackend | null>{
 	let query
 	let values
 
@@ -166,7 +164,7 @@ export async function updateProfile( user: User): Promise<User | null>{
 }
 
 
-export const getUserDetailsByUserId = async(user_id: number): Promise<User[]> => {
+export const getUserDetailsByUserId = async(user_id: number): Promise<UserBackend[]> => {
 	const query = `
 	SELECT
 		users.username,
