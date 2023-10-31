@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import AccountCircleIcon from "@mui/icons-material/AccountCircle"
+// import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
 import {
@@ -23,6 +23,7 @@ import ShoppingCart from "../Purchase-order-history/ShoppingCart"
 import "./Navbar.css"
 import Crumbs from "../Crumbs/Crumbs"
 import ProductSearch from "../Search/Searchbar"
+import Avatar from "@mui/material/Avatar"
 
 
 const Navbar = ({ cart, setCart }: NavbarProps) => {
@@ -34,6 +35,7 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 	const [unSent, setUnsent] = useState(0)
 	const [notReceived, setNotReceived] = useState(0)
 	const [inSales, setInSales] = useState(true)
+	const [, setAvatarImage] = useState<File | null>(null)
 
 	const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget)
@@ -61,7 +63,10 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 					const fetchedUser = await fetchUser(token) // Use the fetchUser API call from your services
 					if (fetchedUser) {
 						setUser(fetchedUser)
-					} else {
+					}
+					if (fetchedUser.user_image) {
+						setAvatarImage(fetchedUser.user_image)
+						console.log("userImage:", fetchedUser.user_image)
 						console.error("Error fetching user")
 					}
 				} catch (error) {
@@ -126,7 +131,17 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 									aria-controls="user-menu"
 									aria-haspopup="true"
 								>
-									<AccountCircleIcon />
+									{/* /<AccountCircleIcon /> */}
+									<Avatar src={typeof user?.user_image === "string" ? user.user_image : "oletuskuva.jpg"} alt={user?.name}
+										sx={{
+											width: "50px",
+											height: "50px"
+
+										}} />
+								
+
+
+
 
 
 									<Typography variant="body1" sx={{ mt: 1 }}>
@@ -203,3 +218,6 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 }
 
 export default Navbar
+
+
+
