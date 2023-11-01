@@ -5,13 +5,15 @@ import { Dispatch, createContext, useEffect, useState } from "react"
 import { ProductType } from "./Services-types/types"
 import { Footer } from "./Components/Footer-nav/Footer"
 import Box from "@mui/material/Box"
+import { BadgeProvider } from "./Components/BadgeContext"
+import SalesNotification from "./Components/Footer-nav/SalesNotification"
 
-export type CartContextType = [ Dispatch<React.SetStateAction<ProductType[] | null>> ]
+export type CartContextType = [Dispatch<React.SetStateAction<ProductType[] | null>>]
 
 function App() {
 	const [token, setToken] = useState("")
 	const [cart, setCart] = useState<Array<ProductType> | null>(null)
-	
+
 	useEffect(() => {
 		const tokenFromStorage = localStorage.getItem("token")
 		if (tokenFromStorage) {
