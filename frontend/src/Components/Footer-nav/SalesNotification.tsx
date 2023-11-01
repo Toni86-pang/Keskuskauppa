@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react"
 import { BoughtProps, SoldProps } from "../../Services-types/types"
 import { fetchOwnBought, fetchOwnSold } from "../../Services-types/services"
-import { useBadgeContext } from "../BadgeContext"
+import { useBadgeContext } from "../../BadgeContext"
 import { UserTokenContext } from "../../App"
 
 const CHECK_NEW_SALES_TIME_INTERVAL_IN_MINUTES = 5

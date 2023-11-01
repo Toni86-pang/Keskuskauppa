@@ -5,7 +5,7 @@ import { UserTokenContext } from "../../../App"
 import { Button, Container, Stack } from "@mui/material"
 import { redirect } from "react-router-dom"
 import OrderProductCard from "../../Product-cards/OrderProductCard"
-import { useBadgeContext } from "../../BadgeContext"
+import { useBadgeContext } from "../../../BadgeContext"
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {

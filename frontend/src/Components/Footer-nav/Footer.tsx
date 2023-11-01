@@ -1,5 +1,5 @@
-import { Typography } from "@mui/material"
-import { FooterBox, BoxOne } from "./Styles"
+//import { Typography } from "@mui/material"
+import { FooterBox, BoxOne, TypographyFooter } from "./Styles"
 import Grid from "@mui/material/Grid"
 
 export const Footer = () => {
@@ -8,24 +8,24 @@ export const Footer = () => {
 			<Grid container justifyContent="space-between">
 				<Grid item xs={12} sm={4}>
 					<BoxOne>
-						<Typography variant="h6">Palvelumme</Typography>
-						<Typography variant="body2">Tuotteiden myynti</Typography>
-						<Typography variant="body2">Tuotteiden ostaminen</Typography>
+						<TypographyFooter variant="h6">Palvelumme</TypographyFooter>
+						<TypographyFooter variant="body2">Tuotteiden myynti</TypographyFooter>
+						<TypographyFooter variant="body2">Tuotteiden ostaminen</TypographyFooter>
 					</BoxOne>
 				</Grid>
 				<Grid item xs={12} sm={4}>
 					<BoxOne>
-						<Typography variant="h6">Yhteystiedot</Typography>
-						<Typography variant="body2">Osoite: Testikatu 11, 01234 Testikaupunki</Typography>
-						<Typography variant="body2">Puh: 040 123456</Typography>
-						<Typography variant="body2">Email: keskuskauppa(at)keskuskauppa.fi</Typography>
+						<TypographyFooter variant="h6">Yhteystiedot</TypographyFooter>
+						<TypographyFooter variant="body2">Osoite: Testikatu 11, 01234 Testikaupunki</TypographyFooter>
+						<TypographyFooter variant="body2">Puh: 040 123456</TypographyFooter>
+						<TypographyFooter variant="body2">Email: keskuskauppa(at)keskuskauppa.fi</TypographyFooter>
 					</BoxOne>
 				</Grid>
 				<Grid item xs={12} sm={4}>
 					<BoxOne>
-						<Typography variant="h6">Asiakaspalvelu</Typography>
-						<Typography variant="body2">Asiakaspalvelumme palvelee arkisin klo 08.00-16.00</Typography>
-						<Typography variant="body2">Puh: 040 123456</Typography>
+						<TypographyFooter variant="h6">Asiakaspalvelu</TypographyFooter>
+						<TypographyFooter variant="body2">Ma-Pe klo 08.00-16.00</TypographyFooter>
+						<TypographyFooter variant="body2">Puh: 040 123456</TypographyFooter>
 					</BoxOne>
 				</Grid>
 			</Grid>

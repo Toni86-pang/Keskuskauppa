@@ -23,7 +23,7 @@ import ShoppingCart from "../Purchase-order-history/ShoppingCart"
 import "./Navbar.css"
 import Crumbs from "../Crumbs/Crumbs"
 import ProductSearch from "../Search/Searchbar"
-import { useBadgeContext } from "../BadgeContext"
+import { useBadgeContext } from "../../BadgeContext"
 import Avatar from "@mui/material/Avatar"
 
 
