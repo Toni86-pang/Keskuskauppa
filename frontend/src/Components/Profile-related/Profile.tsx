@@ -194,7 +194,7 @@ function Profile() {
 				</div> :
 				<div className="ownReviews">
 					<Divider variant="middle" style={{ marginBottom: "10px" }} />
-					{<ListReviews sellerId={user.user_id} isOwn={true} />}
+					{<ListReviews sellerId={user.user_id} isOwn={true} user={user} />}
 				</div>}
 		</div>
 	)
