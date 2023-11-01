@@ -2,10 +2,10 @@ import { fetchOwnBought, fetchOwnSold } from "../../../Services-types/services"
 import { BoughtProps, SoldProps } from "../../../Services-types/types"
 import { useContext, useEffect, useState } from "react"
 import { UserTokenContext } from "../../../App"
-import { Button, Container, Stack } from "@mui/material"
+import { Badge, Button, Container, Stack } from "@mui/material"
 import { redirect } from "react-router-dom"
 import OrderProductCard from "../../Product-cards/OrderProductCard"
-import { useBadgeContext } from "../../BadgeContext"
+import { useNewSaleAndReviewContext } from "../../../NewSaleAndReviewContext"
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
@@ -28,7 +28,7 @@ export default function OrderHistory() {
 	const [boughtReceived, setBoughtReceived] = useState<BoughtProps[]>([])
 	const [refresh, setRefresh] = useState(false)
 	const [token] = useContext(UserTokenContext)
-	const { setBadgeCount } = useBadgeContext()
+	const { setSaleCount } = useNewSaleAndReviewContext()
 
 	useEffect(() => {
 		if (!token) return
@@ -53,12 +53,12 @@ export default function OrderHistory() {
 		}
 
 		fetchData()
-		
+
 	}, [token, refresh])
 
 	useEffect(() => {
-		setBadgeCount(soldWaiting.length + boughtSent.length)
-	},[soldWaiting, boughtSent, setBadgeCount])
+		setSaleCount(soldWaiting.length + boughtSent.length)
+	}, [soldWaiting, boughtSent, setSaleCount])
 
 
 	const renderSold = (saleStatus: string, soldProducts: SoldProps[]) => {
@@ -67,7 +67,7 @@ export default function OrderHistory() {
 				<h3>{saleStatus}</h3>
 				{
 					soldProducts.map((product, index) => {
-						return <OrderProductCard key={saleStatus + index + product.title} product={product} setRefresh={()=>setRefresh(!refresh)} />
+						return <OrderProductCard key={saleStatus + index + product.title} product={product} setRefresh={() => setRefresh(!refresh)} />
 					})
 				}
 			</>)
@@ -79,7 +79,7 @@ export default function OrderHistory() {
 				<h3>{saleStatus}</h3>
 				{
 					boughtProducts.map((product, index) => {
-						return <OrderProductCard key={saleStatus + index + product.title} product={product} setRefresh={()=>setRefresh(!refresh)} />
+						return <OrderProductCard key={saleStatus + index + product.title} product={product} setRefresh={() => setRefresh(!refresh)} />
 					})
 				}
 			</>)
@@ -89,9 +89,13 @@ export default function OrderHistory() {
 		<Container>
 			<h2>Tilaushistoria</h2>
 			<Stack spacing={2} direction="row">
-				<Button onClick={() => setIsSoldItem(true)} variant="text" color={isSoldItem ? "secondary" : "primary"}>Omat myynnit</Button>
+				<Badge badgeContent={boughtSent.length} color="info" >
+					<Button onClick={() => setIsSoldItem(true)} variant="text" color={isSoldItem ? "secondary" : "primary"}>Omat myynnit</Button>
+				</Badge>
 				<div style={{ marginTop: "9px" }}>|</div>
-				<Button onClick={() => setIsSoldItem(false)} variant="text" color={!isSoldItem ? "secondary" : "primary"}>Omat ostot</Button>
+				<Badge badgeContent={soldWaiting.length} color="info" >
+					<Button onClick={() => setIsSoldItem(false)} variant="text" color={!isSoldItem ? "secondary" : "primary"}>Omat ostot</Button>
+				</Badge>
 			</Stack>
 			{isSoldItem ?
 				<>
