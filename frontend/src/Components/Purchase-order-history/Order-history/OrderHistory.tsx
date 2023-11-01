@@ -89,11 +89,11 @@ export default function OrderHistory() {
 		<Container>
 			<h2>Tilaushistoria</h2>
 			<Stack spacing={2} direction="row">
-				<Badge badgeContent={boughtSent.length} color="info" >
+				<Badge badgeContent={soldWaiting.length} color="info" >
 					<Button onClick={() => setIsSoldItem(true)} variant="text" color={isSoldItem ? "secondary" : "primary"}>Omat myynnit</Button>
 				</Badge>
 				<div style={{ marginTop: "9px" }}>|</div>
-				<Badge badgeContent={soldWaiting.length} color="info" >
+				<Badge badgeContent={boughtSent.length} color="info" >
 					<Button onClick={() => setIsSoldItem(false)} variant="text" color={!isSoldItem ? "secondary" : "primary"}>Omat ostot</Button>
 				</Badge>
 			</Stack>
