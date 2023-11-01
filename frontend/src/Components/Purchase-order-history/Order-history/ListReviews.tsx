@@ -1,15 +1,16 @@
 import { List } from "@mui/material"
 import ReviewCard from "./ReviewCard"
 import { useEffect, useState } from "react"
-import { Review } from "../../../Services-types/types"
+import { Review, User } from "../../../Services-types/types"
 import { fetchReviewsForSeller } from "../../../Services-types/services"
 
 interface ListReviewsProps {
 	sellerId: number
 	isOwn: boolean
+	user: User
 }
 
-const ListReviews = ({ sellerId, isOwn }: ListReviewsProps) => {
+const ListReviews = ({ sellerId, isOwn, user }: ListReviewsProps) => {
 
 	const [reviewList, setReviewList] = useState<Review[]>([])
 

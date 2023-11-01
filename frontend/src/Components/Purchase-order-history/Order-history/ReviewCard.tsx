@@ -1,11 +1,13 @@
 import Card from "@mui/material/Card"
 import CardContent from "@mui/material/CardContent"
-import { Box, Button, Grid, Rating } from "@mui/material"
+import { Button, Grid, Rating } from "@mui/material"
 import { useEffect, useState } from "react"
 import CommentCard from "./CommentCard"
 import LeaveComment from "./LeaveComment"
-import { ReviewCardProps, ReviewComment } from "../../../Services-types/types"
-import { fetchReviewComment, fetchUsernameByUserId } from "../../../Services-types/services"
+import { ReviewCardProps, ReviewComment, User } from "../../../Services-types/types"
+import { fetchReviewComment, fetchUserDetailsByUserId, fetchUsernameByUserId } from "../../../Services-types/services"
+import Avatar from "@mui/material/Avatar"
+import Typography from "@mui/material/Typography"
 
 const cardStyle = {
 	marginTop: "10px",
@@ -16,9 +18,10 @@ const gridContainerStyle = {
 	alignItems: "center"
 }
 
-function ReviewCard({ review, isOwn }: ReviewCardProps) {
+function ReviewCard({ review, isOwn, user }: ReviewCardProps) {
 
 	const [reviewer, setReviewer] = useState("")
+	const [seller, setSeller] = useState<User>()
 	const [reviewComment, setReviewComment] = useState<ReviewComment | null>(null)
 	const [reload, setReload] = useState(false)
 	const reviewDate: string = review.review_date ?? ""
@@ -40,6 +43,12 @@ function ReviewCard({ review, isOwn }: ReviewCardProps) {
 			if (fetchedReviewer) {
 				setReviewer(fetchedReviewer)
 			}
+			if(review.seller_id){
+				const fetchedSeller = await fetchUserDetailsByUserId(review.seller_id)
+				if (fetchedSeller) {
+					setSeller(fetchedSeller)
+				}
+			}
 		}
 		fetchCommentAndReviewerUsername()
 
@@ -55,15 +64,43 @@ function ReviewCard({ review, isOwn }: ReviewCardProps) {
 			<Card style={cardStyle}>
 				<CardContent>
 					<Grid container spacing={2} style={gridContainerStyle} >
-						<Grid item xs={3} >Arvostelija: {reviewer}</Grid>
-						<Grid item xs={4} >Arvio annettu: {formattedReviewDate}</Grid>
-						<Grid item xs={4} >Annetut tähdet: <Rating value={review.stars} /></Grid>
-						<Grid item xs={3} >
-							{isOwn && !reviewComment && <Button variant="contained" color="primary" onClick={()=>setLeaveCommentOpen(true)}>Jätä kommentti</Button>}
+						<Typography ml={2} mt={2}>
+							<Avatar src={typeof user?.user_image === "string" ? user.user_image : undefined}
+								alt={user?.name}
+								sx={{
+									width: "25",
+									height: "25",
+									m: 1
+
+								}} />
+						</Typography>
+						<Grid item xs={6}>
+							<Typography>
+								{reviewer}
+							</Typography>
+						</Grid>
+						<Grid item xs={4}>
+							<Typography>
+								{formattedReviewDate}
+							</Typography>
+						</Grid>
+						<Grid item xs={10}>
+							<Typography ml={3} >
+								{review.description}
+							</Typography>
+						</Grid>
+						<Grid item xs={4}>
+							<Typography ml={2} mb={3}>
+								<Rating value={review.stars} />
+							</Typography>
+						</Grid>
+						<Grid item xs={3}>
+							<Typography>
+								{isOwn && !reviewComment && <Button variant="contained" color="primary" onClick={()=>setLeaveCommentOpen(true)}>Jätä kommentti</Button>}
+							</Typography>
 						</Grid>
 					</Grid>
-					<Box mb={3} >{review.description}</Box>
-					{reviewComment && <CommentCard reviewComment={reviewComment} />}
+					{reviewComment && <CommentCard reviewComment={reviewComment} seller={seller}/>}
 				</CardContent>
 			</Card>
 			<LeaveComment reviewId={review.review_id??0} isOpen={leaveCommentOpen} close={onCloseLeaveComment} />
