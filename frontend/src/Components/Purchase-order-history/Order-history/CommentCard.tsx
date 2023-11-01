@@ -1,12 +1,9 @@
-// import Card from "@mui/material/Card"
-// import CardContent from "@mui/material/CardContent"
 import { CommentCardProps } from "../../../Services-types/types"
 import Typography from "@mui/material/Typography"
 import Paper from "@mui/material/Paper"
 import Box from "@mui/material/Box"
 import Grid from "@mui/material/Grid"
 import Avatar from "@mui/material/Avatar"
-
 
 const gridContainerStyle = {
 	alignItems: "center"
