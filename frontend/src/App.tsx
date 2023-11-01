@@ -24,21 +24,24 @@ function App() {
 	return (
 		<UserTokenContext.Provider value={[token, setToken]}>
 			<Container
+				maxWidth="xl" // Adjust the maximum width if needed
 				sx={{
 					bgcolor: "#e7ecef",
-					minHeight: "100vh",
+					minHeight: "100vh", 
 					display: "flex",
 					flexDirection: "column",
-				}}>
+				}}
+			>
 				<BadgeProvider>
 					<Navbar cart={cart} setCart={setCart} />
 					<SalesNotification />
 					<Box
 						sx={{
 							flex: 1,
-							paddingTop: "20px",
-						}}>
-						<Outlet context={[setCart] satisfies CartContextType} />
+							paddingTop: "10px",
+						}}
+					>
+						<Outlet context={[ setCart ] satisfies CartContextType} />
 					</Box>
 				</BadgeProvider>
 				<Footer />

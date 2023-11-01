@@ -254,6 +254,7 @@ export interface SoldProps {
 
 export interface OrderCardProps {
 	product: BoughtProps | SoldProps
+	setRefresh: () => void
 }
 
 export interface SummaryProps {
