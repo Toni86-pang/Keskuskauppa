@@ -32,15 +32,18 @@ function App() {
 					flexDirection: "column",
 				}}
 			>
-				<Navbar cart={cart} setCart={setCart} />
-				<Box
-					sx={{
-						flex: 1,
-						paddingTop: "10px",
-					}}
-				>
-					<Outlet context={[ setCart ] satisfies CartContextType} />
-				</Box>
+				<BadgeProvider>
+					<Navbar cart={cart} setCart={setCart} />
+					<SalesNotification />
+					<Box
+						sx={{
+							flex: 1,
+							paddingTop: "10px",
+						}}
+					>
+						<Outlet context={[ setCart ] satisfies CartContextType} />
+					</Box>
+				</BadgeProvider>
 				<Footer />
 			</Container>
 		</UserTokenContext.Provider>
