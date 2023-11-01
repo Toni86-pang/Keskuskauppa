@@ -1,29 +1,35 @@
-import "./Footer.css"
-import Container from "@mui/material/Container"
-import Box from "@mui/material/Box"
+import { Typography } from "@mui/material"
+import { FooterBox, BoxOne } from "./Styles"
+import Grid from "@mui/material/Grid"
 
 export const Footer = () => {
 	return (
-		<Container className="footer" >
-			<Box display="flex" justifyContent="space-between">
-				<div style={{ flex: 1, textAlign: "center" }}>
-					<h4>Palvelumme</h4>
-					<p> Tuotteiden myynti</p>
-					<p>Tuotteiden ostaminen</p>
-				</div>
-
-				<div style={{ flex: 1, textAlign: "center" }}>
-					<h4> Yhteystiedot</h4>
-					<p> Osoite: Testikatu 11, 01234 Testikaupunki</p>
-					<p>Puh: 040 123456</p>
-					<p> Email:keskuskauppa(at)keskuskauppa.fi</p>
-				</div>
-				<div style={{ flex: 1, textAlign: "center" }}>
-					<h4>Asiakaspalvelu</h4>
-					<p> Asiakaspalvelumme palvelee arkisin klo 08.00-16.00</p>
-					<p>Puh: 040 123456</p>
-				</div>
-			</ Box>
-		</Container>
+		<FooterBox>
+			<Grid container justifyContent="space-between">
+				<Grid item xs={12} sm={4}>
+					<BoxOne>
+						<Typography variant="h6">Palvelumme</Typography>
+						<Typography variant="body2">Tuotteiden myynti</Typography>
+						<Typography variant="body2">Tuotteiden ostaminen</Typography>
+					</BoxOne>
+				</Grid>
+				<Grid item xs={12} sm={4}>
+					<BoxOne>
+						<Typography variant="h6">Yhteystiedot</Typography>
+						<Typography variant="body2">Osoite: Testikatu 11, 01234 Testikaupunki</Typography>
+						<Typography variant="body2">Puh: 040 123456</Typography>
+						<Typography variant="body2">Email: keskuskauppa(at)keskuskauppa.fi</Typography>
+					</BoxOne>
+				</Grid>
+				<Grid item xs={12} sm={4}>
+					<BoxOne>
+						<Typography variant="h6">Asiakaspalvelu</Typography>
+						<Typography variant="body2">Asiakaspalvelumme palvelee arkisin klo 08.00-16.00</Typography>
+						<Typography variant="body2">Puh: 040 123456</Typography>
+					</BoxOne>
+				</Grid>
+			</Grid>
+		</FooterBox>
 	)
 }
+
