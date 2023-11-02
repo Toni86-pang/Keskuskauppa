@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import CommentCard from "./CommentCard"
 import LeaveComment from "./LeaveComment"
 import { ReviewCardProps, ReviewComment, User } from "../../../Services-types/types"
-import { fetchReviewComment, fetchUserDetailsByUserId, fetchUsernameByUserId } from "../../../Services-types/services"
+import { fetchReviewComment, fetchUserDetailsByUserId } from "../../../Services-types/services"
 import Avatar from "@mui/material/Avatar"
 import Typography from "@mui/material/Typography"
 
@@ -18,9 +18,9 @@ const gridContainerStyle = {
 	alignItems: "center"
 }
 
-function ReviewCard({ review, isOwn, user }: ReviewCardProps) {
+function ReviewCard({ review, isOwn }: ReviewCardProps) {
 
-	const [reviewer, setReviewer] = useState("")
+	const [reviewer, setReviewer] = useState<User>()
 	const [seller, setSeller] = useState<User>()
 	const [reviewComment, setReviewComment] = useState<ReviewComment | null>(null)
 	const [reload, setReload] = useState(false)
@@ -39,7 +39,7 @@ function ReviewCard({ review, isOwn, user }: ReviewCardProps) {
 			if (comment) {
 				setReviewComment(comment)
 			}
-			const fetchedReviewer = await fetchUsernameByUserId(review.buyer_id)
+			const fetchedReviewer = await fetchUserDetailsByUserId(review.buyer_id)
 			if (fetchedReviewer) {
 				setReviewer(fetchedReviewer)
 			}
@@ -66,8 +66,8 @@ function ReviewCard({ review, isOwn, user }: ReviewCardProps) {
 					{/* {!review.seen &&<Typography>Uusi arvostelu! </Typography>} */}
 					<Grid container spacing={2} style={gridContainerStyle} >
 						<Typography ml={2} mt={2} component="span">
-							<Avatar src={typeof user?.user_image === "string" ? user.user_image : undefined}
-								alt={user?.name}
+							<Avatar src={typeof reviewer?.user_image === "string" ? reviewer.user_image : undefined}
+								alt={reviewer?.name}
 								sx={{
 									width: "25",
 									height: "25",
@@ -77,7 +77,7 @@ function ReviewCard({ review, isOwn, user }: ReviewCardProps) {
 						</Typography>
 						<Grid item xs={6}>
 							<Typography>
-								{reviewer}
+								{reviewer?.username}
 							</Typography>
 						</Grid>
 						<Grid item xs={4}>

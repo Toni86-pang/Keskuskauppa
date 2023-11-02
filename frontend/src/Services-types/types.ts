@@ -174,16 +174,6 @@ export interface UpdateProductModalProps {
 	product: ProductType
   }
 
-export interface ReviewModalProps {
-	isOpen: boolean
-	onClose: () => void
-	token: string
-	sale_id: number
-	seller_id?: number
-	sale?: Sale
-	changeButton: () => void
-  }
-
 export interface AverageStars {
 	average_score: number
 }
@@ -300,7 +290,6 @@ export interface ReviewModalProps {
 	sale_id: number
 	seller_id?: number
 	sale?: Sale
-	changeButton: () => void
   }
 
 export interface AverageStars {
@@ -333,7 +322,6 @@ export interface ReviewCardProps {
 	isOwn: boolean
 	review: Review
 	reviewComment?: ReviewComment
-	user: User
 }
 
 export interface CommentCardProps {

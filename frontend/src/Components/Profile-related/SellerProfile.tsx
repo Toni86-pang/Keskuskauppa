@@ -87,7 +87,7 @@ function SellerProfile() {
 				</div> :
 				<div className="reviews">
 					<Divider variant="middle" style={{ marginBottom: "10px" }} />
-					{<ListReviews sellerId={user.user_id} isOwn={false} user={user} />}
+					{<ListReviews sellerId={user.user_id} isOwn={false} />}
 				</div>}
 
 		</div>
