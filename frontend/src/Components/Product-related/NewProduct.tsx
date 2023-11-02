@@ -2,13 +2,14 @@ import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { useNavigate, redirect } from "react-router-dom"
 import { Button, Card, CardMedia, Container, FormControl, Input, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material"
 import { UserTokenContext } from "../../App"
+import Notification from "../Verify-notification/Notification"
 import { Category, Subcategory, User, initialState } from "../../Services-types/types"
 import { fetchCategories, fetchIndividualSubcategory, fetchUser, newProduct } from "../../Services-types/services"
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
 	const token = localStorage.getItem("token")
-	if(!token){
+	if (!token) {
 		return redirect("/")
 	}
 	return null
@@ -29,19 +30,21 @@ function NewProduct() {
 	const [subcategories, setSubcategories] = useState<Subcategory[]>([])
 	const [newCity, setNewCity] = useState<string>("")
 	const [newPostalCode, setNewPostalCode] = useState<string>("")
-	const [productImage, setProductImage] = useState<File | null>(null)	
+	const [productImage, setProductImage] = useState<File | null>(null)
 	const [hidden, setHidden] = useState<boolean>(false)
 	const [imagePreview, setImagePreview] = useState<string | null>(null)
+	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
+	const [showErrorNotification, setShowErrorNotification] = useState(false)
 
 	const navigate = useNavigate()
 
 	useEffect(() => {
 		const fetchInfo = async () => {
-			if(!token){
+			if (!token) {
 				setUser(initialState)
 				return
 			}
-	
+
 			const user = await fetchUser(token)
 			setNewCity(user.city)
 			setNewPostalCode(user.postal_code)
@@ -74,6 +77,10 @@ function NewProduct() {
 		})
 	}
 
+	function timeout(delay: number) {
+		return new Promise( res => setTimeout(res, delay) )
+	}
+
 	const createNewProduct = async () => {
 		const formData = new FormData()
 		if (productImage) {
@@ -89,19 +96,22 @@ function NewProduct() {
 		formData.append("description", newDescription)
 		formData.append("price", newPrice)
 		formData.append("listed", "true") // assuming listed is always true
-	
+
 		try {
 			const response = await newProduct(formData, token)
 			if (response.status === 201) {
-				console.log("Product creation success")
-				navigate("/profile")
+				setShowSuccessNotification(true)
+				const newProductId = response.data.product_id
+				await timeout(1500)
+				navigate("/product/" + newProductId)
 			}
 		} catch (error) {
-		// Handle errors
+			// Handle errors
 			console.error("Product creation error:", error)
+			setShowErrorNotification(true)
 		}
 	}
-	
+
 	const getCategory = (array: Array<{ category_id: number; category_name: string }>, name: string) => {
 		const filtered = array.filter((category) => category.category_name === name)
 		return filtered[0].category_id
@@ -128,14 +138,14 @@ function NewProduct() {
 			setError("")
 			return
 		}
-	
+
 		const price = parseFloat(inputValue)
-	
+
 		if (isNaN(price) || price < 0) {
 			setNewPrice("")
 			setError("Invalid price input. Please enter a valid positive number.")
 		} else {
-		// Format the price to remove trailing zeros and unnecessary decimals
+			// Format the price to remove trailing zeros and unnecessary decimals
 			const formattedPrice = price.toString()
 			setNewPrice(formattedPrice)
 			setError("")
@@ -159,7 +169,7 @@ function NewProduct() {
 		setCategoryId(categoryId)
 		fetchSubcategories(categoryId)
 	}
-	
+
 	const handleSubcategoryChange = (event: SelectChangeEvent) => {
 		const subcategoryName = String(event.target.value)
 		const subcategoryId = getSubcategory(subcategories, subcategoryName)
@@ -172,19 +182,19 @@ function NewProduct() {
 		if (fileInput && fileInput.files && fileInput.files.length > 0) {
 			const file = fileInput.files[0]
 			setProductImage(file)
-		
+
 			const reader = new FileReader()
 			reader.onload = (e) => {
 				setImagePreview(e.target?.result as string)
 			}
 			reader.readAsDataURL(file)
 		} else {
-			setError("Invalid image file. Please select a valid image.")
+			setError("Kuvaa ei voi näyttää. Valitse toinen kuva.")
 			setProductImage(null)
 			setImagePreview(null)
 		}
 	}
-	
+
 	const handleCancel = () => {
 		navigate("/profile")
 	}
@@ -197,146 +207,168 @@ function NewProduct() {
 		setHidden(false)
 	}
 
-	
+
 	return (
-		<Container sx={{ m: 1 }}>
-			<h3>Uusi tuote</h3>
-			<FormControl>
-				<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="title">Otsikko*</InputLabel>
-				<TextField
-					type="text"
-					name="title"
-					value={newTitle}
-					onChange={handleTitleChange}
-				/>
-				<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="description">Kuvaus</InputLabel>
-				<TextField
-					multiline rows={5}
-					type="text"
-					name="description"
-					value={newDescription}
-					onChange={handleDescChange}
-				/>
-				
+		<>
+			<Container sx={{ m: 1 }}>
+				<h3>Uusi tuote</h3>
 				<FormControl>
-					<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="price">Hinta*</InputLabel>
+					<InputLabel style={{ position: "relative" }} sx={{ mb: 2 }} id="title">Otsikko*</InputLabel>
 					<TextField
 						type="text"
-						name="price"
-						value={newPrice}
-						onChange={handlePriceChange}
+						name="title"
+						value={newTitle}
+						onChange={handleTitleChange}
 					/>
-				</FormControl>
-				<FormControl>
-					<InputLabel style={{position: "relative"}} id="Kuvat">Lisää kuva:</InputLabel>
-					<Input
-						type="file"
-						onChange={handleImageChange}
-						inputProps={{ accept: "image/*" }}	
+					<InputLabel style={{ position: "relative" }} sx={{ mb: 2 }} id="description">Kuvaus</InputLabel>
+					<TextField
+						multiline rows={5}
+						type="text"
+						name="description"
+						value={newDescription}
+						onChange={handleDescChange}
 					/>
-					{productImage && (
-						<Card sx={{ maxWidth: 345 }}>
-							<CardMedia
-								component="img"
-								height="140"
-								src={imagePreview || ""}
-								alt="Selected Image"
-							/>
-						</Card>
-					)}
-				</FormControl>
-				<FormControl sx={{ mt: 2 }}>
-					<InputLabel id="Katergoria">Kategoria*</InputLabel>
-					<Select
-						labelId="category_id"
-						id="category_id"
-						value={newCategory}
-						label="category_id"
-						onChange={handleCategoryChange}>
-						{categories?.map(category => {
-							return (
-								<MenuItem key={category.category_id + category.category_name} value={category.category_name}>{category.category_name}</MenuItem>
-							)
-						})}
-					</Select>				</FormControl>
-				
-				{newCategory ? (
+
+					<FormControl>
+						<InputLabel style={{ position: "relative" }} sx={{ mb: 2 }} id="price">Hinta*</InputLabel>
+						<TextField
+							type="text"
+							name="price"
+							value={newPrice}
+							onChange={handlePriceChange}
+						/>
+					</FormControl>
+					<FormControl>
+						<InputLabel style={{ position: "relative" }} id="Kuvat">Lisää kuva:</InputLabel>
+						<Input
+							type="file"
+							onChange={handleImageChange}
+							inputProps={{ accept: "image/*" }}
+						/>
+						{productImage && (
+							<Card sx={{ maxWidth: 345 }}>
+								<CardMedia
+									component="img"
+									height="140"
+									src={imagePreview || ""}
+									alt="Selected Image"
+								/>
+							</Card>
+						)}
+					</FormControl>
 					<FormControl sx={{ mt: 2 }}>
-						<InputLabel id="Alakategoria">Alakategoria*</InputLabel>
+						<InputLabel id="Katergoria">Kategoria*</InputLabel>
 						<Select
-							labelId="subcategory_id"
-							id="subcategory_id"
-							label="subcategory_id"
-							onChange={handleSubcategoryChange}
-							value={newSubcategory}>
-							{subcategories?.map(subcategory => {
+							labelId="category_id"
+							id="category_id"
+							value={newCategory}
+							label="category_id"
+							onChange={handleCategoryChange}>
+							{categories?.map(category => {
 								return (
-									<MenuItem key={subcategory.subcategory_id + subcategory.subcategory_name} value={subcategory.subcategory_name}>{subcategory.subcategory_name}</MenuItem>
+									<MenuItem key={category.category_id + category.category_name} value={category.category_name}>{category.category_name}</MenuItem>
 								)
 							})}
-						</Select>
-					</FormControl>
+						</Select>				</FormControl>
 
-				) : (
-					<></>
-				)}
-				{!hidden ? (
-					<FormControl>
-						<Container >Lokaatio: {location}</Container>
-						<Button id="location" onClick={() => setHidden(true)}>Vaihda tuotteen lokaatio</Button>
-					</FormControl>
-				):(
-					<></>
-				)}
-				{hidden ? (
-					<FormControl>
-						<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="city">Kaupunki:</InputLabel>
-						<TextField
-							type="text"
-							name="city"
-							value={newCity}
-							onChange={handleCityChange}
-						/>
-						<InputLabel style={{position: "relative"}} sx={{ mb: 2 }} id="postalcode">Postinumero:</InputLabel>
-						<TextField
-							type="text"
-							name="postal_code"
-							value={newPostalCode}
-							onChange={handlePostCodeChange}
-						/>
-						<Button 	
-							sx={{
-								m: 1,
-							}}
-							onClick={(handleCancelChange)}>
+					{newCategory ? (
+						<FormControl sx={{ mt: 2 }}>
+							<InputLabel id="Alakategoria">Alakategoria*</InputLabel>
+							<Select
+								labelId="subcategory_id"
+								id="subcategory_id"
+								label="subcategory_id"
+								onChange={handleSubcategoryChange}
+								value={newSubcategory}>
+								{subcategories?.map(subcategory => {
+									return (
+										<MenuItem key={subcategory.subcategory_id + subcategory.subcategory_name} value={subcategory.subcategory_name}>{subcategory.subcategory_name}</MenuItem>
+									)
+								})}
+							</Select>
+						</FormControl>
+
+					) : (
+						<></>
+					)}
+					{!hidden ? (
+						<FormControl>
+							<Container >Lokaatio: {location}</Container>
+							<Button id="location" onClick={() => setHidden(true)}>Vaihda tuotteen lokaatio</Button>
+						</FormControl>
+					) : (
+						<></>
+					)}
+					{hidden ? (
+						<FormControl>
+							<InputLabel style={{ position: "relative" }} sx={{ mb: 2 }} id="city">Kaupunki:</InputLabel>
+							<TextField
+								type="text"
+								name="city"
+								value={newCity}
+								onChange={handleCityChange}
+							/>
+							<InputLabel style={{ position: "relative" }} sx={{ mb: 2 }} id="postalcode">Postinumero:</InputLabel>
+							<TextField
+								type="text"
+								name="postal_code"
+								value={newPostalCode}
+								onChange={handlePostCodeChange}
+							/>
+							<Button
+								sx={{
+									m: 1,
+								}}
+								onClick={(handleCancelChange)}>
 								Peruuta
-						</Button>
-					</FormControl>
-				):(
-					<></>
-				)}
-				<Button
-					sx={{
-						m: 1,
-						bgcolor: "#6096ba",
-						":hover": { bgcolor: "darkblue" }
-					}}
-					variant="contained"
-					onClick={createNewProduct}>
-							Lähetä
-				</Button>
-				<Button 
-					sx={{
-						m: 1,
-						bgcolor: "#6096ba",
-						":hover": { bgcolor: "#d32f2f" },
-					}}
-					variant="contained"
-					onClick={handleCancel}>
-							Peruuta
-				</Button>
-			</FormControl>
-		</Container>
+							</Button>
+						</FormControl>
+					) : (
+						<></>
+					)}
+					<Button
+						sx={{
+							m: 1,
+							bgcolor: "#6096ba",
+							":hover": { bgcolor: "darkblue" }
+						}}
+						variant="contained"
+						onClick={createNewProduct}>
+						Lähetä
+					</Button>
+					<Button
+						sx={{
+							m: 1,
+							bgcolor: "#6096ba",
+							":hover": { bgcolor: "#d32f2f" },
+						}}
+						variant="contained"
+						onClick={handleCancel}>
+						Peruuta
+					</Button>
+				</FormControl>
+			</Container>
+			{/* Success and error notifications */}
+			{showSuccessNotification && (
+				<Notification
+					open={showSuccessNotification}
+					message="Tuotteen lisäys onnistui!"
+					type="success"
+					onClose={() => setShowSuccessNotification(false)}
+					duration={1500}
+				/>
+			)}
+			{showErrorNotification && (
+				<Notification
+					open={showErrorNotification}
+					message="Tuotteen lisäys ei onnistunut. Täytithän kaikki kentät?"
+					type="error"
+					onClose={() => setShowErrorNotification(false)}
+					duration={1500}
+
+				/>
+			)}
+		</>
 	)
 }
 
