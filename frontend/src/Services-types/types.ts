@@ -333,10 +333,12 @@ export interface ReviewCardProps {
 	isOwn: boolean
 	review: Review
 	reviewComment?: ReviewComment
+	user: User
 }
 
 export interface CommentCardProps {
 	reviewComment: ReviewComment
+	seller: User | undefined
 }
 
 // --------------------------------------------- NAVBAR -----------------------------------------------
