@@ -1,5 +1,5 @@
 import { useState, useContext } from "react"
-import { Grid, Button, Stack, CardMedia, } from "@mui/material"
+import { Grid, Button, Stack, CardMedia, Typography, Box} from "@mui/material"
 import Divider from "@mui/material/Divider"
 import { useNavigate, redirect, useLoaderData } from "react-router-dom"
 import UpdateProfile from "./UpdateProfile"
@@ -107,20 +107,20 @@ function Profile() {
 
 				</Grid>
 				{user && <Grid item xs={5}>
-					<div className="user">
-						<div className="liittymispäivä"> Liittymispäivä: {formattedJoinDate} </div>
-						<div className="userName">Nimi: {user?.name}</div>
-						<div className="userUsername">Käyttäjänimi: {user?.username}</div>
-						<div className="userAddress">Osoite: {user?.address}</div>
-						<div className="userCity">Kaupunki: {user?.city}</div>
-						<div className="userPostalCode">Postinumero: {user?.postal_code}</div>
-						<div className="userEmail">Sähköposti: {user?.email}</div>
-						<div className="userPhone">Puhelinnumero: {user?.phone}</div>
-						<div>Tuotteita myynnissä: {products?.length}</div>
-						<div>Oma tähtiarvio:
+					<Box>
+						<Typography sx={{fontSize: "0.9rem"}}> Liittymispäivä: {formattedJoinDate} </Typography>
+						<Typography>Nimi: {user?.name}</Typography>
+						<Typography>Käyttäjänimi: {user?.username}</Typography>
+						<Typography>Osoite: {user?.address}</Typography>
+						<Typography>Kaupunki: {user?.city}</Typography>
+						<Typography>Postinumero: {user?.postal_code}</Typography>
+						<Typography>Sähköposti: {user?.email}</Typography>
+						<Typography>Puhelinnumero: {user?.phone}</Typography>
+						<Typography>Tuotteita myynnissä: {products?.length}</Typography>
+						<Typography>Oma tähtiarvio:
 							<Rating name="read-only" value={stars} precision={0.1} readOnly />
-						</div>
-					</div>
+						</Typography>
+					</Box>
 				</Grid>}
 				<Grid item xs={3}>
 					<Grid container direction="column" spacing={2}>
@@ -187,12 +187,12 @@ function Profile() {
 					<Divider variant="middle" style={{ marginBottom: "10px" }} />
 					{products.length > 0 ? <DisplayProducts productList={products} /> :
 						(
-							<p>Ei omia tuotteita. Kun lisäät tuotteen myyntiin, näet sen täällä.</p>
+							<Typography>Ei omia tuotteita. Kun lisäät tuotteen myyntiin, näet sen täällä.</Typography>
 						)}
 				</div> :
 				<div className="ownReviews">
 					<Divider variant="middle" style={{ marginBottom: "10px" }} />
-					{<ListReviews sellerId={user.user_id} isOwn={true} user={user} />}
+					{<ListReviews sellerId={user.user_id} isOwn={true} />}
 				</div>}
 		</div>
 	)

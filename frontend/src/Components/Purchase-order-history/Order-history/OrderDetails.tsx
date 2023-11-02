@@ -23,7 +23,6 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 	const [product, setProduct] = useState<ProductType>()
 	const [reload, setReload] = useState(false)
 	const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
-	const [seeReviewButton, setSeeReviewButton] = useState(false)
 	const navigate = useNavigate()
 
 
@@ -133,6 +132,7 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 				Kaupunki: {seller?.city}<br />
 				Postinumero: {seller?.postal_code}<br />
 				Tilauksen tila: {saleStatus}<br />
+				Arvosteltu: Voit arvostella tuotteen vastaanotettuasi sen.
 				</>
 			)
 		)
@@ -171,9 +171,10 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 							{(sale?.sales_status === 5 && product?.listed === false) && <Button onClick={handleReturnToShop}>Palauta myyntiin</Button>}
 						</> :
 						<>
-							{sale?.sales_status === 3 && <Button onClick={() => {handleReceivedProduct(), setSeeReviewButton(true)}}>Vastaanotettu</Button>}
-							{((sale?.sales_status === 3 || sale?.sales_status === 4) && !sale.reviewed) && <><Button disabled={!seeReviewButton} onClick={() => {setIsReviewModalOpen(true)}}>Jätä arvostelu</Button>
-								<h5>Voit jättää arvostelun myyjälle vastaanotettuasi tuotteen.</h5></>}
+							{sale?.sales_status === 3 && <Button onClick={() => {handleReceivedProduct()}}>Vastaanotettu</Button>}
+							{((sale?.reviewed === false && sale?.sales_status === 4) && !sale.reviewed) && <><Button onClick={() => {setIsReviewModalOpen(true)}}>Jätä arvostelu</Button>
+							</>
+							}
 							<LeaveReview
 								isOpen={isReviewModalOpen}
 								onClose={() => setIsReviewModalOpen(false)}
@@ -181,7 +182,6 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 								sale_id={saleId}
 								seller_id={sale?.seller_id}
 								sale={sale}
-								changeButton={() => setSeeReviewButton(false)}
 							/>
 							{sale?.sales_status === 2 && <Button onClick={handleCancelSale}>Peruuta tilaus</Button>}
 						</>}

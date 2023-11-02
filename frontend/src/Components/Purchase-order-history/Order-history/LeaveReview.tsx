@@ -8,7 +8,7 @@ import Notification from "../../Verify-notification/Notification"
 // import { initialState } from "../types"
 // import { fetchUser } from "../services"
 
-function LeaveReview({ isOpen, onClose, token, sale, sale_id, seller_id, changeButton }: ReviewModalProps) {
+function LeaveReview({ isOpen, onClose, token, sale, sale_id, seller_id }: ReviewModalProps) {
 	const [newDescription, setNewDescription] = useState<string>()
 	const [newStars, setNewStars] = useState<number | null>(3)
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
@@ -50,7 +50,6 @@ function LeaveReview({ isOpen, onClose, token, sale, sale_id, seller_id, changeB
 					await putReviewedTrue(sale.sales_id, token)
 				}
 				setShowSuccessNotification(true) // Show success notification
-				changeButton()
 				onClose()
 			}
 		} catch (error) {
