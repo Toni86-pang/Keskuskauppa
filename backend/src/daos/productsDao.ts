@@ -16,7 +16,7 @@ export interface ProductBackend {
 	listed: boolean
 }
 
-export async function createProduct(product: ProductBackend): Promise<void> {
+export async function createProduct(product: ProductBackend): Promise<{product_id: number}> {
 	product.listed = true
 	let query
 	let values
@@ -27,7 +27,8 @@ export async function createProduct(product: ProductBackend): Promise<void> {
                 (user_id, title, category_id, subcategory_id, description, price, product_image, postal_code, city, listed)
             VALUES
                 ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-        `
+        	RETURNING product_id`
+
 		values = [
 			product.user_id,
 			product.title,
@@ -46,7 +47,7 @@ export async function createProduct(product: ProductBackend): Promise<void> {
                 (user_id, title, category_id, subcategory_id, description, price, postal_code, city, listed)
             VALUES
                 ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-        `
+        	RETURNING product_id`
 		values = [
 			product.user_id,
 			product.title,
@@ -60,7 +61,8 @@ export async function createProduct(product: ProductBackend): Promise<void> {
 		]
 	}
 	try {
-		await executeQuery(query, values)
+		const result = await executeQuery(query, values)
+		return result.rows[0]
 	} catch (error) {
 		console.error("Error creating product:", error)
 		throw error

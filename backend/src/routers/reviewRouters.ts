@@ -42,7 +42,6 @@ review.get("/user/:id", async (req: Request, res: Response) => {
 review.get("/own", authentication, async (req: CustomRequest, res: Response) => {
 
 	const userId = req.id
-	console.log("UserId:", userId)
 	if (!userId) {
 		console.error("No user found")
 		return res.status(401).send()
@@ -51,7 +50,6 @@ review.get("/own", authentication, async (req: CustomRequest, res: Response) => 
 		const result: Review[] | null = await getReviewsByUserId(userId)
 		markReviewsSeen(userId)
 		if (result) {
-			console.log("Result: ", result)
 			return res.status(200).send(result)
 		} else {
 			return res.status(404).send()
@@ -69,7 +67,6 @@ review.get("/:id", async (req: Request, res: Response) => {
 	try {
 		const result: Review | null = await getReviewById(reviewId)
 		if (result) {
-			console.log("Result: ", result)
 			return res.status(200).send(result)
 		} else {
 			return res.status(404).send()
@@ -99,11 +96,6 @@ review.post("/", authentication, async (req: CustomRequest, res: Response) => {
 			seller_id,
 			description,
 			stars } = req.body
-		console.log(sales_id,
-			seller_id,
-			buyer_id,
-			description,
-			stars)
 		if (!sales_id || !seller_id || !buyer_id || !description || !stars) {
 			return res.status(400).send("Required information is missing.")
 		}

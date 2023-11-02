@@ -22,7 +22,8 @@ product.post("/", authentication, upload.single("product_image"), async (req: Cu
 		}
 
 		if (!user_id || !title || !category_id || !subcategory_id || !price) {
-			return res.status(400).send("Required information is missing.")
+			return res.status(400).json({message:"Required information is missing.",
+				error: 400})
 		}
 
 		const newProduct = {
@@ -38,8 +39,8 @@ product.post("/", authentication, upload.single("product_image"), async (req: Cu
 			listed: true
 		}
 
-		await createProduct(newProduct)
-		res.status(201).json({ message: "Product created successfully" })
+		const result = await createProduct(newProduct)
+		res.status(201).send(result)
 	} catch (error) {
 		res.status(500).json({ message: "Error creating product" })
 	}
@@ -129,8 +130,6 @@ product.get("/user/:id", async (req, res) => {
 product.delete("/:id", async (req: Request, res: Response) => {
 	const product_id = Number(req.params.id)
 
-	console.log("product_id", product_id)
-
 	try {
 		const result = await deleteProduct(product_id)
 		if (result.rowCount > 0) {
@@ -149,7 +148,6 @@ product.put("/update/:id", authentication, upload.single("product_image"), async
 	const userId = req.id
 	const updatedProductData = req.body
 	const productImage = req.file ? req.file.buffer : null
-	console.log("Request Body:", req.body)
 	try {
 		const product: ProductBackend | null = await getProductById(product_Id)
 		if (!product) {
