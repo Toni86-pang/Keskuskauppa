@@ -63,8 +63,9 @@ function ReviewCard({ review, isOwn, user }: ReviewCardProps) {
 		<>
 			<Card style={cardStyle}>
 				<CardContent>
+					{/* {!review.seen &&<Typography>Uusi arvostelu! </Typography>} */}
 					<Grid container spacing={2} style={gridContainerStyle} >
-						<Typography ml={2} mt={2}>
+						<Typography ml={2} mt={2} component="span">
 							<Avatar src={typeof user?.user_image === "string" ? user.user_image : undefined}
 								alt={user?.name}
 								sx={{

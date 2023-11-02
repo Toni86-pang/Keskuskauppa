@@ -12,6 +12,7 @@ import VerifyDialog from "../Verify-notification/VerifyDialog"
 import DisplayProducts from "../Product-related/DisplayProducts"
 import ListReviews from "../Purchase-order-history/Order-history/ListReviews"
 import ChangePassword from "../Register-login/ChangePassword"
+import { useNewSaleAndReviewContext } from "../../NewSaleAndReviewContext"
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
@@ -32,6 +33,7 @@ function Profile() {
 	const { loadedUser, stars, products } = useLoaderData() as UserProducts
 	const [user, setUser] = useState<User>(loadedUser)
 	const [token, setToken] = useContext(UserTokenContext)
+	const { setReviewCount} = useNewSaleAndReviewContext()
 	const [changePasswordVisible, setChangePasswordVisible] = useState(false)
 	const [updateVisible, setUpdateVisible] = useState(false)
 	const [verifyOpen, setVerifyOpen] = useState<boolean>(false)
@@ -179,7 +181,7 @@ function Profile() {
 			<Stack spacing={2} direction="row">
 				<Button onClick={() => setShowProducts(true)} variant="text" color={showProducts ? "secondary" : "primary"}>Omat ilmoitukset</Button>
 				<div style={{ marginTop: "9px" }}>|</div>
-				<Button onClick={() => setShowProducts(false)} variant="text" color={!showProducts ? "secondary" : "primary"}>Omat arvostelut</Button>
+				<Button onClick={() => { setShowProducts(false); setReviewCount(0)}} variant="text" color={!showProducts ? "secondary" : "primary"}>Omat arvostelut</Button>
 			</Stack>
 
 			{showProducts ?
