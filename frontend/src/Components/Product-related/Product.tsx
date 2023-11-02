@@ -64,7 +64,7 @@ export default function Product() {
 			await deleteProduct(product.product_id)
 			setShowSuccessDeleteNotification(true)
 			setTimeout(() => {
-				navigate("/products")
+				navigate("/profile")
 			}, 1000)
 		} catch (error) {
 			console.error("Error deleting product", error)
