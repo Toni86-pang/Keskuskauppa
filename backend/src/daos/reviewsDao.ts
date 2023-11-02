@@ -91,6 +91,12 @@ export const postComment = async (review_id: number, comment: string) => {
 	}
 }
 
+export const markReviewsSeen = async (userId: number) => {
+	const query = "UPDATE reviews SET seen = true WHERE seller_id = $1"
+	const params= [userId]
+	await executeQuery(query, params)
+}
+
 export const getReviewComment = async (reviewId: number): Promise<ReviewComment | null > => {
 	const query = "SELECT * FROM comment WHERE review_id = $1"
 	const params = [reviewId]

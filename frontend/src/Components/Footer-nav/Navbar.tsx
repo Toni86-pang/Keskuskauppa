@@ -18,23 +18,24 @@ import Login from "../Register-login/Login"
 import RegisterNewUser from "../Register-login/RegisterNewUser"
 import { UserTokenContext } from "../../App"
 import { fetchUser } from "../../Services-types/services"
-import {  NavbarProps, User } from "../../Services-types/types"
+import { NavbarProps, User } from "../../Services-types/types"
 import ShoppingCart from "../Purchase-order-history/ShoppingCart"
 import "./Navbar.css"
 import Crumbs from "../Crumbs/Crumbs"
 import ProductSearch from "../Search/Searchbar"
-import { useBadgeContext } from "../../BadgeContext"
+import { useNewSaleAndReviewContext } from "../../../NewSaleAndReviewContext"
+
 import Avatar from "@mui/material/Avatar"
 
 
 const Navbar = ({ cart, setCart }: NavbarProps) => {
 	const [token, setToken] = useContext(UserTokenContext)
-	const { badgeCount } = useBadgeContext()
+	const { reviewCount, saleCount } = useNewSaleAndReviewContext ()
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 	const [user, setUser] = useState<User | null>(null)
 	const [isShoppingCartOpen, setShoppingCartOpen] = useState(false)
 	const navigate = useNavigate()
-	
+
 
 	const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget)
@@ -110,9 +111,9 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 										}} />
 
 									<Typography variant="body1" sx={{ mt: 1 }}>
-										<Badge badgeContent={badgeCount} color="error" >
-											{user?.name} 
-										</Badge> 
+										<Badge badgeContent={saleCount + reviewCount} color="info" >
+											{user?.name}
+										</Badge>
 									</Typography>
 
 									<ArrowDropDownIcon />
@@ -123,11 +124,11 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 									aria-controls="user-menu"
 									aria-haspopup="true"
 								>
-									<ShoppingCartIcon />
+
 									<div className="products-in-shopping-cart">
-										<p>
-											({cart?.length || 0})
-										</p>
+										<Badge badgeContent={cart?.length || 0} color="info">
+											<ShoppingCartIcon />
+										</Badge>
 									</div>
 								</IconButton>
 								<Menu
@@ -140,14 +141,14 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 										onClick={handleMenuClose}
 										component={Link} to="/profile"
 									>
-										Oma sivu
+										<Badge badgeContent={reviewCount} color="info" >Oma sivu</Badge>
 									</MenuItem>
 									<MenuItem
 										onClick={handleMenuClose}
 										component={Link}
 										to="/orderhistory"
 									>
-										<Badge badgeContent={badgeCount} color="error" >
+										<Badge badgeContent={saleCount} color="info" >
 											Tilaushistoria
 										</Badge>
 									</MenuItem>

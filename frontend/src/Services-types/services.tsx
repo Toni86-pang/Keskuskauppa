@@ -347,6 +347,21 @@ export const fetchReviewsForSeller = async (sellerId: number) => {
 	return reviews
 }
 
+export const fetchOwnReviews = async (token: string) => {
+	const response = await axios.get("/api/review/own/",
+		{
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": `Bearer ${token}`
+			}
+		})
+		
+	const reviews: Review[] = response.data
+	return reviews
+}
+
+
+
 export const leaveComment = async (commentData: ReviewComment, token: string) => {
 	const response = await axios.post("/api/review/comment", commentData,  {
 		headers: {
