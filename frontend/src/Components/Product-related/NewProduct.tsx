@@ -124,11 +124,16 @@ function NewProduct() {
 
 	const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const value = event.target.value
-		setNewTitle(value)
+		if (value.length < 50) {
+			setNewTitle(value)
+		}
+		
 	}
 	const handleDescChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const value = event.target.value
-		setNewDescription(value)
+		if (value.length < 599) {
+			setNewDescription(value)
+		}		
 	}
 
 	const handlePriceChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -225,6 +230,7 @@ function NewProduct() {
 						multiline rows={5}
 						type="text"
 						name="description"
+						
 						value={newDescription}
 						onChange={handleDescChange}
 					/>

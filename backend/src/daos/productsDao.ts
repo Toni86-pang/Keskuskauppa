@@ -79,16 +79,6 @@ export const getProductById = async (product_id: number): Promise<ProductBackend
 	}
   
 	const productDetails: ProductBackend = result.rows[0]
-  
-	// if (productDetails.product_image instanceof Buffer) {
-	// 	// The product_image is already a Buffer, do nothing.
-	// } else if (typeof productDetails.product_image === "string") {
-	// 	// Convert the base64 string to a Buffer
-	// 	productDetails.product_image = Buffer.from(productDetails.product_image, "base64")
-	// } else {
-	// 	// Handle cases where the product doesn't have an image
-	// 	productDetails.product_image = null
-	// }
 
 	if (!(productDetails.product_image instanceof Buffer)) {
 		// Handle cases where the product doesn't have an image
@@ -101,7 +91,7 @@ export const getProductById = async (product_id: number): Promise<ProductBackend
   
 
 export const getAllProducts = async (): Promise<ProductBackend[]> => {
-	const query = "SELECT * FROM products where listed = true"
+	const query = "SELECT * FROM products where listed = true ORDER BY created_at DESC"
 	const result = await executeQuery(query)
 
 	return result.rows
@@ -226,7 +216,8 @@ export const getProductsByCategory = async (category_ID: number): Promise<Produc
 	JOIN subcategory ON products.subcategory_id = subcategory.subcategory_id
 	JOIN category ON subcategory.category_id = category.category_id
 	
-	WHERE category.category_id = $1 AND listed = true;`
+	WHERE category.category_id = $1 AND listed = true
+	ORDER BY created_at DESC;`
 
 	const result = await executeQuery(query, [category_ID])
 
@@ -248,7 +239,8 @@ export const getProductsBySubcategory = async (subcategory_ID: number): Promise<
 
 	JOIN subcategory ON products.subcategory_id = subcategory.subcategory_id
 
-	WHERE subcategory.subcategory_id = $1 AND listed = true;`
+	WHERE subcategory.subcategory_id = $1 AND listed = true
+	ORDER BY created_at DESC;`
 	
 	const result = await executeQuery(query, [subcategory_ID])
 
