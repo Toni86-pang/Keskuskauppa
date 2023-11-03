@@ -1,4 +1,3 @@
-//import { Typography } from "@mui/material"
 import { FooterBox, BoxOne, TypographyFooter } from "./Styles"
 import Grid from "@mui/material/Grid"
 

@@ -5,13 +5,14 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
 import {
 	AppBar,
-	// Box,
+	Box,
 	Toolbar,
 	Typography,
 	Menu,
 	IconButton,
 	MenuItem,
 	Badge,
+	Grid
 } from "@mui/material"
 import CategoryMenu from "./CategoryMenu"
 import Login from "../Register-login/Login"
@@ -23,9 +24,9 @@ import ShoppingCart from "../Purchase-order-history/ShoppingCart"
 import "./Navbar.css"
 import Crumbs from "../Crumbs/Crumbs"
 import ProductSearch from "../Search/Searchbar"
-import { useNewSaleAndReviewContext } from "../../../NewSaleAndReviewContext"
-
+import { useNewSaleAndReviewContext } from "../../NewSaleAndReviewContext"
 import Avatar from "@mui/material/Avatar"
+import { GridLogin, BoxSiteName } from "./Styles"
 
 
 const Navbar = ({ cart, setCart }: NavbarProps) => {
@@ -35,7 +36,6 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 	const [user, setUser] = useState<User | null>(null)
 	const [isShoppingCartOpen, setShoppingCartOpen] = useState(false)
 	const navigate = useNavigate()
-
 
 	const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget)
@@ -69,116 +69,130 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 				}
 			}
 		}
-
 		fetchUserData()
 	}, [token])
-
-
 
 	return (
 		<>
 			{/* <Box sx={{ flexGrow: 1 }}> */ /* Box causes unnecessary empty space under navbar on some situation */}
-			<AppBar position="static" sx={{ bgcolor: "#6096ba" }}>
-				<Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-					{/* Left side (store name and category menu) */}
-					<CategoryMenu />
-					<Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-						<Typography variant="h6">
-							Keskuskauppa
-						</Typography>
-					</Link>
-
-					{/* Middle (search bar) */}
-
-					<ProductSearch />
-
-					{/* Right side (user-related elements) */}
-					<div>
-						{token ? (
-							<>
-								<IconButton
-									onClick={handleMenuOpen}
-									color="inherit"
-									aria-controls="user-menu"
-									aria-haspopup="true"
-								>
-									<Avatar src={typeof user?.user_image === "string" ? user.user_image : undefined}
-										alt={user?.name}
-										sx={{
-											width: "25",
-											height: "25"
-
-										}} />
-
-									<Typography variant="body1" sx={{ mt: 1 }}>
-										<Badge badgeContent={saleCount + reviewCount} color="info" >
-											{user?.name}
-										</Badge>
+			<Grid container direction="row">
+				<AppBar position="static" sx={{ bgcolor: "#6096ba", padding:"15px"  }}>
+					<Toolbar sx={{ display: "flex", justifyContent: "space-between"}}>
+						{/* Left side (store name and category menu) */}
+						<Grid item>
+							<CategoryMenu />
+						</Grid>
+						<Grid item >
+							<BoxSiteName>
+								<Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+									<Typography variant="h4"  sx={{}}>
+										Keskuskauppa
 									</Typography>
+								</Link>
+							</BoxSiteName>
+						</Grid>
+						{/* Middle (search bar) */}
+						<Grid item>
+							<Box sx={{ marginLeft: "" }}>
+								<ProductSearch />
+							</Box>
+						</Grid>
+						{/* Right side (user-related elements) */}
+						<Grid item>
+							<Box>
+								{token ? (
+									<>
+										<IconButton
+											onClick={handleMenuOpen}
+											color="inherit"
+											aria-controls="user-menu"
+											aria-haspopup="true"
+										>
+											<Avatar src={typeof user?.user_image === "string" ? user.user_image : undefined}
+												alt={user?.name}
+												sx={{
+													width: "25",
+													height: "25"
 
-									<ArrowDropDownIcon />
-								</IconButton>
-								<IconButton
-									onClick={() => { setShoppingCartOpen(true) }}
-									color="inherit"
-									aria-controls="user-menu"
-									aria-haspopup="true"
-								>
+												}} />
 
-									<div className="products-in-shopping-cart">
-										<Badge badgeContent={cart?.length || 0} color="info">
-											<ShoppingCartIcon />
-										</Badge>
-									</div>
-								</IconButton>
-								<Menu
-									id="user-menu"
-									anchorEl={anchorEl}
-									open={Boolean(anchorEl)}
-									onClose={handleMenuClose}
-								>
-									<MenuItem
-										onClick={handleMenuClose}
-										component={Link} to="/profile"
-									>
-										<Badge badgeContent={reviewCount} color="info" >Oma sivu</Badge>
-									</MenuItem>
-									<MenuItem
-										onClick={handleMenuClose}
-										component={Link}
-										to="/orderhistory"
-									>
-										<Badge badgeContent={saleCount} color="info" >
+											<Typography variant="body1" sx={{ mt: 1 }}>
+												<Badge badgeContent={saleCount + reviewCount} color="info" >
+													{user?.name}
+												</Badge>
+											</Typography>
+
+											<ArrowDropDownIcon />
+										</IconButton>
+										<IconButton
+											onClick={() => { setShoppingCartOpen(true) }}
+											color="inherit"
+											aria-controls="user-menu"
+											aria-haspopup="true"
+										>
+
+											<div className="products-in-shopping-cart">
+												<Badge badgeContent={cart?.length || 0} color="info">
+													<ShoppingCartIcon />
+												</Badge>
+											</div>
+										</IconButton>
+										<Menu
+											id="user-menu"
+											anchorEl={anchorEl}
+											open={Boolean(anchorEl)}
+											onClose={handleMenuClose}
+										>
+											<MenuItem
+												onClick={handleMenuClose}
+												component={Link} to="/profile"
+											>
+												<Badge badgeContent={reviewCount} color="info" >Oma sivu</Badge>
+											</MenuItem>
+											<MenuItem
+												onClick={handleMenuClose}
+												component={Link}
+												to="/orderhistory"
+											>
+												<Badge badgeContent={saleCount} color="info" >
 											Tilaushistoria
-										</Badge>
-									</MenuItem>
-									<MenuItem
-										onClick={handleMenuClose}
-										component={Link}
-										to="/product/new"
-									>
+												</Badge>
+											</MenuItem>
+											<MenuItem
+												onClick={handleMenuClose}
+												component={Link}
+												to="/product/new"
+											>
 										Lisää uusi tuote
-									</MenuItem>
-									<MenuItem onClick={handleLogout}>Kirjaudu ulos</MenuItem>
-								</Menu>
-							</>
-						) : (
-							<>
-								<RegisterNewUser />
-								<Login />
-							</>
-						)}
-					</div>
-				</Toolbar>
-			</AppBar>
-			<Crumbs />
-			{/* </Box> */}
-			<ShoppingCart
-				isOpen={isShoppingCartOpen}
-				onClose={() => setShoppingCartOpen(false)}
-				cart={cart}
-				setCart={setCart}
-			/>
+											</MenuItem>
+											<MenuItem onClick={handleLogout}>Kirjaudu ulos</MenuItem>
+										</Menu>
+									</>
+								) : (
+							
+									<Grid container>
+										<Grid item xs={6} sm={6}>
+											<RegisterNewUser />
+										</Grid>
+										<GridLogin item xs={6} sm={6}>
+											<Login />
+										</GridLogin>
+									</Grid>	
+							
+								)}
+							</Box>
+						</Grid>
+					</Toolbar>
+				</AppBar>
+				<Crumbs />
+				{/* </Box> */}
+				<ShoppingCart
+					isOpen={isShoppingCartOpen}
+					onClose={() => setShoppingCartOpen(false)}
+					cart={cart}
+					setCart={setCart}
+				/>
+			</Grid>
 		</>
 	)
 }
