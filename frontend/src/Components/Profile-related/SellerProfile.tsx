@@ -1,6 +1,7 @@
 import { useState } from "react"
-import { Button, Grid, Rating, Stack } from "@mui/material"
+import { Button, Grid, Rating, Stack, Paper, CardMedia, Typography, Box } from "@mui/material"
 import Divider from "@mui/material/Divider"
+import { createTheme, ThemeProvider } from "@mui/material/styles"
 //import Rating from "@mui/material/Rating"
 import { useLoaderData } from "react-router-dom"
 import ListReviews from "../Purchase-order-history/Order-history/ListReviews"
@@ -32,65 +33,87 @@ function SellerProfile() {
 		formattedJoinDate = `${day}.${month}.${year}`
 	}
 
-	return (
+	const theme = createTheme({
+		components: {
+			MuiButton: {
+				styleOverrides: {
+					textSecondary: {
+						fontWeight: "bold",
+					},
+				},
+			},
+		},
+		palette: {
+			secondary: {
+				main: "#405e8c",
+			}
+		}
+	})
 
-		<div className="profile">
-			<Grid
-				container
-				spacing={1}
-				direction="row"
-				justifyContent="center"
-				alignItems="center"
-			>
-				<Grid item xs={4}>
-					<div>{user?.user_image && (
-						<img
-							alt="Seller Image"
-							// src={`data:image/*;base64,${user.user_image}`}
-							src={user.user_image as string}
-							style={{
-								margin: "auto",
+	return (
+		<ThemeProvider theme={theme}>
+			<Paper sx={{
+				backgroundColor: "#f3f6fa",
+				elevation: 5
+			}}>
+				<Grid container direction="column" spacing={1} justifyContent="center" alignItems="center" pt={2}>
+					<Typography sx={{fontSize: "1.2rem"}}>Käyttäjän <Box  component='span' fontWeight='fontWeightBold' display='inline'>{user?.username}</Box> profiili </Typography>
+				</Grid>
+				<Grid
+					container
+					spacing={2}
+					direction="row"
+					justifyContent="center"
+					alignItems="center"
+				>
+					<Grid item xs={5}>
+						<CardMedia
+							component="img"
+							image = {user.user_image as string}
+							alt="Image"
+							sx={{
 								display: "block",
-								maxWidth: "270px",
-								maxHeight: "270px",
+								maxWidth: "250px",
+								maxHeight: "250px",
+								borderRadius: "100%",
+								m: 2,
+								p: 5
 							}}
 						/>
-					)}
-					</div>
+					</Grid>
+					{user && <Grid item xs={4}>
+						<Box p={3}>
+							<Typography sx={{fontSize: "0.9rem"}}>Käyttäjänimi: {user?.username}</Typography>
+							<Typography sx={{fontSize: "0.9rem"}}>Rekisteröitynyt: {formattedJoinDate} </Typography>
+							<Typography sx={{fontSize: "0.9rem"}}>Kaupunki: {user?.city}</Typography>
+							<Typography sx={{fontSize: "0.9rem"}}>Postinumero: {user?.postal_code}</Typography>
+							<Typography sx={{fontSize: "0.9rem"}}>Tuotteita myynnissä: {products?.length}</Typography>
+							<Typography sx={{fontSize: "0.9rem"}}>Myyjän tähtiarvio:
+								<Rating name="read-only" value={stars} precision={0.1} readOnly />
+							</Typography>
+						</Box>
+					</Grid>}
 				</Grid>
-				{user && <Grid item xs={5}>
-					<div className="user">
-						<div className="userUsername">Käyttäjänimi: {user.username}</div>
-						<div className="userAddress">Rekisteröintipäivämäärä: {formattedJoinDate}</div>
-						<div className="userRegDay">Kaupunki: {user.city}</div>
-						<div className="userPostalCode">Postinumero: {user.postal_code}</div>
-						<div>Tuotteita myynnissä: {products?.length}</div>
-						<div>Myyjän tähtiarvio:
-							<Rating name="read-only" value={stars} precision={0.1} readOnly />
-						</div>
-					</div>
-				</Grid>}
+				<Stack spacing={2} direction="row" justifyContent="center" alignItems="center">
+					<Button onClick={() => setShowProducts(true)} variant="text" color={showProducts ? "secondary" : "primary"}>Myyjän myynnissä olevat tuotteet</Button>
+					<Typography>|</Typography>
+					<Button onClick={() => { setShowProducts(false)}} variant="text" color={!showProducts ? "secondary" : "primary"}>Myyjän saamat arvostelut</Button>
+				</Stack>
+				{showProducts ?
+					<Box ml={3} mr={3}>
+						<Divider variant="middle" style={{ marginBottom: "10px" }} />
+						{products.length > 0 ? <DisplayProducts productList={products} /> :
+							(
+								<Typography>Ei tuotteita.</Typography>
 
-			</Grid>
-			<Stack spacing={2} direction="row">
-				<Button onClick={() => setShowProducts(true)} variant="text" color={showProducts ? "secondary" : "primary"}>Myyjän ilmoitukset</Button>
-				<div style={{ marginTop: "9px" }}>|</div>
-				<Button onClick={() => setShowProducts(false)} variant="text" color={!showProducts ? "secondary" : "primary"}>Myyjän arvostelut</Button>
-			</Stack>
-			{showProducts ?
-				<div className="ownProducts">
-					<Divider variant="middle" style={{ marginBottom: "10px" }} />
-					{products.length > 0 ? <DisplayProducts productList={products} /> :
-						(
-							<p>Ei tuotteita.</p>
-						)}
-				</div> :
-				<div className="reviews">
-					<Divider variant="middle" style={{ marginBottom: "10px" }} />
-					{<ListReviews sellerId={user.user_id} isOwn={false} />}
-				</div>}
-
-		</div>
+							)}
+					</Box> :
+					<Box ml={3} mr={3}>
+						<Divider variant="middle" style={{ marginBottom: "10px" }} />
+						{<ListReviews sellerId={user.user_id} isOwn={false} />}
+					</Box>}
+			</Paper>
+		</ThemeProvider>
 	)
 }
 

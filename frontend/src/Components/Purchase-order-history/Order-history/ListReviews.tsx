@@ -1,4 +1,4 @@
-import { List } from "@mui/material"
+import { List, Typography, Box } from "@mui/material"
 import ReviewCard from "./ReviewCard"
 import { useEffect, useState } from "react"
 import { Review } from "../../../Services-types/types"
@@ -30,8 +30,9 @@ const ListReviews = ({ sellerId, isOwn }: ListReviewsProps) => {
 						<ReviewCard key={"reviews " + index} review={review} isOwn={isOwn} />
 					))}
 				</> :
-				<p>Ei arvosteluja</p>}
-
+				<Box mb={2} ml={3}>
+					<Typography>Ei vielä arvosteluja.</Typography>
+				</Box>}
 		</List>
 	)
 }

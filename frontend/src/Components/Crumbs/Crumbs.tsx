@@ -1,4 +1,5 @@
-import { Breadcrumbs, Link, Typography } from "@mui/material"
+import { Breadcrumbs, Typography, Button } from "@mui/material"
+import { createTheme, ThemeProvider } from "@mui/material/styles"
 import { useEffect, useState } from "react"
 import { useLocation, Link as RouterLink } from "react-router-dom"
 import { fetchProduct, fetchCategoryName, fetchSubcategoryName, fetchSubcategories } from "../../Services-types/services"
@@ -88,24 +89,34 @@ export default function Crumbs() {
 		generateBreadcrumbs()
 	}, [location])
 
-	return (
-		<Breadcrumbs>
-			<Link color="inherit" component={RouterLink} to="/">
-                Etusivu
-			</Link>
-			{breadcrumbs.map((crumb, index) => {
-				const last = index === breadcrumbs.length - 1
+	const theme = createTheme({
+		palette: {
+			secondary: {
+				main: "#405e8c",
+			}
+		}
+	})
 
-				return last ? (
-					<Typography color="textPrimary" key={"crumb: " + index}>
-						{crumb[0]}
-					</Typography>
-				) : (
-					<Link color="inherit" key={"crumblink: " + crumb[1]} component={RouterLink} to={crumb[1]}>
-						{crumb[0]}
-					</Link>
-				)
-			})}
-		</Breadcrumbs>
+	return (
+		<ThemeProvider theme={theme}>
+			<Breadcrumbs>
+				<Button color="primary" component={RouterLink} to="/">
+                Etusivu
+				</Button>
+				{breadcrumbs.map((crumb, index) => {
+					const last = index === breadcrumbs.length - 1
+
+					return last ? (
+						<Typography color="secondary" key={"crumb: " + index}>
+							{crumb[0]}
+						</Typography>
+					) : (
+						<Button color="primary" key={"crumblink: " + crumb[1]} component={RouterLink} to={crumb[1]}>
+							{crumb[0]}
+						</Button>
+					)
+				})}
+			</Breadcrumbs>
+		</ThemeProvider>
 	)
 }
