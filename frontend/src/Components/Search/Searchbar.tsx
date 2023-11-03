@@ -102,6 +102,7 @@ const ProductSearch = () => {
 					onKeyDown={handleKeyDown}
 					onFocus={handleOnFocus}
 					onChange={(e) => setSearchQuery(e.target.value)}
+					InputLabelProps={{ style: {color: "white" } }}
 				/>
 			</Search>
 
