@@ -1,6 +1,5 @@
 import { useState, useContext, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
-// import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
 import {
@@ -26,12 +25,12 @@ import Crumbs from "../Crumbs/Crumbs"
 import ProductSearch from "../Search/Searchbar"
 import { useNewSaleAndReviewContext } from "../../NewSaleAndReviewContext"
 import Avatar from "@mui/material/Avatar"
-import { GridLogin, BoxSiteName } from "./Styles"
+import { GridLogin } from "./Styles"
 
 
 const Navbar = ({ cart, setCart }: NavbarProps) => {
 	const [token, setToken] = useContext(UserTokenContext)
-	const { reviewCount, saleCount } = useNewSaleAndReviewContext ()
+	const { reviewCount, saleCount } = useNewSaleAndReviewContext()
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 	const [user, setUser] = useState<User | null>(null)
 	const [isShoppingCartOpen, setShoppingCartOpen] = useState(false)
@@ -76,29 +75,27 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 		<>
 			{/* <Box sx={{ flexGrow: 1 }}> */ /* Box causes unnecessary empty space under navbar on some situation */}
 			<Grid container direction="row">
-				<AppBar position="static" sx={{ bgcolor: "#6096ba", padding:"15px"  }}>
-					<Toolbar sx={{ display: "flex", justifyContent: "space-between"}}>
+				<AppBar position="static" sx={{ bgcolor: "#6096ba", padding: "15px" }}>
+					<Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
 						{/* Left side (store name and category menu) */}
 						<Grid item>
 							<CategoryMenu />
 						</Grid>
-						<Grid item >
-							<BoxSiteName>
+						<Grid item sx={{ display: "flex", flex: 1 }} >
+							<Box>
 								<Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-									<Typography variant="h4"  sx={{}}>
+									<Typography variant="h4" sx={{ marginLeft: "1rem" }}>
 										Keskuskauppa
 									</Typography>
 								</Link>
-							</BoxSiteName>
-						</Grid>
-						{/* Middle (search bar) */}
-						<Grid item>
-							<Box sx={{ marginLeft: "" }}>
-								<ProductSearch />
 							</Box>
 						</Grid>
+						{/* Middle (search bar) */}
+						<Grid item sx={{ justifyContent: "center", display: "flex", flex: 1 }}>
+							<ProductSearch />
+						</Grid>
 						{/* Right side (user-related elements) */}
-						<Grid item>
+						<Grid item sx={{ display: "flex", flex: 1, justifyContent: "right", border: "" }}>
 							<Box>
 								{token ? (
 									<>
@@ -155,7 +152,7 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 												to="/orderhistory"
 											>
 												<Badge badgeContent={saleCount} color="info" >
-											Tilaushistoria
+													Tilaushistoria
 												</Badge>
 											</MenuItem>
 											<MenuItem
@@ -163,13 +160,13 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 												component={Link}
 												to="/product/new"
 											>
-										Lisää uusi tuote
+												Lisää uusi tuote
 											</MenuItem>
 											<MenuItem onClick={handleLogout}>Kirjaudu ulos</MenuItem>
 										</Menu>
 									</>
 								) : (
-							
+
 									<Grid container>
 										<Grid item xs={6} sm={6}>
 											<RegisterNewUser />
@@ -177,8 +174,8 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 										<GridLogin item xs={6} sm={6}>
 											<Login />
 										</GridLogin>
-									</Grid>	
-							
+									</Grid>
+
 								)}
 							</Box>
 						</Grid>

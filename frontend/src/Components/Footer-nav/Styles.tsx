@@ -38,13 +38,5 @@ export const GridLogin = styled(Grid)(({ theme }) =>({
 	}
 
 }))
-export const BoxSiteName = styled(Box)(({ theme }) =>({
-	[theme.breakpoints.up("md")]: {
-		marginRight: "15rem",
-	},
-	[theme.breakpoints.down("md")]: {
-		marginRight: "5rem", 
-	},
-}))
 
 
