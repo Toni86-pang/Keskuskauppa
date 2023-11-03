@@ -26,7 +26,6 @@ sales.post("/", authentication, async (req: CustomRequest, res: Response) => {
 	const buyer_id = req.id
 	try {
 		const { product_id, seller_id, buyer_name, buyer_address, buyer_city, buyer_postcode, buyer_phone, buyer_email } = req.body
-		console.log(product_id, seller_id, buyer_id, buyer_name, buyer_address, buyer_city, buyer_postcode, buyer_phone, buyer_email)
 		if (!product_id || !seller_id || !buyer_id || !buyer_name || !buyer_address || !buyer_city || !buyer_postcode || !buyer_phone || !buyer_email) {
 			return res.status(400).send("Required information is missing.")
 		}
@@ -127,7 +126,6 @@ sales.put("/update/:id", authentication, async (req: CustomRequest, res: Respons
 	const userId = req.id
 	const salesId = Number(req.params.id)
 	const newSaleStatus = req.body.sales_status
-	console.log(newSaleStatus)
 	try {
 		const sale: Sale = await getSaleById(salesId)
 		const productIds: number[] = []
