@@ -1,5 +1,6 @@
 import { useState, useContext } from "react"
-import { Grid, Button, Stack, CardMedia, Typography, Box} from "@mui/material"
+import { Grid, Button, Stack, CardMedia, Typography, Box, Paper } from "@mui/material"
+import { createTheme, ThemeProvider } from "@mui/material/styles"
 import Divider from "@mui/material/Divider"
 import { useNavigate, redirect, useLoaderData } from "react-router-dom"
 import UpdateProfile from "./UpdateProfile"
@@ -84,55 +85,80 @@ function Profile() {
 		onAccept: deleteProfile
 	}
 
+	const theme = createTheme({
+		components: {
+			MuiButton: {
+				styleOverrides: {
+					textSecondary: {
+						fontWeight: "bold",
+					},
+				},
+			},
+		},
+		palette: {
+			secondary: {
+				main: "#405e8c",
+			}
+		}
+	})
+
 	return (
-		<div className="profile">
-			<Grid
-				container
-				spacing={1}
-				direction="row"
-				justifyContent="center"
-				alignItems="center"
-			>
-				<Grid item xs={4}>
-					<CardMedia
-						component="img"
-						image = {user.user_image as string}
-						alt="Image"
-						sx={{
-							margin: "auto",
-							display: "block",
-							maxWidth: "270px",
-							maxHeight: "270px",
-						}}
-					/>
-
-
+		<ThemeProvider theme={theme}>
+			<Paper sx={{
+				backgroundColor: "#f3f6fa",
+				elevation: 5
+			}}>
+				<Grid container direction="column" spacing={1} justifyContent="center" alignItems="center" pt={2}>
+					<Typography sx={{fontSize: "1.2rem"}}>Oma profiili </Typography>
 				</Grid>
-				{user && <Grid item xs={5}>
-					<Box>
-						<Typography sx={{fontSize: "0.9rem"}}> Liittymispäivä: {formattedJoinDate} </Typography>
-						<Typography>Nimi: {user?.name}</Typography>
-						<Typography>Käyttäjänimi: {user?.username}</Typography>
-						<Typography>Osoite: {user?.address}</Typography>
-						<Typography>Kaupunki: {user?.city}</Typography>
-						<Typography>Postinumero: {user?.postal_code}</Typography>
-						<Typography>Sähköposti: {user?.email}</Typography>
-						<Typography>Puhelinnumero: {user?.phone}</Typography>
-						<Typography>Tuotteita myynnissä: {products?.length}</Typography>
-						<Typography>Oma tähtiarvio:
-							<Rating name="read-only" value={stars} precision={0.1} readOnly />
-						</Typography>
-					</Box>
-				</Grid>}
-				<Grid item xs={3}>
-					<Grid container direction="column" spacing={2}>
-						<Grid item>
+				<Grid
+					container
+					spacing={2}
+					direction="row"
+					justifyContent="center"
+					alignItems="center"
+				>
+					<Grid item xs={4.5}>
+						<CardMedia
+							component="img"
+							image = {user.user_image as string}
+							alt="Image"
+							sx={{
+								display: "block",
+								maxWidth: "250px",
+								maxHeight: "250px",
+								borderRadius: "100%",
+								m: 2,
+								p: 3
+							}}
+						/>
+					</Grid>
+				</Grid>
+				<Grid container direction="row" spacing={2} justifyContent="center" alignItems="center" pb={2}>
+					{user && <Grid item xs={5}>
+						<Box p={3}>
+							<Typography sx={{fontSize: "0.9rem"}}>Nimi: {user?.name}</Typography>
+							<Typography sx={{fontSize: "0.9rem"}}>Käyttäjänimi: {user?.username}</Typography>
+							<Typography sx={{fontSize: "0.9rem"}}>Sähköposti: {user?.email}</Typography>
+							<Typography sx={{fontSize: "0.9rem"}}>Puhelinnumero: {user?.phone}</Typography>
+							<Typography sx={{fontSize: "0.9rem"}}>Osoite: {user?.address}</Typography>
+							<Typography sx={{fontSize: "0.9rem"}}>Kaupunki: {user?.city}</Typography>
+							<Typography sx={{fontSize: "0.9rem"}}>Postinumero: {user?.postal_code}</Typography>
+							<Typography sx={{fontSize: "0.9rem"}}>Rekisteröitynyt: {formattedJoinDate} </Typography>
+							<Typography sx={{fontSize: "0.9rem"}}>Tuotteita myynnissä: {products?.length}</Typography>
+							<Typography sx={{fontSize: "0.9rem"}}>Oma tähtiarvio:
+								<Rating name="read-only" value={stars} precision={0.1} readOnly />
+							</Typography>
+						</Box>
+					</Grid>}
+					<Grid item xs={3}>
+						<Grid item pb={1}>
 							<Button variant="contained" onClick={() => setUpdateVisible(true)}>Muokkaa</Button>
 
 							{user && <UpdateProfile // make sure user is fetched before using component 
 								isOpen={updateVisible}
 								close={(updatedUser: User) => {
-									// update profile page with new info when modal is closed
+								// update profile page with new info when modal is closed
 									setUser(updatedUser)
 									setUpdateVisible(false)
 								}}
@@ -143,8 +169,8 @@ function Profile() {
 							<Button variant="contained" onClick={() => setChangePasswordVisible(true)}>Vaihda salasana</Button>
 							<ChangePassword username={user.username} open={changePasswordVisible} onClose={() => setChangePasswordVisible(false)} />
 						</Grid>
-						<Grid item>
-							<Button variant="contained" onClick={handleVerification} >Poista profiili</Button>
+						<Grid item pb={1}>
+							<Button variant="contained" color={"error"} onClick={handleVerification} >Poista profiili</Button>
 							<VerifyDialog {...verifyDialogProps} />
 						</Grid>
 						{/* Delete success and error notifications */}
@@ -177,26 +203,26 @@ function Profile() {
 						)}
 					</Grid>
 				</Grid>
-			</Grid>
-			<Stack spacing={2} direction="row">
-				<Button onClick={() => setShowProducts(true)} variant="text" color={showProducts ? "secondary" : "primary"}>Omat ilmoitukset</Button>
-				<div style={{ marginTop: "9px" }}>|</div>
-				<Button onClick={() => { setShowProducts(false); setReviewCount(0)}} variant="text" color={!showProducts ? "secondary" : "primary"}>Omat arvostelut</Button>
-			</Stack>
+				<Stack spacing={2} direction="row" justifyContent="center" alignItems="center">
+					<Button onClick={() => setShowProducts(true)} variant="text" color={showProducts ? "secondary" : "primary"}>Myynnissä olevat tuotteesi</Button>
+					<Typography>|</Typography>
+					<Button onClick={() => { setShowProducts(false); setReviewCount(0)}} variant="text" color={!showProducts ? "secondary" : "primary"}>Saamasi arvostelut</Button>
+				</Stack>
 
-			{showProducts ?
-				<div className="ownProducts">
-					<Divider variant="middle" style={{ marginBottom: "10px" }} />
-					{products.length > 0 ? <DisplayProducts productList={products} /> :
-						(
-							<Typography>Ei omia tuotteita. Kun lisäät tuotteen myyntiin, näet sen täällä.</Typography>
-						)}
-				</div> :
-				<div className="ownReviews">
-					<Divider variant="middle" style={{ marginBottom: "10px" }} />
-					{<ListReviews sellerId={user.user_id} isOwn={true} />}
-				</div>}
-		</div>
+				{showProducts ?
+					<Box ml={3} mr={3}>
+						<Divider variant="middle" style={{ marginBottom: "10px" }} />
+						{products.length > 0 ? <DisplayProducts productList={products} /> :
+							(
+								<Typography>Ei omia tuotteita. Kun lisäät tuotteen myyntiin, näet sen täällä.</Typography>
+							)}
+					</Box> :
+					<Box ml={3} mr={3}>
+						<Divider variant="middle" style={{ marginBottom: "10px" }} />
+						{<ListReviews sellerId={user.user_id} isOwn={true} />}
+					</Box>}
+			</Paper>
+		</ThemeProvider>
 	)
 }
 
