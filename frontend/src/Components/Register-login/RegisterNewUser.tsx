@@ -161,7 +161,7 @@ function RegisterNewUser() {
 
 				<Dialog open={dialogOpen} onClose={handleDialogClose}>
 					<DialogTitle>Rekisteröidy</DialogTitle>
-					<DialogContent>
+					<DialogContent sx={{ display: "flex", flexDirection: "column" }}>
 
 						<TextField
 							type="text"
@@ -169,6 +169,8 @@ function RegisterNewUser() {
 							name="name"
 							value={name}
 							onChange={handleInputChange}
+							fullWidth
+							sx={{ marginBottom: 2 }}
 						/>
 
 						<TextField
@@ -177,6 +179,8 @@ function RegisterNewUser() {
 							name="email"
 							value={email}
 							onChange={handleInputChange}
+							fullWidth
+							sx={{ marginBottom: 2 }}
 						/>
 
 						<TextField
@@ -185,6 +189,8 @@ function RegisterNewUser() {
 							name="username"
 							value={username}
 							onChange={handleInputChange}
+							fullWidth
+							sx={{ marginBottom: 2 }}
 						/>
 
 						<TextField
@@ -193,6 +199,8 @@ function RegisterNewUser() {
 							name="phone"
 							value={phone}
 							onChange={handleInputChange}
+							fullWidth
+							sx={{ marginBottom: 2 }}
 						/>
 
 						<TextField
@@ -201,6 +209,8 @@ function RegisterNewUser() {
 							name="address"
 							value={address}
 							onChange={handleInputChange}
+							fullWidth
+							sx={{ marginBottom: 2 }}
 						/>
 
 						<TextField
@@ -209,6 +219,8 @@ function RegisterNewUser() {
 							name="city"
 							value={city}
 							onChange={handleInputChange}
+							fullWidth
+							sx={{ marginBottom: 2 }}
 						/>
 
 						<TextField
@@ -217,6 +229,8 @@ function RegisterNewUser() {
 							name="postal_code"
 							value={postal_code}
 							onChange={handleInputChange}
+							fullWidth
+							sx={{ marginBottom: 2 }}
 						/>
 
 						<TextField
@@ -225,6 +239,8 @@ function RegisterNewUser() {
 							name="password"
 							value={newUser.password}
 							onChange={handleInputChange}
+							fullWidth
+							sx={{ marginBottom: 2 }}
 						/>
 
 						<TextField
@@ -235,6 +251,8 @@ function RegisterNewUser() {
 							onChange={handleConfirmPasswordChange}
 							error={!passwordsMatch && isTouched}
 							helperText={!passwordsMatch && isTouched ? "Salasanat ovat erilaiset." : ""}
+							fullWidth
+							sx={{ marginBottom: 2 }}
 						/>
 						<FormControl>
 							<InputLabel style={{position: "relative"}} id="Kuvat">Lisää kuva:</InputLabel>
@@ -258,7 +276,7 @@ function RegisterNewUser() {
 					</DialogContent>
 					<DialogActions>
 						<Button disabled={!passwordsMatch} onClick={handleVerification}>Rekisteröidy</Button>
-						<Button onClick={handleCancel}>Peruuta</Button>
+						<Button onClick={handleCancel} sx={{ marginTop: 1 }}>Peruuta</Button>
 					</DialogActions>
 				</Dialog>
 				<VerifyDialog {...verifyDialogProps} />
