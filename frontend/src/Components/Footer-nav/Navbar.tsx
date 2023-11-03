@@ -20,7 +20,6 @@ import { UserTokenContext } from "../../App"
 import { fetchUser } from "../../Services-types/services"
 import { NavbarProps, User } from "../../Services-types/types"
 import ShoppingCart from "../Purchase-order-history/ShoppingCart"
-import "./Navbar.css"
 import Crumbs from "../Crumbs/Crumbs"
 import ProductSearch from "../Search/Searchbar"
 import { useNewSaleAndReviewContext } from "../../NewSaleAndReviewContext"
@@ -127,12 +126,11 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 											aria-controls="user-menu"
 											aria-haspopup="true"
 										>
-
-											<div className="products-in-shopping-cart">
+											<Box sx={{fontSize:"small"}}>
 												<Badge badgeContent={cart?.length || 0} color="info">
 													<ShoppingCartIcon />
 												</Badge>
-											</div>
+											</Box>
 										</IconButton>
 										<Menu
 											id="user-menu"
