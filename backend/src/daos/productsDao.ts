@@ -16,7 +16,7 @@ export interface ProductBackend {
 	listed: boolean
 }
 
-export async function createProduct(product: ProductBackend): Promise<void> {
+export async function createProduct(product: ProductBackend): Promise<{product_id: number}> {
 	product.listed = true
 	let query
 	let values
@@ -27,7 +27,8 @@ export async function createProduct(product: ProductBackend): Promise<void> {
                 (user_id, title, category_id, subcategory_id, description, price, product_image, postal_code, city, listed)
             VALUES
                 ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-        `
+        	RETURNING product_id`
+
 		values = [
 			product.user_id,
 			product.title,
@@ -46,7 +47,7 @@ export async function createProduct(product: ProductBackend): Promise<void> {
                 (user_id, title, category_id, subcategory_id, description, price, postal_code, city, listed)
             VALUES
                 ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-        `
+        	RETURNING product_id`
 		values = [
 			product.user_id,
 			product.title,
@@ -60,7 +61,8 @@ export async function createProduct(product: ProductBackend): Promise<void> {
 		]
 	}
 	try {
-		await executeQuery(query, values)
+		const result = await executeQuery(query, values)
+		return result.rows[0]
 	} catch (error) {
 		console.error("Error creating product:", error)
 		throw error
@@ -77,16 +79,6 @@ export const getProductById = async (product_id: number): Promise<ProductBackend
 	}
   
 	const productDetails: ProductBackend = result.rows[0]
-  
-	// if (productDetails.product_image instanceof Buffer) {
-	// 	// The product_image is already a Buffer, do nothing.
-	// } else if (typeof productDetails.product_image === "string") {
-	// 	// Convert the base64 string to a Buffer
-	// 	productDetails.product_image = Buffer.from(productDetails.product_image, "base64")
-	// } else {
-	// 	// Handle cases where the product doesn't have an image
-	// 	productDetails.product_image = null
-	// }
 
 	if (!(productDetails.product_image instanceof Buffer)) {
 		// Handle cases where the product doesn't have an image
@@ -99,7 +91,7 @@ export const getProductById = async (product_id: number): Promise<ProductBackend
   
 
 export const getAllProducts = async (): Promise<ProductBackend[]> => {
-	const query = "SELECT * FROM products where listed = true"
+	const query = "SELECT * FROM products where listed = true ORDER BY created_at DESC"
 	const result = await executeQuery(query)
 
 	return result.rows
@@ -224,7 +216,8 @@ export const getProductsByCategory = async (category_ID: number): Promise<Produc
 	JOIN subcategory ON products.subcategory_id = subcategory.subcategory_id
 	JOIN category ON subcategory.category_id = category.category_id
 	
-	WHERE category.category_id = $1 AND listed = true;`
+	WHERE category.category_id = $1 AND listed = true
+	ORDER BY created_at DESC;`
 
 	const result = await executeQuery(query, [category_ID])
 
@@ -246,7 +239,8 @@ export const getProductsBySubcategory = async (subcategory_ID: number): Promise<
 
 	JOIN subcategory ON products.subcategory_id = subcategory.subcategory_id
 
-	WHERE subcategory.subcategory_id = $1 AND listed = true;`
+	WHERE subcategory.subcategory_id = $1 AND listed = true
+	ORDER BY created_at DESC;`
 	
 	const result = await executeQuery(query, [subcategory_ID])
 
