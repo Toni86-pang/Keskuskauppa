@@ -4,6 +4,7 @@ import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
 import DialogContent from "@mui/material/DialogContent"
 import DialogTitle from "@mui/material/DialogTitle"
+import Typography from "@mui/material/Typography"
 import { UpdateProfileProps } from "../../Services-types/types"
 import { UserTokenContext } from "../../App"
 import { updateUser } from "../../Services-types/services"
@@ -126,21 +127,21 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 				<DialogTitle>Muokkaa profiilia</DialogTitle>
 				<DialogContent>
 					<Box>
-						<Box>Nimi: {user.name}</Box>
-						<Box>Käyttäjänimi: {user.username}</Box>
-						<Box>Sähköposti: {user.email}</Box>
+						<Typography>Nimi: {user.name}</Typography>
+						<Typography>Käyttäjänimi: {user.username}</Typography>
+						<Typography>Sähköposti: {user.email}</Typography>
 					</Box>
 
 					<Box style={styles.section}>
-						<Box style={styles.label}>Osoite:</Box>
-						<Box style={styles.section}>
+						<Typography style={styles.label}>Osoite:</Typography>
+						<Typography style={styles.section}>
 							<TextField
 								label="Katuosoite"
 								value={newAddress}
 								onChange={handleAddressChange}
 								fullWidth
 							/>
-						</Box>
+						</Typography>
 
 						<Box style={styles.section}>
 							<TextField
@@ -162,13 +163,15 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 					</Box>
 
 					<Box style={styles.section}>
-						<Box style={styles.label}>Puhelinnumero:</Box>
-						<TextField
-							label="Puhelinnumero"
-							value={newPhone}
-							onChange={handlePhoneChange}
-							fullWidth
-						/>
+						<Typography style={styles.label}>Puhelinnumero:</Typography>
+						<Typography style={styles.section}>
+							<TextField
+								label="Puhelinnumero"
+								value={newPhone}
+								onChange={handlePhoneChange}
+								fullWidth
+							/>
+						</Typography>
 					</Box>
 
 					<FormControl>
@@ -177,10 +180,10 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 						</InputLabel>
 						<Input type="file" onChange={handleImageChange} inputProps={{ accept: "image/*" }} />
 						{newUserImage && (
-							<Card sx={{ maxWidth: 345 }}>
+							<Card sx={{ maxWidth: 300 }}>
 								<CardMedia
 									component="img"
-									height="140"
+									height="300"
 									src={imagePreview || ""}
 									alt="Selected Image"
 								/>
@@ -189,10 +192,10 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 					</FormControl>
 
 					<Box style={styles.buttonContainer}>
-						<Button variant="outlined" onClick={handleUpdateSubmit}>
+						<Button variant="contained" color={"success"} onClick={handleUpdateSubmit}>
 							Päivitä
 						</Button>
-						<Button variant="outlined" onClick={resetForm}>
+						<Button variant="contained" color={"error"} onClick={resetForm}>
 							Peruuta
 						</Button>
 					</Box>

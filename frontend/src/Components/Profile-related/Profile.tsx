@@ -122,7 +122,7 @@ function Profile() {
 						<CardMedia
 							component="img"
 							image = {user.user_image as string}
-							alt="Image"
+							alt="User avatar"
 							sx={{
 								display: "block",
 								maxWidth: "250px",

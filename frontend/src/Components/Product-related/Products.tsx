@@ -1,8 +1,5 @@
 import { useLoaderData } from "react-router-dom"
-import {
-	Container,
-	Typography
-} from "@mui/material"
+import { Typography, Paper } from "@mui/material"
 import { fetchAllProducts, fetchCategoryName, fetchProductsByCategory, fetchProductsBySubcategory, fetchSubcategoryName} from "../../Services-types/services"
 import { CategoryProducts, ProductType } from "../../Services-types/types"
 import DisplayProducts from "./DisplayProducts"
@@ -45,13 +42,16 @@ const Products = () => {
 	const { products, categoryHeader } = categoryProducts
 
 	return (
-
-		<Container>
-			<Typography variant="h3" gutterBottom>
+		<Paper sx={{
+			backgroundColor: "#f3f6fa",
+			elevation: 5,
+			p: 3
+		}}>
+			<Typography variant="h4">
 				{categoryHeader}
 			</Typography>
 			<DisplayProducts productList={products} />
-		</Container>
+		</Paper>
 	)
 }
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react"
-import { useLoaderData, useNavigate, Link, useOutletContext, useLocation } from "react-router-dom"
+import { useLoaderData, useNavigate, useOutletContext, useLocation } from "react-router-dom"
 import {
 	Paper,
 	Grid,
@@ -7,6 +7,7 @@ import {
 	Box,
 	Button,
 	Rating,
+	CardMedia
 } from "@mui/material"
 import DeleteButton from "./DeleteButton"
 import UpdateProductModal from "./UpdateProducts"
@@ -110,139 +111,123 @@ export default function Product() {
 		} else { setShowErrorNotification(true) }
 	}
 
+	const handleClick = () => {
+		navigate(`/user/${product.user_id}`)
+	}
+
 	return (
 		<>
 			<Paper
 				sx={{
-					p: 2,
-					margin: "auto",
-					marginTop: 2,
-					maxWidth: 600,
-					flexGrow: 1,
+					backgroundColor: "#f3f6fa",
+					elevation: 5,
 				}}
 			>
+				<Grid container direction="column" spacing={1} justifyContent="center" alignItems="center" pt={2}>
+					<Typography sx={{fontSize: "1.2rem"}}>{product?.title}</Typography>
+				</Grid>
 				{product.listed ? (
-					<>
-						<Grid container spacing={5}>
-							<Grid item>
-								<Typography
-									gutterBottom
-									variant="subtitle1"
-									component="div"
-								>
-									{product?.title}
-								</Typography>
-								{product?.product_image && (
-									<img
-										alt="Product Image"
-										src={product.product_image}
-										style={{
-											margin: "auto",
-											display: "block",
-											maxWidth: "300px",
-											maxHeight: "300px",
-										}}
-									/>
-								)}
-							</Grid>
-							<Grid item xl={5} sm container>
-								<Grid item xs container direction="column" spacing={4}>
-									<Grid item xs sx={{ margin: 4 }}>
-										<Typography variant="body2" gutterBottom>
-											Hinta:	{product?.price} €
-										</Typography>
-										{!myProduct ? (
-											<>
-												<Typography variant="body2" gutterBottom>
-													Myyjän nimi: {sellerUsername}
-												</Typography>
-												<Typography
-													variant="body2"
-													color="text.secondary"
-												>
-													{/* Box tuotti ongelmia, vaihdettiin br:ään */}
-													{/* <Box style={{ marginBottom: "8px" }}> */}
-													<Link to={`/user/${product.user_id}`} style={{ color: "#6096ba", textDecoration: "underline" }}>
-														Katso profiili
-													</Link>
-													{/* </Box> */}<br />
-													<Rating name="read-only" value={stars} precision={0.1} readOnly />
-												</Typography>
-											</>
-										) : (
-											<></>
-										)}
-										<Typography
-											variant="body2"
-											color="text.secondary"
-										>
-											Kaupunki:	{product?.city}
-										</Typography>
-										<Typography
-											variant="body2"
-											color="text.secondary"
-										>
-											Postinumero:	{product?.postal_code}
-										</Typography>
-									</Grid>
-									{myProduct ? (
-										<Grid item>
-											<Box>
-												<Button variant="outlined" onClick={() => {
-													setUpdateModalOpen(true)
-												}}>
-													Päivitä tuote
-												</Button>
-												<UpdateProductModal
-													product={product}
-													isOpen={isUpdateModalOpen}
-													onClose={(updatedProduct: ProductType) => {
-														setProduct(updatedProduct)
-														setUpdateModalOpen(false)
-													}}
-													token={token}
-												/>
-											</Box>
+					<Box>
+						<Grid 	
+							container 
+							spacing={2} 
+							direction="row" 
+							justifyContent="center" 
+							alignItems="center"
+						>
+							<Grid item xs={5}>
+								<CardMedia
+									component="img"
+									image = {product.product_image as string}
+									alt="Product Image"
+									sx={{
 
-											{product && (
+										display: "block",
+										maxWidth: "300px",
+										maxHeight: "300px",
+										m: 2,
+										p: 4
+									}}
+								/>
+							</Grid>
+							<Grid item xs={4}>
+								<Box p={4}>
+									<Typography sx={{fontSize: "0.9rem"}}>Hinta: {product?.price} €</Typography>
+									{!myProduct ? (
+										<Box>
+											<Typography sx={{fontSize: "0.9rem"}}>Myyjä:<Button onClick={handleClick}>{sellerUsername}</Button></Typography>
+											<Rating name="read-only" value={stars} precision={0.1} readOnly />
+										</Box>
+									) : (
+										<Box></Box>
+									)}
+									<Typography
+										sx={{fontSize: "0.9rem"}}
+									>
+											Kaupunki: {product?.city}
+									</Typography>
+									<Typography
+										sx={{fontSize: "0.9rem"}}
+									>
+											Postinumero: {product?.postal_code}
+									</Typography>
+								</Box>
+								{myProduct ? (
+									<Box pt={2}>
+										<Button variant="contained" onClick={() => {
+											setUpdateModalOpen(true)
+										}}>
+													Muokkaa tuotetta
+										</Button>
+										<UpdateProductModal
+											product={product}
+											isOpen={isUpdateModalOpen}
+											onClose={(updatedProduct: ProductType) => {
+												setProduct(updatedProduct)
+												setUpdateModalOpen(false)
+											}}
+											token={token}
+										/>
+										{product && (
+											<Box pt={2}>
 												<DeleteButton id={product.product_id} onDelete={handleDelete} />
-											)}
-										</Grid>
-									)
-										:
-										<>
+											</Box>
+										)}
+									</Box>
+								)
+									:
+									(
+										<Box pl={4} pb={3}>
 											<Button sx={{
 												width: 150, height: 50,
-											}} variant="outlined" onClick={() => token ? handleAddToShoppingCart(product) : setShowNotLoggedinNotif(true)}>
+											}} variant="contained" onClick={() => token ? handleAddToShoppingCart(product) : setShowNotLoggedinNotif(true)}>
 												Ostoskoriin
 											</Button>
-										</>
-									}
-									{/* Delete success and error notifications */}
-									{showSuccessDeleteNotification && (
-										<Notification
-											open={showSuccessDeleteNotification}
-											message="Tuote on poistettu onnistuneesti!"
-											type="success"
-											onClose={() => setShowSuccessDeleteNotification(false)}
-											duration={1500}
-										/>
-									)}
-									{showErrorDeleteNotification && (
-										<Notification
-											open={showErrorDeleteNotification}
-											message="Tapahtui virhe poistettaessa."
-											type="error"
-											onClose={() => setShowErrorDeleteNotification(false)}
-											duration={1500}
-										/>
-									)}
-
-								</Grid>
+										</Box>
+									)	
+								}
 							</Grid>
-						</Grid>
-						<Grid>
-							<Grid item marginTop={4}>
+							{/* Delete success and error notifications */}
+							{showSuccessDeleteNotification && (
+								<Notification
+									open={showSuccessDeleteNotification}
+									message="Tuote on poistettu onnistuneesti!"
+									type="success"
+									onClose={() => setShowSuccessDeleteNotification(false)}
+									duration={1500}
+								/>
+							)}
+							{showErrorDeleteNotification && (
+								<Notification
+									open={showErrorDeleteNotification}
+									message="Tapahtui virhe poistettaessa."
+									type="error"
+									onClose={() => setShowErrorDeleteNotification(false)}
+									duration={1500}
+								/>
+							)}
+							<Grid>
+								{/* <Grid item marginTop={4}> */}
 								{/* <ImageList
 									sx={{ width: 385, height: 100 }}
 									cols={10}
@@ -264,17 +249,48 @@ export default function Product() {
 										</ButtonBase>
 									))}
 								</ImageList> */}
-								<Typography variant="body2" gutterBottom>
-									Lisätiedot:
-								</Typography>
-								<Box sx={{ border: 0.1, width: 265, height: 100 }}>{product?.description}</Box>
 							</Grid>
 						</Grid>
-					</>)
+						<Grid container
+							spacing={1} 
+							direction="row" 
+							ml={12}
+							pb={10}
+						>
+							<Grid item xs={8} sx={{
+								backgroundColor: "#ffffff",
+								justifyContent: "center", 
+								alignItems: "center",
+								ml: 3,
+								borderRadius: "10px"
+							}}>
+								<Typography sx={{fontSize: "0.9rem", fontWeight: "bold", p: 3}}>
+									Tuotteen tiedot:
+								</Typography>
+								<Grid item xs={8}>
+									<Typography sx={{fontSize: "0.9rem", pl: 3, pb: 4}}>
+										{product?.description}
+									</Typography>
+								</Grid>
+							</Grid>
+							{/* </Grid> */}
+						</Grid>
+					</Box>
+				)
 					:
 					(
-						<Typography>Tuote ei ole enää myynnissä.</Typography>
-					)}
+						<Grid container
+							spacing={2} 
+							direction="row" 
+							justifyContent="center" 
+							alignItems="center"
+							p={2}>
+							<Grid item xs={3}>
+								<Typography>Tuote ei ole enää myynnissä.</Typography>
+							</Grid>
+						</Grid>
+					)
+				}
 			</Paper>
 			{showErrorNotification && (
 				<Notification

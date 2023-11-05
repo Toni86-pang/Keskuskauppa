@@ -68,7 +68,6 @@ function ChangePassword({ username, open, onClose }: ChangePasswordProps) {
 								value={currentPassword}
 								onChange={handleInputChange}
 							/>
-							<br />
 							<TextField
 								sx={{ m: 1 }}
 								type="password"
@@ -91,8 +90,8 @@ function ChangePassword({ username, open, onClose }: ChangePasswordProps) {
 							/>
 						</DialogContent>
 						<DialogActions>
-							<Button type="submit" disabled={newPassword !== confirmPassword}>Vaihda salasana</Button>
-							<Button onClick={onClose}>Peruuta</Button>
+							<Button variant="contained" color="error" onClick={onClose}>Peruuta</Button>
+							<Button variant="contained" color="success" type="submit" disabled={newPassword !== confirmPassword}>Vaihda salasana</Button>
 						</DialogActions>
 					</Form>
 				</Dialog>
