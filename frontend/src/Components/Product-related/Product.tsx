@@ -11,15 +11,23 @@ import {
 } from "@mui/material"
 import DeleteButton from "./DeleteButton"
 import UpdateProductModal from "./UpdateProducts"
-import { ProductType, User } from "../../Services-types/types"
+import { ProductLoader, ProductType, User } from "../../Services-types/types"
 import { deleteProduct, fetchProduct, fetchStarRating, fetchUser, fetchUserDetailsByUserId } from "../../Services-types/services"
 import Notification from "../Verify-notification/Notification"
 import { CartContextType, UserTokenContext } from "../../App"
 
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, react-refresh/only-export-components
 export async function loader({ params }: any) {
-	const productData = await fetchProduct(params.id)
-	return productData
+	const productData: ProductType = await fetchProduct(params.id)
+	const token = localStorage.getItem("token")	
+	if(token) {
+		const userData: User = await fetchUser(token)
+		const myProduct = productData.user_id === userData.user_id
+		const sellerData = await fetchUserDetailsByUserId(productData.user_id)
+		const averageStars = await fetchStarRating(productData.user_id)
+		return { productData, myProduct, sellerData, averageStars } as ProductLoader
+	}
 }
 
 
@@ -28,37 +36,21 @@ export default function Product() {
 	const [showSuccessDeleteNotification, setShowSuccessDeleteNotification] = useState(false)
 	const [showErrorDeleteNotification, setShowErrorDeleteNotification] = useState(false)
 	const [showNotLoggedInNotif, setShowNotLoggedinNotif] = useState(false)
-	const [myProduct, setMyProduct] = useState<boolean>(false)
+	const {productData, myProduct, sellerData, averageStars}  = useLoaderData() as ProductLoader
 	const [token] = useContext(UserTokenContext)
-	const [sellerUsername, setSellerUsername] = useState<string | null>("")
-	const [stars, setStars] = useState(0)
+	const [sellerUsername] = useState<string | null>(sellerData.username)
+	const [stars] = useState(averageStars)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
 	const [showSuccessfulAddNotification, setShowSuccessfulAddNotification] = useState(false)
-	const navigate = useNavigate()
-	const loadedProduct = useLoaderData() as ProductType
-	const [product, setProduct] = useState(loadedProduct)
+	const navigate = useNavigate()	
+	const [product, setProduct] = useState(productData)
 	const [setCart] = useOutletContext<CartContextType>()
 	const location = useLocation()
 
 	// set product when page changes. Needed to if switching between products from search results.
 	useEffect(() => {
-		setProduct(loadedProduct)
-	},[location, loadedProduct])
-
-	useEffect(() => {
-		const fetchUserDetails = async () => {
-			if (!token) return
-			const user = await fetchUser(token)
-
-			if (user === undefined) {
-				console.error("error fetching user")
-				return
-			}
-			user.user_id !== 0 && product.user_id === user.user_id ? setMyProduct(true) : setMyProduct(false)
-		}
-		fetchUserDetails()
-
-	}, [token, product])
+		setProduct(productData)
+	},[location, productData])
 
 	const handleDelete = async () => {
 		try {
@@ -72,32 +64,6 @@ export default function Product() {
 			setShowErrorDeleteNotification(true)
 		}
 	}
-
-
-	useEffect(() => {
-		const fetchSellerUsernameAndStars = async () => {
-			try {
-				if (product.user_id) {
-					const seller: User = await fetchUserDetailsByUserId(product.user_id)
-					const averageStars = await fetchStarRating(product.user_id)
-					if (averageStars) {
-						setStars(averageStars)
-					}
-					if (seller.username !== undefined) {
-						setSellerUsername(seller.username)
-					} else {
-						console.error("Error fetching owner user data")
-						setSellerUsername("N/A")
-					}
-				}
-
-			} catch (error) {
-				console.error("Error fetching owner user data:", error)
-				setSellerUsername("N/A")
-			}
-		}
-		fetchSellerUsernameAndStars()
-	}, [product.user_id])
 
 	const handleAddToShoppingCart = (product: ProductType) => {
 		const storageItem = sessionStorage.getItem("myCart")
