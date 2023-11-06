@@ -123,8 +123,8 @@ export default function Product() {
 					elevation: 5,
 				}}
 			>
-				<Grid container direction="column" spacing={1} justifyContent="center" alignItems="center" pt={2}>
-					<Typography sx={{fontSize: "1.2rem"}}>{product?.title}</Typography>
+				<Grid container direction="column" spacing={1} justifyContent="center" alignItems="center" pt={3}>
+					<Typography variant="h5" fontWeight={"bold"}>{product?.title}</Typography>
 				</Grid>
 				{product.listed ? (
 					<Box>
@@ -145,35 +145,34 @@ export default function Product() {
 										display: "block",
 										maxWidth: "300px",
 										maxHeight: "300px",
-										m: 2,
-										p: 4
-									}}
+										m: 1,
+										p: 4									}}
 								/>
 							</Grid>
 							<Grid item xs={4}>
 								<Box p={4}>
-									<Typography sx={{fontSize: "0.9rem"}}>Hinta: {product?.price} €</Typography>
+									<Typography sx={{fontSize: "1rem"}}>Hinta: {product?.price} €</Typography>
 									{!myProduct ? (
 										<Box>
-											<Typography sx={{fontSize: "0.9rem"}}>Myyjä:<Button onClick={handleClick}>{sellerUsername}</Button></Typography>
+											<Typography sx={{fontSize: "1rem"}}>Myyjä:<Button onClick={handleClick}>{sellerUsername}</Button></Typography>
 											<Rating name="read-only" value={stars} precision={0.1} readOnly />
 										</Box>
 									) : (
 										<Box></Box>
 									)}
 									<Typography
-										sx={{fontSize: "0.9rem"}}
+										sx={{fontSize: "1rem"}}
 									>
 											Kaupunki: {product?.city}
 									</Typography>
 									<Typography
-										sx={{fontSize: "0.9rem"}}
+										sx={{fontSize: "1rem"}}
 									>
 											Postinumero: {product?.postal_code}
 									</Typography>
 								</Box>
 								{myProduct ? (
-									<Box pt={2}>
+									<Box pl={4} pb={3}>
 										<Button variant="contained" onClick={() => {
 											setUpdateModalOpen(true)
 										}}>
@@ -261,14 +260,14 @@ export default function Product() {
 								backgroundColor: "#ffffff",
 								justifyContent: "center", 
 								alignItems: "center",
-								ml: 3,
+								ml: 7,
 								borderRadius: "10px"
 							}}>
-								<Typography sx={{fontSize: "0.9rem", fontWeight: "bold", p: 3}}>
+								<Typography sx={{fontSize: "1rem", fontWeight: "bold", p: 3}}>
 									Tuotteen tiedot:
 								</Typography>
-								<Grid item xs={8}>
-									<Typography sx={{fontSize: "0.9rem", pl: 3, pb: 4}}>
+								<Grid item xs={12}>
+									<Typography sx={{fontSize: "1rem", pl: 3, pb: 4, pr: 3}}>
 										{product?.description}
 									</Typography>
 								</Grid>

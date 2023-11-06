@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Dialog, TextField, Typography, DialogContent, Button, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Box, Input, Card, CardMedia } from "@mui/material"
+import { Dialog, TextField, DialogActions, Typography, DialogContent, Button, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Box, Input, Card, CardMedia } from "@mui/material"
 import { Category, UpdateProductModalProps } from "../../Services-types/types"
 import { fetchCategories, fetchSubcategories, updateProduct } from "../../Services-types/services"
 import Notification from "../Verify-notification/Notification"
@@ -175,7 +175,7 @@ function UpdateProductModal({isOpen, onClose, token, product }: UpdateProductMod
 			marginBottom: "8px",
 		},
 		buttonContainer: {
-			marginTop: "16px",
+			marginTop: "15px",
 			display: "flex",
 			justifyContent: "space-between",
 		},
@@ -184,7 +184,7 @@ function UpdateProductModal({isOpen, onClose, token, product }: UpdateProductMod
 	return (
 		<>
 			<Dialog open={isOpen} onClose={handleCloseModal}>
-				<Typography variant={"h5"} p={3}>Muokkaa tuotetta</Typography>
+				<Typography variant={"h5"} textAlign={"center"} p={3}>Muokkaa tuotetta</Typography>
 				<DialogContent>
 					<Box p={2}>
 						<FormControl >
@@ -226,7 +226,7 @@ function UpdateProductModal({isOpen, onClose, token, product }: UpdateProductMod
 								<Box p={2}>
 									<InputLabel style={{ position: "relative" }}>Kategoria</InputLabel>
 									<Select
-										style={{ width: "300px" }}
+										style={{ width: "350px" }}
 										value={selectedCategoryId}
 										onChange={handleCategoryChange}
 									>
@@ -240,7 +240,7 @@ function UpdateProductModal({isOpen, onClose, token, product }: UpdateProductMod
 								<Box p={2}>
 									<InputLabel style={{ position: "relative" }}>Alakategoria</InputLabel>
 									<Select
-										style={{ width: "300px" }}
+										style={{ width: "350px" }}
 										value={selectedSubcategoryId}
 										onChange={handleSubCategoryChange}
 									>
@@ -256,7 +256,7 @@ function UpdateProductModal({isOpen, onClose, token, product }: UpdateProductMod
 							</FormControl>
 							<FormControl fullWidth>
 								<Box pl={3} pr={3} pb={3}>
-									<InputLabel style={{ position: "relative" }} htmlFor="product_image">Vaihda kuva</InputLabel>
+									<Typography style={{ position: "relative" }} pt={2} pb={1}>Muokkaa kuvaa:</Typography>
 									<Input
 										type="file"
 										name="product_image"
@@ -277,15 +277,15 @@ function UpdateProductModal({isOpen, onClose, token, product }: UpdateProductMod
 								</Box>
 							</FormControl>
 
-							<Box style={styles.buttonContainer}>
-								<Button variant="contained" color={"error"} onClick={handleCloseModal}>
+							<DialogActions style={styles.buttonContainer}>
+								<Button variant="contained" onClick={handleCloseModal}>
 									Peruuta
 								</Button>
 								<Button variant="contained" color={"success"} onClick={handleUpdateSubmit}>
 									Muokkaa
 								</Button>
 
-							</Box>
+							</DialogActions>
 						</FormControl>
 					</Box>
 				</DialogContent>
