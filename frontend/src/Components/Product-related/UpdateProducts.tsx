@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Dialog, TextField, Button, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Box, Input, Card, CardMedia, Grid } from "@mui/material"
+import { Dialog, TextField, DialogActions, Typography, DialogContent, Button, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Box, Input, Card, CardMedia } from "@mui/material"
 import { Category, UpdateProductModalProps } from "../../Services-types/types"
 import { fetchCategories, fetchSubcategories, updateProduct } from "../../Services-types/services"
 import Notification from "../Verify-notification/Notification"
@@ -166,109 +166,129 @@ function UpdateProductModal({isOpen, onClose, token, product }: UpdateProductMod
 		onClose(product)
 	}
 
+	
+	const styles = {
+		section: {
+			marginTop: "16px",
+		},
+		label: {
+			marginBottom: "8px",
+		},
+		buttonContainer: {
+			marginTop: "15px",
+			display: "flex",
+			justifyContent: "space-between",
+		},
+	}
+
 	return (
 		<>
-			<Dialog open={isOpen} onClose={handleCloseModal} maxWidth="md" fullWidth>
-				<Box sx={{ maxHeight: "80vh", overflowY: "auto", p: 2 }}>
-					<Grid container spacing={4}>
-						<Grid item xs={4}>
-							<FormControl fullWidth>
-								<InputLabel>Kategoria</InputLabel>
-								<Select
-									value={selectedCategoryId}
-									onChange={handleCategoryChange}
-								>
-									{categories.map(category => (
-										<MenuItem key={category.category_id} value={category.category_id}>
-											{category.category_name}
-										</MenuItem>
-									))}
-								</Select>
-								<Grid item xs={6}>
-									<FormControl fullWidth>
-										<InputLabel>Alakategoria</InputLabel>
-										<Select
-											value={selectedSubcategoryId}
-											onChange={handleSubCategoryChange}
-										>
-											{subcategories
-												.filter(subcategory => subcategory.category_id === selectedCategoryId)
-												.map(subcategory => (
-													<MenuItem key={subcategory.subcategory_id} value={subcategory.subcategory_id}>
-														{subcategory.subcategory_name}
-													</MenuItem>
-												))}
-										</Select>
-									</FormControl>
-								</Grid>
-							</FormControl>
-						</Grid>
-						<Grid item xs={6}>
-							<FormControl fullWidth>
-								<InputLabel htmlFor="product_image">Lisää kuva</InputLabel>
-								<Input
-									type="file"
-									name="product_image"
-									onChange={handleImageChange}
-									inputProps={{ accept: "image/*" }}
+			<Dialog open={isOpen} onClose={handleCloseModal}>
+				<Typography variant={"h5"} textAlign={"center"} p={3}>Muokkaa tuotetta</Typography>
+				<DialogContent>
+					<Box p={2}>
+						<FormControl >
+							<FormControl style={{ margin: "6px" }}>
+								<TextField
+									style={{ margin: "6px" }}
+									label="Nimi"
+									value={updatedTitle}
+									onChange={handleTitleChange}
 								/>
-								
-								{selectedImage && (
-									<Card sx={{ maxWidth: 345 }}>
-										<CardMedia
-											component="img"
-											height="140"
-											src={imagePreview || ""}
-											alt="Selected Image"
-										/>
-									</Card>
-								)}
+								<TextField
+									style={{ margin: "6px" }}
+									multiline rows={5}
+									label="Kuvailu"
+									value={updatedDescription}
+									onChange={handleDescriptionChange}
+								/>
+								<TextField
+									style={{ margin: "6px" }}
+									label="Kaupunki"
+									value={updatedCity}
+									onChange={handleCityChange}
+								/>
+								<TextField
+									style={{ margin: "6px" }}
+									label="Postinumero"
+									value={updatedPostalCode}
+									onChange={handlePostalCodeChange}
+								/>
+								<TextField
+									style={{ margin: "6px" }}
+									label="Hinta"
+									value={updatedPrice}
+									onChange={handlePriceChange}
+								/>
+								{error && <div style={{ color: "red" }}>{error}</div>}
 							</FormControl>
-						</Grid>
-					</Grid>
-				</Box>
-				<FormControl >
-					<FormControl style={{ margin: "6px" }}>
-						<TextField
-							label="Nimi"
-							value={updatedTitle}
-							onChange={handleTitleChange}
-						/>
-						<TextField
-							label="Kuvailu"
-							value={updatedDescription}
-							onChange={handleDescriptionChange}
-						/>
-					</FormControl>
+							<FormControl fullWidth>
+								<Box p={2}>
+									<InputLabel style={{ position: "relative" }}>Kategoria</InputLabel>
+									<Select
+										style={{ width: "350px" }}
+										value={selectedCategoryId}
+										onChange={handleCategoryChange}
+									>
+										{categories.map(category => (
+											<MenuItem key={category.category_id} value={category.category_id}>
+												{category.category_name}
+											</MenuItem>
+										))}
+									</Select>
+								</Box>
+								<Box p={2}>
+									<InputLabel style={{ position: "relative" }}>Alakategoria</InputLabel>
+									<Select
+										style={{ width: "350px" }}
+										value={selectedSubcategoryId}
+										onChange={handleSubCategoryChange}
+									>
+										{subcategories
+											.filter(subcategory => subcategory.category_id === selectedCategoryId)
+											.map(subcategory => (
+												<MenuItem key={subcategory.subcategory_id} value={subcategory.subcategory_id}>
+													{subcategory.subcategory_name}
+												</MenuItem>
+											))}
+									</Select>
+								</Box>
+							</FormControl>
+							<FormControl fullWidth>
+								<Box pl={3} pr={3} pb={3}>
+									<Typography style={{ position: "relative" }} pt={2} pb={1}>Muokkaa kuvaa:</Typography>
+									<Input
+										type="file"
+										name="product_image"
+										onChange={handleImageChange}
+										inputProps={{ accept: "image/*" }}
+									/>
+								
+									{selectedImage && (
+										<Card sx={{ maxWidth: 300 }}>
+											<CardMedia
+												component="img"
+												height="300"
+												src={imagePreview || ""}
+												alt="Selected Image"
+											/>
+										</Card>
+									)}
+								</Box>
+							</FormControl>
 
-					<FormControl style={{ margin: "6px" }}>
-						<TextField
-							label="Kaupunki"
-							value={updatedCity}
-							onChange={handleCityChange}
-						/>
-						<TextField
-							label="Postinumero"
-							value={updatedPostalCode}
-							onChange={handlePostalCodeChange}
-						/>
-						<TextField
-							label="Hinta"
-							value={updatedPrice}
-							onChange={handlePriceChange}
-						/>
-						{error && <div style={{ color: "red" }}>{error}</div>}
-					</FormControl>
+							<DialogActions style={styles.buttonContainer}>
+								<Button variant="contained" onClick={handleCloseModal}>
+									Peruuta
+								</Button>
+								<Button variant="contained" color={"success"} onClick={handleUpdateSubmit}>
+									Muokkaa
+								</Button>
 
-					<FormControl style={{ margin: "6px" }}>
-						<Button variant="outlined" onClick={handleUpdateSubmit}>
-							Päivitä
-						</Button>
-						<Button variant="outlined" onClick={handleCloseModal}>
-							Peruuta
-						</Button>
-					</FormControl>
-				</FormControl>
+							</DialogActions>
+						</FormControl>
+					</Box>
+				</DialogContent>
 			</Dialog>
 			{/* Success and error notifications */}
 			{showSuccessNotification && (
