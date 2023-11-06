@@ -1,6 +1,6 @@
 import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { useNavigate, redirect } from "react-router-dom"
-import { Button, Card, CardMedia, Container, FormControl, Input, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material"
+import { Button, Box, Paper, Grid, Typography, Card, CardMedia, Input, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material"
 import { UserTokenContext } from "../../App"
 import Notification from "../Verify-notification/Notification"
 import { Category, Subcategory, User, initialState } from "../../Services-types/types"
@@ -212,14 +212,33 @@ function NewProduct() {
 		setHidden(false)
 	}
 
+	const styles = {
+		section: {
+			marginTop: "16px",
+		},
+		label: {
+			marginBottom: "8px",
+		},
+		buttonContainer: {
+			marginTop: "16px",
+			display: "flex",
+			justifyContent: "space-between",
+		},
+	}
 
 	return (
-		<>
-			<Container sx={{ m: 1 }}>
-				<h3>Uusi tuote</h3>
-				<FormControl>
+		<Paper sx={{
+			backgroundColor: "#f3f6fa",
+			elevation: 5
+		}}>
+			<Grid container direction="row" spacing={1} justifyContent="center" alignItems="center" p={2}>
+				<Typography sx={{fontSize: "1.2rem"}}>Uusi tuote</Typography>
+			</Grid>
+			<Grid container direction="row" spacing={2} justifyContent="center" alignItems="center" p={4}>
+				<Grid item xs={5}>
 					<InputLabel style={{ position: "relative" }} sx={{ mb: 2 }} id="title">Otsikko*</InputLabel>
 					<TextField
+						style={{ width: "300px" }}
 						type="text"
 						name="title"
 						value={newTitle}
@@ -227,6 +246,7 @@ function NewProduct() {
 					/>
 					<InputLabel style={{ position: "relative" }} sx={{ mb: 2 }} id="description">Kuvaus</InputLabel>
 					<TextField
+						style={{ width: "300px" }}
 						multiline rows={5}
 						type="text"
 						name="description"
@@ -234,53 +254,33 @@ function NewProduct() {
 						value={newDescription}
 						onChange={handleDescChange}
 					/>
-
-					<FormControl>
-						<InputLabel style={{ position: "relative" }} sx={{ mb: 2 }} id="price">Hinta*</InputLabel>
-						<TextField
-							type="text"
-							name="price"
-							value={newPrice}
-							onChange={handlePriceChange}
-						/>
-					</FormControl>
-					<FormControl>
-						<InputLabel style={{ position: "relative" }} id="Kuvat">Lisää kuva:</InputLabel>
-						<Input
-							type="file"
-							onChange={handleImageChange}
-							inputProps={{ accept: "image/*" }}
-						/>
-						{productImage && (
-							<Card sx={{ maxWidth: 345 }}>
-								<CardMedia
-									component="img"
-									height="140"
-									src={imagePreview || ""}
-									alt="Selected Image"
-								/>
-							</Card>
-						)}
-					</FormControl>
-					<FormControl sx={{ mt: 2 }}>
-						<InputLabel id="Katergoria">Kategoria*</InputLabel>
-						<Select
-							labelId="category_id"
-							id="category_id"
-							value={newCategory}
-							label="category_id"
-							onChange={handleCategoryChange}>
-							{categories?.map(category => {
-								return (
-									<MenuItem key={category.category_id + category.category_name} value={category.category_name}>{category.category_name}</MenuItem>
-								)
-							})}
-						</Select>				</FormControl>
-
+					<InputLabel style={{ position: "relative" }} sx={{ mb: 2 }} id="price">Hinta*</InputLabel>
+					<TextField
+						style={{ width: "300px" }}
+						type="text"
+						name="price"
+						value={newPrice}
+						onChange={handlePriceChange}
+					/>
+					<InputLabel id="Katergoria">Kategoria*</InputLabel>
+					<Select
+						style={{ width: "300px" }}
+						labelId="category_id"
+						id="category_id"
+						value={newCategory}
+						label="category_id"
+						onChange={handleCategoryChange}>
+						{categories?.map(category => {
+							return (
+								<MenuItem key={category.category_id + category.category_name} value={category.category_name}>{category.category_name}</MenuItem>
+							)
+						})}
+					</Select>				
 					{newCategory ? (
-						<FormControl sx={{ mt: 2 }}>
+						<Box>
 							<InputLabel id="Alakategoria">Alakategoria*</InputLabel>
 							<Select
+								style={{ width: "300px" }}
 								labelId="subcategory_id"
 								id="subcategory_id"
 								label="subcategory_id"
@@ -292,21 +292,38 @@ function NewProduct() {
 									)
 								})}
 							</Select>
-						</FormControl>
-
+						</Box>
 					) : (
-						<></>
+						<Box></Box>
+					)}
+				</Grid>
+				<Grid item xs={5}>
+					<InputLabel style={{ position: "relative" }} id="Kuvat">Lisää kuva:</InputLabel>
+					<Input
+						type="file"
+						onChange={handleImageChange}
+						inputProps={{ accept: "image/*" }}
+					/>
+					{productImage && (
+						<Card sx={{ maxWidth: 300 }}>
+							<CardMedia
+								component="img"
+								height="280"
+								src={imagePreview || ""}
+								alt="Selected Image"
+							/>
+						</Card>
 					)}
 					{!hidden ? (
-						<FormControl>
-							<Container >Lokaatio: {location}</Container>
+						<Box pt={3} pr={3} pl={3}>
+							<Typography sx={{fontSize: "0.9rem", p: 3}}>Lokaatio: {location}</Typography>
 							<Button id="location" onClick={() => setHidden(true)}>Vaihda tuotteen lokaatio</Button>
-						</FormControl>
+						</Box>
 					) : (
-						<></>
+						<Box></Box>
 					)}
 					{hidden ? (
-						<FormControl>
+						<Box p={2}>
 							<InputLabel style={{ position: "relative" }} sx={{ mb: 2 }} id="city">Kaupunki:</InputLabel>
 							<TextField
 								type="text"
@@ -328,32 +345,32 @@ function NewProduct() {
 								onClick={(handleCancelChange)}>
 								Peruuta
 							</Button>
-						</FormControl>
+						</Box>
 					) : (
-						<></>
+						<Box></Box>
 					)}
+				</Grid>
+				<Grid item xs={5} style={styles.buttonContainer}>
 					<Button
 						sx={{
-							m: 1,
-							bgcolor: "#6096ba",
-							":hover": { bgcolor: "darkblue" }
+							m: 1
 						}}
 						variant="contained"
-						onClick={createNewProduct}>
-						Lähetä
-					</Button>
-					<Button
-						sx={{
-							m: 1,
-							bgcolor: "#6096ba",
-							":hover": { bgcolor: "#d32f2f" },
-						}}
-						variant="contained"
+						color="error"
 						onClick={handleCancel}>
 						Peruuta
 					</Button>
-				</FormControl>
-			</Container>
+					<Button
+						sx={{
+							m: 1
+						}}
+						variant="contained"
+						color="success"
+						onClick={createNewProduct}>
+						Lähetä
+					</Button>
+				</Grid>
+			</Grid>
 			{/* Success and error notifications */}
 			{showSuccessNotification && (
 				<Notification
@@ -374,7 +391,7 @@ function NewProduct() {
 
 				/>
 			)}
-		</>
+		</Paper>
 	)
 }
 

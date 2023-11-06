@@ -81,6 +81,7 @@ function Profile() {
 		messageText: "Haluatko varmasti poistaa profiilisi pysyvästi?",
 		acceptButtonText: "Poista",
 		isOpen: verifyOpen,
+		acceptButtonGreen: false,
 		setOpen: setVerifyOpen,
 		onAccept: deleteProfile
 	}
@@ -109,7 +110,7 @@ function Profile() {
 				elevation: 5
 			}}>
 				<Grid container direction="column" spacing={1} justifyContent="center" alignItems="center" pt={2}>
-					<Typography sx={{fontSize: "1.2rem"}}>Oma profiili </Typography>
+					<Typography variant="h5">Oma profiili </Typography>
 				</Grid>
 				<Grid
 					container
@@ -122,7 +123,7 @@ function Profile() {
 						<CardMedia
 							component="img"
 							image = {user.user_image as string}
-							alt="Image"
+							alt="User avatar"
 							sx={{
 								display: "block",
 								maxWidth: "250px",
