@@ -40,13 +40,6 @@ function SalesNotification() {
 
 	}, [token, setSaleCount, setReviewCount])
 
-
-	return (
-		// Render sales notifications or UI updates here
-		<div>
-			{/* Your UI components for displaying sales notifications */}
-		</div>
-	)
 }
 
 export default SalesNotification
