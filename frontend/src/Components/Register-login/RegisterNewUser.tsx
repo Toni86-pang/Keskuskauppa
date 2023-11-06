@@ -1,6 +1,6 @@
 import { ChangeEvent, useState, useContext } from "react"
 import { UserTokenContext } from "../../App"
-import { Button, Container, FormControl, Input, InputLabel, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Card, CardMedia } from "@mui/material"
+import { Button, Container, FormControl, Input, InputLabel, Dialog, DialogActions, DialogContent, Typography, TextField, Card, CardMedia } from "@mui/material"
 import VerifyDialog from "../Verify-notification/VerifyDialog"
 import { User, initialState } from "../../Services-types/types"
 import Notification from "../Verify-notification/Notification"
@@ -160,11 +160,12 @@ function RegisterNewUser() {
 				</Button>
 
 				<Dialog open={dialogOpen} onClose={handleDialogClose}>
-					<DialogTitle>Rekisteröidy</DialogTitle>
+					<Typography variant="h5" sx={{textAlign:"center", mt:2}}>Rekisteröidy</Typography>
 					<DialogContent sx={{ display: "flex", flexDirection: "column" }}>
 
 						<TextField
 							type="text"
+							label="Nimi"
 							placeholder="Nimi"
 							name="name"
 							value={name}
@@ -175,6 +176,7 @@ function RegisterNewUser() {
 
 						<TextField
 							type="email"
+							label="Sähköpostiosoite"
 							placeholder="Sähköpostiosoite"
 							name="email"
 							value={email}
@@ -185,6 +187,7 @@ function RegisterNewUser() {
 
 						<TextField
 							type="text"
+							label="Käyttäjänimi"
 							placeholder="Käyttäjänimi"
 							name="username"
 							value={username}
@@ -195,6 +198,7 @@ function RegisterNewUser() {
 
 						<TextField
 							type="text"
+							label="Puhelinnumero"
 							placeholder="Puhelinnumero"
 							name="phone"
 							value={phone}
@@ -205,6 +209,7 @@ function RegisterNewUser() {
 
 						<TextField
 							type="text"
+							label="Osoite"
 							placeholder="Osoite"
 							name="address"
 							value={address}
@@ -215,6 +220,7 @@ function RegisterNewUser() {
 
 						<TextField
 							type="text"
+							label="Kaupunki"
 							placeholder="Kaupunki"
 							name="city"
 							value={city}
@@ -225,6 +231,7 @@ function RegisterNewUser() {
 
 						<TextField
 							type="text"
+							label="Postinumero"
 							placeholder="Postinumero"
 							name="postal_code"
 							value={postal_code}
@@ -235,6 +242,7 @@ function RegisterNewUser() {
 
 						<TextField
 							type="password"
+							label="Salasana"
 							placeholder="Salasana"
 							name="password"
 							value={newUser.password}
@@ -245,7 +253,8 @@ function RegisterNewUser() {
 
 						<TextField
 							type="password"
-							placeholder="Salasana uudelleen"
+							label="Vahvista salasana"
+							placeholder="Vahvista salasana"
 							name="confirmPassword"
 							value={confirmPassword}
 							onChange={handleConfirmPasswordChange}
@@ -255,29 +264,28 @@ function RegisterNewUser() {
 							sx={{ marginBottom: 2 }}
 						/>
 						<FormControl>
-							<InputLabel style={{position: "relative"}} id="Kuvat">Lisää kuva:</InputLabel>
+							<InputLabel style={{position: "relative",  marginBottom: 1}} id="Kuvat">Lisää kuva:</InputLabel>
 							<Input
 								type="file"
 								onChange={handleImageChange}
 								inputProps={{ accept: "image/*" }}	
 							/>
 							{userImage && (
-								<Card sx={{ maxWidth: 345 }}>
+								<Card sx={{ maxWidth: 300 }}>
 									<CardMedia
 										component="img"
-										height="140"
+										height="300"
 										src={imagePreview || ""}
 										alt="Selected Image"
 									/>
 								</Card>
 							)}
 						</FormControl>
-
+						<DialogActions sx={{ justifyContent: "space-between", marginTop:"15px" }}>
+							<Button onClick={handleCancel} variant="contained"  >Peruuta</Button>
+							<Button disabled={!passwordsMatch} variant="contained" color={"success"} onClick={handleVerification}>Rekisteröidy</Button>
+						</DialogActions>
 					</DialogContent>
-					<DialogActions>
-						<Button disabled={!passwordsMatch} onClick={handleVerification}>Rekisteröidy</Button>
-						<Button onClick={handleCancel} sx={{ marginTop: 1 }}>Peruuta</Button>
-					</DialogActions>
 				</Dialog>
 				<VerifyDialog {...verifyDialogProps} />
 			</Container >
