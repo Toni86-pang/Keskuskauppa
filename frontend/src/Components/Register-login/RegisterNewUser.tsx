@@ -13,7 +13,7 @@ function RegisterNewUser() {
 	const [passwordsMatch, setPasswordsMatch] = useState<boolean>(false)
 	const [isTouched, setIsTouched] = useState(false)
 	const [verifyOpen, setVerifyOpen] = useState(false)
-	const [userImage, setUserImage] = useState<File | null>(null)	
+	const [userImage, setUserImage] = useState<File | null>(null)
 	const [imagePreview, setImagePreview] = useState<string | null>(null)
 	const [, setError] = useState<string>("")
 
@@ -40,9 +40,6 @@ function RegisterNewUser() {
 			if (userImage) {
 				formData.append("user_image", userImage)
 			}
-
-			console.log("FormData entries:", Object.fromEntries(formData.entries()))
-
 			const config = {
 				method: "POST",
 				url: "/api/users/register",
@@ -51,11 +48,8 @@ function RegisterNewUser() {
 				},
 				data: formData,
 			}
-			
-			console.log("Axios Request Configuration:", config)
-			console.log("formData:", formData)
-			const response = await axios.post("api/users/register", formData, config ) 
-	
+			const response = await axios.post("api/users/register", formData, config)
+
 			if (response.status === 200) {
 				setShowSuccessNotification(true)
 				handleLogin(response.data)
@@ -138,7 +132,7 @@ function RegisterNewUser() {
 		if (fileInput && fileInput.files && fileInput.files.length > 0) {
 			const file = fileInput.files[0]
 			setUserImage(file)
-		
+
 			const reader = new FileReader()
 			reader.onload = (e) => {
 				setImagePreview(e.target?.result as string)
@@ -154,13 +148,12 @@ function RegisterNewUser() {
 	return (
 		<>
 			<Container sx={{ m: 1 }}>
-
 				<Button sx={{ color: "white" }} onClick={handleDialogOpen}>
 					Rekisteröidy
 				</Button>
 
 				<Dialog open={dialogOpen} onClose={handleDialogClose}>
-					<Typography variant="h5" sx={{textAlign:"center", mt:2}}>Rekisteröidy</Typography>
+					<Typography variant="h5" sx={{ textAlign: "center", mt: 2 }}>Rekisteröidy</Typography>
 					<DialogContent sx={{ display: "flex", flexDirection: "column" }}>
 
 						<TextField
@@ -264,11 +257,11 @@ function RegisterNewUser() {
 							sx={{ marginBottom: 2 }}
 						/>
 						<FormControl>
-							<InputLabel style={{position: "relative",  marginBottom: 1}} id="Kuvat">Lisää kuva:</InputLabel>
+							<InputLabel style={{ position: "relative", marginBottom: 1 }} id="Kuvat">Lisää kuva:</InputLabel>
 							<Input
 								type="file"
 								onChange={handleImageChange}
-								inputProps={{ accept: "image/*" }}	
+								inputProps={{ accept: "image/*" }}
 							/>
 							{userImage && (
 								<Card sx={{ maxWidth: 300 }}>
@@ -281,7 +274,7 @@ function RegisterNewUser() {
 								</Card>
 							)}
 						</FormControl>
-						<DialogActions sx={{ justifyContent: "space-between", marginTop:"15px" }}>
+						<DialogActions sx={{ justifyContent: "space-between", marginTop: "15px" }}>
 							<Button onClick={handleCancel} variant="contained"  >Peruuta</Button>
 							<Button disabled={!passwordsMatch} variant="contained" color={"success"} onClick={handleVerification}>Rekisteröidy</Button>
 						</DialogActions>
