@@ -4,6 +4,7 @@ import {
 	styled,
 	alpha,
 	Button,
+	Box
 } from "@mui/material"
 import "./Searchbar.css"
 import { ProductType } from "../../Services-types/types"
@@ -92,8 +93,7 @@ const ProductSearch = () => {
 	}
 
 	return (
-		<div>
-
+		<Box>
 			<Search>
 				<TextField id="search-field"
 					label="Etsi tuotteita..."
@@ -111,29 +111,31 @@ const ProductSearch = () => {
 					<ul>
 						<DisplayProducts productList={searchResults.slice(0, maxResultsToShow)} />
 
-						{searchResults.length > maxResultsToShow && (
+						<Box   sx={{
+							display: "flex",
+							justifyContent: "space-between",
+							alignItems: "center",
+						}}>
+							{searchResults.length > maxResultsToShow && (
+								<Button
+									onClick={handleShowMore}
+									sx={{ marginTop: 2 }}
+								>
+								Näytä lisää tuloksia
+								</Button>
+							)}
+
 							<Button
-								onClick={handleShowMore}
-								variant="outlined"
-								color="primary"
+								onClick={handleShowAllResults}
 								sx={{ marginTop: 2 }}
 							>
-								Näytä lisää tuloksia
-							</Button>
-						)}
-
-						<Button
-							onClick={handleShowAllResults}
-							variant="outlined"
-							color="primary"
-							sx={{ marginTop: 2 }}
-						>
 							Näytä kaikki tulokset
-						</Button>
+							</Button>
+						</Box>
 					</ul>
 				</div>
 			)}
-		</div>
+		</Box>
 	)
 }
 
