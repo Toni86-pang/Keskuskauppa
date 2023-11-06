@@ -1,5 +1,5 @@
 import { ChangeEvent, useContext, useState } from "react"
-import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputAdornment, TextField } from "@mui/material"
+import { Button, Container, Dialog, DialogActions, DialogContent, Typography, IconButton, InputAdornment, TextField } from "@mui/material"
 import { UserTokenContext } from "../../App"
 import Notification from "../Verify-notification/Notification"
 import { changePassword } from "../../Services-types/services"
@@ -35,18 +35,24 @@ function ChangePassword({ username, open, onClose }: ChangePasswordProps) {
 		setChangePasswordInputs(() => ({
 			...changePasswordInputs, [name]: value
 		}))
-
 	}
 
 	return (
 		<>
 			<Container sx={{ m: 1 }}>
 				<Dialog open={open} onClose={onClose}>
-					<DialogTitle>Vaihda salasana</DialogTitle>
+					<Typography variant="h5" sx={{textAlign:"center", mt:2}}>Vaihda salasana</Typography>
 					<Form autoComplete="off" onSubmit={handleChangePassword}>
-						<DialogContent>
-							<input hidden readOnly autoComplete="username" name="username" value={username} />
-
+						<DialogContent sx={{ display: "flex", flexDirection: "column" }}>
+							<TextField
+								type="text"
+								name="username"
+								value={username}
+								onChange={handleInputChange}
+								sx={{ display: "none" }}
+								disabled
+								autoComplete="username"
+							/>
 							<TextField
 								sx={{ m: 1 }}
 								type={showPassword ? "text" : "password"}
@@ -80,7 +86,7 @@ function ChangePassword({ username, open, onClose }: ChangePasswordProps) {
 							<TextField
 								sx={{ m: 1 }}
 								type="password"
-								label="Varmista salasana"
+								label="Vahvista salasana"
 								name="confirmPassword"
 								autoComplete="new-password"
 								value={confirmPassword}
@@ -88,11 +94,11 @@ function ChangePassword({ username, open, onClose }: ChangePasswordProps) {
 								error={newPassword !== confirmPassword}
 								helperText={newPassword !== confirmPassword ? "Salasanat ovat erilaiset." : ""}
 							/>
+							<DialogActions sx={{ justifyContent: "space-between", marginTop: "10px" }}>
+								<Button variant="contained" onClick={onClose}>Peruuta</Button>
+								<Button variant="contained" color="success" type="submit" disabled={newPassword !== confirmPassword}>Vaihda salasana</Button>
+							</DialogActions>
 						</DialogContent>
-						<DialogActions>
-							<Button variant="contained" color="error" onClick={onClose}>Peruuta</Button>
-							<Button variant="contained" color="success" type="submit" disabled={newPassword !== confirmPassword}>Vaihda salasana</Button>
-						</DialogActions>
 					</Form>
 				</Dialog>
 			</Container >
