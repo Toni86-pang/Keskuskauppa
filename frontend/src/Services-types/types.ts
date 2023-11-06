@@ -353,4 +353,5 @@ export interface VerifyProps {
 	acceptButtonText?: string
 	declineButtonText?: string
 	preformattedText?: string
+	acceptButtonGreen?: boolean
 }
