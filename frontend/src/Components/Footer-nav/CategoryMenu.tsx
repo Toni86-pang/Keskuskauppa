@@ -82,12 +82,12 @@ const CategoryMenu = () => {
 					<Button href="/">Etusivu</Button>
 				</MenuItem>
 				<MenuItem>
-					<Button href="/products">Kaikki tuotteet</Button>
+					<Button variant="text" sx={{ "&:hover": { fontWeight: "bold", color:"#405e8c" } }} href="/products">Kaikki tuotteet</Button>
 				</MenuItem>
 				{categories.map((category, index) => (
 					<div key={"category " + index.toString()}>
 						<MenuItem >
-							<Button href={`/products/category/${category.category_id}`} sx={{ "&:hover": { textDecoration: "underline" } }} >{category.category_name}</Button>
+							<Button variant="text" href={`/products/category/${category.category_id}`} sx={{ "&:hover": { fontWeight: "bold", color:"#405e8c" } }} >{category.category_name}</Button>
 							<Button onClick={(e) => handleSubMenuOpen(e, index)} sx={{ transform: "rotate(-90deg)", marginLeft: "auto" }}><ArrowDropDownIcon /></Button>
 						</MenuItem>
 
@@ -101,7 +101,7 @@ const CategoryMenu = () => {
 						>
 							{subCategories[1] && subCategories[category.category_id].map((subCategory, subMenuIndex) => (
 								<MenuItem key={"subcategory " + subMenuIndex.toString()} onClick={handleMenuClose}>
-									<Button href={`/products/subcategory/${subCategory.subcategory_id}`} sx={{ "&:hover": { textDecoration: "underline" } }} >{subCategory.subcategory_name}</Button>
+									<Button href={`/products/subcategory/${subCategory.subcategory_id}`} sx={{ "&:hover": { fontWeight: "bold", color:"#405e8c" } }} >{subCategory.subcategory_name}</Button>
 								</MenuItem>
 							))}
 						</Menu>
