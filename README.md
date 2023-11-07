@@ -1,11 +1,12 @@
 # Keskuskauppa: A safer user-to-user marketplace
 
 ![schema](./docs/etusivu.png)  
-![schema](./docs/uusituote.png)   
 ![schema](./docs/profiili.png)    
 ![schema](./docs/arviot.png)   
 ![schema](./docs/kengät.png)   
 ![schema](./docs/tuotesivu.png)  
+![schema](./docs/uusituote.png)   
+![schema](./docs/search.png)   
 
 ## Project description
 
@@ -31,7 +32,7 @@ Seller review system: Leave an honest review of your experience with a particula
 
 View products by category: Browse items by category and subcategory. This feature is also available for non-registered users.
 
-Search: search directly for items any time from the always visible navbar. Search results are given in a handy and quick dropdown for the most recently added hits, and a full search results page delivers all the results.
+Search: search directly for items any time from the always visible navbar. Search results are given in a handy and quick dropdown for the most relevant hits, and a full search results page delivers all the results.
 
 Order history: See your purchases and sales from your personal order history page. Check details, confirm sending and receiving of a product and leave reviews.
 
@@ -80,15 +81,15 @@ SECRET= A secret word defined by you
 
 ## Dev team
 
-"Product owner":
+"Product owner":  
 **Maaret Lyytinen**  
 @: maaret.lyytinen@gmail.com  
 gitlab: https://gitlab.com/maarly  
 LinkedIn: https://www.linkedin.com/in/maaretlyytinen/  
 
-"Scrum master":
+"Scrum master":  
 **Toni Vainionpää**  
-@: neworen(at)gmail.com  
+@: neworen@gmail.com  
 gitlab: https://gitlab.com/Toni86-pang  
 LinkedIn:  https://www.linkedin.com/in/toni-vainionpaa/  
 
@@ -99,8 +100,8 @@ linkedin: https://www.linkedin.com/in/salla-kaikkonen/
 
 **Sami Nissinen**  
 @: snissine@gmail.com  
-gitlab: https://gitlab.com/ni5u 
-linkedin: https://www.linkedin.com/in/sami-nissinen/  
+gitlab: https://gitlab.com/ni5u  
+linkedin: https://www.linkedin.com/in/sami-nissinen/   
 
 **Joonas Huhdanmäki**  
 @jhuhdanmaki@gmail.com  
