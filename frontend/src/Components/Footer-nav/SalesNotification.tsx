@@ -40,6 +40,12 @@ function SalesNotification() {
 
 	}, [token, setSaleCount, setReviewCount])
 
+	return (
+		<>
+			{/* jsx element needs a return */}
+		</>
+	)
+
 }
 
 export default SalesNotification

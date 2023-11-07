@@ -20,14 +20,18 @@ import { CartContextType, UserTokenContext } from "../../App"
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, react-refresh/only-export-components
 export async function loader({ params }: any) {
 	const productData: ProductType = await fetchProduct(params.id)
-	const token = localStorage.getItem("token")	
+	const token = localStorage.getItem("token")		
+	const sellerData: User = await fetchUserDetailsByUserId(productData.user_id)
+	const averageStars: number = await fetchStarRating(productData.user_id)
+	let userData: User
+	let myProduct: boolean
 	if(token) {
-		const userData: User = await fetchUser(token)
-		const myProduct = productData.user_id === userData.user_id
-		const sellerData = await fetchUserDetailsByUserId(productData.user_id)
-		const averageStars = await fetchStarRating(productData.user_id)
+		userData = await fetchUser(token)		
+		myProduct = productData.user_id === userData.user_id		
 		return { productData, myProduct, sellerData, averageStars } as ProductLoader
 	}
+	
+	return { productData, myProduct: false, sellerData, averageStars }
 }
 
 
