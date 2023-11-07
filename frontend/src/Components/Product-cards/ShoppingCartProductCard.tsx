@@ -1,5 +1,4 @@
 import Card from "@mui/material/Card"
-import Button from "@mui/material/Button"
 import CardContent from "@mui/material/CardContent"
 import CardMedia from "@mui/material/CardMedia"
 import Typography from "@mui/material/Typography"
@@ -82,11 +81,9 @@ function SalesProductCard({ product, onClose, setCart }: ProductProps) {
 									{product.title}
 								</Typography>
 								<Typography pb={2} component="div">Hinta {product.price} €</Typography>
-								<Button variant="contained" color="secondary">
-									<DeleteIcon fontSize="medium" color="primary" onClick={() => {
-										handleRemoveFromCart(product.product_id)}}>
-									</DeleteIcon>
-								</Button>
+								<DeleteIcon fontSize="medium" onClick={() => {
+									handleRemoveFromCart(product.product_id)}}>
+								</DeleteIcon>
 							</Grid>
 						</Grid>
 					</Grid>

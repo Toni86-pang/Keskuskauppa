@@ -39,8 +39,8 @@ function CheckoutProductCard({ product }: ProductProps) {
 							{product.product_image ? (
 								<CardMedia
 									component="img"
-									maxHeight="100"
-									maxWidth="100"
+									height="100"
+									width="100"
 									image={product.product_image}
 									alt={product.title}
 								/>

@@ -118,7 +118,7 @@ export default function CheckOut() {
 					<Typography sx={{fontSize: "1.2rem"}} pt={2} pb={2}>Vastaanottajan tiedot</Typography>
 					<Grid container direction="row" spacing={2} justifyContent="flex-start" alignItems="center" pb={2}>
 						<Grid item xs={6} pr={3}>
-							<Typography pt={2} pb={1} required style={{position: "relative"}} id="description">Nimi</Typography>
+							<Typography pt={2} pb={1} style={{position: "relative"}} id="description">Nimi</Typography>
 							<TextField
 								required
 								type="text"
@@ -127,7 +127,7 @@ export default function CheckOut() {
 								onChange={handleNameChange}
 								fullWidth
 							/>
-							<Typography pt={2} pb={1} required style={{position: "relative"}} id="description">Katuosoite</Typography>
+							<Typography pt={2} pb={1} style={{position: "relative"}} id="description">Katuosoite</Typography>
 							<TextField
 								required
 								type="text"
@@ -136,7 +136,7 @@ export default function CheckOut() {
 								onChange={handleAddressChange}
 								fullWidth
 							/>
-							<Typography pt={2} pb={1} required style={{position: "relative"}} id="price">Postinumero</Typography>
+							<Typography pt={2} pb={1} style={{position: "relative"}} id="price">Postinumero</Typography>
 							<TextField
 								required
 								type="text"
@@ -147,7 +147,7 @@ export default function CheckOut() {
 							/>
 						</Grid>
 						<Grid item xs={6} >
-							<Typography pt={2} pb={1} required style={{position: "relative"}} id="price">Kaupunki</Typography>
+							<Typography pt={2} pb={1} style={{position: "relative"}} id="price">Kaupunki</Typography>
 							<TextField
 								required
 								type="text"
@@ -156,7 +156,7 @@ export default function CheckOut() {
 								onChange={handleCityChange}
 								fullWidth
 							/>
-							<Typography pt={2} pb={1} required style={{position: "relative"}} id="price">Puhelinnumero</Typography>
+							<Typography pt={2} pb={1} style={{position: "relative"}} id="price">Puhelinnumero</Typography>
 							<TextField
 								required
 								type="text"
@@ -165,7 +165,7 @@ export default function CheckOut() {
 								onChange={handlePhoneChange}
 								fullWidth
 							/>
-							<Typography pt={2} pb={1} required style={{position: "relative"}} id="price">Sähköposti</Typography>
+							<Typography pt={2} pb={1} style={{position: "relative"}} id="price">Sähköposti</Typography>
 							<TextField
 								required
 								type="text"

@@ -113,8 +113,8 @@ export default function Product() {
 									sx={{
 
 										display: "block",
-										maxWidth: "300px",
-										maxHeight: "300px",
+										width: "300px",
+										height: "300px",
 										m: 1,
 										p: 4									}}
 								/>

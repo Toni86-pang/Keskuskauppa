@@ -187,7 +187,7 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 								seller_id={sale?.seller_id}
 								sale={sale}
 							/>
-							{sale?.sales_status === 2 && <Button p={2} variant="contained" color="error" onClick={handleCancelSale}>Peruuta tilaus</Button>}
+							{sale?.sales_status === 2 && <Button variant="contained" color="error" onClick={handleCancelSale}>Peruuta tilaus</Button>}
 						</Box>}
 				</DialogActions>
 			</Dialog>

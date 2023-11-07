@@ -73,8 +73,8 @@ function SellerProfile() {
 							alt="Image"
 							sx={{
 								display: "block",
-								maxWidth: "250px",
-								maxHeight: "250px",
+								width: "250px",
+								height: "250px",
 								borderRadius: "100%",
 								m: 2,
 								p: 5
