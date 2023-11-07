@@ -37,16 +37,16 @@ function OrderProductCard({ product, setRefresh }: OrderCardProps) {
 								{product.product_image !== "" ? (
 									<CardMedia
 										component="img"
-										maxHeight="100"
-										maxWidth="100"
+										height="100"
+										width="100"
 										image={product.product_image}
 										alt={product.title}
 									/>
 								) : (
 									<CardMedia
 										component="img"
-										maxHeight="100"
-										maxWidth="100"
+										height="100"
+										width="100"
 										image={URL_TO_DEFAULT_IMAGE}
 										alt="Default Image"
 									/>
