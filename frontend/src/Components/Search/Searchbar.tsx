@@ -4,7 +4,8 @@ import {
 	styled,
 	alpha,
 	Button,
-	Box
+	Box,
+	List
 } from "@mui/material"
 import { ProductType } from "../../Services-types/types"
 import { fetchAllProducts } from "../../Services-types/services"
@@ -80,8 +81,8 @@ const ProductSearch = () => {
 	const handleShowAllResults = async () => {
 		navigate(`/search-results?query=${encodeURIComponent(searchQuery)}`)
 		setModalOpen(false)
-		setSearchQuery("")		
-		await handleOnFocus()		
+		setSearchQuery("")
+		await handleOnFocus()
 	}
 
 	// goes to all results page with enter
@@ -101,7 +102,7 @@ const ProductSearch = () => {
 					onKeyDown={handleKeyDown}
 					onFocus={handleOnFocus}
 					onChange={(e) => setSearchQuery(e.target.value)}
-					InputLabelProps={{ style: {color: "white" } }}
+					InputLabelProps={{ style: { color: "white" } }}
 				/>
 			</Search>
 
@@ -116,9 +117,9 @@ const ProductSearch = () => {
 						left: "35%",
 						zIndex: 1
 					}}>
-					<ul>
+					<List sx={{ ml: 5, mt: 1 }}>
 						<DisplayProducts productList={searchResults.slice(0, maxResultsToShow)} />
-						<Box 
+						<Box
 							sx={{
 								display: "flex",
 								justifyContent: "space-between",
@@ -129,18 +130,17 @@ const ProductSearch = () => {
 									onClick={handleShowMore}
 									sx={{ marginTop: 2 }}
 								>
-								Näytä lisää tuloksia
+									Näytä lisää tuloksia
 								</Button>
 							)}
-
 							<Button
 								onClick={handleShowAllResults}
 								sx={{ marginTop: 2 }}
 							>
-							Näytä kaikki tulokset
+								Näytä kaikki tulokset
 							</Button>
 						</Box>
-					</ul>
+					</List>
 				</Box>
 			)}
 		</Box>
