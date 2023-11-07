@@ -1,6 +1,6 @@
 # Keskuskauppa: A safer user-to-user marketplace
 
-![schema](./docs/uusituote.png) ![schema](./docs/profiili.png) ![schema](./docs/kengät.png) ![schema](./docs/arviot.png)
+![schema](./docs/etusivu.png) ![schema](./docs/uusituote.png) ![schema](./docs/profiili.png) ![schema](./docs/kengät.png) ![schema](./docs/arviot.png) ![schema](./docs/tuotesivu.png)
 
 ## Project description
 
