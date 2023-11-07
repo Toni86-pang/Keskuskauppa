@@ -130,7 +130,8 @@ function Profile() {
 								maxHeight: "250px",
 								borderRadius: "100%",
 								m: 2,
-								p: 3
+								p: 3,
+								margin: "0 auto"
 							}}
 						/>
 					</Grid>

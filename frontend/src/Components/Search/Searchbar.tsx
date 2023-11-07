@@ -101,7 +101,8 @@ const ProductSearch = () => {
 					value={searchQuery}
 					onKeyDown={handleKeyDown}
 					onFocus={handleOnFocus}
-					onChange={(e) => setSearchQuery(e.target.value)}
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					onChange={(e:any) => setSearchQuery(e.target.value)}
 					InputLabelProps={{ style: {color: "white" } }}
 				/>
 			</Search>

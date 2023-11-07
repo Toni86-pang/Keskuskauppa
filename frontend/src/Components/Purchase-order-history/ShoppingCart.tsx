@@ -59,7 +59,7 @@ export default function ShoppingCart ({isOpen, onClose, cart, setCart}: Shopping
 					"& .MuiDialog-container": {
 						"& .MuiPaper-root": {
 							width: "100%",
-							maxWidth: "500px",  // Set your width here
+							maxWidth: "600px",  // Set your width here
 						},
 					},
 				}}
