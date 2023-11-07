@@ -11,7 +11,9 @@ import {
 	IconButton,
 	MenuItem,
 	Badge,
-	Grid
+	Grid,
+	Button,
+	Divider
 } from "@mui/material"
 import CategoryMenu from "./CategoryMenu"
 import Login from "../Register-login/Login"
@@ -126,7 +128,7 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 											aria-controls="user-menu"
 											aria-haspopup="true"
 										>
-											<Box sx={{fontSize:"small"}}>
+											<Box sx={{ fontSize: "small" }}>
 												<Badge badgeContent={cart?.length || 0} color="info">
 													<ShoppingCartIcon />
 												</Badge>
@@ -138,29 +140,27 @@ const Navbar = ({ cart, setCart }: NavbarProps) => {
 											open={Boolean(anchorEl)}
 											onClose={handleMenuClose}
 										>
-											<MenuItem
-												onClick={handleMenuClose}
-												component={Link} to="/profile"
-											>
-												<Badge badgeContent={reviewCount} color="info" >Oma sivu</Badge>
+											<MenuItem onClick={handleMenuClose} >
+												<Button sx={{ "&:hover": { fontWeight: "bold", color:"#405e8c" } }} component={Link} to="/profile">
+													<Badge badgeContent={reviewCount} color="info" >Oma sivu</Badge>
+												</Button>
 											</MenuItem>
-											<MenuItem
-												onClick={handleMenuClose}
-												component={Link}
-												to="/orderhistory"
-											>
-												<Badge badgeContent={saleCount} color="info" >
-													Tilaushistoria
-												</Badge>
+											<Divider />
+											<MenuItem onClick={handleMenuClose}	>
+												<Button sx={{ "&:hover": { fontWeight: "bold", color:"#405e8c" } }} component={Link} to="/orderhistory">
+													<Badge badgeContent={saleCount} color="info" >
+														Tilaushistoria
+													</Badge>
+												</Button>
 											</MenuItem>
-											<MenuItem
-												onClick={handleMenuClose}
-												component={Link}
-												to="/product/new"
-											>
-												Lisää uusi tuote
+											<Divider />
+											<MenuItem onClick={handleMenuClose}	>
+												<Button sx={{ "&:hover": { fontWeight: "bold", color:"#405e8c" } }} component={Link} to="/product/new">Lisää uusi tuote</Button>												
 											</MenuItem>
-											<MenuItem onClick={handleLogout}>Kirjaudu ulos</MenuItem>
+											<Divider />
+											<MenuItem>
+												<Button sx={{ "&:hover": { fontWeight: "bold", color:"#405e8c" } }} onClick={handleLogout} >Kirjaudu ulos</Button>
+											</MenuItem>
 										</Menu>
 									</>
 								) : (
