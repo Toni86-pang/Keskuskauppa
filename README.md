@@ -80,11 +80,13 @@ SECRET= A secret word defined by you
 
 ## Dev team
 
+"Product owner":
 **Maaret Lyytinen**  
 @: maaret.lyytinen@gmail.com  
 gitlab: https://gitlab.com/maarly  
 LinkedIn: https://www.linkedin.com/in/maaretlyytinen/  
 
+"Scrum master":
 **Toni Vainionpää**  
 @: neworen(at)gmail.com  
 gitlab: https://gitlab.com/Toni86-pang  
