@@ -7,7 +7,8 @@ import { ProductType, Subcategory } from "../../Services-types/types"
 import {
 	Box,
 	Typography,
-	List
+	List,
+	Paper
 } from "@mui/material"
 
 const SearchResultsPage = () => {
@@ -53,28 +54,35 @@ const SearchResultsPage = () => {
 	}
 
 	return (
+	
 		<Box>
-			<Typography variant="h5" sx={{ p: 2 }}>Löytyneet tuotteet</Typography>
-			{subcategories.map((subcategory) => {
-				const subcategoryProductCount = getSubcategoryProductCount(subcategory)
-				return subcategoryProductCount > 0 ? (
-					<Box sx={{ ml: 5 }} key={subcategory.subcategory_id}>
-						<Typography variant="h6" 	>
-							{subcategory.subcategory_name} ({subcategoryProductCount} tuotetta)
-						</Typography>
-						<List>
-							{searchResults
-								.filter(
-									(product) => product.subcategory_id === subcategory.subcategory_id
-								)
-								.map((product) => (
-									<ProductCard key={product.product_id} product={product} />
-								))}
-						</List>
-					</Box>
-				) : null
-			})}
+			<Paper sx={{
+				backgroundColor: "#f3f6fa",
+				elevation: 5
+			}}>
+				<Typography variant="h5" sx={{ p: 2 }}>Löytyneet tuotteet</Typography>
+				{subcategories.map((subcategory) => {
+					const subcategoryProductCount = getSubcategoryProductCount(subcategory)
+					return subcategoryProductCount > 0 ? (
+						<Box sx={{ ml: 5 }} key={subcategory.subcategory_id}>
+							<Typography variant="h6" 	>
+								{subcategory.subcategory_name} ({subcategoryProductCount} tuotetta)
+							</Typography>
+							<List>
+								{searchResults
+									.filter(
+										(product) => product.subcategory_id === subcategory.subcategory_id
+									)
+									.map((product) => (
+										<ProductCard key={product.product_id} product={product} />
+									))}
+							</List>
+						</Box>
+					) : null
+				})}
+			</Paper>
 		</Box>
+		
 	)
 }
 
