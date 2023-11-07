@@ -14,8 +14,8 @@ import { Dispatch } from "react"
 
 export interface User {
 	user_id: number,
-    username: string,
-    password: string,
+	username: string,
+	password: string,
 	name: string,
 	email: string,
 	phone: string,
@@ -46,11 +46,11 @@ export interface UserValues {
 	password: ""
 }
 export type categoryMapType = {
-    [key: string]: [string, number] 
+	[key: string]: [string, number]
 }
 
 export interface DisplayProductsProps {
-    productList: ProductType[]
+	productList: ProductType[]
 }
 export interface ChangePasswordInputs {
 	currentPassword: string
@@ -58,8 +58,8 @@ export interface ChangePasswordInputs {
 	confirmPassword: string
 }
 export interface CategoryProducts {
-    categoryHeader: string
-    products: ProductType[]
+	categoryHeader: string
+	products: ProductType[]
 }
 
 export interface ChangePasswordProps {
@@ -75,10 +75,10 @@ export interface UpdateProfileProps {
 }
 
 export interface UpdatedUser {
-    address: string,
-    city: string,
-    postal_code: string,
-    phone: string,
+	address: string,
+	city: string,
+	postal_code: string,
+	phone: string,
 	user_image?: string
 }
 
@@ -86,7 +86,7 @@ export interface UserProducts {
 	loadedUser: User
 	stars: number
 	products: ProductType[]
-	
+
 }
 
 //------------------------------------------- PRODUCTS ------------------------------------------------------
@@ -99,8 +99,8 @@ export interface ProductType {
 	category_id: number
 	subcategory_id: number
 	city: string
-    postal_code: string
-    description: string
+	postal_code: string
+	description: string
 	price: string
 	product_image: string
 	listed: boolean
@@ -122,15 +122,22 @@ export const initialStateProduct: ProductType = {
 }
 
 export interface ProductProps {
-    product: ProductType
+	product: ProductType
 	onClose?: () => void
 	setCart?: Dispatch<React.SetStateAction<ProductType[] | null>>
-  }
+}
+
+export interface ProductLoader {
+	productData: ProductType
+	myProduct: boolean
+	sellerData: User
+	averageStars: number
+}
 
 export interface CategoryProps {
 	category?: boolean
 	subCategory?: boolean
-  }
+}
 
 export interface Category {
 	category_name: string
@@ -149,7 +156,7 @@ export interface VerifyProps {
 	titleText?: string
 	messageText: string
 	isOpen: boolean
-	setOpen: (open:boolean) => void
+	setOpen: (open: boolean) => void
 	onAccept: () => void
 	onDecline?: () => void
 	acceptButtonText?: string
@@ -158,13 +165,13 @@ export interface VerifyProps {
 }
 /* update types*/
 export interface UpdatedProduct {
-    title: string,
-    category_id: number,
-    subcategory_id: number,
-    city: string,
-    postal_code: string,
-    description: string,
-    price: number,
+	title: string,
+	category_id: number,
+	subcategory_id: number,
+	city: string,
+	postal_code: string,
+	description: string,
+	price: number,
 	product_image: string
 }
 export interface UpdateProductModalProps {
@@ -172,12 +179,12 @@ export interface UpdateProductModalProps {
 	onClose: (updatedProduct: ProductType) => void
 	token: string
 	product: ProductType
-  }
+}
 
 export interface AverageStars {
 	average_score: number
 }
-  
+
 export interface Review {
 	sales_id: number
 	seller_id?: number
@@ -188,11 +195,11 @@ export interface Review {
 }
 
 export interface ShoppingCartProps {
-    isOpen: boolean
-    onClose: () => void
+	isOpen: boolean
+	onClose: () => void
 	cart: ProductType[] | null
 	setCart: Dispatch<React.SetStateAction<ProductType[] | null>>
-  }
+}
 
 export interface Category {
 	category_id: number
@@ -253,17 +260,17 @@ export interface SummaryProps {
 	buyerInfo: BuyerInfo
 	sum: number
 	cart: ProductType[] | null
-  }
+}
 
-export interface BuyerInfo { 
-		buyer_id: number
-		buyer_name: string
-		buyer_address: string
-		buyer_city: string
-		buyer_postcode: string
-		buyer_phone: string
-		buyer_email: string
-  }
+export interface BuyerInfo {
+	buyer_id: number
+	buyer_name: string
+	buyer_address: string
+	buyer_city: string
+	buyer_postcode: string
+	buyer_phone: string
+	buyer_email: string
+}
 
 export interface Sale {
 	sales_id?: number
@@ -290,12 +297,12 @@ export interface ReviewModalProps {
 	sale_id: number
 	seller_id?: number
 	sale?: Sale
-  }
+}
 
 export interface AverageStars {
 	average_score: number
 }
-  
+
 
 
 export interface Review {
@@ -347,7 +354,7 @@ export interface VerifyProps {
 	titleText?: string
 	messageText: string
 	isOpen: boolean
-	setOpen: (open:boolean) => void
+	setOpen: (open: boolean) => void
 	onAccept: () => void
 	onDecline?: () => void
 	acceptButtonText?: string
