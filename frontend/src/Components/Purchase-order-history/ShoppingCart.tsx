@@ -1,10 +1,11 @@
 import * as React from "react"
 import Button from "@mui/material/Button"
+import Box from "@mui/material/Box"
+import Typography from "@mui/material/Typography"
 import Dialog, { DialogProps } from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
-import DialogTitle from "@mui/material/DialogTitle"
 import { ProductType, ShoppingCartProps } from "../../Services-types/types"
 import { useEffect, useState } from "react"
 import ShoppingCartProductCard from "../Product-cards/ShoppingCartProductCard"
@@ -52,8 +53,16 @@ export default function ShoppingCart ({isOpen, onClose, cart, setCart}: Shopping
 	}
 
 	return (
-		<>
+		<Box>
 			<Dialog
+				sx={{
+					"& .MuiDialog-container": {
+						"& .MuiPaper-root": {
+							width: "100%",
+							maxWidth: "500px",  // Set your width here
+						},
+					},
+				}}
 				open={isOpen}
 				onClose={onClose}
 				scroll={scroll}
@@ -61,7 +70,7 @@ export default function ShoppingCart ({isOpen, onClose, cart, setCart}: Shopping
 				aria-describedby="scroll-dialog-description"
 				component="div"
 			>
-				<DialogTitle id="scroll-dialog-title">Ostoskori</DialogTitle>
+				<Typography variant="h5" style={{textAlign: "center"}} mt={2} id="scroll-dialog-title">Ostoskori</Typography>
 				<DialogContent dividers={scroll === "paper"}>
 					<DialogContentText
 						component={"span"}
@@ -79,22 +88,21 @@ export default function ShoppingCart ({isOpen, onClose, cart, setCart}: Shopping
 									/>
 								</React.Fragment>
 							)
-							: <>Ostoskorissa ei vielä tuotteita. Kun lisäät tuotteita ostoskoriin, ne näkyvät tässä.</>
+							: <Typography p={4}>Ostoskorissa ei vielä tuotteita. Kun lisäät tuotteita ostoskoriin, ne näkyvät tässä.</Typography>
 						}
-						<p>Summa: {sum} €</p>
+						<Typography variant="h6">Yhteensä: {sum} €</Typography>
 					</DialogContentText>
 				</DialogContent>
 				{cart !== null ? (
-					<DialogActions>
-						<Button onClick={() => (handleVerification())}>Tyhjennä ostoskori</Button>
-						<Button onClick={() => {navigate("/checkout"), onClose()}}>Kassalle</Button>
-						<Button onClick={onClose}>Sulje</Button>
+					<DialogActions sx={{display: "flex", justifyContent: "space-between", margin: 2}}>
+						<Button variant="contained" color={"error"} onClick={() => (handleVerification())}>Tyhjennä ostoskori</Button>
+						<Button variant="contained" color={"success"} onClick={() => {navigate("/checkout"), onClose()}}>Kassalle</Button>
 					</DialogActions>
 				) : (<DialogActions>
 					<Button onClick={onClose}>Sulje</Button>
 				</DialogActions>)}
 				<VerifyDialog {...verifyDialogProps} />
 			</Dialog>
-		</>
+		</Box>
 	)
 }

@@ -2,7 +2,8 @@ import { fetchOwnBought, fetchOwnSold } from "../../../Services-types/services"
 import { BoughtProps, SoldProps } from "../../../Services-types/types"
 import { useContext, useEffect, useState } from "react"
 import { UserTokenContext } from "../../../App"
-import { Badge, Button, Container, Stack } from "@mui/material"
+import { createTheme, ThemeProvider } from "@mui/material/styles"
+import { Badge, Button, Paper, Divider, Container, Stack, Box, Typography } from "@mui/material"
 import { redirect } from "react-router-dom"
 import OrderProductCard from "../../Product-cards/OrderProductCard"
 import { useNewSaleAndReviewContext } from "../../../NewSaleAndReviewContext"
@@ -64,7 +65,7 @@ export default function OrderHistory() {
 	const renderSold = (saleStatus: string, soldProducts: SoldProps[]) => {
 		return (
 			<>
-				<h3>{saleStatus}</h3>
+				<Typography sx={{fontSize: "1.1rem"}}>{saleStatus}</Typography>
 				{
 					soldProducts.map((product, index) => {
 						return <OrderProductCard key={saleStatus + index + product.title} product={product} setRefresh={() => setRefresh(!refresh)} />
@@ -76,7 +77,7 @@ export default function OrderHistory() {
 	const renderBought = (saleStatus: string, boughtProducts: BoughtProps[]) => {
 		return (
 			<>
-				<h3>{saleStatus}</h3>
+				<Typography sx={{fontSize: "1.1rem"}}>{saleStatus}</Typography>
 				{
 					boughtProducts.map((product, index) => {
 						return <OrderProductCard key={saleStatus + index + product.title} product={product} setRefresh={() => setRefresh(!refresh)} />
@@ -85,34 +86,60 @@ export default function OrderHistory() {
 			</>)
 	}
 
+	const theme = createTheme({
+		components: {
+			MuiButton: {
+				styleOverrides: {
+					textSecondary: {
+						fontWeight: "bold",
+					},
+				},
+			},
+		},
+		palette: {
+			secondary: {
+				main: "#405e8c",
+			}
+		}
+	})
+
 	return (
-		<Container>
-			<h2>Tilaushistoria</h2>
-			<Stack spacing={2} direction="row">
-				<Badge badgeContent={soldWaiting.length} color="info" >
-					<Button onClick={() => setIsSoldItem(true)} variant="text" color={isSoldItem ? "secondary" : "primary"}>Omat myynnit</Button>
-				</Badge>
-				<div style={{ marginTop: "9px" }}>|</div>
-				<Badge badgeContent={boughtSent.length} color="info" >
-					<Button onClick={() => setIsSoldItem(false)} variant="text" color={!isSoldItem ? "secondary" : "primary"}>Omat ostot</Button>
-				</Badge>
-			</Stack>
-			{isSoldItem ?
-				<>
-					{soldWaiting.length > 0 && renderSold("Odottaa lähetystä", soldWaiting)}
-					{soldSent.length > 0 && renderSold("Lähetetty", soldSent)}
-					{soldReceived.length > 0 && renderSold("Vastaanotettu", soldReceived)}
-					{soldCancelled.length > 0 && renderSold("Peruutettu", soldCancelled)}
+		<ThemeProvider theme={theme}>
+			<Paper sx={{
+				backgroundColor: "#f3f6fa",
+				elevation: 5,
+				p: 3,
+				minHeight: "500px"
+			}}>
+				<Container>
+					<Typography variant="h5" style={{textAlign: "center"}} mt={2}>Tilaushistoria</Typography>
+					<Stack spacing={2} direction="row" justifyContent="center" alignItems="center" pt={3} >
+						<Badge badgeContent={soldWaiting.length} color="info" >
+							<Button onClick={() => setIsSoldItem(true)} variant="text" color={isSoldItem ? "secondary" : "primary"}>Omat myynnit</Button>
+						</Badge>
+						<Box style={{ marginTop: "9px" }}>|</Box>
+						<Badge badgeContent={boughtSent.length} color="info" >
+							<Button onClick={() => setIsSoldItem(false)} variant="text" color={!isSoldItem ? "secondary" : "primary"}>Omat ostot</Button>
+						</Badge>
+					</Stack>
+					<Divider style={{ marginBottom: "10px" }} />
+					{isSoldItem ?
+						<Box>
+							{soldWaiting.length > 0 && renderSold("Odottaa lähetystä", soldWaiting)}
+							{soldSent.length > 0 && renderSold("Lähetetty", soldSent)}
+							{soldReceived.length > 0 && renderSold("Vastaanotettu", soldReceived)}
+							{soldCancelled.length > 0 && renderSold("Peruutettu", soldCancelled)}
+						</Box> 
+						:
+						<Box>
+							{boughtSent.length > 0 && renderBought("Lähetetty", boughtSent)}
+							{boughtWaiting.length > 0 && renderBought("Odottaa lähetystä", boughtWaiting)}
+							{boughtReceived.length > 0 && renderBought("Vastaanotettu", boughtReceived)}
+							{boughtCancelled.length > 0 && renderBought("Peruutettu", boughtCancelled)}
 
-				</> :
-				<>
-					{boughtSent.length > 0 && renderBought("Lähetetty", boughtSent)}
-					{boughtWaiting.length > 0 && renderBought("Odottaa lähetystä", boughtWaiting)}
-					{boughtReceived.length > 0 && renderBought("Vastaanotettu", boughtReceived)}
-					{boughtCancelled.length > 0 && renderBought("Peruutettu", boughtCancelled)}
-
-				</>}
-
-		</Container>
+						</Box>}
+				</Container>
+			</Paper>
+		</ThemeProvider>
 	)
 }
