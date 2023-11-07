@@ -1,12 +1,9 @@
 import { ChangeEvent, SyntheticEvent, useState } from "react"
-import { Dialog, TextField, Button, DialogTitle, Rating, Box } from "@mui/material"
+import { Dialog, TextField, Button, DialogActions, Rating, Typography, Box } from "@mui/material"
 import StarIcon from "@mui/icons-material/Star"
 import { Review, ReviewModalProps } from "../../../Services-types/types"
 import { newReview, putReviewedTrue } from "../../../Services-types/services"
 import Notification from "../../Verify-notification/Notification"
-// import { useEffect } from "react"
-// import { initialState } from "../types"
-// import { fetchUser } from "../services"
 
 function LeaveReview({ isOpen, onClose, token, sale, sale_id, seller_id }: ReviewModalProps) {
 	const [newDescription, setNewDescription] = useState<string>()
@@ -64,12 +61,27 @@ function LeaveReview({ isOpen, onClose, token, sale, sale_id, seller_id }: Revie
 		onClose()
 	}
 
+	const styles = {
+		buttonContainer: {
+			marginTop: "25px",
+			display: "flex",
+			justifyContent: "space-between",
+		},
+	}
+
 	return (
 		<>
-			<Dialog open={isOpen} onClose={onClose} maxWidth="md" fullWidth>
-				<DialogTitle>Jätä arvostelu</DialogTitle>
-				<div style={{ maxHeight: "80vh", overflowY: "auto", padding: "16px" }}>
-					<div style={{ margin: "16px" }}>
+			<Dialog open={isOpen} onClose={onClose} sx={{
+				"& .MuiDialog-container": {
+					"& .MuiPaper-root": {
+						width: "100%",
+						maxWidth: "600px",  // Set your width here
+					},
+				},
+			}}>
+				<Typography variant={"h5"} textAlign={"center"} p={3}>Jätä arvostelu</Typography>
+				<Box style={{ maxHeight: "80vh", overflowY: "auto", padding: "16px" }}>
+					<Box style={{ margin: "16px" }}>
 						<TextField
 							multiline rows={5}
 							label="Kirjoita arvostelu..."
@@ -77,33 +89,35 @@ function LeaveReview({ isOpen, onClose, token, sale, sale_id, seller_id }: Revie
 							onChange={handleDescriptionChange}
 							fullWidth
 						/>
-					</div>
-					<h4>Montako tähteä antaisit myyjälle tämän ostoksen perusteella?</h4>
-					<Rating
-						name="hover-feedback"
-						value={newStars}
-						precision={0.5}
-						getLabelText={getLabelText}
-						onChange={(_event: SyntheticEvent<Element, Event>, newValue: number | null) => {
-							setNewStars(newValue)
-						}}
-						onChangeActive={(_event, newHover) => {
-							setHover(newHover)
-						}}
-						emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
-					/>
-					{newStars !== null && (
-						<Box sx={{ ml: 2 }}>{labels[hover !== -1 ? hover : newStars]}</Box>
-					)}
-					<div style={{ margin: "16px" }}>
-						<Button variant="outlined" onClick={handleReviewSubmit}>
-							Lähetä
-						</Button>
-						<Button variant="outlined" onClick={handleCloseModal}>
+					</Box>
+					<Box style={{textAlign: "center"}}>
+						<Typography pt={2} pb={2}>Montako tähteä antaisit myyjälle tämän ostoksen perusteella?</Typography>
+						<Rating
+							name="hover-feedback"
+							value={newStars}
+							precision={0.5}
+							getLabelText={getLabelText}
+							onChange={(_event: SyntheticEvent<Element, Event>, newValue: number | null) => {
+								setNewStars(newValue)
+							}}
+							onChangeActive={(_event, newHover) => {
+								setHover(newHover)
+							}}
+							emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+						/>
+						{newStars !== null && (
+							<Box sx={{ ml: 2 }}>{labels[hover !== -1 ? hover : newStars]}</Box>
+						)}
+					</Box>
+					<DialogActions style={styles.buttonContainer}>
+						<Button variant="contained" onClick={handleCloseModal}>
 							Peruuta
 						</Button>
-					</div>
-				</div>
+						<Button variant="contained" color="success" onClick={handleReviewSubmit}>
+							Lähetä
+						</Button>
+					</DialogActions>
+				</Box>
 			</Dialog>
 			{/* Success and error notifications */}
 			{showSuccessNotification && (
