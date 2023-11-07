@@ -90,7 +90,8 @@ const CategoryMenu = () => {
 						<Divider />
 						<MenuItem >
 							<Button variant="text" href={`/products/category/${category.category_id}`} sx={{ "&:hover": { fontWeight: "bold", color:"#405e8c" } }} >{category.category_name}</Button>
-							<Button onClick={(e) => handleSubMenuOpen(e, index)} sx={{ transform: "rotate(-90deg)", marginLeft: "auto" }}><ArrowDropDownIcon /></Button>
+							{/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+							<Button onClick={(e:any) => handleSubMenuOpen(e, index)} sx={{ transform: "rotate(-90deg)", marginLeft: "auto" }}><ArrowDropDownIcon /></Button>
 						</MenuItem>
 
 						{/* SubMenus */}

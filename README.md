@@ -1,5 +1,7 @@
 # Keskuskauppa: A safer user-to-user marketplace
 
+![schema](./docs/etusivu.png) ![schema](./docs/uusituote.png) ![schema](./docs/profiili.png) ![schema](./docs/kengät.png) ![schema](./docs/arviot.png) ![schema](./docs/tuotesivu.png)
+
 ## Project description
 
 Tired of the uncertainty of secondhand online shopping? The Finnish market offers many platforms to buy and sell secondhand items user to user, but none of them guarantees a particularly safe user experience. Inspired by this, we set out to create an online secondhand marketplace with added security.
@@ -8,23 +10,33 @@ To do this, we lent ideas from the international market of second hand selling a
 
 ### Features in a nutshell
 
-The most important feature is buyer's security in making a purchase. Once a purchase is made, instead of wiring the money to the seller with no guarantee of ever receiving the product, the service holds on to the payment until the buyer has confirmed that the product has been received. If no product is received, the system returns the money to the buyer. The security of the seller is also guaranteed, as they won't be asked to send anything before the buyer has made the payment. All activity on the website is overseen by admin.
+The most important feature is buyer's security in making a purchase. Once a purchase is made, instead of wiring the money to the seller with no guarantee of ever receiving the product, the service holds on to the payment until the buyer has confirmed that the product has been received. If no product is received, the system returns the money to the buyer. The security of the seller is also guaranteed, as they won't be asked to send anything before the buyer has made the payment.
 
-Other features that reinforce a secure buying experience are messaging between buyer and seller as well as a seller review system.
+Another feature that reinforces a secure buying experience a seller review system.
 
 ### Features in detail
 
-User-to-user messaging: Contact the seller before making a purchase to ask questions and discuss.
+Secure market place: Only registered users can make purchases, sell items and take part in user-to-user messaging.
 
-Secure market place: Only registered users can make purchases, sell items and take part in user-to-user messaging. All new profiles are checked by admin. Admin oversees the transactions between buyer and seller. 
+Secure buying experience: The service holds on to your money while you wait to receive your purchase. The seller confirms the shipment by logging the related tracking code on the website. When the buyer has received the product, they manually confirm it. Only then is the money wired to the seller. 
 
-Secure buying experience: The service holds on to your money while you wait to receive your purchase. The seller confirms the shipment by logging the related tracking code on the website. When the buyer has received the product, they manually confirm it. Only then is the money wired to the seller. In case the seller has successfully sent the product with tracking information that can be found on the deliverer's website and the buyer claims not to have received it, the matter will be investigated by admin.
+In the case that the seller has successfully sent the product with tracking information that can be found on the deliverer's website and it can be seen that the parcel has been delivered but the buyer claims not to have received the parcel, after a reasonable time the noney will be wired to the seller in any case.
 
-Seller review system: Leave an honest review of your experience with a particular seller. Includes a star review as well as a written comment. Read reviews others have given to get a better idea of how trustworthy a seller has been found to be by others.
+Seller review system: Leave an honest review of your experience with a particular seller. Includes a star review as well as a written comment. Read reviews others have given to get a better idea of how trustworthy a seller has been found to be by others. The seller also has the chance to tell their side of the story by commenting the review.
 
-View products by category: Browse items by category. This feature is also available for non-registered users.
+View products by category: Browse items by category and subcategory. This feature is also available for non-registered users.
 
-Search: search directly for items.
+Search: search directly for items any time from the always visible navbar. Search results are given in a handy and quick dropdown for the most recently added hits, and a full search results page delivers all the results.
+
+Order history: See your purchases and sales from your personal order history page. Check details, confirm sending and receiving of a product and leave reviews.
+
+## Plans for future development
+
+- User-to-user messaging: Contact the seller before making a purchase to ask questions and discuss.
+- Multipicture uploading
+- Product pictures: zooming in
+- A range of search filter options
+- Admin's side to oversee the operating of the website
 
 ## Key Tech Insights
 
@@ -34,9 +46,10 @@ This undertaking was built as a fullstack project as part of a fullstack web dev
 - Cloud: Azure-backed for a reliable experience [Keskuskauppa on Azure](https://keskuskauppa-app.azurewebsites.net/)
 - Quality Matters: Rigorous testing with Jest, and linted to excellence with ESLint.
 
+
 ### Database structure
 
-![schema](./docs/database-structure.png)
+![schema](./docs/updated-database-structure.png)
 
 ### UI plan
 
@@ -71,6 +84,16 @@ LinkedIn: https://www.linkedin.com/in/maaretlyytinen/
 @: neworen(at)gmail.com  
 gitlab: https://gitlab.com/Toni86-pang
 LinkedIn:  https://www.linkedin.com/in/toni-vainionpaa/
+
+**Salla Kaikkonen**  
+@: salla.maria2@gmail.com   
+gitlab: https://gitlab.com/SallaK-97  
+linkedin: https://www.linkedin.com/in/salla-kaikkonen/  
+
+**Sami Nissinen**  
+@: snissine@gmail.com  
+gitlab: https://gitlab.com/ni5u 
+linkedin: https://www.linkedin.com/in/sami-nissinen/  
 
 **Joonas Huhdanmäki**  
 @jhuhdanmaki@gmail.com
