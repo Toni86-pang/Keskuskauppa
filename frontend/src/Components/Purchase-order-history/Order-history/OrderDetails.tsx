@@ -1,9 +1,9 @@
 import Button from "@mui/material/Button"
+import Box from "@mui/material/Box"
+import Typography from "@mui/material/Typography"
 import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
-import DialogContentText from "@mui/material/DialogContentText"
-import DialogTitle from "@mui/material/DialogTitle"
 import { useContext, useEffect, useState } from "react"
 import { UserTokenContext } from "../../../App"
 import { OrderDetailsProps, ProductType, Sale, User } from "../../../Services-types/types"
@@ -94,21 +94,21 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 	const renderBuyerDetails = () => {
 		return (
 			sale &&
-			<>
-				Nimi: {sale.buyer_name}<br />
-				Puhelinnumero: {sale.buyer_phone}<br />
-				Sähköposti: {sale.buyer_email}<br />
-				Katuosoite: {sale.buyer_address}<br />
-				Kaupunki: {sale.buyer_city}<br />
-				Postinumero: {sale.buyer_postcode}<br />
-				Tilauksen tila: {saleStatus}
+			<Box>
+				<Typography>Nimi: {sale.buyer_name}</Typography>
+				<Typography>Puhelinnumero: {sale.buyer_phone}</Typography>
+				<Typography>Sähköposti: {sale.buyer_email}</Typography>
+				<Typography>Katuosoite: {sale.buyer_address}</Typography>
+				<Typography>Kaupunki: {sale.buyer_city}</Typography>
+				<Typography>Postinumero: {sale.buyer_postcode}</Typography>
+				<Typography>Tilauksen tila: {saleStatus}</Typography>
 				{saleStatus === "Peruutettu" && ", "}
 				{saleStatus === "Peruutettu" && (
-					<>
+					<Box>
 						{product?.listed ? "palautettu myyntiin" : "ei myynnissä"}
-					</>
+					</Box>
 				)}
-			</>
+			</Box>
 		)
 	}
 	
@@ -119,60 +119,64 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 	const renderSellerDetails = () => {
 		return (
 			sale && sale.reviewed ? (
-				<>
-				Käyttäjänimi: <Button onClick={handleClick}>{seller?.username}</Button><br />
-				Kaupunki: {seller?.city}<br />
-				Postinumero: {seller?.postal_code}<br />
-				Tilauksen tila: {saleStatus}<br />
-				Arvosteltu: Kyllä
-				</>
+				<Box>
+					<Typography>Käyttäjänimi: <Button onClick={handleClick}>{seller?.username}</Button></Typography>
+					<Typography>Kaupunki: {seller?.city}</Typography>
+					<Typography>Postinumero: {seller?.postal_code}</Typography>
+					<Typography>Tilauksen tila: {saleStatus}</Typography>
+					<Typography>Arvosteltu: Kyllä</Typography>
+				</Box>
 			):(
-				<>
-				Käyttäjänimi: <Button onClick={handleClick}>{seller?.username}</Button><br />
-				Kaupunki: {seller?.city}<br />
-				Postinumero: {seller?.postal_code}<br />
-				Tilauksen tila: {saleStatus}<br />
-				Arvosteltu: Voit arvostella tuotteen vastaanotettuasi sen.
-				</>
+				<Box>
+					<Typography>Käyttäjänimi: <Button onClick={handleClick}>{seller?.username}</Button></Typography>
+					<Typography>Kaupunki: {seller?.city}</Typography>
+					<Typography>Postinumero: {seller?.postal_code}</Typography>
+					<Typography>Tilauksen tila: {saleStatus}</Typography>
+					<Typography>Arvosteltu: Voit arvostella tuotteen vastaanotettuasi sen.</Typography>
+				</Box>
 			)
 		)
 	}
 
 	return (
-		<>
+		<Box>
 			<Dialog
 				open={isOpen}
 				onClose={onClose}
-				aria-labelledby="alert-dialog-title"
-				aria-describedby="alert-dialog-description"
+				sx={{
+					"& .MuiDialog-container": {
+						"& .MuiPaper-root": {
+							width: "100%",
+							maxWidth: "500px",  // Set your width here
+						},
+					},
+				}}
 			>
-				<DialogTitle variant="h4" id="alert-dialog-title">
-					Tilauksen tiedot
-				</DialogTitle>
+				<Typography variant="h5" style={{textAlign: "center"}} p={2}>Tilauksen tiedot</Typography>
 				<DialogContent>
+					<Typography sx={{fontSize: "1.2rem"}} p={1}>Tilauttu tuote:</Typography>
 					{product && <CheckoutProductCard
 						product={product}
 						key={product.product_id + product.title}
 					/>}
 
-					<DialogTitle variant="h5">
-						{isSeller ? "Tilaajan tiedot" : "Myyjän tiedot"}
-					</DialogTitle>
-					<DialogContentText id="alert-dialog-description">
+					<Typography sx={{fontSize: "1.2rem"}} p={1}>
+						{isSeller ? "Tilaajan tiedot:" : "Myyjän tiedot:"}
+					</Typography>
+					<Box pl={6}>
 						{isSeller ? renderBuyerDetails() : renderSellerDetails()}
-
-					</DialogContentText>
+					</Box>
 				</DialogContent>
 				<DialogActions>
 					{isSeller ?
-						<>
-							{sale?.sales_status === 2 && <Button onClick={handleSendProduct}>Lähetetty</Button>}
-							{sale?.sales_status === 2 && <Button onClick={handleCancelSale}>Peruuta tilaus</Button>}
-							{(sale?.sales_status === 5 && product?.listed === false) && <Button onClick={handleReturnToShop}>Palauta myyntiin</Button>}
-						</> :
-						<>
-							{sale?.sales_status === 3 && <Button onClick={() => {handleReceivedProduct()}}>Vastaanotettu</Button>}
-							{((sale?.reviewed === false && sale?.sales_status === 4) && !sale.reviewed) && <><Button onClick={() => {setIsReviewModalOpen(true)}}>Jätä arvostelu</Button>
+						<Box p={2}>
+							{sale?.sales_status === 2 && <Button variant="contained" onClick={handleSendProduct}>Lähetetty</Button>}
+							{sale?.sales_status === 2 && <Button variant="contained" color="error" onClick={handleCancelSale}>Peruuta tilaus</Button>}
+							{(sale?.sales_status === 5 && product?.listed === false) && <Button variant="contained" onClick={handleReturnToShop}>Palauta myyntiin</Button>}
+						</Box> :
+						<Box p={2}>
+							{sale?.sales_status === 3 && <Button variant="contained" onClick={() => {handleReceivedProduct()}}>Vastaanotettu</Button>}
+							{((sale?.reviewed === false && sale?.sales_status === 4) && !sale.reviewed) && <><Button variant="contained" onClick={() => {setIsReviewModalOpen(true)}}>Jätä arvostelu</Button>
 							</>
 							}
 							<LeaveReview
@@ -183,10 +187,8 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 								seller_id={sale?.seller_id}
 								sale={sale}
 							/>
-							{sale?.sales_status === 2 && <Button onClick={handleCancelSale}>Peruuta tilaus</Button>}
-						</>}
-
-					<Button onClick={onClose}>Sulje</Button>
+							{sale?.sales_status === 2 && <Button p={2} variant="contained" color="error" onClick={handleCancelSale}>Peruuta tilaus</Button>}
+						</Box>}
 				</DialogActions>
 			</Dialog>
 			{/* Success and error notifications */}
@@ -208,6 +210,6 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 					duration={1500}
 				/>
 			)}
-		</>
+		</Box>
 	)
 }
