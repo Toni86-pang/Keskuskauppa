@@ -4,6 +4,11 @@ import { searchProducts } from "../../Services-types/services"
 import { fetchSubcategories } from "../../Services-types/services"
 import { useEffect, useState } from "react"
 import { ProductType, Subcategory } from "../../Services-types/types"
+import {
+	Box,
+	Typography,
+	List
+} from "@mui/material"
 
 const SearchResultsPage = () => {
 	const location = useLocation()
@@ -48,17 +53,16 @@ const SearchResultsPage = () => {
 	}
 
 	return (
-		<div>
-			<h2>Löytyneet tuotteet</h2>
-			
+		<Box>
+			<Typography variant="h5" sx={{ p: 2 }}>Löytyneet tuotteet</Typography>
 			{subcategories.map((subcategory) => {
 				const subcategoryProductCount = getSubcategoryProductCount(subcategory)
 				return subcategoryProductCount > 0 ? (
-					<div key={subcategory.subcategory_id}>
-						<h3>
-							{subcategory.subcategory_name} ({subcategoryProductCount} Tuotetta)
-						</h3>
-						<ul>
+					<Box sx={{ ml: 5 }} key={subcategory.subcategory_id}>
+						<Typography variant="h6" 	>
+							{subcategory.subcategory_name} ({subcategoryProductCount} tuotetta)
+						</Typography>
+						<List>
 							{searchResults
 								.filter(
 									(product) => product.subcategory_id === subcategory.subcategory_id
@@ -66,11 +70,11 @@ const SearchResultsPage = () => {
 								.map((product) => (
 									<ProductCard key={product.product_id} product={product} />
 								))}
-						</ul>
-					</div>
+						</List>
+					</Box>
 				) : null
 			})}
-		</div>
+		</Box>
 	)
 }
 
