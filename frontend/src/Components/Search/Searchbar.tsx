@@ -4,8 +4,9 @@ import {
 	styled,
 	alpha,
 	Button,
+	Box,
+	List
 } from "@mui/material"
-import "./Searchbar.css"
 import { ProductType } from "../../Services-types/types"
 import { fetchAllProducts } from "../../Services-types/services"
 import { useNavigate, useLocation } from "react-router-dom"
@@ -80,8 +81,8 @@ const ProductSearch = () => {
 	const handleShowAllResults = async () => {
 		navigate(`/search-results?query=${encodeURIComponent(searchQuery)}`)
 		setModalOpen(false)
-		setSearchQuery("")		
-		await handleOnFocus()		
+		setSearchQuery("")
+		await handleOnFocus()
 	}
 
 	// goes to all results page with enter
@@ -92,8 +93,7 @@ const ProductSearch = () => {
 	}
 
 	return (
-		<div>
-
+		<Box>
 			<Search>
 				<TextField id="search-field"
 					label="Etsi tuotteita..."
@@ -108,33 +108,43 @@ const ProductSearch = () => {
 			</Search>
 
 			{modalOpen && searchQuery && searchResults.length > 0 && (
-				<div className="search-results">
-					<ul>
+				<Box className="search-results"
+					sx={{
+						position: "absolute",
+						backgroundColor: "aliceblue",
+						display: "flex",
+						paddingRight: "2.5rem",
+						top: "100%",
+						left: "35%",
+						zIndex: 1
+					}}>
+					<List sx={{ ml: 5, mt: 1 }}>
 						<DisplayProducts productList={searchResults.slice(0, maxResultsToShow)} />
-
-						{searchResults.length > maxResultsToShow && (
+						<Box
+							sx={{
+								display: "flex",
+								justifyContent: "space-between",
+								alignItems: "center",
+							}}>
+							{searchResults.length > maxResultsToShow && (
+								<Button
+									onClick={handleShowMore}
+									sx={{ marginTop: 2 }}
+								>
+									Näytä lisää tuloksia
+								</Button>
+							)}
 							<Button
-								onClick={handleShowMore}
-								variant="outlined"
-								color="primary"
+								onClick={handleShowAllResults}
 								sx={{ marginTop: 2 }}
 							>
-								Näytä lisää tuloksia
+								Näytä kaikki tulokset
 							</Button>
-						)}
-
-						<Button
-							onClick={handleShowAllResults}
-							variant="outlined"
-							color="primary"
-							sx={{ marginTop: 2 }}
-						>
-							Näytä kaikki tulokset
-						</Button>
-					</ul>
-				</div>
+						</Box>
+					</List>
+				</Box>
 			)}
-		</div>
+		</Box>
 	)
 }
 

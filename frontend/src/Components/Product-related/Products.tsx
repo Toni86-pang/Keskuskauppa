@@ -47,7 +47,7 @@ const Products = () => {
 			elevation: 5,
 			p: 3
 		}}>
-			<Typography variant="h4">
+			<Typography variant="h5">
 				{categoryHeader}
 			</Typography>
 			<DisplayProducts productList={products} />

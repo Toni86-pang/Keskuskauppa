@@ -2,7 +2,6 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import App from "./App.tsx"
-
 import ErrorPage from "./Pages/ErrorPage.tsx"
 import Products, { loader as productsLoader } from "./Components/Product-related/Products.tsx"
 import Product, { loader as productLoader } from "./Components/Product-related/Product.tsx"

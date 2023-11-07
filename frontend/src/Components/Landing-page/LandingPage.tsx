@@ -13,36 +13,46 @@ import { Typography } from "@mui/material"
 const NUMBER_OF_PRODUCTS = 7
 
 const LandingPage = () => {
-	const commonBoxStyles = {
-		flex: 1, 
-		margin: "10px", 
+	const commonButtonStyles = {		
 		borderRadius: "10px",
-		padding: "100px",
+	
 		display: "flex",
 		flexDirection: "column",
 		alignItems: "center", 
 		justifyContent: "center", 
+		margin: "10px", 
+		backgroundColor: "#1976d2",
+		textAlign: "center",
+		minHeight: 50,
+		color: "#fff",
 		boxShadow: "2px 3px 14px -3px rgba(34, 34, 34)",
 		WebkitBoxShadow: "2px 3px 14px -3px rgba(34, 34, 34)",
 		MozBoxShadow: "2px 3px 14px -3px rgba(34, 34, 34)",
+		"&:hover": {
+			backgroundColor: "#1565c0",
+			boxShadow: "3px 4px 16px -2px rgba(34, 34, 34)",
+		},
 	}
 	const commonInnerBoxStyles = {
+		margin: "10px", 
 		backgroundColor: "#1976d2",
 		borderRadius: "4px",
 		textAlign: "center",
+		display: "flex",
+		flexDirection: "column",
 		alignItems: "center",
+		justifyContent: "center",
+		minHeight: 50,
 		color: "#fff",
-		border: "none",
-		boxShadow:
-		"0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12)",
-		minWidth: "64px",
+		boxShadow: "2px 3px 14px -3px rgba(34, 34, 34)",
+		WebkitBoxShadow: "2px 3px 14px -3px rgba(34, 34, 34)",
+		MozBoxShadow: "2px 3px 14px -3px rgba(34, 34, 34)",
 		"&:hover": {
 			backgroundColor: "#1565c0",
-			boxShadow:
-		"0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12)",
+			boxShadow: "3px 4px 16px -2px rgba(34, 34, 34)",
 		},
 	}
-		
+
 	const [token] = useContext(UserTokenContext)
 	const [user, setUser] = useState<User | null>(null)
 	const isLoggedIn = Boolean(user)
@@ -75,49 +85,91 @@ const LandingPage = () => {
 	}, [])
 
 	return (
-		<Box>
-			<Container sx={{marginBottom: "5%"}}>
+		<Container  >
+			<Box sx={{ 
+				padding: "16px", 
+				textAlign: "center", 	
+				borderRadius: "10px",
+				background: "#f3f6fa",
+				boxShadow: "1px 2px 12px -2px rgba(34, 34, 34)",
+				WebkitBoxShadow: "2px 3px 14px -3px rgba(34, 34, 34)",
+				MozBoxShadow: "2px 3px 14px -3px rgba(34, 34, 34)",
+				marginBottom:"2%"  
+			}}>
 				{products.length > 0 && <CustomCarousel carouselProducts={products} />}
-			</Container>
-			<Box
-				display="flex"
-				flexDirection={{ xs: "column", md: "row" }} 
-				alignItems="center"
-				justifyContent="center"
-			>
-				<Box className="custom-container-two" sx={commonBoxStyles}>
-					{isLoggedIn ? (
-						<Box> 
-							<Typography variant="h4">Tervetuloa {user?.username}!</Typography>
-						</Box>
-					) : (
-						<Box>
-							<Typography variant="h4">Onko sinulla jo käyttäjätunnus?</Typography>
-							<Box sx={commonInnerBoxStyles}>
-								<Login />
-							</Box>
-						</Box>
-					)}
+			</Box>
+			<Box sx={{ 
+				padding: "16px", 
+				textAlign: "center", 	
+				borderRadius: "10px",
+				background: "#f3f6fa",
+				boxShadow: "1px 2px 12px -2px rgba(34, 34, 34)",
+				WebkitBoxShadow: "2px 3px 14px -3px rgba(34, 34, 34)",
+				MozBoxShadow: "2px 3px 14px -3px rgba(34, 34, 34)",  
+			}} >
+				<Box sx={{ padding: "16px", textAlign: "center" }}>
+					{/* Heading Section */}
+					<Typography variant="h2">Tervetuloa Keskuskauppaan!</Typography>
+					<Typography variant="h5" sx={{ padding: "16px" }} >
+          Osta ja myy tuotteita helposti ja luotettavasti.
+					</Typography>
 				</Box>
-				<Box className="custom-container-two" sx={commonBoxStyles}>
-					{isLoggedIn ? (
-						<Box>
-							<Typography variant="h4">Selaa tuotteita</Typography>
-							<Button href='/products' variant="contained" color="primary">
-								Kaikki tuotteet
-							</Button>
+				<Box>
+					<Box sx={{  textAlign: "center" }}>
+						{/* Introduction Section */}
+						<Typography variant="body1" sx={{ padding: "14px", paddingLeft:"150px", paddingRight:"150px",}}>
+				Tervetuloa keskuskauppaan! Olet saapunut suomalaisen verkkokaupan keskukseen, 
+				joka tarjoaa sinulle mahdollisuuden ostaa ja myydä laadukkaita tuotteita vaivattomasti.
+				Keskuskauppa on paikka, jossa voit löytää monenlaisia esineitä, aarteita ja käyttötavaroita sekä tehdä kauppoja luotettavien myyjien kanssa.
+				Haluamme tehdä verkkokaupasta kokemuksen, joka yhdistää ostajat ja myyjät, tarjoten samalla turvallisen ja vaivattoman alustan jokaiselle.
+						</Typography>
+						<Typography variant="body1" sx={{ padding: "14px" , paddingLeft:"150px", paddingRight:"150px" }}>
+				Keskuskauppa on enemmän kuin vain markkinapaikka; se on yhteisö, joka arvostaa avoimuutta, luottamusta ja asiakastyytyväisyyttä. 
+				Tavoitteenamme on tarjota kaikille käyttäjillemme mukava ja helppo tapa hankkia tarvitsemansa tuotteet ja myydä tarpeettomat esineet eteenpäin. 
+				Kauttamme voit löytää käytettyjä huonekaluja, elektroniikkaa, vaatteita, harrastusvälineitä, ja paljon muuta.
+						</Typography>
+					</Box>
+					<Box
+						display="flex"
+						flexDirection={{ xs: "column", md: "row" }} 
+						alignItems="center"
+						justifyContent="center"
+					>
+						<Box sx={{ padding: "16px", textAlign: "center" }} >
+							{isLoggedIn ? (
+								<Box> 
+									<Typography variant="h4" sx={{ padding: "16px", textAlign: "center" }} >Tervetuloa {user?.username}! </Typography>
+							
+								
+									<Button href='/products' variant="contained" color="primary" sx={commonButtonStyles}>
+								Selaa tuotteita
+									</Button>
+								</Box>
+							) : (
+								<Box>
+									<Box sx={{ padding: "16px", textAlign: "center" }}>
+										<Typography variant="h4" sx={{ padding: "16px", textAlign: "center" }} >Onko sinulla jo käyttäjätunnus?</Typography>
+										<Box sx={commonInnerBoxStyles} > 
+											<Box > 
+												<Login  /> 
+											</Box> 
+										</Box>
+									</Box>
+									<Box sx={{ padding: "16px", textAlign: "center" }}>
+										<Typography variant="h4" sx={{ padding: "16px", textAlign: "center" }} >Liity joukkoomme!</Typography>
+										<Box sx={commonInnerBoxStyles}>
+											<RegisterNewUser />
+										</Box>
+									</Box>
+								</Box>
+							)}
 						</Box>
-					) : (
-						<Box>
-							<Typography variant="h4">Liity joukkoomme!</Typography>
-							<Box sx={commonInnerBoxStyles}>
-								<RegisterNewUser />
-							</Box>
+						<Box sx={{ padding: "16px", textAlign: "center" }}>
 						</Box>
-					)}
+					</Box>
 				</Box>
 			</Box>
-		</Box>
+		</Container>
 	)
 }
 

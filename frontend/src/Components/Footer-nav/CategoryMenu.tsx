@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Button, IconButton, Menu, MenuItem } from "@mui/material"
+import { Button, Divider, IconButton, Menu, MenuItem } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import { Category } from "../../Services-types/types"
@@ -81,11 +81,13 @@ const CategoryMenu = () => {
 				<MenuItem>
 					<Button href="/">Etusivu</Button>
 				</MenuItem>
+				<Divider />
 				<MenuItem>
 					<Button variant="text" sx={{ "&:hover": { fontWeight: "bold", color:"#405e8c" } }} href="/products">Kaikki tuotteet</Button>
 				</MenuItem>
 				{categories.map((category, index) => (
 					<div key={"category " + index.toString()}>
+						<Divider />
 						<MenuItem >
 							<Button variant="text" href={`/products/category/${category.category_id}`} sx={{ "&:hover": { fontWeight: "bold", color:"#405e8c" } }} >{category.category_name}</Button>
 							{/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
