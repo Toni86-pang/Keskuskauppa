@@ -64,26 +64,26 @@ export default function OrderHistory() {
 
 	const renderSold = (saleStatus: string, soldProducts: SoldProps[]) => {
 		return (
-			<>
+			<Box>
 				<Typography sx={{fontSize: "1.1rem"}}>{saleStatus}</Typography>
 				{
 					soldProducts.map((product, index) => {
 						return <OrderProductCard key={saleStatus + index + product.title} product={product} setRefresh={() => setRefresh(!refresh)} />
 					})
 				}
-			</>)
+			</Box>)
 	}
 
 	const renderBought = (saleStatus: string, boughtProducts: BoughtProps[]) => {
 		return (
-			<>
+			<Box>
 				<Typography sx={{fontSize: "1.1rem"}}>{saleStatus}</Typography>
 				{
 					boughtProducts.map((product, index) => {
 						return <OrderProductCard key={saleStatus + index + product.title} product={product} setRefresh={() => setRefresh(!refresh)} />
 					})
 				}
-			</>)
+			</Box>)
 	}
 
 	const theme = createTheme({

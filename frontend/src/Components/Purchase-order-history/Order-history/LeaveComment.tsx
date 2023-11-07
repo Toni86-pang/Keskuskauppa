@@ -1,9 +1,11 @@
 import { useContext, useState } from "react"
 import Dialog from "@mui/material/Dialog"
+import Typography from "@mui/material/Typography"
+import Box from "@mui/material/Box"
 import TextField from "@mui/material/TextField"
+import DialogActions from "@mui/material/DialogActions"
 import Button from "@mui/material/Button"
 import DialogContent from "@mui/material/DialogContent"
-import DialogTitle from "@mui/material/DialogTitle"
 import { UserTokenContext } from "../../../App"
 import { ReviewComment } from "../../../Services-types/types"
 import { leaveComment } from "../../../Services-types/services"
@@ -69,31 +71,29 @@ function LeaveComment({ isOpen, close, reviewId }: LeaveCommentProps) {
 	}
 
 	return (
-		<>
+		<Box>
 			<Dialog disableRestoreFocus open={isOpen} onClose={resetForm} >
-				<DialogTitle>Jätä kommentti</DialogTitle>
+				<Typography variant="h5" style={{textAlign: "center"}} mt={2}>Jätä kommentti</Typography>
 				<DialogContent>
-					<div style={styles.section}>
-						<div style={styles.label}>Kommentti:</div>
+					<Box style={styles.section}>
+						<Typography style={styles.label}>Kommentti:</Typography>
 						<TextField
 							autoFocus
 							multiline
-							label="Kommentti"
 							value={comment}
 							onChange={handleCommentChange}
 							onKeyDown={handleKeyDown}
 							fullWidth
 						/>
-					</div>
-
-					<div style={styles.buttonContainer}>
-						<Button type="submit" variant="outlined" onClick={handleLeaveComment}>
-							Jätä kommentti
-						</Button>
-						<Button variant="outlined" onClick={resetForm}>
+					</Box>
+					<DialogActions style={styles.buttonContainer}>
+						<Button variant="contained" onClick={resetForm}>
 							Peruuta
 						</Button>
-					</div>
+						<Button type="submit" variant="contained" color="success" onClick={handleLeaveComment}>
+							Jätä kommentti
+						</Button>
+					</DialogActions>
 				</DialogContent>
 			</Dialog>
 
@@ -108,7 +108,7 @@ function LeaveComment({ isOpen, close, reviewId }: LeaveCommentProps) {
 					duration={1500}
 				/>
 			)}
-		</>
+		</Box>
 	)
 }
 

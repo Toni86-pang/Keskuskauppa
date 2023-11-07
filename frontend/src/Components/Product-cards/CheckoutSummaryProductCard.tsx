@@ -39,16 +39,16 @@ function CheckoutProductCard({ product }: ProductProps) {
 							{product.product_image ? (
 								<CardMedia
 									component="img"
-									height="100"
-									width="100"
+									height="180"
+									width="180"
 									image={product.product_image}
 									alt={product.title}
 								/>
 							) : (
 								<CardMedia
 									component="img"
-									height="100"
-									width="100"
+									height="180"
+									width="180"
 									image={URL_TO_DEFAULT_IMAGE}
 									alt="Default Image"
 								/>

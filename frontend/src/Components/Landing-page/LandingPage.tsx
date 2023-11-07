@@ -109,8 +109,8 @@ const LandingPage = () => {
 			}} >
 				<Box sx={{ padding: "16px", textAlign: "center" }}>
 					{/* Heading Section */}
-					<Typography variant="h2">Tervetuloa Keskuskauppaan!</Typography>
-					<Typography variant="h5" sx={{ padding: "16px" }} >
+					<Typography variant="h4">Tervetuloa Keskuskauppaan!</Typography>
+					<Typography variant="h6" sx={{ padding: "16px" }} >
           Osta ja myy tuotteita helposti ja luotettavasti.
 					</Typography>
 				</Box>
@@ -148,7 +148,7 @@ const LandingPage = () => {
 							) : (
 								<Box>
 									<Box sx={{ padding: "16px", textAlign: "center" }}>
-										<Typography variant="h4" sx={{ padding: "16px", textAlign: "center" }} >Onko sinulla jo käyttäjätunnus?</Typography>
+										<Typography variant="h5" sx={{ padding: "16px", textAlign: "center" }} >Onko sinulla jo käyttäjätunnus?</Typography>
 										<Box sx={commonInnerBoxStyles} > 
 											<Box > 
 												<Login  /> 
@@ -156,7 +156,7 @@ const LandingPage = () => {
 										</Box>
 									</Box>
 									<Box sx={{ padding: "16px", textAlign: "center" }}>
-										<Typography variant="h4" sx={{ padding: "16px", textAlign: "center" }} >Liity joukkoomme!</Typography>
+										<Typography variant="h5" sx={{ padding: "16px", textAlign: "center" }} >Liity joukkoomme!</Typography>
 										<Box sx={commonInnerBoxStyles}>
 											<RegisterNewUser />
 										</Box>

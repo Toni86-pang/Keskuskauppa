@@ -102,11 +102,10 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 				<Typography>Kaupunki: {sale.buyer_city}</Typography>
 				<Typography>Postinumero: {sale.buyer_postcode}</Typography>
 				<Typography>Tilauksen tila: {saleStatus}</Typography>
-				{saleStatus === "Peruutettu" && ", "}
 				{saleStatus === "Peruutettu" && (
-					<Box>
-						{product?.listed ? "palautettu myyntiin" : "ei myynnissä"}
-					</Box>
+					<Typography>
+						{product?.listed ? "Palautettu myyntiin" : "Ei myynnissä"}
+					</Typography>
 				)}
 			</Box>
 		)
@@ -138,6 +137,20 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 		)
 	}
 
+	const styles = {
+		section: {
+			marginTop: "16px",
+		},
+		label: {
+			marginBottom: "8px",
+		},
+		buttonContainer: {
+			marginTop: "15px",
+			display: "flex",
+			justifyContent: "space-between",
+		},
+	}
+
 	return (
 		<Box>
 			<Dialog
@@ -166,19 +179,16 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 					<Box pl={6}>
 						{isSeller ? renderBuyerDetails() : renderSellerDetails()}
 					</Box>
-				</DialogContent>
-				<DialogActions>
 					{isSeller ?
-						<Box p={2}>
-							{sale?.sales_status === 2 && <Button variant="contained" onClick={handleSendProduct}>Lähetetty</Button>}
+						<DialogActions style={styles.buttonContainer}>
 							{sale?.sales_status === 2 && <Button variant="contained" color="error" onClick={handleCancelSale}>Peruuta tilaus</Button>}
-							{(sale?.sales_status === 5 && product?.listed === false) && <Button variant="contained" onClick={handleReturnToShop}>Palauta myyntiin</Button>}
-						</Box> :
-						<Box p={2}>
-							{sale?.sales_status === 3 && <Button variant="contained" onClick={() => {handleReceivedProduct()}}>Vastaanotettu</Button>}
-							{((sale?.reviewed === false && sale?.sales_status === 4) && !sale.reviewed) && <><Button variant="contained" onClick={() => {setIsReviewModalOpen(true)}}>Jätä arvostelu</Button>
-							</>
-							}
+							{sale?.sales_status === 2 && <Button variant="contained" color="success" onClick={handleSendProduct}>Lähetetty</Button>}
+							{(sale?.sales_status === 5 && product?.listed === false) && <Button variant="contained" color="success" onClick={handleReturnToShop}>Palauta myyntiin</Button>}
+						</DialogActions> 
+						:
+						<DialogActions style={styles.buttonContainer}>
+							{sale?.sales_status === 3 && <Button variant="contained" color="success" onClick={() => {handleReceivedProduct()}}>Vastaanotettu</Button>}
+							{((sale?.reviewed === false && sale?.sales_status === 4) && !sale.reviewed) && <Button variant="contained" onClick={() => {setIsReviewModalOpen(true)}}>Jätä arvostelu</Button>}
 							<LeaveReview
 								isOpen={isReviewModalOpen}
 								onClose={() => setIsReviewModalOpen(false)}
@@ -188,8 +198,9 @@ export default function OrderDetails({ isSeller, isOpen, onClose, saleId }: Orde
 								sale={sale}
 							/>
 							{sale?.sales_status === 2 && <Button variant="contained" color="error" onClick={handleCancelSale}>Peruuta tilaus</Button>}
-						</Box>}
-				</DialogActions>
+						</DialogActions> 
+					}
+				</DialogContent>
 			</Dialog>
 			{/* Success and error notifications */}
 			{showRelistErrorNotification && (

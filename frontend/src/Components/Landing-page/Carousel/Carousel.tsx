@@ -39,7 +39,7 @@ function CustomCarousel({ carouselProducts }: CarouselProducts) {
 				showThumbs={false}
 				centerMode
 				autoPlay={true}
-				interval={1500}
+				interval={2000}
 				infiniteLoop={true}
 				
 			>
@@ -65,7 +65,7 @@ function CustomCarousel({ carouselProducts }: CarouselProducts) {
 									}}
 								/>
 							</Box>
-							<Typography variant="h4">{product.title}</Typography>
+							<Typography variant="h6">{product.title}</Typography>
 							<Typography>Hinta: {product.price}</Typography>
 						</CustomCard>
 						
