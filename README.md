@@ -1,6 +1,11 @@
 # Keskuskauppa: A safer user-to-user marketplace
 
-![schema](./docs/etusivu.png) ![schema](./docs/uusituote.png) ![schema](./docs/profiili.png) ![schema](./docs/kengät.png) ![schema](./docs/arviot.png) ![schema](./docs/tuotesivu.png)
+![schema](./docs/etusivu.png)  
+![schema](./docs/uusituote.png)   
+![schema](./docs/profiili.png)    
+![schema](./docs/arviot.png)   
+![schema](./docs/kengät.png)   
+![schema](./docs/tuotesivu.png)  
 
 ## Project description
 
@@ -49,7 +54,7 @@ This undertaking was built as a fullstack project as part of a fullstack web dev
 
 ### Database structure
 
-![schema](./docs/updated-database-structure.png)
+![schema](./docs/updated_database_structure.png)
 
 ### UI plan
 
@@ -75,15 +80,17 @@ SECRET= A secret word defined by you
 
 ## Dev team
 
+"Product owner":
 **Maaret Lyytinen**  
 @: maaret.lyytinen@gmail.com  
 gitlab: https://gitlab.com/maarly  
 LinkedIn: https://www.linkedin.com/in/maaretlyytinen/  
 
+"Scrum master":
 **Toni Vainionpää**  
 @: neworen(at)gmail.com  
-gitlab: https://gitlab.com/Toni86-pang
-LinkedIn:  https://www.linkedin.com/in/toni-vainionpaa/
+gitlab: https://gitlab.com/Toni86-pang  
+LinkedIn:  https://www.linkedin.com/in/toni-vainionpaa/  
 
 **Salla Kaikkonen**  
 @: salla.maria2@gmail.com   
@@ -96,11 +103,11 @@ gitlab: https://gitlab.com/ni5u
 linkedin: https://www.linkedin.com/in/sami-nissinen/  
 
 **Joonas Huhdanmäki**  
-@jhuhdanmaki@gmail.com
-github: https://github.com/jopinihu
-linkedin: www.linkedin.com/in/joonas-huhdanmäki
+@jhuhdanmaki@gmail.com  
+github: https://github.com/jopinihu  
+linkedin: www.linkedin.com/in/joonas-huhdanmäki  
 
 **Paula Häyrynen**  
 @: paula.hayrynen@hotmail.fi  
 gitlab: https://gitlab.com/Paukku1  
-linkedin: https://www.linkedin.com/in/paula-häyrynen  
+linkedin: https://www.linkedin.com/in/paula-häyrynen   
