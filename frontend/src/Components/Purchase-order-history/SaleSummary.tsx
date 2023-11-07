@@ -1,9 +1,10 @@
 import Button from "@mui/material/Button"
 import Dialog from "@mui/material/Dialog"
+import Box from "@mui/material/Box"
+import Divider from "@mui/material/Divider"
+import Typography from "@mui/material/Typography"
 import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
-import DialogContentText from "@mui/material/DialogContentText"
-import DialogTitle from "@mui/material/DialogTitle"
 import React, { useContext, useState } from "react"
 import { CartContextType, UserTokenContext } from "../../App"
 import { newSale } from "../../Services-types/services"
@@ -75,70 +76,76 @@ export default function SaleSummary (props: SummaryProps) {
 	}
   
 	return (
-		<>
+		<Box>
 			<Dialog
 				open={isOpen}
 				onClose={handleClose}
-				aria-labelledby="alert-dialog-title"
-				aria-describedby="alert-dialog-description"
-			>
-				<DialogTitle id="alert-dialog-title" component={"span"}>
-					<h3>Tilausvahvistus</h3>
-				</DialogTitle>
+				sx={{
+					"& .MuiDialog-container": {
+						"& .MuiPaper-root": {
+							width: "100%",
+							maxWidth: "600px",  // Set your width here
+						},
+					},
+				}}
+			>				
+				<Typography variant="h5" style={{textAlign: "center"}} mt={2} mb={2}>Tilausvahvistus</Typography>
 				<DialogContent>
-					<DialogContentText id="alert-dialog-description" component={"span"}>
-                        Tarkista tilauksen tiedot.
-						<h4>Tilattavat tuotteet:</h4> {cart && cart.map((product: ProductType) =>
-							<React.Fragment key={genUniqueId()}>
-								<>
-									<CheckoutProductCard 
-										product={product} 
-									/>
-								</>
-							</React.Fragment>
-						)}
-						<div>
-							<h4>Summa: {sum} €</h4>
-							<h4>Tilaajan tiedot:</h4>
-							Nimi: {buyerInfo.buyer_name}<br/>
-							Katuosoite: {buyerInfo.buyer_address}<br/>
-							Kaupunki: {buyerInfo.buyer_city}<br/>
-							Postinumero: {buyerInfo.buyer_postcode}<br/>
-							Puhelinnumero: {buyerInfo.buyer_phone}<br/>
-							Sähköposti: {buyerInfo.buyer_email}<br/>
-						</div>
+					<Typography sx={{fontSize: "1.2rem"}} pt={3} pb={2} pl={1}>Tarkista tilauksen tiedot.</Typography>
+					<Typography sx={{fontSize: "1.1rem"}} pt={2} pb={3} pl={1}>Tilattavat tuotteet:</Typography> 
+					{cart && cart.map((product: ProductType) =>
+						<React.Fragment key={genUniqueId()}>
+							<>
+								<CheckoutProductCard 
+									product={product} 
+								/>
+							</>
+						</React.Fragment>
+					)}
+					<Box>
+						<Typography p={3} sx={{fontSize: "1.1rem"}}>Yhteensä: {sum} €</Typography>
+						<Divider style={{ marginBottom: "10px" }} />
+						<Box p={2}>
+							<Typography sx={{fontSize: "1.1rem"}} pt={2} pb={3}>Tilaajan tiedot:</Typography>
+							<Typography>Nimi: {buyerInfo.buyer_name}</Typography>
+							<Typography>Katuosoite: {buyerInfo.buyer_address}</Typography>
+							<Typography>Kaupunki: {buyerInfo.buyer_city}</Typography>
+							<Typography>Postinumero: {buyerInfo.buyer_postcode}</Typography>
+							<Typography>Puhelinnumero: {buyerInfo.buyer_phone}</Typography>
+							<Typography>Sähköposti: {buyerInfo.buyer_email}</Typography>
+						</Box>
+					</Box>
 
-						<FormControl
-							required
-							error={error}
-							component="fieldset"
-							sx={{ m: 3 }}
-							variant="standard"
-						>
-							{(buyerInfo.buyer_name === "" || buyerInfo.buyer_address === "" || buyerInfo.buyer_city === "" || buyerInfo.buyer_email === "" || buyerInfo.buyer_phone === "" || buyerInfo.buyer_postcode === "") ? (
-								<div>
-									<h5 style={{color: "red"}}>Kaikki tiedot vaaditaan. Vaadittavia tietoja puuttuu.</h5>
-								</div>
-							):(
-								<Stack direction="row">
-									<FormGroup>
-										<FormControlLabel
-											control={
-												<Checkbox checked={checked} onChange={handleChange} name="checked" />
-											}
-											label="Olen tarkistanut tiedot."
-										/>
-									</FormGroup>
-									<FormHelperText>Tietojen tarkistus on varmistettava.</FormHelperText>
-								</Stack>
-							)
-							}
-						</FormControl>
-					</DialogContentText>
+					<FormControl
+						required
+						error={error}
+						component="fieldset"
+						sx={{ m: 2 }}
+						variant="standard"
+					>
+						{(buyerInfo.buyer_name === "" || buyerInfo.buyer_address === "" || buyerInfo.buyer_city === "" || buyerInfo.buyer_email === "" || buyerInfo.buyer_phone === "" || buyerInfo.buyer_postcode === "") ? (
+							<Box>
+								<Typography style={{color: "red"}}>Kaikki tiedot vaaditaan. Vaadittavia tietoja puuttuu.</Typography>
+							</Box>
+						):(
+							<Stack direction="column">
+								<FormGroup>
+									<FormControlLabel
+										control={
+											<Checkbox checked={checked} onChange={handleChange} name="checked" />
+										}
+										label="Olen tarkistanut tiedot."
+									/>
+								</FormGroup>
+								<FormHelperText>Tiedot on tarkistettava.</FormHelperText>
+							</Stack>
+						)
+						}
+					</FormControl>
 				</DialogContent>
-				<DialogActions>
-					<Button onClick={() => {onClose(), setState({checked: false})}}>Muuta tietoja</Button>
-					<Button disabled={!checked} onClick={() => handleNewSale()} autoFocus>
+				<DialogActions style={{ margin: "25px", display: "flex", justifyContent: "space-between" }}>
+					<Button variant="contained" onClick={() => {onClose(), setState({checked: false})}}>Muuta tietoja</Button>
+					<Button variant="contained" color="success" disabled={!checked} onClick={() => handleNewSale()} autoFocus>
                         Tilaa ja maksa
 					</Button>
 				</DialogActions>
@@ -162,6 +169,6 @@ export default function SaleSummary (props: SummaryProps) {
 					duration={1500}
 				/>
 			)}
-		</>
+		</Box>
 	)
 }

@@ -1,4 +1,4 @@
-import { Container, InputLabel, TextField, Button } from "@mui/material"
+import { Container, Grid, Divider, Paper, TextField, Button, Typography } from "@mui/material"
 import { useState, useEffect, ChangeEvent } from "react"
 import { BuyerInfo, ProductType, User } from "../../Services-types/types"
 import { fetchUser } from "../../Services-types/services"
@@ -94,7 +94,13 @@ export default function CheckOut() {
 	}
     
 	return(
-		<>
+		<Paper sx={{
+			backgroundColor: "#f3f6fa",
+			elevation: 5,
+			p: 2
+		}}>
+			<Typography variant="h5" style={{textAlign: "center"}} p={2}>Lähetystiedot ja yhteenveto</Typography>
+			<Typography sx={{fontSize: "1.2rem"}} pl={5} pt={2} pb={1}>Ostoskorin sisältö</Typography>
 			{cart !== null ? (
 				<Container sx={{ m: 1 }}>
 					{cart && cart.map((product: ProductType) =>
@@ -107,90 +113,93 @@ export default function CheckOut() {
 							</>
 						</React.Fragment>
 					)}
-					<h3>Summa: {sum} €</h3>
-					<h3>Vastaanottajan tiedot</h3>
-					<InputLabel required style={{position: "relative"}} sx={{ mb: 2 }} id="description">Nimi</InputLabel>
-					<TextField
-						required
-						type="text"
-						name="name"
-						value={newName}
-						onChange={handleNameChange}
-						fullWidth
-					/>
-					<InputLabel required style={{position: "relative"}} sx={{ mb: 2 }} id="description">Katuosoite</InputLabel>
-					<TextField
-						required
-						type="text"
-						name="address"
-						value={newAddress}
-						onChange={handleAddressChange}
-						fullWidth
-					/>
-					<InputLabel required style={{position: "relative"}} sx={{ mb: 2 }} id="price">Kaupunki</InputLabel>
-					<TextField
-						required
-						type="text"
-						name="city"
-						value={newCity}
-						onChange={handleCityChange}
-						fullWidth
-					/>
-					<InputLabel required style={{position: "relative"}} sx={{ mb: 2 }} id="price">Postinumero</InputLabel>
-					<TextField
-						required
-						type="text"
-						name="postcode"
-						value={newPostCode}
-						onChange={handlePostCodeChange}
-						fullWidth
-					/>
-					<InputLabel required style={{position: "relative"}} sx={{ mb: 2 }} id="price">Puhelinnumero</InputLabel>
-					<TextField
-						required
-						type="text"
-						name="phone"
-						value={newPhone}
-						onChange={handlePhoneChange}
-						fullWidth
-					/>
-					<InputLabel required style={{position: "relative"}} sx={{ mb: 2 }} id="price">Sähköposti</InputLabel>
-					<TextField
-						required
-						type="text"
-						name="email"
-						value={newEmail}
-						onChange={handleEmailChange}
-						fullWidth
-					/>
-					<Button
-						sx={{
-							m: 1,
-							bgcolor: "#6096ba",
-							":hover": { bgcolor: "darkblue" }
-						}}
-						variant="contained"
-						onClick={handleClickOpen}>
-							Tilausvahvistukseen
-					</Button>
-					<SaleSummary  
-						isOpen={isSummaryOpen}
-						onClose={handleClose} 
-						buyerInfo={buyerInfo}
-						sum={sum}
-						cart={cart} />
-					<Button 
-						sx={{
-							m: 1,
-							bgcolor: "#6096ba",
-							":hover": { bgcolor: "#d32f2f" },
-						}}
-						variant="contained"
-						onClick={() => navigate("/")}>
+					<Typography p={2} sx={{fontSize: "1.2rem"}} pt={2}>Yhteensä: {sum} €</Typography>
+					<Divider style={{ marginBottom: "10px" }} />
+					<Typography sx={{fontSize: "1.2rem"}} pt={2} pb={2}>Vastaanottajan tiedot</Typography>
+					<Grid container direction="row" spacing={2} justifyContent="flex-start" alignItems="center" pb={2}>
+						<Grid item xs={6} pr={3}>
+							<Typography pt={2} pb={1} required style={{position: "relative"}} id="description">Nimi</Typography>
+							<TextField
+								required
+								type="text"
+								name="name"
+								value={newName}
+								onChange={handleNameChange}
+								fullWidth
+							/>
+							<Typography pt={2} pb={1} required style={{position: "relative"}} id="description">Katuosoite</Typography>
+							<TextField
+								required
+								type="text"
+								name="address"
+								value={newAddress}
+								onChange={handleAddressChange}
+								fullWidth
+							/>
+							<Typography pt={2} pb={1} required style={{position: "relative"}} id="price">Postinumero</Typography>
+							<TextField
+								required
+								type="text"
+								name="postcode"
+								value={newPostCode}
+								onChange={handlePostCodeChange}
+								fullWidth
+							/>
+						</Grid>
+						<Grid item xs={6} >
+							<Typography pt={2} pb={1} required style={{position: "relative"}} id="price">Kaupunki</Typography>
+							<TextField
+								required
+								type="text"
+								name="city"
+								value={newCity}
+								onChange={handleCityChange}
+								fullWidth
+							/>
+							<Typography pt={2} pb={1} required style={{position: "relative"}} id="price">Puhelinnumero</Typography>
+							<TextField
+								required
+								type="text"
+								name="phone"
+								value={newPhone}
+								onChange={handlePhoneChange}
+								fullWidth
+							/>
+							<Typography pt={2} pb={1} required style={{position: "relative"}} id="price">Sähköposti</Typography>
+							<TextField
+								required
+								type="text"
+								name="email"
+								value={newEmail}
+								onChange={handleEmailChange}
+								fullWidth
+							/>
+						</Grid>
+					</Grid>
+					<Grid container direction="row" spacing={2} justifyContent="flex-end" alignItems="center" pt={3}>
+						<Button 
+							sx={{
+								m: 1,
+							}}
+							variant="contained"
+							onClick={() => navigate("/")}>
 							Peruuta
-					</Button>
+						</Button>
+						<Button
+							color="success"
+							variant="contained"
+							onClick={handleClickOpen}>
+							Tilausvahvistukseen
+						</Button>
+						<SaleSummary  
+							isOpen={isSummaryOpen}
+							onClose={handleClose} 
+							buyerInfo={buyerInfo}
+							sum={sum}
+							cart={cart} />
+					</Grid>
 				</Container>
-			):(<p>Ostoskorisi on tyhjä.</p>)}
-		</>
+			):(<Typography p={2}>Ostoskorisi on tyhjä.</Typography>)}
+		</Paper>
 	)
 }

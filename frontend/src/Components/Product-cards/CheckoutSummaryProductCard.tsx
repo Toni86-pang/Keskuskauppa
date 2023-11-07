@@ -9,7 +9,7 @@ const URL_TO_DEFAULT_IMAGE = "https://images.unsplash.com/photo-1551963831-b3b1c
 
 const cardStyle = {
 	marginTop: "10px",
-	marginBottom: "10px"
+	marginBottom: "10px",
 }
 
 const gridContainerStyle = {
@@ -19,35 +19,48 @@ const gridContainerStyle = {
 function CheckoutProductCard({ product }: ProductProps) {
 
 	return (
-		<Card style={cardStyle}>
+		<Card style={cardStyle} component="div">
 			<CardContent>
 				<Grid 
+					container
 					style={gridContainerStyle} 
+					component={"div"}
+					spacing={2}
+					direction="row"
 				>
 					<Grid
-						sx={{ m: "15px" }}>
-						<Grid item xs={6} sm={8} sx={{ position: "relative" , left: 10, top: 5 }}>
+						container
+						ml={2}
+						component="div"
+						direction="row"
+						justifyContent="flex-start"
+						alignItems="center">
+						<Grid item xs={3.5} sx={{ ml: 5, mt: 2 }}>
 							{product.product_image ? (
 								<CardMedia
 									component="img"
-									height="80"
+									maxHeight="100"
+									maxWidth="100"
 									image={product.product_image}
 									alt={product.title}
 								/>
 							) : (
 								<CardMedia
 									component="img"
-									height="80"
+									height="100"
+									width="100"
 									image={URL_TO_DEFAULT_IMAGE}
 									alt="Default Image"
 								/>
 							)}
 						</Grid>
-						<Grid item xs={6} md={4} sx={{ position: "relative" , left: 10, top: 5 }}>
-							<Typography variant="h6" component="span">
-								{product.title}
-							</Typography>
-							<Typography>Hinta {product.price} €</Typography>
+						<Grid item xs={4.5} m={3} pt={2}>
+							<Grid item xs={10} sx={{ m: 2 }}>
+								<Typography variant="h6" component="div">
+									{product.title}
+								</Typography>
+								<Typography pb={2} component="div">{product.price} €</Typography>
+							</Grid>
 						</Grid>
 					</Grid>
 				</Grid>

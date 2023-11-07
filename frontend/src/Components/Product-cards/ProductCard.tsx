@@ -35,14 +35,16 @@ function ProductCard({ product }: ProductProps) {
 						{product.product_image ? ( // Check if product_image is not null
 							<CardMedia
 								component="img"
-								height="120"
+								height="300"
+								width="300"
 								image={product.product_image} 
 								alt={product.title}
 							/>
 						) : (
 							<CardMedia
 								component="img"
-								height="120"
+								height="300"
+								width="300"
 								image={URL_TO_DEFAULT_IMAGE} 
 								alt={product.title}
 							/>

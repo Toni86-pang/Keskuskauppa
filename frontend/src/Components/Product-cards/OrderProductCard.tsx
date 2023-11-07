@@ -1,4 +1,5 @@
 import Card from "@mui/material/Card"
+import Box from "@mui/material/Box"
 import CardContent from "@mui/material/CardContent"
 import CardMedia from "@mui/material/CardMedia"
 import Typography from "@mui/material/Typography"
@@ -29,43 +30,47 @@ function OrderProductCard({ product, setRefresh }: OrderCardProps) {
 	return (
 		<>
 			{product &&
-				<Card style={cardStyle}>
+				<Card style={cardStyle} component="div">
 					<CardContent>
 						<Grid container spacing={2} style={gridContainerStyle}>
 							<Grid item xs={3}>
 								{product.product_image !== "" ? (
 									<CardMedia
 										component="img"
-										height="80"
+										maxHeight="100"
+										maxWidth="100"
 										image={product.product_image}
 										alt={product.title}
 									/>
 								) : (
 									<CardMedia
 										component="img"
-										height="80"
+										maxHeight="100"
+										maxWidth="100"
 										image={URL_TO_DEFAULT_IMAGE}
 										alt="Default Image"
 									/>
 								)}
 							</Grid>
 							<Grid item xs={6}>
-								<Typography variant="h6" component="span">
-									{product.title}
-								</Typography>
-								<Typography>Hinta {product.price} €</Typography>
-								<Typography> {product.sales_status}
-									{product.sales_status === "Peruutettu" && ", "}
-									{product.sales_status === "Peruutettu" && (
-										<>
-											{product?.listed ? "palautettu myyntiin" : "ei myynnissä"}
-										</>
-									)} </Typography>
-								{product.seller ? (
-									<Typography> Myyjä: {product.seller} </Typography>
-								) : (
-									<Typography> Ostaja: {product.buyer} </Typography>
-								)}
+								<Box p={2}>
+									<Typography variant="h6" component="span">
+										{product.title}
+									</Typography>
+									<Typography>{product.price} €</Typography>
+									<Typography>Tila: {product.sales_status}
+										{product.sales_status === "Peruutettu" && ", "}
+										{product.sales_status === "Peruutettu" && (
+											<Box>
+												{product?.listed ? "palautettu myyntiin" : "ei myynnissä"}
+											</Box>
+										)} </Typography>
+									{product.seller ? (
+										<Typography> Myyjä: {product.seller} </Typography>
+									) : (
+										<Typography> Ostaja: {product.buyer} </Typography>
+									)}
+								</Box>
 							</Grid>
 							<Grid item xs={3} style={{ display: "flex", alignItems: "center" }}>
 								<Button variant="contained" color="primary" onClick={() => handleClick()}>

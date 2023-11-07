@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
 import DialogContent from "@mui/material/DialogContent"
@@ -121,7 +122,7 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 
 
 	return (
-		<>
+		<Box>
 			<Dialog open={isOpen} onClose={resetForm}>
 				<Typography variant="h5" style={{textAlign: "center"}} mt={2}>Muokkaa profiilia</Typography>
 				<DialogContent>
@@ -130,7 +131,6 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 						<Typography>Käyttäjänimi: {user.username}</Typography>
 						<Typography>Sähköposti: {user.email}</Typography>
 					</Box>
-
 					<Box style={styles.section}>
 						<Typography style={styles.label}>Osoite:</Typography>
 						<Typography style={styles.section}>
@@ -190,14 +190,14 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 						)}
 					</FormControl>
 
-					<Box style={styles.buttonContainer} p={1}>
+					<DialogActions style={styles.buttonContainer}>
 						<Button variant="contained" onClick={resetForm}>
 							Peruuta
 						</Button>
 						<Button variant="contained" color={"success"} onClick={handleUpdateSubmit}>
 							Päivitä
 						</Button>
-					</Box>
+					</DialogActions>
 				</DialogContent>
 			</Dialog>
 
@@ -221,7 +221,7 @@ function UpdateProfile({ isOpen, close, user }: UpdateProfileProps) {
 					duration={1500}
 				/>
 			)}
-		</>
+		</Box>
 	)
 }
 
