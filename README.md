@@ -87,8 +87,8 @@ LinkedIn: https://www.linkedin.com/in/maaretlyytinen/
 
 **Toni Vainionpää**  
 @: neworen(at)gmail.com  
-gitlab: https://gitlab.com/Toni86-pang
-LinkedIn:  https://www.linkedin.com/in/toni-vainionpaa/
+gitlab: https://gitlab.com/Toni86-pang  
+LinkedIn:  https://www.linkedin.com/in/toni-vainionpaa/  
 
 **Salla Kaikkonen**  
 @: salla.maria2@gmail.com   
@@ -101,11 +101,11 @@ gitlab: https://gitlab.com/ni5u
 linkedin: https://www.linkedin.com/in/sami-nissinen/  
 
 **Joonas Huhdanmäki**  
-@jhuhdanmaki@gmail.com
-github: https://github.com/jopinihu
-linkedin: www.linkedin.com/in/joonas-huhdanmäki
+@jhuhdanmaki@gmail.com  
+github: https://github.com/jopinihu  
+linkedin: www.linkedin.com/in/joonas-huhdanmäki  
 
 **Paula Häyrynen**  
 @: paula.hayrynen@hotmail.fi  
 gitlab: https://gitlab.com/Paukku1  
-linkedin: https://www.linkedin.com/in/paula-häyrynen  
+linkedin: https://www.linkedin.com/in/paula-häyrynen   
