@@ -54,7 +54,7 @@ This undertaking was built as a fullstack project as part of a fullstack web dev
 
 ### Database structure
 
-![schema](./docs/updated-database-structure.png)
+![schema](./docs/updated_database_structure.png)
 
 ### UI plan
 
