@@ -6,7 +6,6 @@ import {
 	Button,
 	Box
 } from "@mui/material"
-import "./Searchbar.css"
 import { ProductType } from "../../Services-types/types"
 import { fetchAllProducts } from "../../Services-types/services"
 import { useNavigate, useLocation } from "react-router-dom"
@@ -107,15 +106,24 @@ const ProductSearch = () => {
 			</Search>
 
 			{modalOpen && searchQuery && searchResults.length > 0 && (
-				<div className="search-results">
+				<Box className="search-results"
+					sx={{
+						position: "absolute",
+						backgroundColor: "aliceblue",
+						display: "flex",
+						paddingRight: "2.5rem",
+						top: "100%",
+						left: "35%",
+						zIndex: 1
+					}}>
 					<ul>
 						<DisplayProducts productList={searchResults.slice(0, maxResultsToShow)} />
-
-						<Box   sx={{
-							display: "flex",
-							justifyContent: "space-between",
-							alignItems: "center",
-						}}>
+						<Box 
+							sx={{
+								display: "flex",
+								justifyContent: "space-between",
+								alignItems: "center",
+							}}>
 							{searchResults.length > maxResultsToShow && (
 								<Button
 									onClick={handleShowMore}
@@ -133,7 +141,7 @@ const ProductSearch = () => {
 							</Button>
 						</Box>
 					</ul>
-				</div>
+				</Box>
 			)}
 		</Box>
 	)
