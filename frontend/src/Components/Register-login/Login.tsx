@@ -1,9 +1,8 @@
 import { ChangeEvent, useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
+import { Button, Container, Dialog, DialogActions, DialogContent, Typography, TextField } from "@mui/material"
 import { UserTokenContext } from "../../App"
 import { UserValues } from "../../Services-types/types"
-// import { loginUser } from "../services"
 import Notification from "../Verify-notification/Notification"
 import axios from "axios"
 
@@ -19,7 +18,7 @@ function Login() {
 	const { username, password } = userValues
 	const [showSuccessNotification, setShowSuccessNotification] = useState(false)
 	const [showErrorNotification, setShowErrorNotification] = useState(false)
-	
+
 	const navigate = useNavigate()
 
 	const loginUser = async (username: string, password: string) => {
@@ -34,9 +33,9 @@ function Login() {
 				navigate("/")
 				return token
 			}
-		}	catch (error) {
+		} catch (error) {
 			console.error(error)
-			setShowErrorNotification(true) 
+			setShowErrorNotification(true)
 		}
 		handleClose()
 	}
@@ -51,7 +50,6 @@ function Login() {
 			handleClose()
 		}
 	}
-
 
 	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target
@@ -92,11 +90,10 @@ function Login() {
 					<Button sx={{ color: "white" }} onClick={handleOpen}>
 						Kirjaudu sisään
 					</Button>
-				)
-				}
+				)}
 				<Dialog open={open} onClose={handleClose}>
-					<DialogTitle>Kirjaudu sisään</DialogTitle>
-					<DialogContent>
+					<Typography variant="h5" sx={{ textAlign: "center", mt: 2 }}>Kirjaudu sisään</Typography>
+					<DialogContent sx={{ display: "flex", flexDirection: "column" }}>
 						<TextField
 							sx={{ m: 1 }}
 							type="text"
@@ -115,11 +112,11 @@ function Login() {
 							onChange={handleInputChange}
 							onKeyDown={handleKeyDown}
 						/>
+						<DialogActions sx={{ justifyContent: "space-between", marginTop: "10px" }}>
+							<Button variant="contained" onClick={handleClose}>Peruuta</Button>
+							<Button variant="contained" color={"success"} onClick={handleLogin}>Kirjaudu</Button>
+						</DialogActions>
 					</DialogContent>
-					<DialogActions>
-						<Button onClick={handleLogin}>Kirjaudu</Button>
-						<Button onClick={handleClose}>Peruuta</Button>
-					</DialogActions>
 				</Dialog>
 			</Container >
 
@@ -142,9 +139,7 @@ function Login() {
 					duration={1500}
 				/>
 			)}
-
 		</>
 	)
 }
-
 export default Login
